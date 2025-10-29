@@ -1,0 +1,2 @@
+echo 'husky-check ESLint && Prettier rules'
+bunx lint-staged

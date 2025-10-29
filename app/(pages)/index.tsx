@@ -1,5 +1,8 @@
+import { View } from "react-native";
+
+import { SpoqaText } from "@/components";
+
 import { Link } from "expo-router";
-import { Text, View } from "react-native";
 
 export default function Index() {
   return (
@@ -13,7 +16,13 @@ export default function Index() {
       {process.env.EXPO_PUBLIC_STORYBOOK_ENABLED === "true" ? (
         <Link href="/(storybook)">Open Storybook</Link>
       ) : (
-        <Text>Hello World (storybook disabled)</Text>
+        <>
+          <SpoqaText weight="bold">Hello World (storybook disabled)</SpoqaText>
+          <SpoqaText weight="semiBold">Hello World (storybook disabled)</SpoqaText>
+          <SpoqaText weight="medium">Hello World (storybook disabled)</SpoqaText>
+          <SpoqaText weight="regular">Hello World (storybook disabled)</SpoqaText>
+          <SpoqaText weight="thin">Hello World (storybook disabled)</SpoqaText>
+        </>
       )}
     </View>
   );
