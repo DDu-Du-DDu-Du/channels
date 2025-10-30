@@ -1,6 +1,7 @@
 import "../global.css";
 
 import { useEffect } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { TanstackProvider } from "../providers";
 
@@ -36,12 +37,14 @@ export default function RootLayout() {
 
   return (
     <TanstackProvider>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Protected guard={StorybookEnabled}>
-          <Stack.Screen name="(storybook)/index" />
-        </Stack.Protected>
-        <Stack.Screen name="(pages)/index" />
-      </Stack>
+      <GestureHandlerRootView>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(pages)/index" />
+          <Stack.Protected guard={StorybookEnabled}>
+            <Stack.Screen name="(storybook)/index" />
+          </Stack.Protected>
+        </Stack>
+      </GestureHandlerRootView>
     </TanstackProvider>
   );
 }
