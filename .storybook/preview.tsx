@@ -1,6 +1,17 @@
+import { TanstackProvider } from "@/providers";
 import type { Preview } from "@storybook/react-native";
 
 const preview: Preview = {
+  decorators: [
+    (Story, { args }) => {
+      return (
+        <TanstackProvider>
+          <Story args={args} />
+        </TanstackProvider>
+      );
+    },
+  ],
+
   parameters: {
     // actions: { argTypesRegex: "^on[A-Z].*" },
     controls: {
@@ -8,6 +19,7 @@ const preview: Preview = {
         color: /(background|color)$/i,
         date: /Date$/,
       },
+      expanded: true,
     },
   },
 

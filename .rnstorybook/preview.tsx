@@ -1,5 +1,6 @@
 import { Platform } from "react-native";
 
+import { TanstackProvider } from "@/providers";
 import { withBackgrounds } from "@storybook/addon-ondevice-backgrounds";
 import type { Preview } from "@storybook/react-native";
 
@@ -12,7 +13,16 @@ if (Platform.OS === "web") {
 }
 
 const preview: Preview = {
-  decorators: [withBackgrounds],
+  decorators: [
+    withBackgrounds,
+    (Story, { args }) => {
+      return (
+        <TanstackProvider>
+          <Story args={args} />
+        </TanstackProvider>
+      );
+    },
+  ],
 
   parameters: {
     backgrounds: {
@@ -29,6 +39,7 @@ const preview: Preview = {
         color: /(background|color)$/i,
         date: /Date$/,
       },
+      expanded: true,
     },
   },
 };
