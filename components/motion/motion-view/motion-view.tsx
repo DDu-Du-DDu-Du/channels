@@ -49,7 +49,8 @@ function MotionView({
   children,
 }: MotionViewProps) {
   const pressed = useSharedValue<boolean>(false);
-  const pan = Gesture.Pan()
+  const tap = Gesture.Tap()
+    .maxDuration(10_000)
     .onBegin(() => {
       pressed.value = true;
     })
@@ -94,7 +95,7 @@ function MotionView({
   });
 
   return (
-    <GestureDetector gesture={pan}>
+    <GestureDetector gesture={tap}>
       <Animated.View
         entering={entering}
         exiting={exiting}

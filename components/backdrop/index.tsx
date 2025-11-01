@@ -1,21 +1,21 @@
-import { Pressable } from "react-native";
+import { PropsWithChildren } from "react";
+import { GestureDetector } from "react-native-gesture-handler";
 
-interface Props {
+import { useOutsidePress } from "@/hooks";
+
+interface OutsidePressBackdropProps {
   open: boolean;
-  onPress: () => void;
+  onOutsidePress: () => void;
 }
 
-function Backdrop({ open, onPress }: Props) {
-  if (!open) {
-    return;
-  }
+function OutsidePressBackdrop({
+  open,
+  onOutsidePress,
+  children,
+}: PropsWithChildren<OutsidePressBackdropProps>) {
+  const gesture = useOutsidePress(open, onOutsidePress);
 
-  return (
-    <Pressable
-      className="absolute inset-0 cursor-default w-screen h-screen"
-      onPress={onPress}
-    />
-  );
+  return <GestureDetector gesture={gesture}>{children}</GestureDetector>;
 }
 
-export default Backdrop;
+export default OutsidePressBackdrop;

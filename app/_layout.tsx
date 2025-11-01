@@ -1,9 +1,8 @@
 import "../global.css";
 
 import { useEffect } from "react";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-import { TanstackProvider } from "../providers";
+import { OutsidePressProvider, TanstackProvider } from "../providers";
 
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
@@ -37,14 +36,14 @@ export default function RootLayout() {
 
   return (
     <TanstackProvider>
-      <GestureHandlerRootView>
+      <OutsidePressProvider>
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="(pages)/index" />
           <Stack.Protected guard={StorybookEnabled}>
             <Stack.Screen name="(storybook)/index" />
           </Stack.Protected>
         </Stack>
-      </GestureHandlerRootView>
+      </OutsidePressProvider>
     </TanstackProvider>
   );
 }
