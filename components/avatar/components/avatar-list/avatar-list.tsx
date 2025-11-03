@@ -1,9 +1,8 @@
 import { Pressable, View } from "react-native";
 import { BounceInLeft, BounceOutLeft } from "react-native-reanimated";
 
-import OutsidePressBackdrop from "@/components/backdrop";
+import { OutsidePressBackdrop, ProfileImage } from "@/components";
 import { MotionView } from "@/components/motion";
-import ProfileImage from "@/components/profile-image";
 import { useToggle } from "@/hooks";
 import { UserType } from "@/types/response/user";
 

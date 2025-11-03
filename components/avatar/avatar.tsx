@@ -1,8 +1,8 @@
 import { Pressable, View } from "react-native";
 
+import { ProfileImage } from "@/components";
 import { UserType } from "@/types/response/user";
 
-import ProfileImage from "../profile-image";
 import { AVATAR_SIZE } from "./avatar.constant";
 import { AvatarEdit, AvatarList } from "./components";
 import { useChangeImage, useClickAvatar } from "./hooks";
