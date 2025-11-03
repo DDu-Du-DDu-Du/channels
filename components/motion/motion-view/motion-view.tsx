@@ -1,5 +1,5 @@
 import React from "react";
-import { AnimatableNumericValue, View } from "react-native";
+import { AnimatableNumericValue, StyleProp, View, ViewStyle } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   ComplexAnimationBuilder,
@@ -33,6 +33,7 @@ export interface MotionViewProps {
   durationOut?: number | null;
   easingIn?: ((v: number) => number) | null;
   easingOut?: ((v: number) => number) | null;
+  style?: StyleProp<ViewStyle>;
   children: React.ReactNode;
 }
 
@@ -46,6 +47,7 @@ function MotionView({
   durationOut,
   easingIn,
   easingOut,
+  style,
   children,
 }: MotionViewProps) {
   const pressed = useSharedValue<boolean>(false);
@@ -101,7 +103,12 @@ function MotionView({
         exiting={exiting}
       >
         <Animated.View style={[tapAnimated]}>
-          <View className={className}>{children}</View>
+          <View
+            className={className}
+            style={style}
+          >
+            {children}
+          </View>
         </Animated.View>
       </Animated.View>
     </GestureDetector>

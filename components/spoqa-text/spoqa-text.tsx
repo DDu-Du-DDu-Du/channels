@@ -13,13 +13,14 @@ const fontWeights = {
 
 export interface SpoqaTextProps {
   children: React.ReactNode;
+  className?: string;
   weight?: FontWeight;
 }
 
-function SpoqaText({ children, weight = "regular", ...others }: SpoqaTextProps) {
+function SpoqaText({ children, className, weight = "regular", ...others }: SpoqaTextProps) {
   return (
     <Text
-      className={fontWeights[weight]}
+      className={`${fontWeights[weight]} ${className ?? ""}`}
       {...others}
     >
       {children}
