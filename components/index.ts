@@ -5,4 +5,5 @@ export { default as ProfileImage } from "./profile-image/profile-image";
 export { default as SpoqaText } from "./spoqa-text/spoqa-text";
 
 export { default as AlertModal } from "./alert-modal/alert-modal";
+export { default as BottomSheet } from "./bottom-sheet/bottom-sheet";
 export { default as ConfirmModal } from "./confirm-modal/confirm-modal";

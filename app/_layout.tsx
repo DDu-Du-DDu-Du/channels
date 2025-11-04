@@ -2,6 +2,8 @@ import "../global.css";
 
 import { useEffect } from "react";
 
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+
 import { OutsidePressProvider, TanstackProvider } from "../providers";
 
 import { useFonts } from "expo-font";
@@ -37,12 +39,14 @@ export default function RootLayout() {
   return (
     <TanstackProvider>
       <OutsidePressProvider>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(pages)/index" />
-          <Stack.Protected guard={StorybookEnabled}>
-            <Stack.Screen name="(storybook)/index" />
-          </Stack.Protected>
-        </Stack>
+        <BottomSheetModalProvider>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(pages)/index" />
+            <Stack.Protected guard={StorybookEnabled}>
+              <Stack.Screen name="(storybook)/index" />
+            </Stack.Protected>
+          </Stack>
+        </BottomSheetModalProvider>
       </OutsidePressProvider>
     </TanstackProvider>
   );

@@ -1,6 +1,7 @@
 import { Platform } from "react-native";
 
 import { TanstackProvider } from "@/providers";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { withBackgrounds } from "@storybook/addon-ondevice-backgrounds";
 import type { Preview } from "@storybook/react-native";
 
@@ -15,13 +16,13 @@ if (Platform.OS === "web") {
 const preview: Preview = {
   decorators: [
     withBackgrounds,
-    (Story, { args }) => {
-      return (
-        <TanstackProvider>
+    (Story, { args }) => (
+      <TanstackProvider>
+        <BottomSheetModalProvider>
           <Story args={args} />
-        </TanstackProvider>
-      );
-    },
+        </BottomSheetModalProvider>
+      </TanstackProvider>
+    ),
   ],
 
   parameters: {
