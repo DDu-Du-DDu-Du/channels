@@ -7,3 +7,6 @@ export { default as SpoqaText } from "./spoqa-text/spoqa-text";
 export { default as AlertModal } from "./alert-modal/alert-modal";
 export { default as BottomSheet } from "./bottom-sheet/bottom-sheet";
 export { default as ConfirmModal } from "./confirm-modal/confirm-modal";
+
+export { default as PrivacySheet } from "./privacy-sheet/privacy-sheet";
+export { default as ColorSheet } from "./color-sheet/color-sheet";
