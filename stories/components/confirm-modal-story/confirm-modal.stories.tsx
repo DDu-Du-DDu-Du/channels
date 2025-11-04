@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
 import { ConfirmModalProps } from "@/components/confirm-modal/confirm-modal";
 import { useToggle } from "@/hooks";
@@ -92,7 +92,9 @@ const Template: StoryFn<ConfirmModalProps> = (args) => {
         handleToggleOff={handleToggleOff}
         onCompleteCheck={(isComplete) => console.log(isComplete)}
       />
-      <button onClick={handleToggleOn}>Confirm Modal Open</button>
+      <Pressable onPress={handleToggleOn}>
+        <Text>Confirm Modal Open</Text>
+      </Pressable>
     </View>
   );
 };
