@@ -7,9 +7,14 @@ import { useBottomSheetAction } from "@/hooks";
 export interface BottomSheetViewProps {
   defaultHeight?: string | number;
   maxHeight?: string | number;
+  onClose?: () => void;
 }
 
-function BottomSheetView({ defaultHeight = "35%", maxHeight = "80%" }: BottomSheetViewProps) {
+function BottomSheetView({
+  defaultHeight = "35%",
+  maxHeight = "80%",
+  onClose,
+}: BottomSheetViewProps) {
   const { ref, openSheet, closeSheet, snapToDefault, snapToMax } = useBottomSheetAction();
 
   return (
@@ -25,6 +30,7 @@ function BottomSheetView({ defaultHeight = "35%", maxHeight = "80%" }: BottomShe
         ref={ref}
         defaultHeight={defaultHeight}
         maxHeight={maxHeight}
+        onClose={onClose}
       >
         <View className="p-[16px] gap-[12px]">
           <SpoqaText

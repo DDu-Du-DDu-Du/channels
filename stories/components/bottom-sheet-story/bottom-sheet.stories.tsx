@@ -20,6 +20,7 @@ Use useBottomSheetAction() to control open/close and snapping, and pass its ref 
   argTypes: {
     defaultHeight: { control: "text" },
     maxHeight: { control: "text" },
+    onClose: { action: "onClose" },
   },
 } satisfies Meta<typeof BottomSheetView>;
 
