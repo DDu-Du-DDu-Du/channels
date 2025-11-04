@@ -1,7 +1,7 @@
 import { Pressable, View } from "react-native";
 
 import { ProfileImage } from "@/components";
-import { UserType } from "@/types/response/user";
+import { UserType } from "@/types/response/user/user";
 
 import { AVATAR_SIZE } from "./avatar.constant";
 import { AvatarEdit, AvatarList } from "./components";

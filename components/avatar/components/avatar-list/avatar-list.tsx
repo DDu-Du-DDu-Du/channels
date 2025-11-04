@@ -4,7 +4,7 @@ import { BounceInLeft, BounceOutLeft } from "react-native-reanimated";
 import { OutsidePressBackdrop, ProfileImage } from "@/components";
 import { MotionView } from "@/components/motion";
 import { useToggle } from "@/hooks";
-import { UserType } from "@/types/response/user";
+import { UserType } from "@/types/response/user/user";
 
 import Avatar from "../../avatar";
 
