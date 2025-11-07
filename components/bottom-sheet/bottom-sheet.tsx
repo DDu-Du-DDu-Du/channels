@@ -22,7 +22,7 @@ function BottomSheet({
   defaultHeight = "35%",
   maxHeight = "80%",
   fitContent = false,
-  maxWidth = 768,
+  maxWidth = 700,
 }: BottomSheetProps) {
   const snapPoint = useMemo(
     () => (fitContent ? [] : [defaultHeight, maxHeight]),
