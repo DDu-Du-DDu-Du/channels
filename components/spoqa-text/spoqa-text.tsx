@@ -1,5 +1,5 @@
 import React from "react";
-import { Text } from "react-native";
+import { Text, TextProps } from "react-native";
 
 type FontWeight = "thin" | "regular" | "medium" | "semiBold" | "bold";
 
@@ -11,13 +11,12 @@ const fontWeights = {
   bold: "font-spoqa-bold",
 };
 
-export interface SpoqaTextProps {
+export interface SpoqaTextProps extends TextProps {
   children: React.ReactNode;
-  className?: string;
   weight?: FontWeight;
 }
 
-function SpoqaText({ children, className, weight = "regular", ...others }: SpoqaTextProps) {
+function SpoqaText({ children, className, weight = "medium", ...others }: SpoqaTextProps) {
   return (
     <Text
       className={`${fontWeights[weight]} ${className ?? ""}`}
