@@ -14,6 +14,8 @@ export interface BottomSingleCalendarProps {
   setSelected: (date: Date | undefined) => void;
   onChangeDDuDuDate: (selectedDate: Date) => void;
   handleCalendarSheetToggleOff: () => void;
+  minDate?: string;
+  maxDate?: string;
 }
 
 function BottomSingleCalendar({
@@ -22,6 +24,8 @@ function BottomSingleCalendar({
   setSelected,
   onChangeDDuDuDate,
   handleCalendarSheetToggleOff,
+  minDate,
+  maxDate,
 }: BottomSingleCalendarProps) {
   const { ref, openSheet, closeSheet } = useBottomSheetAction();
 
@@ -56,9 +60,11 @@ function BottomSingleCalendar({
     >
       <View className="w-full pb-[1.5rem] px-[2.4rem]">
         <Calendar
-          current={selectedString}
+          current={selectedString || currentDate}
           markedDates={markedDates}
           onDayPress={handleDayPress}
+          minDate={minDate}
+          maxDate={maxDate}
           renderArrow={(direction) =>
             direction === "left" ? (
               <ChevronLeftIcon
