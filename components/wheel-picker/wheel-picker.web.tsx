@@ -11,9 +11,10 @@ export interface WheelPickerProps {
   itemHeight?: number;
   visibleCount?: number;
   initValue?: string | number;
+  width?: number;
 }
 
-function WheelPicker({ data, value, onChange, itemHeight = 44 }: WheelPickerProps) {
+function WheelPicker({ data, value, onChange, itemHeight = 44, width = 72 }: WheelPickerProps) {
   const visibleCount = 3;
   const half = Math.floor(visibleCount / 2);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -42,7 +43,7 @@ function WheelPicker({ data, value, onChange, itemHeight = 44 }: WheelPickerProp
     >
       <View
         className="items-center justify-center"
-        style={{ height: itemHeight, width: 72 }}
+        style={{ height: itemHeight, width: width }}
       >
         {expanded ? (
           <div
@@ -52,7 +53,7 @@ function WheelPicker({ data, value, onChange, itemHeight = 44 }: WheelPickerProp
               top: -itemHeight,
               left: 0,
               zIndex: 501,
-              width: 72,
+              width: width,
               height: itemHeight * visibleCount,
               overflowY: "auto",
               overscrollBehavior: "contain",
@@ -99,7 +100,7 @@ function WheelPicker({ data, value, onChange, itemHeight = 44 }: WheelPickerProp
         ) : null}
         {expanded ? (
           // placeholder to preserve width/height in normal flow beneath absolute overlay
-          <div style={{ width: 72, height: itemHeight, visibility: "hidden" }} />
+          <div style={{ width: width, height: itemHeight, visibility: "hidden" }} />
         ) : (
           <div
             role="button"
@@ -109,7 +110,7 @@ function WheelPicker({ data, value, onChange, itemHeight = 44 }: WheelPickerProp
               if (e.key === "Enter" || e.key === " ") setExpanded(true);
             }}
             style={{
-              width: 72,
+              width: width,
               height: itemHeight,
               display: "flex",
               alignItems: "center",

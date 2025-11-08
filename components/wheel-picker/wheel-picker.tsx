@@ -10,6 +10,7 @@ export interface WheelPickerProps {
   itemHeight?: number;
   visibleCount?: number;
   initValue?: string | number;
+  width?: number;
 }
 
 function WheelPicker({
@@ -19,6 +20,7 @@ function WheelPicker({
   itemHeight = 44,
   visibleCount = 3,
   initValue = 0,
+  width = 50,
 }: WheelPickerProps) {
   const half = Math.floor(visibleCount / 2);
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -127,7 +129,7 @@ function WheelPicker({
         initialScrollIndex={initialIndex}
         nestedScrollEnabled
         style={{
-          width: 50,
+          width: width,
           alignSelf: "center",
         }}
         contentContainerStyle={{
