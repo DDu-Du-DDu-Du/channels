@@ -31,7 +31,6 @@ function BottomSingleCalendar({
 
   const selectedString = selectedDate ? formatDateToYYYYMMDD(selectedDate) : undefined;
   const markedDates = selectedString ? { [selectedString]: { selected: true } } : undefined;
-  console.log(selectedString);
 
   const handleDayPress = (day: DateData) => {
     const next = new Date(day.dateString);
@@ -43,7 +42,6 @@ function BottomSingleCalendar({
     if (!selectedDate || currentDate === formatDateToYYYYMMDD(selectedDate)) {
       closeSheet();
       handleCalendarSheetToggleOff();
-
       return;
     }
 
@@ -75,9 +73,7 @@ function BottomSingleCalendar({
             )
           }
           renderHeader={(date) => (
-            <SpoqaText className="text-size15">
-              {`${date.getFullYear()}년 ${date.getMonth() + 1}월`}
-            </SpoqaText>
+            <SpoqaText className="text-size15">{`${date.getFullYear()}년 ${date.getMonth() + 1}월`}</SpoqaText>
           )}
           hideExtraDays={false}
           theme={
