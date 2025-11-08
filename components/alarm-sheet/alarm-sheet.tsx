@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 
 import { BottomSheet, SpoqaText } from "@/components";
@@ -14,14 +14,9 @@ export interface AlarmSheetProps {
 function AlarmSheet({ onClose, onConfirm }: AlarmSheetProps) {
   const { ref, openSheet, closeSheet } = useBottomSheetAction();
   const [enabled, setEnabled] = useState(false);
-
-  const dayList = useMemo(() => Array.from({ length: 999 }, (_, i) => i), []);
-  const hourList = useMemo(() => Array.from({ length: 24 }, (_, i) => i), []);
-  const minuteList = useMemo(() => Array.from({ length: 60 }, (_, i) => i), []);
-
-  const [dayIndex, setDayIndex] = useState(0);
-  const [hourIndex, setHourIndex] = useState(0);
-  const [minuteIndex, setMinuteIndex] = useState(0);
+  const [dayBefore, setDayBefore] = useState(0);
+  const [hourBefore, setHourBefore] = useState(0);
+  const [minuteBefore, setMinuteBefore] = useState(0);
 
   useEffect(() => {
     openSheet();
@@ -30,9 +25,9 @@ function AlarmSheet({ onClose, onConfirm }: AlarmSheetProps) {
   const handleConfirm = () => {
     const payload = {
       enabled,
-      day: dayList[dayIndex],
-      hour: hourList[hourIndex],
-      minute: minuteList[minuteIndex],
+      day: dayBefore,
+      hour: hourBefore,
+      minute: minuteBefore,
     };
     onConfirm?.(payload);
     closeSheet();
@@ -55,15 +50,9 @@ function AlarmSheet({ onClose, onConfirm }: AlarmSheetProps) {
         </View>
         {enabled && (
           <AlarmPickersRow
-            dayList={dayList}
-            hourList={hourList}
-            minuteList={minuteList}
-            dayIndex={dayIndex}
-            hourIndex={hourIndex}
-            minuteIndex={minuteIndex}
-            onDayChange={setDayIndex}
-            onHourChange={setHourIndex}
-            onMinuteChange={setMinuteIndex}
+            onDayChange={setDayBefore}
+            onHourChange={setHourBefore}
+            onMinuteChange={setMinuteBefore}
           />
         )}
         <Pressable
