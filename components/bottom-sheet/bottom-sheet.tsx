@@ -13,6 +13,7 @@ export interface BottomSheetProps {
   maxHeight?: string | number;
   fitContent?: boolean;
   maxWidth?: number; // responsive max width (e.g., 768)
+  enablePanDownToClose?: boolean;
 }
 
 function BottomSheet({
@@ -23,6 +24,7 @@ function BottomSheet({
   maxHeight = "80%",
   fitContent = false,
   maxWidth = 700,
+  enablePanDownToClose = true,
 }: BottomSheetProps) {
   const snapPoint = useMemo(
     () => (fitContent ? [] : [defaultHeight, maxHeight]),
@@ -39,7 +41,7 @@ function BottomSheet({
       snapPoints={snapPoint}
       enableOverDrag={false}
       enableDynamicSizing={fitContent}
-      enablePanDownToClose
+      enablePanDownToClose={enablePanDownToClose}
       detached={isWide}
       style={isWide ? { marginHorizontal: sideMargin } : undefined}
       backdropComponent={bottomSheetBackdrop}

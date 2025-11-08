@@ -11,6 +11,7 @@ export { default as ConfirmModal } from "./confirm-modal/confirm-modal";
 export { default as PrivacySheet } from "./privacy-sheet/privacy-sheet";
 export { default as ColorSheet } from "./color-sheet/color-sheet";
 export { default as DDuDuSheet } from "./ddudu-sheet/ddudu-sheet";
+export { default as DDuDuTimeSheet } from "./ddudu-time-sheet/ddudu-time-sheet";
 export { default as SheetButton } from "./sheet-button/sheet-button";
 export { default as AlarmSheet } from "./alarm-sheet/alarm-sheet";
 export { default as WheelPicker } from "./wheel-picker/wheel-picker";
