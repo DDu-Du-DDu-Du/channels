@@ -11,6 +11,7 @@ const meta = {
   argTypes: {
     handleCalendarSheetToggleOff: { action: "handleCalendarSheetToggleOff" },
     onChangeDDuDuDate: { action: "onChangeDDuDuDate" },
+    noInitialSelected: { control: "boolean" },
   },
 } satisfies Meta<typeof BottomSingleCalendarView>;
 
@@ -19,3 +20,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+
+export const NoInitialSelected: Story = {
+  args: {
+    noInitialSelected: true,
+  },
+};

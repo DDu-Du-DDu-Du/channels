@@ -7,15 +7,17 @@ import { formatDateToYYYYMMDD } from "@/utils";
 export interface BottomSingleCalendarViewProps {
   handleCalendarSheetToggleOff?: () => void;
   onChangeDDuDuDate?: (selectedDate: Date) => void;
+  noInitialSelected?: boolean;
 }
 
 function BottomSingleCalendarView({
   handleCalendarSheetToggleOff,
   onChangeDDuDuDate,
+  noInitialSelected = false,
 }: BottomSingleCalendarViewProps) {
   const [open, setOpen] = useState(false);
   const today = useMemo(() => new Date(), []);
-  const [selected, setSelected] = useState<Date | undefined>(today);
+  const [selected, setSelected] = useState<Date | undefined>(noInitialSelected ? undefined : today);
   const currentDate = useMemo(() => formatDateToYYYYMMDD(today), [today]);
 
   return (

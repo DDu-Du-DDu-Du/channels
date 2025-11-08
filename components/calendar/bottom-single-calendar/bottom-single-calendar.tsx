@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Pressable, View } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
+import { Theme } from "react-native-calendars/src/types";
 
 import { BottomSheet, SpoqaText } from "@/components";
 import { useBottomSheetAction } from "@/hooks";
@@ -79,6 +80,19 @@ function BottomSingleCalendar({
             </SpoqaText>
           )}
           hideExtraDays={false}
+          theme={
+            {
+              textSectionTitleColor: "#000",
+              "stylesheet.calendar.header": {
+                dayTextAtIndex0: {
+                  color: "red",
+                },
+                dayTextAtIndex6: {
+                  color: "blue",
+                },
+              },
+            } as Theme
+          }
           firstDay={0}
         />
       </View>
