@@ -22,3 +22,4 @@ export { default as InputDate } from "./input-date/input-date";
 export { default as InputRadio } from "./input-radio/input-radio";
 export { default as FollowRequestItem } from "./follow-request-item/follow-request-item";
 export { default as TextInput } from "./text-input/text-input";
+export { default as ToastProvider } from "./toast/toast-provider";

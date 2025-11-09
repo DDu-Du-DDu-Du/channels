@@ -1,4 +1,3 @@
-import React from "react";
 import Svg, { Path } from "react-native-svg";
 
 export interface IconProps {
@@ -12,7 +11,7 @@ function CloseIcon({ size = 32, fill = "black", className }: IconProps) {
     <Svg
       width={size}
       height={size}
-      viewBox="0 0 960 960"
+      viewBox="0 -960 960 960"
       fill={fill}
       className={className}
     >
