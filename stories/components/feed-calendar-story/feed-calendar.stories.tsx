@@ -1,0 +1,21 @@
+import type { Meta, StoryObj } from "@storybook/react";
+
+import FeedCalendarView from "./components/feed-calendar-view/feed-calendar-view";
+
+const meta = {
+  title: "components/FeedCalendar",
+  component: FeedCalendarView,
+  argTypes: {
+    type: { control: { type: "radio" }, options: ["week", "month"] },
+    onSelectDate: { action: "onSelectDate" },
+  },
+  args: {
+    type: "month",
+  },
+} satisfies Meta<typeof FeedCalendarView>;
+
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {};
