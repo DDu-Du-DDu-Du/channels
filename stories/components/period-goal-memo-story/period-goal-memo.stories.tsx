@@ -13,7 +13,6 @@ const meta = {
     value: { control: "text" },
     onChange: { action: "onChange" },
     onBlur: { action: "onBlur" },
-    onSubmit: { action: "onSubmit" },
   },
   args: {
     type: "month",

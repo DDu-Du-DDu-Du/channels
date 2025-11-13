@@ -8,7 +8,6 @@ export interface PeriodGoalMemoViewProps {
   value?: string;
   onChange?: (value: string) => void;
   onBlur?: () => void;
-  onSubmit?: () => void;
 }
 
 function PeriodGoalMemoView({
@@ -16,7 +15,6 @@ function PeriodGoalMemoView({
   value: initial = "",
   onChange,
   onBlur,
-  onSubmit,
 }: PeriodGoalMemoViewProps) {
   const [value, setValue] = useState(initial);
 
@@ -30,7 +28,6 @@ function PeriodGoalMemoView({
           onChange?.(v);
         }}
         onBlur={onBlur}
-        onSubmit={onSubmit}
       />
     </View>
   );

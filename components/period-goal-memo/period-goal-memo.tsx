@@ -1,6 +1,6 @@
-import { Pressable, TextInput, View } from "react-native";
+import { TextInput, View } from "react-native";
 
-import { CheckIcon } from "@/icons";
+import { remToPx } from "@/utils";
 
 import { usePeriodGoalMemo } from "./hooks";
 
@@ -11,7 +11,9 @@ interface PeriodGoalMemoProps {
   value: string;
   onChange: (value: string) => void;
   onBlur?: () => void;
-  onSubmit?: () => void;
+  className?: string;
+  minHeight?: number | string;
+  maxHeight?: number | string;
 }
 
 function PeriodGoalMemo({
@@ -19,46 +21,32 @@ function PeriodGoalMemo({
   value,
   onChange,
   onBlur,
-  onSubmit,
+  className,
+  minHeight = 60,
+  maxHeight,
 }: PeriodGoalMemoProps) {
-  const { inputRef, isFocused, handleFocus, handleBlur, handleOutsidePress, height } =
-    usePeriodGoalMemo({ onBlur });
+  const { inputRef, handleFocus, handleBlur, height } = usePeriodGoalMemo({
+    onBlur,
+    minHeight,
+    maxHeight,
+  });
 
   return (
-    <View className="relative w-[31.2rem] h-full justify-start">
-      {isFocused && (
-        <Pressable
-          onPress={handleOutsidePress}
-          className="absolute inset-0 items-center justify-center z-monthly_goal_overlay"
-        >
-          <View className="bg-black_500/20 w-[60rem] h-full" />
-        </Pressable>
-      )}
-
-      <View className="relative z-monthly_goal_textarea w-full">
-        {isFocused && (
-          <Pressable
-            accessibilityRole="button"
-            hitSlop={8}
-            onPress={onSubmit}
-            className="absolute right-[0.8rem] top-[0.8rem]"
-          >
-            <CheckIcon size={24} />
-          </Pressable>
-        )}
+    <View
+      className={`${className} relative w-full rounded-radius10`}
+      style={{ marginBottom: remToPx(minHeight) + 10 }}
+    >
+      <View className="absolute z-monthly_goal_textarea w-full bg-example_gray_200 rounded-radius10 p-3">
         <TextInput
           ref={inputRef}
           multiline
           textAlignVertical="top"
-          placeholder={
-            type === "week" ? "주 별 목표를 설정해보세요!" : "월 별 목표를 설정해보세요!"
-          }
-          className="w-full min-h-[4.6rem] max-h-[20rem] p-6 bg-example_gray_100 rounded-radius10 text-size11"
+          className="text-size11"
           value={value}
           onChangeText={onChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          style={{ height: height ?? undefined }}
+          style={{ height }}
         />
       </View>
     </View>
