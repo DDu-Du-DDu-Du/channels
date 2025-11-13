@@ -35,6 +35,7 @@ function BottomMultipleCalendar({ selected, setSelected }: BottomMultipleCalenda
       <Calendar
         markedDates={markedDates}
         onDayPress={handleDayPress}
+        monthFormat="yyyy년 MM월"
         renderArrow={(direction) =>
           direction === "left" ? (
             <ChevronLeftIcon

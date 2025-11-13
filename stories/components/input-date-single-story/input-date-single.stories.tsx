@@ -10,7 +10,6 @@ const meta = {
   },
   argTypes: {
     label: { control: "text" },
-    value: { control: "text" },
     todayDate: { control: "text" },
     minDate: { control: "text" },
     maxDate: { control: "text" },

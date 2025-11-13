@@ -65,6 +65,7 @@ function BottomSingleCalendar({
           onDayPress={handleDayPress}
           minDate={minDate}
           maxDate={maxDate}
+          monthFormat="yyyy년 MM월"
           renderArrow={(direction) =>
             direction === "left" ? (
               <ChevronLeftIcon

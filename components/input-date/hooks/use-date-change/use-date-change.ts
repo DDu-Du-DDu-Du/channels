@@ -1,21 +1,38 @@
 import { useState } from "react";
 
+import { useToggle } from "@/hooks";
+import { formatDateToYYYYMMDD } from "@/utils";
+
 export interface UseDateChangeProps {
   label: string;
-  onMinDateChange?: (date: string) => void;
-  onMaxDateChange?: (date: string) => void;
+  onChange?: (next: string) => void;
 }
 
-function useDateChange({ label, onMinDateChange, onMaxDateChange }: UseDateChangeProps) {
-  const [date, setDate] = useState<string>(label);
+function useDateChange({ label, onChange }: UseDateChangeProps) {
+  const { isToggle, handleToggleOn, handleToggleOff } = useToggle();
+  const [selectedDate, setSelectedDate] = useState(
+    isNaN(Date.parse(label)) ? undefined : new Date(label),
+  );
 
-  const handleSelect = (next: string) => {
-    setDate(next);
-    onMinDateChange?.(next);
-    onMaxDateChange?.(next);
+  const handleChangeDate = (date: Date) => {
+    const next = formatDateToYYYYMMDD(date);
+
+    onChange?.(next);
+    handleToggleOff();
   };
 
-  return { date, handleSelect };
+  const handleSelectDate = (date: Date | undefined) => {
+    setSelectedDate(date);
+  };
+
+  return {
+    selectedDate,
+    isToggle,
+    handleToggleOn,
+    handleToggleOff,
+    handleSelectDate,
+    handleChangeDate,
+  };
 }
 
 export default useDateChange;

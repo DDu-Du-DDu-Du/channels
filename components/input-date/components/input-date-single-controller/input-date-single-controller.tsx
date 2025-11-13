@@ -1,6 +1,5 @@
 import { Controller, useFormContext } from "react-hook-form";
 
-import useDateChange from "../../hooks/use-date-change/use-date-change";
 import InputDateSingle from "../input-date-single/input-date-single";
 
 export interface InputDateSingleControllerProps {
@@ -23,18 +22,23 @@ function InputDateSingleController({
   onMaxDateChange,
 }: InputDateSingleControllerProps) {
   const { control } = useFormContext();
-  const { date, handleSelect } = useDateChange({ label, onMinDateChange, onMaxDateChange });
+
+  const handleSelect = (next: string, onChange: (...event: any[]) => void) => {
+    onChange(next);
+    onMinDateChange?.(next);
+    onMaxDateChange?.(next);
+  };
 
   return (
     <Controller
       control={control}
       name={name}
       rules={{ required: true }}
-      render={({ field: { value } }) => (
+      defaultValue={label}
+      render={({ field: { value, onChange } }) => (
         <InputDateSingle
-          label={date}
-          value={value}
-          onChange={handleSelect}
+          label={value}
+          onChange={(next) => handleSelect(next, onChange)}
           todayDate={todayDate}
           minDate={minDate}
           maxDate={maxDate}

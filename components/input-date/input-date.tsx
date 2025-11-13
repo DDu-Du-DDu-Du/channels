@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { formatDateToYYYYMMDD } from "@/utils";
 
 import InputDateRangeController from "./components/input-date-range-controller/input-date-range-controller";
 import InputDateSingleController from "./components/input-date-single-controller/input-date-single-controller";
@@ -20,14 +20,7 @@ function InputDate({
   labelEnd,
   nameEnd,
 }: InputDateProps) {
-  const todayDate = useMemo(() => {
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, "0");
-    const dd = String(today.getDate()).padStart(2, "0");
-
-    return `${yyyy}-${mm}-${dd}`;
-  }, []);
+  const todayDate = formatDateToYYYYMMDD(new Date());
 
   return (
     <>
