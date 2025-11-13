@@ -25,3 +25,4 @@ export { default as TextInput } from "./text-input/text-input";
 export { default as ToastProvider } from "./toast/toast-provider";
 export { default as WheelPicker } from "./wheel-picker/wheel-picker";
 export { default as FeedTypeSwitch } from "./feed-type-switch/feed-type-switch";
+export { default as SelectOption } from "./select-option/select-option";
