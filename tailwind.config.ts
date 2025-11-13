@@ -20,6 +20,7 @@ module.exports = {
         transparent_90: "#23232390",
 
         example_gray_100: "#F5F5F5",
+        example_gray_200: "#F1F1F1",
         example_gray_300: "#E6E6E6",
         example_gray_500: "#D3D3D3",
         example_gray_700: "#D9D9D9",
@@ -52,8 +53,10 @@ module.exports = {
         sub_1: "#f8f8f8",
         sub_2: "#efefef",
         sub_3: "#1363DE",
+        sub_4: "#7db0fbff",
         sub_gray_100: "#FCFCFC",
         sub_gray_200: "#E1E1E1",
+        sub_gray_500: "#bebebe",
       },
 
       borderRadius: {
