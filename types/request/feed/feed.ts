@@ -1,4 +1,4 @@
-export interface RequestPeriodGoals {
+export interface RequestPeriodGoalMemo {
   contents: string;
   type: "WEEK" | "MONTH";
   planDate: string;

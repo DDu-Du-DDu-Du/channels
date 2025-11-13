@@ -1,4 +1,4 @@
-import { RepeatDdudusType } from "@/types/response/repeat-ddudu/repeat-ddudu";
+import { RepeatDDuDusType } from "@/types/response/repeat-ddudu/repeat-ddudu";
 
 export interface GoalType {
   id: number;
@@ -13,7 +13,7 @@ export interface GoalDetailType {
   status: "IN_PROGRESS" | "DONE";
   color: string;
   privacyType: GoalPrivacyType;
-  repeatDdudus: RepeatDdudusType[];
+  repeatDdudus: RepeatDDuDusType[];
 }
 
 export type GoalPrivacyType = "PUBLIC" | "FOLLOWER" | "PRIVATE";
