@@ -1,18 +1,19 @@
 import { View } from "react-native";
 
 import FeedCalendar from "@/components/calendar/feed-calendar/feed-calendar";
+import { PeriodType } from "@/components/period-goal-memo/period-goal-memo";
 import type { MonthlyGoalMemoType, MonthlyWeeklyDDuDuType } from "@/types/response/feed/feed";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export interface FeedCalendarViewProps {
-  type?: "week" | "month";
+  type?: PeriodType;
   monthlyDDuDus?: MonthlyWeeklyDDuDuType[];
   periodGoalMemo?: MonthlyGoalMemoType;
   onSelectDate?: (date: string) => void;
 }
 
 function FeedCalendarView({
-  type = "month",
+  type = "MONTH",
   monthlyDDuDus,
   periodGoalMemo,
   onSelectDate,

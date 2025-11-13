@@ -8,14 +8,14 @@ const meta = {
   argTypes: {
     currentYear: { control: { type: "number", min: 2000 } },
     currentMonth: { control: { type: "number", min: 1, max: 12 } },
-    type: { control: { type: "radio" }, options: ["week", "month"] },
+    type: { control: { type: "radio" }, options: ["WEEK", "MONTH"] },
     onPrevMonth: { action: "onPrevMonth" },
     onNextMonth: { action: "onNextMonth" },
   },
   args: {
     currentYear: new Date().getFullYear(),
     currentMonth: new Date().getMonth() + 1,
-    type: "month",
+    type: "MONTH",
   },
 } satisfies Meta<typeof FeedCalendarHeaderView>;
 

@@ -6,11 +6,11 @@ const meta = {
   title: "components/FeedCalendar",
   component: FeedCalendarView,
   argTypes: {
-    type: { control: { type: "radio" }, options: ["week", "month"] },
+    type: { control: { type: "radio" }, options: ["WEEK", "MONTH"] },
     onSelectDate: { action: "onSelectDate" },
   },
   args: {
-    type: "month",
+    type: "MONTH",
   },
 } satisfies Meta<typeof FeedCalendarView>;
 

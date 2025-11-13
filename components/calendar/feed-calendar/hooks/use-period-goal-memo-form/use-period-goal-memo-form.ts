@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
+import { PeriodType } from "@/components/period-goal-memo/period-goal-memo";
 import { RequestPeriodGoalMemo } from "@/types/request/feed/feed";
 import { MonthlyGoalMemoType } from "@/types/response/feed/feed";
 
@@ -12,10 +13,11 @@ interface PeriodGoalMemoFormInfo {
 
 interface UsePeriodGoalMemoFormProps {
   yearMonth: string;
+  type: PeriodType;
   periodGoalMemo?: MonthlyGoalMemoType;
 }
 
-function usePeriodGoalMemoForm({ yearMonth, periodGoalMemo }: UsePeriodGoalMemoFormProps) {
+function usePeriodGoalMemoForm({ yearMonth, type, periodGoalMemo }: UsePeriodGoalMemoFormProps) {
   const methods = useForm<PeriodGoalMemoFormInfo>({
     defaultValues: { contents: periodGoalMemo?.contents ?? "" },
   });
@@ -32,7 +34,7 @@ function usePeriodGoalMemoForm({ yearMonth, periodGoalMemo }: UsePeriodGoalMemoF
     if (!periodGoalMemo || !periodGoalMemo.id) {
       const periodGoals: RequestPeriodGoalMemo = {
         contents,
-        type: "MONTH",
+        type: type,
         planDate: yearMonth,
       };
 

@@ -4,7 +4,7 @@ import { remToPx } from "@/utils";
 
 import { usePeriodGoalMemo } from "./hooks";
 
-export type PeriodType = "week" | "month";
+export type PeriodType = "WEEK" | "MONTH";
 
 interface PeriodGoalMemoProps {
   type?: PeriodType;
@@ -17,7 +17,7 @@ interface PeriodGoalMemoProps {
 }
 
 function PeriodGoalMemo({
-  type = "month",
+  type = "MONTH",
   value,
   onChange,
   onBlur,

@@ -2,6 +2,7 @@ import { View } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { Theme } from "react-native-calendars/src/types";
 
+import { PeriodType } from "@/components/period-goal-memo/period-goal-memo";
 import type { MonthlyGoalMemoType, MonthlyWeeklyDDuDuType } from "@/types/response/feed/feed";
 import { formatDateToYYYYMMDD } from "@/utils";
 
@@ -11,14 +12,14 @@ import useFeedCalendar from "./hooks/use-feed-calendar/use-feed-calendar";
 import useGoalsDDuDuMutation from "./hooks/use-goals-ddudu-mutation/use-goals-ddudu-mutation";
 
 export interface FeedCalendarProps {
-  type?: "week" | "month";
+  type?: PeriodType;
   monthlyDDuDus: MonthlyWeeklyDDuDuType[];
   periodGoalMemo?: MonthlyGoalMemoType;
   onSelectDate: (date: string) => void;
 }
 
 function FeedCalendar({
-  type = "month",
+  type = "MONTH",
   monthlyDDuDus,
   periodGoalMemo,
   onSelectDate,
