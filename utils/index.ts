@@ -3,3 +3,5 @@ export { default as getLastDayOfMonth } from "./get-last-day-of-month/get-last-d
 
 export { default as getRelativeTime } from "./get-relative-time/get-relative-time";
 export { default as parseUtc } from "./parse-utc/parse-utc";
+export { default as convertCurrentDate } from "./convert-current-date/convert-current-date";
+export { default as remToPx } from "./rem-to-px/rem-to-px";
