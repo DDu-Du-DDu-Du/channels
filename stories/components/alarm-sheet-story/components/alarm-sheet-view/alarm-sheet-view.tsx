@@ -24,7 +24,6 @@ function AlarmSheetView({ onClose, onConfirm }: AlarmSheetViewProps) {
           </Pressable>
         ) : (
           <AlarmSheet
-            isShow
             onClose={() => {
               onClose?.();
               setOpen(false);
