@@ -5,3 +5,5 @@ export { default as getRelativeTime } from "./get-relative-time/get-relative-tim
 export { default as parseUtc } from "./parse-utc/parse-utc";
 export { default as convertCurrentDate } from "./convert-current-date/convert-current-date";
 export { default as remToPx } from "./rem-to-px/rem-to-px";
+export { default as getDayOfWeek } from "./get-day-of-week/get-day-of-week";
+export { default as hexConvertForRGBA } from "./hex-convert-for-rgba/hex-convert-for-rgba";
