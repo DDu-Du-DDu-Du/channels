@@ -26,3 +26,5 @@ export { default as ToastProvider } from "./toast/toast-provider";
 export { default as WheelPicker } from "./wheel-picker/wheel-picker";
 export { default as FeedTypeSwitch } from "./feed-type-switch/feed-type-switch";
 export { default as SelectOption } from "./select-option/select-option";
+
+export { default as UserListItem } from "./user-list-item/user-list-item";
