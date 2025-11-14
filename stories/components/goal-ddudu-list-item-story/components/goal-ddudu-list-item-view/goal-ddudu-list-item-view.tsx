@@ -2,12 +2,14 @@ import { View } from "react-native";
 
 import { GoalDDuDuListItem } from "@/components";
 
+import { Href } from "expo-router";
+
 export interface GoalDDuDuListItemViewProps {
   title?: string;
   repeatDays?: string;
   startDate?: string;
   endDate?: string;
-  linkTo?: string;
+  linkTo?: Href;
   bgColor?: string;
 }
 

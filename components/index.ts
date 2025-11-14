@@ -29,4 +29,5 @@ export { default as WheelPicker } from "./wheel-picker/wheel-picker";
 
 export { default as ExampleIcon } from "./example-icon/example-icon";
 export { default as GoalDDuDuListItem } from "./goal-ddudu-list-item/goal-ddudu-list-item";
+export { default as ReminderNotification } from "./reminder-notification/reminder-notification";
 export { default as UserListItem } from "./user-list-item/user-list-item";
