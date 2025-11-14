@@ -14,17 +14,19 @@ export { default as BottomSingleCalendar } from "./calendar/bottom-single-calend
 export { default as ColorSheet } from "./color-sheet/color-sheet";
 export { default as DDuDuSheet } from "./ddudu-sheet/ddudu-sheet";
 export { default as DDuDuTimeSheet } from "./ddudu-time-sheet/ddudu-time-sheet";
+export { default as FeedTypeSwitch } from "./feed-type-switch/feed-type-switch";
 export { default as FollowRequestItem } from "./follow-request-item/follow-request-item";
 export { default as Header } from "./header/header";
 export { default as InputDate } from "./input-date/input-date";
 export { default as InputRadio } from "./input-radio/input-radio";
 export { default as PeriodGoalMemo } from "./period-goal-memo/period-goal-memo";
 export { default as PrivacySheet } from "./privacy-sheet/privacy-sheet";
+export { default as SelectOption } from "./select-option/select-option";
 export { default as SheetButton } from "./sheet-button/sheet-button";
 export { default as TextInput } from "./text-input/text-input";
 export { default as ToastProvider } from "./toast/toast-provider";
 export { default as WheelPicker } from "./wheel-picker/wheel-picker";
-export { default as FeedTypeSwitch } from "./feed-type-switch/feed-type-switch";
-export { default as SelectOption } from "./select-option/select-option";
 
+export { default as ExampleIcon } from "./example-icon/example-icon";
+export { default as GoalDDuDuListItem } from "./goal-ddudu-list-item/goal-ddudu-list-item";
 export { default as UserListItem } from "./user-list-item/user-list-item";
