@@ -1,6 +1,10 @@
+import { Platform } from "react-native";
+
 function remToPx(value: number | string): number {
+  const change = Platform.OS === "web" ? 14 : 10;
+
   if (typeof value === "number") {
-    return value;
+    return value * change;
   }
 
   const s = value.trim().toLowerCase();
@@ -10,7 +14,7 @@ function remToPx(value: number | string): number {
   }
 
   if (s.endsWith("rem")) {
-    return parseFloat(s.slice(0, -3)) * 10;
+    return parseFloat(s.slice(0, -3)) * change;
   }
 
   return parseFloat(s) * 10;

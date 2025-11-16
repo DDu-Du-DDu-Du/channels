@@ -16,6 +16,7 @@ export { default as DDuDuSheet } from "./ddudu-sheet/ddudu-sheet";
 export { default as DDuDuTimeSheet } from "./ddudu-time-sheet/ddudu-time-sheet";
 export { default as FeedTypeSwitch } from "./feed-type-switch/feed-type-switch";
 export { default as FollowRequestItem } from "./follow-request-item/follow-request-item";
+export { default as GoalItem } from "./goal-item/goal-item";
 export { default as Header } from "./header/header";
 export { default as InputDate } from "./input-date/input-date";
 export { default as InputRadio } from "./input-radio/input-radio";
@@ -27,7 +28,10 @@ export { default as TextInput } from "./text-input/text-input";
 export { default as ToastProvider } from "./toast/toast-provider";
 export { default as WheelPicker } from "./wheel-picker/wheel-picker";
 
+export { default as DraggableFlatList } from "./draggable-flat-list/draggable-flat-list";
+export { default as DraggableRow } from "./draggable-row/draggable-row";
 export { default as ExampleIcon } from "./example-icon/example-icon";
 export { default as GoalDDuDuListItem } from "./goal-ddudu-list-item/goal-ddudu-list-item";
+export { default as GoalItemList } from "./goal-item-list/goal-item-list";
 export { default as ReminderNotification } from "./reminder-notification/reminder-notification";
 export { default as UserListItem } from "./user-list-item/user-list-item";
