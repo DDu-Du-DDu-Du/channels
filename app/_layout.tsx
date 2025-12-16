@@ -4,16 +4,18 @@ import { useEffect } from "react";
 import { LocaleConfig } from "react-native-calendars";
 
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { initializeKakaoSDK } from "@react-native-kakao/core";
 
 import { OutsidePressProvider, TanstackProvider } from "../providers";
 
+import Constants from "expo-constants";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 
-const StorybookEnabled = process.env.EXPO_PUBLIC_STORYBOOK_ENABLED === "true";
+const storybookEnabled = Constants.expoConfig?.extra?.env.storybookEnabled;
 
 export const unstable_settings = {
-  initialRouteName: StorybookEnabled ? "(storybook)/index" : "(pages)/index",
+  initialRouteName: storybookEnabled ? "(storybook)/index" : "(tabs)/index",
 };
 
 SplashScreen.preventAutoHideAsync();
@@ -63,6 +65,15 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
+    initializeKakaoSDK(Constants.expoConfig?.extra?.env.kakaoNativeKey, {
+      web: {
+        javascriptKey: Constants.expoConfig?.extra?.env.kakaoJSKey,
+        restApiKey: Constants.expoConfig?.extra?.env.kakaoRestKey,
+      },
+    }).catch((err) => console.error("Kakao initialization failed:", err));
+  }, []);
+
+  useEffect(() => {
     if (loaded || error) {
       SplashScreen.hideAsync();
     }
@@ -77,8 +88,9 @@ export default function RootLayout() {
       <OutsidePressProvider>
         <BottomSheetModalProvider>
           <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="(pages)/index" />
-            <Stack.Protected guard={StorybookEnabled}>
+            <Stack.Screen name="(tabs)/index" />
+            <Stack.Screen name="(tabs)/login/index" />
+            <Stack.Protected guard={storybookEnabled}>
               <Stack.Screen name="(storybook)/index" />
             </Stack.Protected>
           </Stack>
