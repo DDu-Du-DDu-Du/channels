@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { Pressable, View } from "react-native";
 
-import { DDuDuTimeRangeType, DDuDuTimeType } from "@/app/(pages)/feed/feed.types";
 import { BottomSheet, SpoqaText } from "@/components";
+import { DDuDuTimeRangeType, DDuDuTimeType } from "@/features/feed/feed.types";
 import { useBottomSheetAction } from "@/hooks";
 
 import TimePicker from "../time-picker/time-picker";

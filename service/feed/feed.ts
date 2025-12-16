@@ -1,10 +1,10 @@
 import { fetchApi } from "@/api";
-import { DDuDuTimeType } from "@/app/(pages)/feed/feed.types";
 import { FEED } from "@/constants/end-points";
+import { DDuDuTimeType } from "@/features/feed/feed.types";
 import {
   RequestDDuDu,
   RequestDDuDuChangeDate,
-  RequestPeriodGoals,
+  RequestPeriodGoalMemo,
 } from "@/types/request/feed/feed";
 
 interface GetDailyListProps {
@@ -41,7 +41,7 @@ export const getDailyTimeTable = async ({ accessToken, userId, date }: GetDailyL
   });
 
   if (!response.ok) {
-    throw new Error(`HHTP error! status: ${response.status}`);
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
 
   return response.json();
@@ -65,7 +65,7 @@ export const getGoals = async ({ accessToken, type, date }: PeriodGoalsProps) =>
   });
 
   if (!response.ok) {
-    throw new Error(`HHTP error! status: ${response.status}`);
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
 
   return response.json();
@@ -73,7 +73,7 @@ export const getGoals = async ({ accessToken, type, date }: PeriodGoalsProps) =>
 
 interface FetchCreateGoalsProps {
   accessToken: string;
-  periodGoals: RequestPeriodGoals;
+  periodGoals: RequestPeriodGoalMemo;
 }
 
 export const fetchCreateGoals = async ({ accessToken, periodGoals }: FetchCreateGoalsProps) => {
@@ -87,7 +87,7 @@ export const fetchCreateGoals = async ({ accessToken, periodGoals }: FetchCreate
   });
 
   if (!response.ok) {
-    throw new Error(`HHTP error! status: ${response.status}`);
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
 
   return response.json();
@@ -114,7 +114,7 @@ export const fetchEditGoals = async ({
   });
 
   if (!response.ok) {
-    throw new Error(`HHTP error! status: ${response.status}`);
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
 
   return response.json();
@@ -132,7 +132,7 @@ export const getWeeklyDDuDus = async ({ accessToken, userId, date }: GetDailyLis
   });
 
   if (!response.ok) {
-    throw new Error(`HHTP error! status: ${response.status}`);
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
 
   return response.json();
@@ -150,7 +150,7 @@ export const getMonthlyDDuDus = async ({ accessToken, userId, date }: GetDailyLi
   });
 
   if (!response.ok) {
-    throw new Error(`HHTP error! status: ${response.status}`);
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
 
   return response.json();
@@ -166,7 +166,7 @@ export const getDDuDuDetail = async ({ accessToken, id }: FetchUpdateDDuDuProps)
   });
 
   if (!response.ok) {
-    throw new Error(`HHTP error! status: ${response.status}`);
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
 
   return response.json();
@@ -188,7 +188,7 @@ export const fetchCreateDDuDu = async ({ accessToken, requestDDuDu }: FetchCreat
   });
 
   if (!response.ok) {
-    throw new Error(`HHTP error! status: ${response.status}`);
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
 
   return response.json();
@@ -211,7 +211,7 @@ export const fetchEditDDuDu = async ({ accessToken, id, name }: FetchEditDDuDuPr
   });
 
   if (!response.ok) {
-    throw new Error(`HHTP error! status: ${response.status}`);
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
 
   return response.json();
@@ -236,7 +236,7 @@ export const fetchDeleteDDuDu = async ({ accessToken, id }: FetchUpdateDDuDuProp
   }
 
   if (!response.ok) {
-    throw new Error(`HHTP error! status: ${response.status}`);
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
 };
 
@@ -250,7 +250,7 @@ export const fetchCompleteToggleDDuDu = async ({ accessToken, id }: FetchUpdateD
   });
 
   if (response.status !== 204) {
-    throw new Error(`HHTP error! status: ${response.status}`);
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
 };
 
@@ -273,7 +273,7 @@ export const fetchDDuDuChangeDate = async ({ accessToken, id, date }: fetchDDuDu
   });
 
   if (response.status !== 204) {
-    throw new Error(`HHTP error! status: ${response.status}`);
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
 
   return response.status;
@@ -290,7 +290,7 @@ export const fetchDDuDuRepeatDate = async ({ accessToken, id, date }: fetchDDuDu
   });
 
   if (!response.ok) {
-    throw new Error(`HHTP error! status: ${response.status}`);
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
 
   return response.json();
@@ -317,7 +317,7 @@ export const fetchDDuDuChangeTime = async ({
   });
 
   if (response.status !== 204) {
-    throw new Error(`HHTP error! status: ${response.status}`);
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
 
   return response.status;

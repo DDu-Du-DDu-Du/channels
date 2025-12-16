@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { DDuDuTimeRangeType, DDuDuTimeType } from "@/app/(pages)/feed/feed.types";
+import { DDuDuTimeRangeType, DDuDuTimeType } from "@/features/feed/feed.types";
 
 interface UseTimeUpdateProps {
   currentDDuDuTime: DDuDuTimeType;

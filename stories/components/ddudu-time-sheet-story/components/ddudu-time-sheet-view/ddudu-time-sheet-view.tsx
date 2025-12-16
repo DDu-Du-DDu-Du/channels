@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Pressable, View } from "react-native";
 
-import type { DDuDuTimeRangeType, DDuDuTimeType } from "@/app/(pages)/feed/feed.types";
 import { DDuDuTimeSheet, SpoqaText } from "@/components";
+import type { DDuDuTimeRangeType, DDuDuTimeType } from "@/features/feed/feed.types";
 
 export interface DDuDuTimeSheetViewProps {
   onClose?: () => void;
