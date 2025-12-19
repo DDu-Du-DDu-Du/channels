@@ -21,3 +21,4 @@ export { default as MessageIcon } from "./message-icon/message-icon";
 export { default as OptionIcon } from "./option-icon/option-icon";
 export { default as PlusIcon } from "./plus-icon/plus-icon";
 export { default as QuestionIcon } from "./question-icon/question-icon";
+export { default as KakaoLoginIcon } from "./kakao-login-icon/kakao-login-icon";

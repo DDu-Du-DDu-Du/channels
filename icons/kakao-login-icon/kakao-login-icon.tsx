@@ -1,0 +1,28 @@
+import Svg, { Path } from "react-native-svg";
+
+export interface KakaoLoginIconProps {
+  size?: number;
+  fill?: string;
+  className?: string;
+}
+
+function KakaoLoginIcon({ size = 36, fill = "#000000", className }: KakaoLoginIconProps) {
+  return (
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 36 34"
+      fill="none"
+      className={className}
+    >
+      <Path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M18 0C8.05835 0 0 6.22592 0 13.9046C0 18.68 3.11681 22.8899 7.86305 25.3939L5.86606 32.689C5.68962 33.3336 6.42683 33.8474 6.99293 33.4739L15.7467 27.6964C16.4854 27.7677 17.2362 27.8093 18 27.8093C27.9409 27.8093 35.9999 21.5836 35.9999 13.9046C35.9999 6.22592 27.9409 0 18 0Z"
+        fill={fill}
+      />
+    </Svg>
+  );
+}
+
+export default KakaoLoginIcon;
