@@ -7,6 +7,7 @@ export interface LoginButtonProps {
   label?: string;
   onPress?: () => void;
   size?: LoginButtonSize;
+  fit: boolean;
 }
 
 export interface SocialLoginButtonProps extends LoginButtonProps {
@@ -18,6 +19,7 @@ function LoginButton({
   label,
   onPress,
   size = "medium",
+  fit = false,
 }: SocialLoginButtonProps) {
   if (provider === "kakao") {
     return (
@@ -25,6 +27,7 @@ function LoginButton({
         label={label ?? "카카오 로그인"}
         onPress={onPress}
         size={size}
+        fit={fit}
       />
     );
   }

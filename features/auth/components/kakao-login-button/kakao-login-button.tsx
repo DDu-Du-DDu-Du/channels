@@ -4,19 +4,28 @@ import { KakaoLoginIcon } from "@/icons";
 
 import { LoginButtonProps } from "../login-button/login-button";
 
-function KakaoLoginButton({ label = "카카오 로그인", onPress, size = "medium" }: LoginButtonProps) {
+function KakaoLoginButton({
+  label = "카카오 로그인",
+  onPress,
+  size = "medium",
+  fit,
+}: LoginButtonProps) {
   return (
     <Pressable
       onPress={onPress}
-      className="rounded-[12px] bg-[#FEE500]"
+      className={`rounded-[12px] bg-[#FEE500] ${fit ? "w-full" : size === "medium" ? "w-[368px]" : "w-[736px]"}`}
     >
       <View
         className={`flex-row items-center justify-center ${
-          size === "medium" ? "h-[45px] gap-[8px] w-[368px]" : "h-[90px] gap-[16px] w-[736px]"
+          size === "medium" ? "h-[45px] gap-[8px]" : "h-[90px] gap-[16px]"
         }`}
       >
         <KakaoLoginIcon size={18} />
-        <Text className="font-semibold text-[15px] text-[#000000D9]">{label}</Text>
+        <Text
+          className={`font-semibold text-[#000000D9] ${size === "medium" ? "text-[15px]" : "text-[30px]"}`}
+        >
+          {label}
+        </Text>
       </View>
     </Pressable>
   );

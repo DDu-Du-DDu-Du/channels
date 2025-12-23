@@ -28,5 +28,6 @@ export const Kakao: Story = {
     provider: "kakao",
     size: "medium",
     label: undefined,
+    fit: true,
   },
 };
