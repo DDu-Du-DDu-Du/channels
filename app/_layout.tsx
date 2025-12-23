@@ -3,6 +3,7 @@ import "../global.css";
 import { useEffect } from "react";
 import { LocaleConfig } from "react-native-calendars";
 
+import { useAuth } from "@/features/auth";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { initializeKakaoSDK } from "@react-native-kakao/core";
 
@@ -63,6 +64,7 @@ export default function RootLayout() {
     "SpoqaHanSansNeo-Regular": require("@/assets/fonts/SpoqaHanSans/SpoqaHanSansNeo-Light.otf"),
     "SpoqaHanSansNeo-Thin": require("@/assets/fonts/SpoqaHanSans/SpoqaHanSansNeo-Thin.otf"),
   });
+  const { isLoggedIn, authLoaded } = useAuth({});
 
   useEffect(() => {
     initializeKakaoSDK(Constants.expoConfig?.extra?.env.kakaoNativeKey, {
@@ -79,7 +81,7 @@ export default function RootLayout() {
     }
   }, [loaded, error]);
 
-  if (!loaded && !error) {
+  if (!authLoaded || (!loaded && !error)) {
     return null;
   }
 
@@ -88,10 +90,14 @@ export default function RootLayout() {
       <OutsidePressProvider>
         <BottomSheetModalProvider>
           <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="(tabs)/index" />
-            <Stack.Screen name="(tabs)/login/index" />
             <Stack.Protected guard={storybookEnabled}>
               <Stack.Screen name="(storybook)/index" />
+            </Stack.Protected>
+            <Stack.Protected guard={isLoggedIn}>
+              <Stack.Screen name="(tabs)/index" />
+            </Stack.Protected>
+            <Stack.Protected guard={!isLoggedIn}>
+              <Stack.Screen name="auth" />
             </Stack.Protected>
           </Stack>
         </BottomSheetModalProvider>
