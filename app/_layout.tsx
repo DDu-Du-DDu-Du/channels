@@ -13,7 +13,7 @@ import Constants from "expo-constants";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 
-const storybookEnabled = Constants.expoConfig?.extra?.env.storybookEnabled;
+const storybookEnabled = process.env.EXPO_PUBLIC_STORYBOOK_ENABLED === "true";
 
 export const unstable_settings = {
   initialRouteName: storybookEnabled ? "(storybook)/index" : "(tabs)/index",
