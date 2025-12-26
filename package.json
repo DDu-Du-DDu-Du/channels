@@ -4,10 +4,10 @@
   "main": "expo-router/entry",
   "license": "MIT",
   "scripts": {
-    "start": "expo start",
+    "start": "cross-env DEBUG_COLORS=0 expo start",
     "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
+    "ios": "cross-env DEBUG_COLORS=0 expo start --ios",
+    "web": "cross-env DEBUG_COLORS=0 expo start --web",
     "storybook:web": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "storybook-generate": "sb-rn-get-stories",

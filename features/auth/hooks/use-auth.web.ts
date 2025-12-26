@@ -21,7 +21,6 @@ function useAuth({ isRoot = true }: UseAuthParam) {
   const redirectUri = createURL("");
 
   const validateAuth = useCallback(async () => {
-    console.log("validate auth called");
     const userLoaded = await SessionStorage.getItem(AUTH_STORAGE_KEYS.USER_ID);
 
     if (userLoaded) {
