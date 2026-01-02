@@ -1,6 +1,6 @@
 import { View } from "react-native";
 
-import DailyDDuDu from "@/components/calendar/feed-calendar/components/daily-ddudu/daily-ddudu";
+import DailyDDuDu from "@/features/feed/components/feed-calendar/components/daily-ddudu/daily-ddudu";
 
 export interface DailyDDuDuViewProps {
   totalCount?: number;

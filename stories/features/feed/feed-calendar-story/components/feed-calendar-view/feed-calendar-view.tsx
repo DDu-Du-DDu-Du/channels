@@ -1,7 +1,7 @@
 import { View } from "react-native";
 
-import FeedCalendar from "@/components/calendar/feed-calendar/feed-calendar";
 import { PeriodType } from "@/components/period-goal-memo/period-goal-memo";
+import FeedCalendar from "@/features/feed/components/feed-calendar/feed-calendar";
 import type { MonthlyGoalMemoType, MonthlyWeeklyDDuDuType } from "@/types/response/feed/feed";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 

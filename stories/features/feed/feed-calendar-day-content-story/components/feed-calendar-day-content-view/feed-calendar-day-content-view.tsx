@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { View } from "react-native";
 
-import FeedCalendarDayContent from "@/components/calendar/feed-calendar/components/feed-calendar-day-content/feed-calendar-day-content";
+import FeedCalendarDayContent from "@/features/feed/components/feed-calendar/components/feed-calendar-day-content/feed-calendar-day-content";
 import { MonthlyWeeklyDDuDuType } from "@/types/response/feed/feed";
 
 export interface FeedCalendarDayContentViewProps {

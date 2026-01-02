@@ -1,7 +1,7 @@
 import { View } from "react-native";
 
-import FeedCalendarHeader from "@/components/calendar/feed-calendar/components/feed-calendar-header/feed-calendar-header";
 import { PeriodType } from "@/components/period-goal-memo/period-goal-memo";
+import FeedCalendarHeader from "@/features/feed/components/feed-calendar/components/feed-calendar-header/feed-calendar-header";
 import { MonthlyGoalMemoType } from "@/types/response/feed/feed";
 
 export interface FeedCalendarHeaderViewProps {
