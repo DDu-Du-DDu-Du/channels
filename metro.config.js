@@ -9,4 +9,6 @@ const config = withStorybook(withNativeWind(defaultConfig, { input: "./global.cs
   enabled: process.env.EXPO_PUBLIC_STORYBOOK_ENABLED === "true",
 });
 
+config.resolver.unstable_conditionNames = ["browser", "require", "react-native"];
+
 module.exports = config;
