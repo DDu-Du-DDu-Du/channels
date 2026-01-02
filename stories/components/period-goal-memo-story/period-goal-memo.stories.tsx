@@ -9,13 +9,11 @@ const meta = {
     notes: `\n## PeriodGoalMemo\n\n- Controlled multiline TextInput with outside press overlay.\n- Reusable for week or month.\n- Preserves web tokens (rem/px, z-index).\n    `,
   },
   argTypes: {
-    type: { control: { type: "radio" }, options: ["week", "month"] },
     value: { control: "text" },
     onChange: { action: "onChange" },
     onBlur: { action: "onBlur" },
   },
   args: {
-    type: "month",
     value: "",
   },
 } satisfies Meta<typeof PeriodGoalMemoView>;

@@ -6,6 +6,5 @@ export interface SocialLoginRequest {
 }
 
 export interface RefreshTokenRequest {
-  baseUrl: string;
   refreshToken: string;
 }

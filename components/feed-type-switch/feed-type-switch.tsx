@@ -94,10 +94,10 @@ const styles = StyleSheet.create({
   pill: {
     position: "absolute",
     width: "50%",
-    height: remToPx("3rem"),
+    height: "100%",
     backgroundColor: "#1363DE",
     borderWidth: 2,
     borderColor: "#F5F5F5",
-    borderRadius: remToPx("5rem"),
+    borderRadius: remToPx("1.5rem"),
   },
 });

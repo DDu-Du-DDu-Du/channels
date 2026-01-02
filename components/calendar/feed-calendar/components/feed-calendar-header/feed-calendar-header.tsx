@@ -8,20 +8,20 @@ import { MonthlyGoalMemoType } from "@/types/response/feed/feed";
 import usePeriodGoalMemoForm from "../../hooks/use-period-goal-memo-form/use-period-goal-memo-form";
 
 export interface FeedCalendarHeaderProps {
-  yearMonth: string;
+  date: string;
   type: PeriodType;
   minHeight?: number | string;
   periodGoalMemo?: MonthlyGoalMemoType;
 }
 
 function FeedCalendarHeader({
-  yearMonth,
+  date,
   type = "MONTH",
-  minHeight = 60,
+  minHeight = "60px",
   periodGoalMemo,
 }: FeedCalendarHeaderProps) {
   const { methods, onValid } = usePeriodGoalMemoForm({
-    yearMonth,
+    date,
     type,
     periodGoalMemo,
   });
@@ -42,7 +42,6 @@ function FeedCalendarHeader({
         defaultValue={periodGoalMemo?.contents}
         render={({ field: { value, onChange } }) => (
           <PeriodGoalMemo
-            type={type === "WEEK" ? "WEEK" : "MONTH"}
             value={value}
             onChange={onChange}
             onBlur={methods.handleSubmit(onValid)}

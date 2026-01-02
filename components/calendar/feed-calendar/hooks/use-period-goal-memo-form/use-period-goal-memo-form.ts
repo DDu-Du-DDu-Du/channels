@@ -12,42 +12,38 @@ interface PeriodGoalMemoFormInfo {
 }
 
 interface UsePeriodGoalMemoFormProps {
-  yearMonth: string;
+  date: string;
   type: PeriodType;
   periodGoalMemo?: MonthlyGoalMemoType;
 }
 
-function usePeriodGoalMemoForm({ yearMonth, type, periodGoalMemo }: UsePeriodGoalMemoFormProps) {
+function usePeriodGoalMemoForm({ date, type, periodGoalMemo }: UsePeriodGoalMemoFormProps) {
   const methods = useForm<PeriodGoalMemoFormInfo>({
     defaultValues: { contents: periodGoalMemo?.contents ?? "" },
   });
 
   const { createMonthlyGoalMemoMutation, editMonthlyGoalMemoMutation } = useGoalsDDuDuMutation({
-    date: yearMonth,
+    date,
   });
 
   useEffect(() => {
     methods.reset({ contents: periodGoalMemo?.contents ?? "" });
-  }, [methods, yearMonth, periodGoalMemo?.contents]);
+  }, [methods, periodGoalMemo?.contents]);
 
   const onValid: SubmitHandler<PeriodGoalMemoFormInfo> = ({ contents }) => {
     if (!periodGoalMemo || !periodGoalMemo.id) {
       const periodGoals: RequestPeriodGoalMemo = {
         contents,
-        type: type,
-        planDate: yearMonth,
+        type,
+        planDate: date,
       };
 
-      createMonthlyGoalMemoMutation.mutate({
-        accessToken: "TODO", // TODO: add auth
-        periodGoals,
-      });
+      createMonthlyGoalMemoMutation.mutate({ periodGoals });
 
       return;
     }
 
     editMonthlyGoalMemoMutation.mutate({
-      accessToken: "TODO", // TODO: add auth
       contents,
       periodGoalsId: periodGoalMemo.id,
     });

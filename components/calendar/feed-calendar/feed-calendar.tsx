@@ -26,14 +26,14 @@ function FeedCalendar({
 }: FeedCalendarProps) {
   const today = formatDateToYYYYMMDD(new Date());
   const { selectedDate, handleSelectDate } = useFeedCalendar({ today, onSelectDate });
-  const { yearMonth, handleMonthChange } = useGoalsDDuDuMutation({
-    date: today,
+  const { handleMonthChange } = useGoalsDDuDuMutation({
+    date: selectedDate,
   });
 
   return (
     <View className="items-center px-4 py-2 w-full gap-2">
       <FeedCalendarHeader
-        yearMonth={yearMonth}
+        date={selectedDate}
         type={type}
         periodGoalMemo={periodGoalMemo}
       />

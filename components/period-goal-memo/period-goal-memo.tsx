@@ -7,7 +7,6 @@ import { usePeriodGoalMemo } from "./hooks";
 export type PeriodType = "WEEK" | "MONTH";
 
 interface PeriodGoalMemoProps {
-  type?: PeriodType;
   value: string;
   onChange: (value: string) => void;
   onBlur?: () => void;
@@ -17,12 +16,11 @@ interface PeriodGoalMemoProps {
 }
 
 function PeriodGoalMemo({
-  type = "MONTH",
   value,
   onChange,
   onBlur,
   className,
-  minHeight = 60,
+  minHeight = "60px",
   maxHeight,
 }: PeriodGoalMemoProps) {
   const { inputRef, handleFocus, handleBlur, height } = usePeriodGoalMemo({
