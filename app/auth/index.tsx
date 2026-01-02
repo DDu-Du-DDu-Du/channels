@@ -1,9 +1,9 @@
 import { View } from "react-native";
 
-import { LoginButton, LoginTitle, useAuth } from "@/features/auth";
+import { LoginButton, LoginTitle, useOauth2Login } from "@/features/auth";
 
 export function Auth() {
-  const { handleKakaoLogin } = useAuth({ isRoot: false });
+  const { handleKakaoLogin } = useOauth2Login({});
 
   return (
     <View className="flex-1 item-center justify-center w-4/5 mx-auto max-w-[537px] gap-20">

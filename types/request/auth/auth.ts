@@ -5,7 +5,7 @@ export interface SocialLoginRequest {
   providerType: ProviderType;
 }
 
-export interface SocialLoginResponse {
-  accessToken: string;
+export interface RefreshTokenRequest {
+  baseUrl: string;
   refreshToken: string;
 }
