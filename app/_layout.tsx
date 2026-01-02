@@ -3,7 +3,8 @@ import "../global.css";
 import { useEffect } from "react";
 import { LocaleConfig } from "react-native-calendars";
 
-import { useAuth } from "@/features/auth";
+import AuthProvider from "@/providers/auth-provider/auth-provider";
+import { useAuthStore } from "@/stores";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { initializeKakaoSDK } from "@react-native-kakao/core";
 
@@ -14,9 +15,10 @@ import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 
 const storybookEnabled = process.env.EXPO_PUBLIC_STORYBOOK_ENABLED === "true";
+const loginDisabled = process.env.EXPO_PUBLIC_LOGIN_DISABLED === "true";
 
 export const unstable_settings = {
-  initialRouteName: storybookEnabled ? "(storybook)/index" : "(tabs)/index",
+  initialRouteName: storybookEnabled ? "(storybook)/index" : "(tabs)",
 };
 
 SplashScreen.preventAutoHideAsync();
@@ -64,7 +66,8 @@ export default function RootLayout() {
     "SpoqaHanSansNeo-Regular": require("@/assets/fonts/SpoqaHanSans/SpoqaHanSansNeo-Light.otf"),
     "SpoqaHanSansNeo-Thin": require("@/assets/fonts/SpoqaHanSans/SpoqaHanSansNeo-Thin.otf"),
   });
-  const { isLoggedIn, authLoaded } = useAuth({});
+  const hasHydrated = useAuthStore((state) => state.hasHydrated);
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
 
   useEffect(() => {
     initializeKakaoSDK(Constants.expoConfig?.extra?.env.kakaoNativeKey, {
@@ -73,6 +76,8 @@ export default function RootLayout() {
         restApiKey: Constants.expoConfig?.extra?.env.kakaoRestKey,
       },
     }).catch((err) => console.error("Kakao initialization failed:", err));
+
+    useAuthStore.persist.rehydrate();
   }, []);
 
   useEffect(() => {
@@ -81,27 +86,31 @@ export default function RootLayout() {
     }
   }, [loaded, error]);
 
-  if (!authLoaded || (!loaded && !error)) {
+  if (!hasHydrated || (!loaded && !error)) {
     return null;
   }
 
   return (
     <TanstackProvider>
-      <OutsidePressProvider>
-        <BottomSheetModalProvider>
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Protected guard={storybookEnabled}>
-              <Stack.Screen name="(storybook)/index" />
-            </Stack.Protected>
-            <Stack.Protected guard={isLoggedIn}>
-              <Stack.Screen name="(tabs)/index" />
-            </Stack.Protected>
-            <Stack.Protected guard={!isLoggedIn}>
-              <Stack.Screen name="auth" />
-            </Stack.Protected>
-          </Stack>
-        </BottomSheetModalProvider>
-      </OutsidePressProvider>
+      <AuthProvider>
+        <OutsidePressProvider>
+          <BottomSheetModalProvider>
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Protected guard={storybookEnabled}>
+                <Stack.Screen name="(storybook)/index" />
+              </Stack.Protected>
+              <Stack.Protected guard={!isLoggedIn}>
+                <Stack.Screen name="auth" />
+              </Stack.Protected>
+              <Stack.Protected guard={isLoggedIn || loginDisabled}>
+                <Stack.Screen name="(tabs)" />
+                <Stack.Screen name="goal/index" />
+                <Stack.Screen name="goal/editor" />
+              </Stack.Protected>
+            </Stack>
+          </BottomSheetModalProvider>
+        </OutsidePressProvider>
+      </AuthProvider>
     </TanstackProvider>
   );
 }

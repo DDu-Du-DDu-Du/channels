@@ -33,3 +33,7 @@ export const REPEAT_DDUDU_KEY = {
   REPEAT_DDUDU: "repeatDdudu",
   REPEAT_DELETE: "repeatDelete",
 };
+
+export const USER_KEY = {
+  ME: "me",
+};

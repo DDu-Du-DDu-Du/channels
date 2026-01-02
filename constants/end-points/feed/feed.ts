@@ -4,8 +4,8 @@ const FEED = {
   DDUDU: "/api/ddudus",
   COMPLETE_TOGGLE_DDUDU: "/api/ddudus",
   PERIOD_GOALS: "/api/period-goals",
-  WEEKLY_DDUDUS: "/api/ddudus/completion/weekly",
-  MONTHLY_DDUDUS: "/api/ddudus/monthly",
+  WEEKLY_DDUDUS: "/api/stats/completion/weekly",
+  MONTHLY_DDUDUS: "/api/stats/completion/monthly",
   DDUDU_DETAIL: "/api/ddudus",
 };
 
