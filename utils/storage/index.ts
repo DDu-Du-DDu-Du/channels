@@ -1,4 +1,5 @@
 import * as Storage from "./storage";
 
-export const SessionStorage = Storage;
-export default SessionStorage;
+const SessionStorage = Storage;
+
+export { SessionStorage };

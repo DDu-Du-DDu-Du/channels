@@ -1,13 +1,13 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
 
 export async function getItem(key: string): Promise<string | null> {
-  return AsyncStorage.getItem(key);
+  return SecureStore.getItemAsync(key);
 }
 
 export async function setItem(key: string, value: any): Promise<void> {
-  return AsyncStorage.setItem(key, String(value));
+  return SecureStore.setItemAsync(key, String(value));
 }
 
 export async function removeItem(key: string) {
-  return AsyncStorage.removeItem(key);
+  return SecureStore.deleteItemAsync(key);
 }
