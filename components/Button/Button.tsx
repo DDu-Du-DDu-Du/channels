@@ -1,28 +1,39 @@
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { Pressable, View } from "react-native";
 
-interface MyButtonProps {
+import { SpoqaText } from "@/components";
+
+export interface ButtonProps {
+  label: string;
   onPress: () => void;
-  text: string;
+  className?: string;
+  bodyClassName?: string;
+  labelClassName?: string;
 }
 
-export const MyButton = ({ onPress, text }: MyButtonProps) => {
+function Button({
+  label,
+  onPress,
+  className,
+  bodyClassName = "bg-white_100",
+  labelClassName = "text-black",
+}: ButtonProps) {
   return (
-    <TouchableOpacity
-      style={styles.container}
+    <Pressable
       onPress={onPress}
+      className={className}
     >
-      <Text style={styles.text}>{text}</Text>
-    </TouchableOpacity>
+      <View
+        className={`h-[5.6rem] w-full items-center justify-center rounded-radius15 px-[1.2rem] ${bodyClassName}`}
+      >
+        <SpoqaText
+          weight="semiBold"
+          className={`text-size15 ${labelClassName}`}
+        >
+          {label}
+        </SpoqaText>
+      </View>
+    </Pressable>
   );
-};
+}
 
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 32,
-    paddingVertical: 8,
-    backgroundColor: "purple",
-    alignSelf: "flex-start",
-    borderRadius: 8,
-  },
-  text: { color: "white", fontSize: 16, fontWeight: "bold" },
-});
+export default Button;
