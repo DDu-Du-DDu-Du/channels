@@ -44,11 +44,10 @@ function DDuDuSheet({
     handleDDuDuSheetToggleOff();
   };
 
-  // TODO(auth): Wire access token/session and enable query when auth is ready.
   const { data: dduduDetail } = useQuery<DDuDuDetailType | undefined>({
     queryKey: [FEED_KEY.DDUDU_DETAIL, dduduId],
-    queryFn: () => getDDuDuDetail({ accessToken: "", id: dduduId }),
-    enabled: false,
+    queryFn: () => getDDuDuDetail({ id: dduduId }),
+    enabled: dduduId > 0,
   });
 
   return (
