@@ -12,6 +12,7 @@
         "@react-native-kakao/core": "^2.4.2",
         "@react-native-kakao/user": "^2.4.2",
         "@tanstack/react-query": "^5.90.5",
+        "@types/xdate": "^0.8.35",
         "expo": "^54.0.20",
         "expo-build-properties": "^1.0.9",
         "expo-constants": "~18.0.10",
@@ -775,6 +776,8 @@
     "@types/resolve": ["@types/resolve@1.20.6", "", {}, "sha512-A4STmOXPhMUtHH+S6ymgE2GiBSMqf4oTvcQZMcHzokuTLVYzXTB8ttjcgxOVaAp2lGwEdzZ0J+cRbbeevQj1UQ=="],
 
     "@types/stack-utils": ["@types/stack-utils@2.0.3", "", {}, "sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw=="],
+
+    "@types/xdate": ["@types/xdate@0.8.35", "", {}, "sha512-bOzSX26UoY1IbVanQPw5KRfM6X1REw5kUtp0/H0zRakXIjb1N8/gOA0PXNiEvmgaZlCC3EOIfEWBZVkzxfCVqw=="],
 
     "@types/yargs": ["@types/yargs@17.0.35", "", { "dependencies": { "@types/yargs-parser": "*" } }, "sha512-qUHkeCyQFxMXg79wQfTtfndEC+N9ZZg76HJftDJp+qH2tV7Gj4OJi7l+PiWwJ+pWtW8GwSmqsDj/oymhrTWXjg=="],
 
