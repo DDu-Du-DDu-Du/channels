@@ -14,7 +14,7 @@ import { IdType } from "../draggable-flat-list/draggable-flat-list";
 interface DraggableRowProps<T> {
   id: IdType;
   item: T;
-  index: number; // FlatList에서 내려오는 "원래 index"
+  index: number;
   rowHeight: number;
   itemHeight: number;
   itemSpacing: number;
@@ -26,6 +26,10 @@ interface DraggableRowProps<T> {
   hoverIndex: SharedValue<number>;
   activeTranslationY: SharedValue<number>;
   onReorder: (from: number, to: number) => void;
+  onAutoScroll?: (direction: "up" | "down") => void;
+  scrollContainerHeight?: number;
+  scrollContainerTop?: number;
+  autoScrollThreshold?: number;
 }
 
 function DraggableRow<T>({
@@ -43,39 +47,57 @@ function DraggableRow<T>({
   hoverIndex,
   activeTranslationY,
   onReorder,
+  onAutoScroll,
+  scrollContainerHeight = 0,
+  scrollContainerTop = 0,
+  autoScrollThreshold = 48,
 }: DraggableRowProps<T>) {
-  const rowIndex = index; // worklet에서 캡쳐해서 사용
+  const rowIndex = index;
   const scale = useSharedValue(1);
+  const TIME_TO_ACTIVATE_DRAG = 300;
+  const lastAutoScrollTs = useSharedValue(0);
 
   const gesture = useMemo(() => {
-    const longPress = Gesture.LongPress()
+    const pan = Gesture.Pan()
       .enabled(enabled)
-      .minDuration(300) // 0.3초
+      .activateAfterLongPress(TIME_TO_ACTIVATE_DRAG)
       .onStart(() => {
-        if (!enabled) {
-          return;
-        }
-
         activeId.value = id;
         activeIndex.value = rowIndex;
         hoverIndex.value = rowIndex;
         activeTranslationY.value = 0;
-        scale.value = withSpring(1.1);
-      });
-
-    const pan = Gesture.Pan()
-      .enabled(enabled)
+        scale.value = withSpring(1.05);
+      })
       .onUpdate((event) => {
         if (activeId.value !== id) return;
 
-        // drag되는 아이템 Y 이동
         activeTranslationY.value = event.translationY;
 
-        // 현재 드래그 위치가 가리키는 "슬롯 index"
         const rawIndex = activeIndex.value + activeTranslationY.value / rowHeight;
         const nextHover = clamp(Math.round(rawIndex), 0, dataLength - 1);
 
         hoverIndex.value = nextHover;
+
+        if (!onAutoScroll || !scrollContainerHeight) {
+          return;
+        }
+
+        const now = performance.now();
+        if (now - lastAutoScrollTs.value < 50) {
+          return;
+        }
+
+        const upperEdge = autoScrollThreshold;
+        const lowerEdge = scrollContainerHeight - autoScrollThreshold;
+        const pointerY = event.absoluteY - scrollContainerTop;
+
+        if (pointerY <= upperEdge) {
+          lastAutoScrollTs.value = now;
+          scheduleOnRN(onAutoScroll, "up");
+        } else if (pointerY >= lowerEdge) {
+          lastAutoScrollTs.value = now;
+          scheduleOnRN(onAutoScroll, "down");
+        }
       })
       .onEnd(() => {
         if (activeId.value !== id) {
@@ -88,7 +110,6 @@ function DraggableRow<T>({
 
         const finalOffset = delta * rowHeight;
 
-        // 드래그된 아이템을 최종 위치까지 spring 이동
         scale.value = withSpring(1.0);
         activeTranslationY.value = withSpring(finalOffset, {}, (finished) => {
           "worklet";
@@ -124,19 +145,24 @@ function DraggableRow<T>({
         }
       });
 
-    return Gesture.Simultaneous(longPress, pan);
+    return pan;
   }, [
-    activeId,
-    activeIndex,
-    activeTranslationY,
-    dataLength,
     enabled,
-    hoverIndex,
+    activeId,
     id,
-    onReorder,
-    rowHeight,
+    activeIndex,
     rowIndex,
+    hoverIndex,
+    activeTranslationY,
     scale,
+    rowHeight,
+    dataLength,
+    onAutoScroll,
+    scrollContainerHeight,
+    scrollContainerTop,
+    lastAutoScrollTs,
+    autoScrollThreshold,
+    onReorder,
   ]);
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -149,15 +175,11 @@ function DraggableRow<T>({
     let offset = 0;
 
     if (dragging) {
-      // ✅ 드래그 중인 아이템: 자신 row에서 activeTranslationY 만큼 이동
       offset = activeTranslationY.value;
     } else if (hasActive && from !== -1 && to !== -1) {
-      // ✅ 나머지 아이템: 슬롯 사이에 있는 애들만 rowHeight 한 칸씩 위/아래로 이동
       if (rowIndex > from && rowIndex <= to) {
-        // 아래로 드래그 → (from, to] 범위 아이템은 한 칸 위로
         offset = -rowHeight;
       } else if (rowIndex < from && rowIndex >= to) {
-        // 위로 드래그 → [to, from) 범위 아이템은 한 칸 아래로
         offset = rowHeight;
       } else {
         offset = 0;
@@ -175,13 +197,13 @@ function DraggableRow<T>({
     return {
       transform: [{ translateY }, { scale: scale.value }],
       zIndex: dragging ? 10 : 0,
+      opacity: dragging ? 0.7 : 1,
     };
   });
 
   return (
     <GestureDetector gesture={gesture}>
       <Animated.View style={animatedStyle}>
-        {/* 고정 height + marginBottom = rowHeight */}
         <Animated.View
           style={{
             height: itemHeight,
@@ -191,7 +213,7 @@ function DraggableRow<T>({
           {renderItem({
             item,
             index: rowIndex,
-            dragging: activeId.value === id,
+            dragging: false,
           })}
         </Animated.View>
       </Animated.View>

@@ -1,5 +1,5 @@
-import React from "react";
-import { FlatList, ListRenderItemInfo, StyleProp, ViewStyle } from "react-native";
+import React, { useMemo, useRef } from "react";
+import { FlatList, ListRenderItemInfo, StyleProp, View, ViewStyle } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 
 import DraggableRow from "../draggable-row/draggable-row";
@@ -8,36 +8,40 @@ export type IdType = string | number;
 
 export interface DraggableFlatListProps<T extends { id: IdType }> {
   data: T[];
-  /** 컨텐츠 높이 (고정) */
   itemHeight: number;
-  /** 아래 간격 (marginBottom 같은 역할, 고정) */
   itemSpacing?: number;
-  /** 렌더 함수: dragging 여부까지 내려줌 */
   renderItem: (params: { item: T; index: number; dragging: boolean }) => React.ReactNode;
-  /** drag 완료 후, 최종 순서의 data를 전달 */
   onDragEnd?: (params: { data: T[] }) => void;
-  enabled?: boolean;
+  scrollEnabled?: boolean;
   style?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
+  autoScrollThreshold?: number;
+  autoScrollStep?: number;
 }
 
-function DraggableFlatList<T extends { id: string | number }>({
+function DraggableFlatList<T extends { id: string | number; disabled?: boolean }>({
   data,
   itemHeight,
   itemSpacing = 0,
   renderItem,
   onDragEnd,
-  enabled = true,
+  scrollEnabled = true,
   style,
   contentContainerStyle,
+  autoScrollThreshold = 48,
+  autoScrollStep = 20,
 }: DraggableFlatListProps<T>) {
   const rowHeight = itemHeight + itemSpacing;
-
-  // 공통 상태 (UI thread)
-  const activeId = useSharedValue<IdType | null>(null); // 드래그 중인 아이템 id
-  const activeIndex = useSharedValue<number>(-1); // 시작 index
-  const hoverIndex = useSharedValue<number>(-1); // 슬롯이 현재 위치한 index
-  const activeTranslationY = useSharedValue<number>(0); // 드래그된 아이템의 추가 이동량
+  const listRef = useRef<FlatList<T>>(null);
+  const scrollOffsetRef = useRef(0);
+  const scrollContentHeightRef = useRef(0);
+  const scrollContainerHeightRef = useRef(0);
+  const scrollContainerTopRef = useRef(0);
+  const listContainerRef = useRef<View>(null);
+  const activeId = useSharedValue<IdType | null>(null);
+  const activeIndex = useSharedValue<number>(-1);
+  const hoverIndex = useSharedValue<number>(-1);
+  const activeTranslationY = useSharedValue<number>(0);
 
   const handleReorder = React.useCallback(
     (from: number, to: number) => {
@@ -56,6 +60,32 @@ function DraggableFlatList<T extends { id: string | number }>({
     [data, onDragEnd],
   );
 
+  const handleAutoScroll = useMemo(
+    () => (direction: "up" | "down") => {
+      const containerHeight = scrollContainerHeightRef.current;
+      const contentHeight = scrollContentHeightRef.current;
+
+      if (!containerHeight || !contentHeight) {
+        return;
+      }
+
+      const maxOffset = Math.max(0, contentHeight - containerHeight);
+      const currentOffset = scrollOffsetRef.current ?? 0;
+      const nextOffset =
+        direction === "up"
+          ? Math.max(0, currentOffset - autoScrollStep)
+          : Math.min(maxOffset, currentOffset + autoScrollStep);
+
+      if (nextOffset === currentOffset) {
+        return;
+      }
+
+      scrollOffsetRef.current = nextOffset;
+      listRef.current?.scrollToOffset({ offset: nextOffset, animated: false });
+    },
+    [autoScrollStep],
+  );
+
   const renderRow = ({ item, index }: ListRenderItemInfo<T>) => (
     <DraggableRow<T>
       key={String(item.id)}
@@ -67,29 +97,52 @@ function DraggableFlatList<T extends { id: string | number }>({
       rowHeight={rowHeight}
       dataLength={data.length}
       renderItem={renderItem}
-      enabled={enabled}
+      enabled={!item.disabled}
       activeId={activeId}
       activeIndex={activeIndex}
       hoverIndex={hoverIndex}
       activeTranslationY={activeTranslationY}
       onReorder={handleReorder}
+      onAutoScroll={handleAutoScroll}
+      scrollContainerHeight={scrollContainerHeightRef.current}
+      scrollContainerTop={scrollContainerTopRef.current}
+      autoScrollThreshold={autoScrollThreshold}
     />
   );
 
   return (
-    <FlatList
-      data={data}
-      keyExtractor={(item) => String(item.id)}
-      renderItem={renderRow}
+    <View
+      ref={listContainerRef}
       style={style}
-      contentContainerStyle={contentContainerStyle}
-      scrollEnabled={enabled}
-      getItemLayout={(_, index) => ({
-        length: rowHeight,
-        offset: rowHeight * index,
-        index,
-      })}
-    />
+    >
+      <FlatList
+        ref={listRef}
+        data={data}
+        keyExtractor={(item) => String(item.id)}
+        renderItem={renderRow}
+        style={{ flex: 1 }}
+        contentContainerStyle={contentContainerStyle}
+        scrollEnabled={scrollEnabled}
+        scrollEventThrottle={16}
+        onScroll={(event) => {
+          scrollOffsetRef.current = event.nativeEvent.contentOffset.y;
+        }}
+        onContentSizeChange={(_, height) => {
+          scrollContentHeightRef.current = height;
+        }}
+        onLayout={(event) => {
+          scrollContainerHeightRef.current = event.nativeEvent.layout.height;
+          listContainerRef.current?.measureInWindow((_, y) => {
+            scrollContainerTopRef.current = y;
+          });
+        }}
+        getItemLayout={(_, index) => ({
+          length: rowHeight,
+          offset: rowHeight * index,
+          index,
+        })}
+      />
+    </View>
   );
 }
 
