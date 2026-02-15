@@ -1,32 +1,24 @@
 import { View } from "react-native";
 
-import { PeriodType } from "@/components/period-goal-memo/period-goal-memo";
 import FeedCalendarHeader from "@/features/feed/components/feed-calendar/components/feed-calendar-header/feed-calendar-header";
-import { MonthlyGoalMemoType } from "@/types/response/feed/feed";
 
 export interface FeedCalendarHeaderViewProps {
-  currentYear?: number;
-  currentMonth?: number;
-  type?: PeriodType;
-  periodGoalMemo?: MonthlyGoalMemoType;
-  onPrevMonth?: () => void;
-  onNextMonth?: () => void;
-  onSubmitPeriodGoalMemo?: (contents: string) => void;
+  displayMonth?: string;
+  onPrev?: () => void;
+  onNext?: () => void;
 }
 
 function FeedCalendarHeaderView({
-  currentYear = new Date().getFullYear(),
-  currentMonth = new Date().getMonth() + 1,
-  type = "MONTH",
-  periodGoalMemo,
+  displayMonth = `${new Date().getFullYear()}년 ${String(new Date().getMonth() + 1).padStart(2, "0")}월`,
+  onPrev,
+  onNext,
 }: FeedCalendarHeaderViewProps) {
-  const yearMonth = `${currentYear}-${String(currentMonth).padStart(2, "0")}`;
   return (
     <View className="flex-1 items-center justify-center w-full p-4">
       <FeedCalendarHeader
-        yearMonth={yearMonth}
-        type={type}
-        periodGoalMemo={periodGoalMemo}
+        displayMonth={displayMonth}
+        onPrev={onPrev}
+        onNext={onNext}
       />
     </View>
   );

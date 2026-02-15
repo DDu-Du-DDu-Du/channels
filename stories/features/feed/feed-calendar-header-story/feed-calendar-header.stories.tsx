@@ -6,16 +6,12 @@ const meta = {
   title: "components/FeedCalendarHeader",
   component: FeedCalendarHeaderView,
   argTypes: {
-    currentYear: { control: { type: "number", min: 2000 } },
-    currentMonth: { control: { type: "number", min: 1, max: 12 } },
-    type: { control: { type: "radio" }, options: ["WEEK", "MONTH"] },
-    onPrevMonth: { action: "onPrevMonth" },
-    onNextMonth: { action: "onNextMonth" },
+    displayMonth: { control: "text" },
+    onPrev: { action: "onPrev" },
+    onNext: { action: "onNext" },
   },
   args: {
-    currentYear: new Date().getFullYear(),
-    currentMonth: new Date().getMonth() + 1,
-    type: "MONTH",
+    displayMonth: `${new Date().getFullYear()}년 ${String(new Date().getMonth() + 1).padStart(2, "0")}월`,
   },
 } satisfies Meta<typeof FeedCalendarHeaderView>;
 
