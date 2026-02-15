@@ -3,7 +3,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 
 import { PeriodType } from "@/components/period-goal-memo/period-goal-memo";
 import { RequestPeriodGoalMemo } from "@/types/request/feed/feed";
-import { MonthlyGoalMemoType } from "@/types/response/feed/feed";
+import { GoalMemoType } from "@/types/response/feed/feed";
 
 import useGoalsDDuDuMutation from "../use-goals-ddudu-mutation/use-goals-ddudu-mutation";
 
@@ -14,7 +14,7 @@ interface PeriodGoalMemoFormInfo {
 interface UsePeriodGoalMemoFormProps {
   date: string;
   type: PeriodType;
-  periodGoalMemo?: MonthlyGoalMemoType;
+  periodGoalMemo?: GoalMemoType;
 }
 
 function usePeriodGoalMemoForm({ date, type, periodGoalMemo }: UsePeriodGoalMemoFormProps) {
@@ -22,7 +22,7 @@ function usePeriodGoalMemoForm({ date, type, periodGoalMemo }: UsePeriodGoalMemo
     defaultValues: { contents: periodGoalMemo?.contents ?? "" },
   });
 
-  const { createMonthlyGoalMemoMutation, editMonthlyGoalMemoMutation } = useGoalsDDuDuMutation({
+  const { createGoalMemoMutation, editGoalMemoMutation } = useGoalsDDuDuMutation({
     date,
   });
 
@@ -38,12 +38,12 @@ function usePeriodGoalMemoForm({ date, type, periodGoalMemo }: UsePeriodGoalMemo
         planDate: date,
       };
 
-      createMonthlyGoalMemoMutation.mutate({ periodGoals });
+      createGoalMemoMutation.mutate({ periodGoals });
 
       return;
     }
 
-    editMonthlyGoalMemoMutation.mutate({
+    editGoalMemoMutation.mutate({
       contents,
       periodGoalsId: periodGoalMemo.id,
     });

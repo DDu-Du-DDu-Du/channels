@@ -209,7 +209,6 @@ export const fetchEditDDuDu = async ({ id, name }: FetchEditDDuDuProps) => {
 };
 
 interface FetchUpdateDDuDuProps {
-  accessToken: string;
   id: number;
 }
 
@@ -234,7 +233,6 @@ export const fetchCompleteToggleDDuDu = async ({ id }: FetchUpdateDDuDuProps) =>
 };
 
 interface fetchDDuDuDateProps {
-  accessToken: string;
   id: number;
   date: string;
 }
@@ -276,7 +274,6 @@ export const fetchDDuDuRepeatDate = async ({ id, date }: fetchDDuDuDateProps) =>
 };
 
 interface FetchDDuDUChangeTimeProps {
-  accessToken: string;
   time: DDuDuTimeType;
   id: number;
 }

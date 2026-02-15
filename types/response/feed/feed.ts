@@ -42,7 +42,7 @@ export interface MainTimeTableDDuDuType {
   color: string;
 }
 
-export interface MonthlyGoalMemoType {
+export interface GoalMemoType {
   id: number;
   contents: string;
   type: "WEEK" | "MONTH";
