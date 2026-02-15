@@ -5,7 +5,7 @@ import { Theme } from "react-native-calendars/src/types";
 
 import { BottomSheet, SpoqaText } from "@/components";
 import { useBottomSheetAction } from "@/hooks";
-import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
+import { ArrowLeftIcon, ChevronLeftIcon, ChevronRightIcon } from "@/icons";
 import { formatDateToYYYYMMDD } from "@/utils";
 
 export interface BottomSingleCalendarProps {
@@ -16,6 +16,8 @@ export interface BottomSingleCalendarProps {
   handleCalendarSheetToggleOff: () => void;
   minDate?: string;
   maxDate?: string;
+  showBackArrow?: boolean;
+  onPressBack?: () => void;
 }
 
 function BottomSingleCalendar({
@@ -26,6 +28,8 @@ function BottomSingleCalendar({
   handleCalendarSheetToggleOff,
   minDate,
   maxDate,
+  showBackArrow = false,
+  onPressBack,
 }: BottomSingleCalendarProps) {
   const { ref, openSheet, closeSheet } = useBottomSheetAction();
 
@@ -52,13 +56,33 @@ function BottomSingleCalendar({
     onChangeDDuDuDate(selectedDate);
   };
 
+  const handlePressBack = () => {
+    closeSheet();
+    onPressBack?.();
+    handleCalendarSheetToggleOff();
+  };
+
   return (
     <BottomSheet
       ref={ref}
       onClose={handleCalendarSheetToggleOff}
       fitContent
     >
-      <View className="w-full pb-[1.5rem] px-[2.4rem]">
+      {showBackArrow && (
+        <View className="w-full px-[2.4rem] pt-[1.2rem]">
+          <Pressable
+            onPress={handlePressBack}
+            className="size-[2.4rem] items-start justify-center"
+            hitSlop={8}
+          >
+            <ArrowLeftIcon
+              size={16}
+              stroke="#000000"
+            />
+          </Pressable>
+        </View>
+      )}
+      <View className="w-full px-[2.4rem] pb-[1.5rem]">
         <Calendar
           current={selectedString || currentDate}
           markedDates={markedDates}
@@ -102,7 +126,7 @@ function BottomSingleCalendar({
       <View className="px-[2.4rem]">
         <Pressable
           accessibilityRole="button"
-          className="w-[100%] max-w-[50rem] h-[5.6rem] bg-main rounded-radius15 mb-[2rem] items-center justify-center"
+          className="mb-[2rem] h-[5.6rem] w-[100%] max-w-[50rem] items-center justify-center rounded-radius15 bg-main"
           onPress={handleConfirm}
         >
           <SpoqaText
