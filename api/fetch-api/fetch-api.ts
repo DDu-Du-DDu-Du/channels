@@ -6,8 +6,6 @@ const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
 const fetchWithBearer = (url: string, options: RequestInit = {}, headers: Headers) => {
   const accessToken = useAuthStore.getState().accessToken;
-  console.log(useAuthStore.getState());
-  console.log(accessToken);
 
   headers.set("Authorization", `Bearer ${accessToken}`);
 
