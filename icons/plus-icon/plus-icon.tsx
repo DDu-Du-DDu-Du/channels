@@ -5,6 +5,7 @@ export interface IconProps {
   size?: number;
   stroke?: string;
   className?: string;
+  fill?: string;
 }
 
 function PlusIcon({ size = 16, stroke = "black", className }: IconProps) {
@@ -20,11 +21,15 @@ function PlusIcon({ size = 16, stroke = "black", className }: IconProps) {
         d="M8 0V16"
         stroke={stroke}
         strokeWidth={1.5}
+        strokeLinejoin="round"
+        strokeLinecap="round"
       />
       <Path
         d="M16 8H0"
         stroke={stroke}
         strokeWidth={1.5}
+        strokeLinejoin="round"
+        strokeLinecap="round"
       />
     </Svg>
   );

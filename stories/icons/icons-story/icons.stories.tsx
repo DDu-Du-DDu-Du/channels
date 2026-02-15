@@ -1,4 +1,5 @@
 import {
+  AddListIcon,
   AlarmIcon,
   AnotherDayIcon,
   ArrowLeftIcon,
@@ -23,6 +24,7 @@ import {
   PrivacyIcon,
   PublicIcon,
   QuestionIcon,
+  SettingsIcon,
 } from "@/icons";
 import type { Meta, StoryObj } from "@storybook/react";
 
@@ -46,6 +48,7 @@ const meta = {
   argTypes: {
     children: {
       options: [
+        "AddListIcon",
         "AlarmIcon",
         "AnotherDayIcon",
         "ArrowLeftIcon",
@@ -70,8 +73,10 @@ const meta = {
         "PrivacyIcon",
         "PublicIcon",
         "QuestionIcon",
+        "SettingsIcon",
       ],
       mapping: {
+        AddListIcon: <AddListIcon />,
         AlarmIcon: <AlarmIcon />,
         AnotherDayIcon: <AnotherDayIcon />,
         ArrowLeftIcon: <ArrowLeftIcon />,
@@ -96,6 +101,7 @@ const meta = {
         PrivacyIcon: <PrivacyIcon />,
         PublicIcon: <PublicIcon />,
         QuestionIcon: <QuestionIcon />,
+        SettingsIcon: <SettingsIcon />,
       },
       control: { type: "select" },
     },
