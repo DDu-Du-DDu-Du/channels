@@ -1,24 +1,18 @@
+import { useState } from "react";
 import { View } from "react-native";
 
-import { PeriodType } from "@/components/period-goal-memo/period-goal-memo";
 import FeedCalendar from "@/features/feed/components/feed-calendar/feed-calendar";
-import type { MonthlyGoalMemoType, MonthlyWeeklyDDuDuType } from "@/types/response/feed/feed";
+import type { MonthlyWeeklyDDuDuType } from "@/types/response/feed/feed";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export interface FeedCalendarViewProps {
-  type?: PeriodType;
   monthlyDDuDus?: MonthlyWeeklyDDuDuType[];
-  periodGoalMemo?: MonthlyGoalMemoType;
   onSelectDate?: (date: string) => void;
 }
 
-function FeedCalendarView({
-  type = "MONTH",
-  monthlyDDuDus,
-  periodGoalMemo,
-  onSelectDate,
-}: FeedCalendarViewProps) {
+function FeedCalendarView({ monthlyDDuDus, onSelectDate }: FeedCalendarViewProps) {
   const today = new Date().toISOString().slice(0, 10);
+  const [selectedDate, setSelectedDate] = useState(today);
   const sampleMonthly: MonthlyWeeklyDDuDuType[] = [
     { date: today, totalCount: 5, uncompletedCount: 2 },
   ];
@@ -27,10 +21,12 @@ function FeedCalendarView({
     <View className="flex-1 items-center justify-center w-full p-4">
       <QueryClientProvider client={new QueryClient()}>
         <FeedCalendar
-          type={type}
+          date={selectedDate}
           monthlyDDuDus={monthlyDDuDus ?? sampleMonthly}
-          periodGoalMemo={periodGoalMemo}
-          onSelectDate={(d) => onSelectDate?.(d)}
+          onSelectDate={(d) => {
+            setSelectedDate(d);
+            onSelectDate?.(d);
+          }}
         />
       </QueryClientProvider>
     </View>
