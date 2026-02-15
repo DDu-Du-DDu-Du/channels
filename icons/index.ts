@@ -24,3 +24,4 @@ export { default as QuestionIcon } from "./question-icon/question-icon";
 export { default as KakaoLoginIcon } from "./kakao-login-icon/kakao-login-icon";
 export { default as AddListIcon } from "./add-list-icon/add-list-icon";
 export { default as SettingsIcon } from "./settings-icon/settings-icon";
+export { default as ExclamationIcon } from "./exclamation-icon/exclamation-icon";
