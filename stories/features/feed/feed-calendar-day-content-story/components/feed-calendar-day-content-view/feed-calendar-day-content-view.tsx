@@ -6,22 +6,22 @@ import { MonthlyWeeklyDDuDuType } from "@/types/response/feed/feed";
 
 export interface FeedCalendarDayContentViewProps {
   date?: string; // YYYY-MM-DD
-  today?: string; // YYYY-MM-DD
   day?: number; // 1-31
-  monthlyWeeklyDDuDuType?: MonthlyWeeklyDDuDuType[];
+  dailyStats?: MonthlyWeeklyDDuDuType;
   selectedDate?: string; // YYYY-MM-DD
-  onPress?: (formattedDate: string) => void;
+  disabled?: boolean;
+  onPress?: (date: string) => void;
 }
 
 function FeedCalendarDayContentView({
   date,
-  today,
   day,
-  monthlyWeeklyDDuDuType,
+  dailyStats,
   selectedDate,
+  disabled = false,
   onPress,
 }: FeedCalendarDayContentViewProps) {
-  const todayStr = useMemo(() => today ?? new Date().toISOString().slice(0, 10), [today]);
+  const todayStr = useMemo(() => new Date().toISOString().slice(0, 10), []);
   const dateStr = useMemo(() => {
     const base = date ?? todayStr;
     if (day == null) return base;
@@ -30,18 +30,16 @@ function FeedCalendarDayContentView({
     return `${y}-${m}-${String(d).padStart(2, "0")}`;
   }, [date, todayStr, day]);
   const [selected, setSelected] = useState<string | undefined>(selectedDate);
-  const monthly = monthlyWeeklyDDuDuType ?? [
-    { date: todayStr, totalCount: 8, uncompletedCount: 3 },
-  ];
+  const defaultDailyStats = { date: dateStr, totalCount: 8, uncompletedCount: 3 };
 
   return (
     <View className="flex-1 items-center justify-center">
       <FeedCalendarDayContent
-        today={todayStr}
         date={dateStr}
         day={day ?? Number(dateStr.split("-")[2])}
-        monthlyWeeklyDDuDuType={monthly}
+        dailyStats={dailyStats ?? defaultDailyStats}
         selectedDate={selected}
+        disabled={disabled}
         onPress={(d) => {
           setSelected(d);
           onPress?.(d);

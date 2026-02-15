@@ -8,8 +8,8 @@ const meta = {
   argTypes: {
     selectedDate: { control: "text" },
     date: { control: "text" },
-    today: { control: "text" },
     day: { control: { type: "number", min: 1, max: 31 } },
+    disabled: { control: "boolean" },
   },
 } satisfies Meta<typeof FeedCalendarDayContentView>;
 
