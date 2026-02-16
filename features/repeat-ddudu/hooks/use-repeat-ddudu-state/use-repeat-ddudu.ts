@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 
 import type { RepeatDduduRequestType } from "@/types/request/repeat-ddudu/repeat-ddudu";
 
+import type { RepeatDduduItemType } from "../../repeat-ddudu.types";
+
 function toTimeWithSecond(time?: string) {
   if (!time) {
     return undefined;
@@ -18,8 +20,27 @@ function toTimeWithSecond(time?: string) {
   return time;
 }
 
-function useRepeatDdudu() {
-  const [repeatDdudus, setRepeatDdudus] = useState<RepeatDduduRequestType[]>([]);
+function createTempId() {
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
+function isSameRepeatDdudu(
+  repeatDdudu: RepeatDduduItemType,
+  target: { id?: number; tempId?: string },
+) {
+  if (target.id && repeatDdudu.id) {
+    return repeatDdudu.id === target.id;
+  }
+
+  if (target.tempId && repeatDdudu.tempId) {
+    return repeatDdudu.tempId === target.tempId;
+  }
+
+  return false;
+}
+
+function useRepeatDduduState() {
+  const [repeatDdudus, setRepeatDdudus] = useState<RepeatDduduItemType[]>([]);
   const [selectedRepeatDduduIndex, setSelectedRepeatDduduIndex] = useState<number | null>(null);
 
   const selectedRepeatDdudu = useMemo(() => {
@@ -51,15 +72,43 @@ function useRepeatDdudu() {
 
     setRepeatDdudus((prev) => {
       if (selectedRepeatDduduIndex === null) {
-        return [...prev, nextRepeatDdudu];
+        return [...prev, { ...nextRepeatDdudu, tempId: createTempId() }];
       }
 
       return prev.map((item, index) =>
-        index === selectedRepeatDduduIndex ? nextRepeatDdudu : item,
+        index === selectedRepeatDduduIndex ? { ...item, ...nextRepeatDdudu } : item,
       );
     });
 
     setSelectedRepeatDduduIndex(null);
+  };
+
+  const handleDeleteRepeatDdudu = (target: { id?: number; tempId?: string }) => {
+    setRepeatDdudus((prev) => {
+      const deleteIndex = prev.findIndex((repeatDdudu) => isSameRepeatDdudu(repeatDdudu, target));
+
+      if (deleteIndex < 0) {
+        return prev;
+      }
+
+      setSelectedRepeatDduduIndex((currentIndex) => {
+        if (currentIndex === null) {
+          return null;
+        }
+
+        if (currentIndex === deleteIndex) {
+          return null;
+        }
+
+        if (currentIndex > deleteIndex) {
+          return currentIndex - 1;
+        }
+
+        return currentIndex;
+      });
+
+      return prev.filter((_, index) => index !== deleteIndex);
+    });
   };
 
   const handleResetRepeatDdudus = () => {
@@ -74,8 +123,9 @@ function useRepeatDdudu() {
     handleSelectRepeatDdudu,
     handleClearSelectedRepeatDdudu,
     handleSaveRepeatDdudu,
+    handleDeleteRepeatDdudu,
     handleResetRepeatDdudus,
   };
 }
 
-export default useRepeatDdudu;
+export default useRepeatDduduState;

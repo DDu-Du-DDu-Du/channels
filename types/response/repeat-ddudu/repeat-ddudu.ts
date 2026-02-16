@@ -13,10 +13,16 @@ export interface RepeatDDuDusType {
 }
 
 export interface RepeatDDuDusPattern {
-  repeatType: RepeatDDuDusDateType;
+  repeatType?: RepeatDDuDusDateType;
   repeatDaysOfWeek?: DayOfWeek[];
   repeatDaysOfMonth?: DayOfMonth[];
   lastDay?: boolean;
+  info?: {
+    repeatType?: RepeatDDuDusDateType;
+    repeatDaysOfWeek?: DayOfWeek[] | string[];
+    repeatDaysOfMonth?: DayOfMonth[] | number[];
+    lastDayOfMonth?: boolean;
+  };
 }
 
 export type DayOfMonth =

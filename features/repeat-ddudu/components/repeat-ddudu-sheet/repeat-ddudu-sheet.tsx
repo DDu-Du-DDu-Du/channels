@@ -23,6 +23,7 @@ export interface RepeatDduduSheetProps {
   onDismiss?: () => void;
   repeatDdudu?: RepeatDduduRequestType;
   sheetTitle: string;
+  submitLabel?: string;
   onSubmit?: (repeatDdudu: RepeatDduduRequestType) => void;
 }
 
@@ -32,6 +33,7 @@ function RepeatDduduSheet({
   onDismiss,
   repeatDdudu,
   sheetTitle,
+  submitLabel = "반복 생성",
   onSubmit,
 }: RepeatDduduSheetProps) {
   const {
@@ -186,7 +188,7 @@ function RepeatDduduSheet({
           />
 
           <Button
-            label={"반복 생성"}
+            label={submitLabel}
             bodyClassName="bg-main"
             labelClassName="text-white"
             onPress={handleConfirm}

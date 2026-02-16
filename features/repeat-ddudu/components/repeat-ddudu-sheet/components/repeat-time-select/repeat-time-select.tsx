@@ -4,7 +4,7 @@ import { Pressable } from "react-native";
 import { DDuDuTimeSheet, FormSection, TimeSet } from "@/components";
 import { ArrowRightIcon } from "@/icons";
 
-import { useRepeatTimeSelect } from "./hooks";
+import useRepeatTimeSelect from "./hooks/use-repeat-time-select/use-repeat-time-select";
 
 export interface RepeatTimeSelectProps {
   beginAt?: string;
