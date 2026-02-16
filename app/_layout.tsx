@@ -3,6 +3,7 @@ import "../global.css";
 import { useEffect } from "react";
 import { LocaleConfig } from "react-native-calendars";
 
+import { ToastProvider } from "@/components";
 import AuthProvider from "@/providers/auth-provider/auth-provider";
 import { useAuthStore } from "@/stores";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
@@ -92,25 +93,28 @@ export default function RootLayout() {
 
   return (
     <TanstackProvider>
-      <AuthProvider>
-        <OutsidePressProvider>
-          <BottomSheetModalProvider>
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Protected guard={storybookEnabled}>
-                <Stack.Screen name="(storybook)/index" />
-              </Stack.Protected>
-              <Stack.Protected guard={!isLoggedIn}>
-                <Stack.Screen name="auth" />
-              </Stack.Protected>
-              <Stack.Protected guard={isLoggedIn || loginDisabled}>
-                <Stack.Screen name="(tabs)" />
-                <Stack.Screen name="goal/index" />
-                <Stack.Screen name="goal/editor" />
-              </Stack.Protected>
-            </Stack>
-          </BottomSheetModalProvider>
-        </OutsidePressProvider>
-      </AuthProvider>
+      <ToastProvider>
+        <AuthProvider>
+          <OutsidePressProvider>
+            <BottomSheetModalProvider>
+              <Stack screenOptions={{ headerShown: false }}>
+                <Stack.Protected guard={storybookEnabled}>
+                  <Stack.Screen name="(storybook)/index" />
+                </Stack.Protected>
+                <Stack.Protected guard={!isLoggedIn}>
+                  <Stack.Screen name="auth" />
+                </Stack.Protected>
+                <Stack.Protected guard={isLoggedIn || loginDisabled}>
+                  <Stack.Screen name="(tabs)" />
+                  <Stack.Screen name="goal/index" />
+                  <Stack.Screen name="goal/create" />
+                  <Stack.Screen name="goal/editor" />
+                </Stack.Protected>
+              </Stack>
+            </BottomSheetModalProvider>
+          </OutsidePressProvider>
+        </AuthProvider>
+      </ToastProvider>
     </TanstackProvider>
   );
 }
