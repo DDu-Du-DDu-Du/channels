@@ -12,3 +12,7 @@ export interface RepeatDduduRequestType {
   beginAt?: string;
   endAt?: string;
 }
+
+export interface RepeatDduduCreateRequestType extends RepeatDduduRequestType {
+  goalId: number;
+}
