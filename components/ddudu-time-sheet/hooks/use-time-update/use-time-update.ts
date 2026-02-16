@@ -36,11 +36,16 @@ const useTimeUpdate = ({ currentDDuDuTime, onChangeDDuDuTime }: UseTimeUpdatePro
 
     if (beginTime > endTime) {
       setIsErrorMessage(true);
-      return;
+      return false;
     }
 
     setIsErrorMessage(false);
     onChangeDDuDuTime({ beginHour, beginMin, endHour, endMin });
+    return true;
+  };
+
+  const handleClearErrorMessage = () => {
+    setIsErrorMessage(false);
   };
 
   const handleChangeBeginHour = (beginHours: number) => {
@@ -67,6 +72,7 @@ const useTimeUpdate = ({ currentDDuDuTime, onChangeDDuDuTime }: UseTimeUpdatePro
     handleChangeBeginMin,
     handleChangeEndHour,
     handleChangeEndMin,
+    handleClearErrorMessage,
   };
 };
 
