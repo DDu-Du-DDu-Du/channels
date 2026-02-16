@@ -1,8 +1,5 @@
-import {
-  DayOfMonth,
-  DayOfWeek,
-  RepeatDDuDusDateType,
-} from "@/types/response/repeat-ddudu/repeat-ddudu";
+import type { DayOfWeek } from "@/types/common/day-of-week";
+import { DayOfMonth, RepeatDDuDusDateType } from "@/types/response/repeat-ddudu/repeat-ddudu";
 
 export interface RepeatDduduRequestType {
   name: string;

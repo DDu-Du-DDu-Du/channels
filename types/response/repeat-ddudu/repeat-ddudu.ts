@@ -1,3 +1,7 @@
+import type { DayOfWeek } from "@/types/common/day-of-week";
+
+export type { DayOfWeek } from "@/types/common/day-of-week";
+
 export interface RepeatDDuDusType {
   id: number;
   name: string;
@@ -15,14 +19,6 @@ export interface RepeatDDuDusPattern {
   lastDay?: boolean;
 }
 
-export type DayOfWeek =
-  | "MONDAY"
-  | "TUESDAY"
-  | "WEDNESDAY"
-  | "THURSDAY"
-  | "FRIDAY"
-  | "SATURDAY"
-  | "SUNDAY";
 export type DayOfMonth =
   | 1
   | 2
