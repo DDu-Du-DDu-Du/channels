@@ -22,6 +22,7 @@ export const QUERY_KEY = {
 };
 export const GOAL_KEY = {
   GOAL_LIST: "goalList",
+  GOAL_DETAIL: "goalDetail",
   GOAL_EDITOR: "goalEditor",
   GOAL_CREATE: "goalCreate",
   GOAL_EDIT: "goalEdit",
@@ -31,6 +32,8 @@ export const GOAL_KEY = {
 
 export const REPEAT_DDUDU_KEY = {
   REPEAT_DDUDU: "repeatDdudu",
+  REPEAT_CREATE: "repeatCreate",
+  REPEAT_EDIT: "repeatEdit",
   REPEAT_DELETE: "repeatDelete",
 };
 
