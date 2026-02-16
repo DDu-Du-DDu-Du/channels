@@ -16,4 +16,6 @@ export interface GoalDetailType {
   repeatDdudus: RepeatDDuDusType[];
 }
 
+export type GoalDetailResponseType = GoalDetailType;
+
 export type GoalPrivacyType = "PUBLIC" | "FOLLOWER" | "PRIVATE";

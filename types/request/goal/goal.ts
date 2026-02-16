@@ -16,3 +16,9 @@ export interface GoalRequestType {
   privacyType: GoalPrivacyType;
   repeatDdudus?: GoalRepeatDduduRequestType[];
 }
+
+export type GoalEditRequestType = Omit<GoalRequestType, "repeatDdudus">;
+
+export interface GoalTerminateRequestType {
+  status: "DONE";
+}
