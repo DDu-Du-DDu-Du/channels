@@ -1,8 +1,12 @@
 import { useToast } from "@/components/toast/hooks";
-import { WEEK_DAY_TO_KR } from "@/constants";
+import { normalizeDayOfWeekToKr } from "@/constants";
 import { GOAL_KEY, REPEAT_DDUDU_KEY } from "@/constants/query-key/query-key";
 import type { RepeatDduduItemType } from "@/features/repeat-ddudu/repeat-ddudu.types";
-import { createRepeatDdudu, deleteRepeatDdudu, editRepeatDdudu } from "@/service/goal/goal";
+import {
+  createRepeatDdudu,
+  deleteRepeatDdudu,
+  editRepeatDdudu,
+} from "@/service/repeat-ddudu/repeat-ddudu";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface UseRepeatDduduMutationProps {
@@ -46,25 +50,25 @@ function useRepeatDduduMutation({ goalId }: UseRepeatDduduMutationProps) {
   });
 
   const handleCreateRepeatDdudu = (repeatDdudu: RepeatDduduItemType) => {
-    const { id, ...repeatDduduWithoutId } = repeatDdudu;
+    const { id, tempId, ...repeatDduduWithoutIdentity } = repeatDdudu;
 
     createRepeatDduduMutation.mutate({
       requestRepeatDdudu: {
-        ...repeatDduduWithoutId,
+        ...repeatDduduWithoutIdentity,
         goalId,
-        repeatDaysOfWeek: repeatDdudu.repeatDaysOfWeek?.map((day) => WEEK_DAY_TO_KR[day]),
+        repeatDaysOfWeek: repeatDdudu.repeatDaysOfWeek?.map(normalizeDayOfWeekToKr),
       },
     });
   };
 
   const handleEditRepeatDdudu = (repeatDduduId: number, repeatDdudu: RepeatDduduItemType) => {
-    const { id, ...repeatDduduWithoutId } = repeatDdudu;
+    const { id, tempId, ...repeatDduduWithoutIdentity } = repeatDdudu;
 
     editRepeatDduduMutation.mutate({
       repeatDduduId,
       requestRepeatDdudu: {
-        ...repeatDduduWithoutId,
-        repeatDaysOfWeek: repeatDdudu.repeatDaysOfWeek?.map((day) => WEEK_DAY_TO_KR[day]),
+        ...repeatDduduWithoutIdentity,
+        repeatDaysOfWeek: repeatDdudu.repeatDaysOfWeek?.map(normalizeDayOfWeekToKr),
       },
     });
   };

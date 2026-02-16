@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 
+import { normalizeDayOfWeekToEn } from "@/constants";
 import type { RepeatDduduRequestType } from "@/types/request/repeat-ddudu/repeat-ddudu";
 import type { DayOfWeek } from "@/types/response/repeat-ddudu/repeat-ddudu";
 
@@ -59,7 +60,7 @@ function useRepeatDduduForm() {
       setEndDate(new Date(repeatDdudu.endDate));
       setBeginAt(repeatDdudu.beginAt);
       setEndAt(repeatDdudu.endAt);
-      setSelectedWeekDays(repeatDdudu.repeatDaysOfWeek ?? []);
+      setSelectedWeekDays((repeatDdudu.repeatDaysOfWeek ?? []).map(normalizeDayOfWeekToEn));
       setSelectedMonthDays((repeatDdudu.repeatDaysOfMonth as number[] | undefined) ?? []);
       setIsLastDaySelected(Boolean(repeatDdudu.lastDayOfMonth));
     },

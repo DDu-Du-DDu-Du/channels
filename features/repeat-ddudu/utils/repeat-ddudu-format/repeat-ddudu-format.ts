@@ -1,3 +1,4 @@
+import { normalizeDayOfWeekToEn } from "@/constants";
 import type { DayOfWeek } from "@/types/common/day-of-week";
 import type { RepeatDDuDusType } from "@/types/response/repeat-ddudu/repeat-ddudu";
 
@@ -112,7 +113,11 @@ export const buildRepeatDduduDescription = (repeatDdudu: RepeatDduduItemType) =>
   const parts: string[] = [REPEAT_TYPE_LABEL[repeatDdudu.repeatType]];
 
   if (repeatDdudu.repeatType === "WEEKLY" && repeatDdudu.repeatDaysOfWeek?.length) {
-    parts.push(repeatDdudu.repeatDaysOfWeek.map((day) => WEEK_DAY_LABEL[day]).join(" "));
+    parts.push(
+      repeatDdudu.repeatDaysOfWeek
+        .map((day) => WEEK_DAY_LABEL[normalizeDayOfWeekToEn(day)])
+        .join(" "),
+    );
   }
 
   if (repeatDdudu.repeatType === "MONTHLY") {

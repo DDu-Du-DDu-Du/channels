@@ -1,6 +1,6 @@
 import { FlatList, Pressable, View } from "react-native";
 
-import { ConfirmModal, FormHeader } from "@/components";
+import { ConfirmModal, EmptyList, FormHeader } from "@/components";
 import type { RepeatDduduItemType } from "@/features/repeat-ddudu/repeat-ddudu.types";
 import { PlusIcon } from "@/icons";
 
@@ -60,6 +60,7 @@ function RepeatDduduListView({
           paddingHorizontal: 24,
           paddingBottom: 24,
           rowGap: 12,
+          flexGrow: 1,
         }}
         renderItem={({ item }) => (
           <SwipeableRepeatDduduCard
@@ -68,6 +69,7 @@ function RepeatDduduListView({
             onPressDelete={() => onPressDeleteRepeatDdudu(item.id)}
           />
         )}
+        ListEmptyComponent={() => <EmptyList text={"반복뚜두를 생성해보세요."} />}
       />
 
       <ConfirmModal
