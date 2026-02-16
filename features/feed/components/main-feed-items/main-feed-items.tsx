@@ -10,6 +10,7 @@ import {
   BottomSingleCalendar,
   DDuDuSheet,
   DDuDuTimeSheet,
+  EmptyList,
   GoalItem,
 } from "@/components";
 import { useToggle } from "@/hooks";
@@ -190,6 +191,7 @@ function MainFeedItems({
           bounces={!isCalendarOpen}
           alwaysBounceVertical={!isCalendarOpen}
           overScrollMode="always"
+          ListEmptyComponent={() => <EmptyList text="No goals yet." />}
           renderItem={({ item }) => (
             <Animated.View entering={FadeInDown.duration(180)}>
               <View
@@ -207,6 +209,8 @@ function MainFeedItems({
                   className="mx-[1rem] mb-[1rem]"
                   style={{ borderBottomWidth: 1, borderBottomColor: "rgba(255, 255, 255, 0.14)" }}
                 />
+
+                {item.ddudus.length === 0 && <EmptyList text="아직 생성된 뚜두가 없어요" />}
 
                 {item.ddudus.map((dduduItem: MainDDuDusType) => (
                   <Animated.View
