@@ -3,36 +3,39 @@ import { Controller, FormProvider } from "react-hook-form";
 import { Pressable, View } from "react-native";
 
 import { Button, FormSection, FormTitleInput, SpoqaText } from "@/components";
-import { RepeatDduduCards, type RepeatDduduItemType } from "@/features/repeat-ddudu";
 import { ArrowRightIcon } from "@/icons";
+import type { GoalPrivacyType } from "@/types/response/goal/goal";
 
-import { useGoalMutation } from "../../hooks";
+import { useGoalEditMutation } from "../../hooks";
 
-export interface GoalEditorFormBodyProps {
-  submitLabel: string;
+export interface GoalEditFormViewProps {
+  goalId: number;
   defaultTitle: string;
   pickedColor: string;
-  repeatDdudus: RepeatDduduItemType[];
+  privacyType: GoalPrivacyType;
+  repeatDduduCount: number;
   onPressOpenColorSheet: () => void;
-  onPressOpenRepeatSheet: () => void;
-  onPressRepeatDduduCard: (index: number) => void;
-  onPressDeleteRepeatDduduCard: (target: { id?: number; tempId?: string }) => void;
+  onPressOpenRepeatManagement: () => void;
+  onPressTerminateGoal: () => void;
+  onPressDeleteGoal: () => void;
 }
 
-function GoalEditorFormBody({
-  submitLabel,
+function GoalEditFormView({
+  goalId,
   defaultTitle,
   pickedColor,
-  repeatDdudus,
+  privacyType,
+  repeatDduduCount,
   onPressOpenColorSheet,
-  onPressOpenRepeatSheet,
-  onPressRepeatDduduCard,
-  onPressDeleteRepeatDduduCard,
-}: GoalEditorFormBodyProps) {
-  const { methods, handleUpdateColor, handleSubmitGoal } = useGoalMutation({
+  onPressOpenRepeatManagement,
+  onPressTerminateGoal,
+  onPressDeleteGoal,
+}: GoalEditFormViewProps) {
+  const { methods, handleUpdateColor, handleSubmitGoalEdit } = useGoalEditMutation({
+    goalId,
     defaultTitle,
     pickedColor,
-    repeatDdudus,
+    privacyType,
   });
 
   useEffect(() => {
@@ -64,13 +67,6 @@ function GoalEditorFormBody({
         }}
       />
     </Pressable>
-  );
-
-  const repeatArrow = (
-    <ArrowRightIcon
-      size={14}
-      stroke="#FFFFFF"
-    />
   );
 
   return (
@@ -107,34 +103,43 @@ function GoalEditorFormBody({
           />
 
           <FormSection
-            label={"반복 뚜두 만들기"}
-            rightContent={repeatArrow}
-            onPress={onPressOpenRepeatSheet}
-          />
-        </View>
-
-        <View className="flex-1 pt-[1.2rem]">
-          <RepeatDduduCards
-            repeatDdudus={repeatDdudus}
-            onPressRepeatDdudu={onPressRepeatDduduCard}
-            onPressDeleteRepeatDdudu={(repeatDdudu) =>
-              onPressDeleteRepeatDduduCard({
-                id: repeatDdudu.id,
-                tempId: repeatDdudu.tempId,
-              })
+            label={"반복뚜두 관리"}
+            rightContent={
+              <View className="flex-row items-center gap-[0.4rem]">
+                <SpoqaText className="text-size13 text-white">{`${repeatDduduCount}개`}</SpoqaText>
+                <ArrowRightIcon
+                  size={14}
+                  stroke="#FFFFFF"
+                />
+              </View>
             }
+            onPress={onPressOpenRepeatManagement}
           />
+
+          <View className="flex-row gap-[0.8rem]">
+            <Button
+              label={"종료하기"}
+              className="flex-1"
+              bodyClassName="bg-white_100"
+              onPress={onPressTerminateGoal}
+            />
+            <Button
+              label={"삭제하기"}
+              className="flex-1"
+              bodyClassName="bg-[#FFD9D9]"
+              onPress={onPressDeleteGoal}
+            />
+          </View>
         </View>
 
-        <View className="pt-[1.2rem]">
-          <Button
-            label={submitLabel}
-            onPress={methods.handleSubmit(handleSubmitGoal)}
-          />
-        </View>
+        <Button
+          label={"목표 수정"}
+          className="mt-auto"
+          onPress={methods.handleSubmit(handleSubmitGoalEdit)}
+        />
       </View>
     </FormProvider>
   );
 }
 
-export default GoalEditorFormBody;
+export default GoalEditFormView;

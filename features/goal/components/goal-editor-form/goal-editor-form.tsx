@@ -1,9 +1,10 @@
 import { ColorSheet, FormHeader } from "@/components";
+import { RepeatDduduSheet, useRepeatDduduState, useRepeatSheet } from "@/features/repeat-ddudu";
 import { usePressBack } from "@/hooks";
 import { GoalType } from "@/types/response/goal/goal";
 
-import { GoalEditorFormBody, RepeatDduduSheet } from "./components";
-import { useColorSheet, useRepeatDdudu, useRepeatSheet } from "./hooks";
+import { GoalEditorFormBody } from "./components";
+import { useColorSheet } from "./hooks";
 
 export interface GoalEditorFormProps {
   pageTitle: string;
@@ -32,7 +33,8 @@ function GoalEditorForm({ pageTitle, submitLabel, goal, defaultTitle = "" }: Goa
     handleSelectRepeatDdudu,
     handleClearSelectedRepeatDdudu,
     handleSaveRepeatDdudu,
-  } = useRepeatDdudu();
+    handleDeleteRepeatDdudu,
+  } = useRepeatDduduState();
 
   const handleOpenCreateRepeatSheet = () => {
     handlePrepareCreateRepeatDdudu();
@@ -68,6 +70,7 @@ function GoalEditorForm({ pageTitle, submitLabel, goal, defaultTitle = "" }: Goa
         onPressOpenColorSheet={handlePressOpenColorSheet}
         onPressOpenRepeatSheet={handleOpenCreateRepeatSheet}
         onPressRepeatDduduCard={handlePressRepeatDduduCard}
+        onPressDeleteRepeatDduduCard={handleDeleteRepeatDdudu}
       />
 
       <ColorSheet

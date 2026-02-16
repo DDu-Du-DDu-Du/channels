@@ -2,11 +2,11 @@ import { useCallback } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import { useToast } from "@/components/toast/hooks";
-import { HEX_COLOR_WITH_OPTIONAL_HASH_REGEX, WEEK_DAY_TO_KR } from "@/constants";
+import { HEX_COLOR_WITH_OPTIONAL_HASH_REGEX, normalizeDayOfWeekToKr } from "@/constants";
 import { GOAL_KEY } from "@/constants/query-key/query-key";
+import type { RepeatDduduItemType } from "@/features/repeat-ddudu";
 import { createGoal } from "@/service/goal/goal";
 import type { GoalRequestType } from "@/types/request/goal/goal";
-import type { RepeatDduduRequestType } from "@/types/request/repeat-ddudu/repeat-ddudu";
 import type { GoalPrivacyType } from "@/types/response/goal/goal";
 import { useMutation } from "@tanstack/react-query";
 
@@ -16,13 +16,13 @@ export interface GoalEditorFormValues {
   title: string;
   color: string;
   privacyType?: GoalPrivacyType;
-  repeatDdudus?: RepeatDduduRequestType[];
+  repeatDdudus?: RepeatDduduItemType[];
 }
 
 interface UseGoalMutationProps {
   defaultTitle: string;
   pickedColor: string;
-  repeatDdudus: RepeatDduduRequestType[];
+  repeatDdudus: RepeatDduduItemType[];
 }
 
 const normalizeColorToHex6 = (color: string) => color.replace(/^#/, "").toUpperCase();
@@ -68,10 +68,14 @@ function useGoalMutation({ defaultTitle, pickedColor, repeatDdudus }: UseGoalMut
       name: values.title,
       color: normalizeColorToHex6(values.color),
       privacyType: values.privacyType ?? "PUBLIC",
-      repeatDdudus: repeatDdudus.map((repeatDdudu) => ({
-        ...repeatDdudu,
-        repeatDaysOfWeek: repeatDdudu.repeatDaysOfWeek?.map((day) => WEEK_DAY_TO_KR[day]),
-      })),
+      repeatDdudus: repeatDdudus.map((repeatDdudu) => {
+        const { id, tempId, ...repeatDduduWithoutIdentity } = repeatDdudu;
+
+        return {
+          ...repeatDduduWithoutIdentity,
+          repeatDaysOfWeek: repeatDdudu.repeatDaysOfWeek?.map(normalizeDayOfWeekToKr),
+        };
+      }),
     };
 
     createGoalMutation.mutate({

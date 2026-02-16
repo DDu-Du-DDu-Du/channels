@@ -1,7 +1,18 @@
-import { Text } from "react-native";
+import { View } from "react-native";
 
-function GoalEditor() {
-  return <Text>목표 수정 페이지</Text>;
+import { GoalEditorScreen } from "@/features/goal";
+
+import { useLocalSearchParams } from "expo-router";
+
+function Editor() {
+  const params = useLocalSearchParams<{ goalId?: string }>();
+  const goalId = Number(Array.isArray(params.goalId) ? params.goalId[0] : (params.goalId ?? 0));
+
+  return (
+    <View className="flex-1 bg-main">
+      <GoalEditorScreen goalId={goalId} />
+    </View>
+  );
 }
 
-export default GoalEditor;
+export default Editor;
