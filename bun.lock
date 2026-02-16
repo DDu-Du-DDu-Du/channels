@@ -11,6 +11,7 @@
         "@react-native-community/slider": "5.0.1",
         "@react-native-kakao/core": "^2.4.2",
         "@react-native-kakao/user": "^2.4.2",
+        "@react-native-picker/picker": "^2.11.4",
         "@tanstack/react-query": "^5.90.5",
         "@types/xdate": "^0.8.35",
         "expo": "^54.0.20",
@@ -596,6 +597,8 @@
     "@react-native-kakao/core": ["@react-native-kakao/core@2.4.2", "", { "dependencies": { "crypto-js": "^4.2.0", "query-string": "^9.0.0", "return-fetch": "^0.4.5" }, "peerDependencies": { "expo": ">=47.0.0", "react": "*", "react-native": "*" }, "optionalPeers": ["expo"] }, "sha512-Gzjqq5tgnM5HTDfPO0/PrIxrOTIlR82+SQbQvxhsRTMeWgbOjYkxdacFfAnJOYdPcefe6Frx80cGHfwPb02Lew=="],
 
     "@react-native-kakao/user": ["@react-native-kakao/user@2.4.2", "", { "dependencies": { "@mj-studio/js-util": "1.1.3" }, "peerDependencies": { "@react-native-kakao/core": "2.4.2", "react": "*", "react-native": "*" } }, "sha512-jhw1Vj80zVhWrec/nyOSC+GRdG+yjtUTWgAcqarPjnKPlymqF71gAxCzil+uytel70Ubd2BNuhnO4xLXuxo+cw=="],
+
+    "@react-native-picker/picker": ["@react-native-picker/picker@2.11.4", "", { "peerDependencies": { "react": "*", "react-native": "*" } }, "sha512-Kf8h1AMnBo54b1fdiVylP2P/iFcZqzpMYcglC28EEFB1DEnOjsNr6Ucqc+3R9e91vHxEDnhZFbYDmAe79P2gjA=="],
 
     "@react-native/assets-registry": ["@react-native/assets-registry@0.81.5", "", {}, "sha512-705B6x/5Kxm1RKRvSv0ADYWm5JOnoiQ1ufW7h8uu2E6G9Of/eE6hP/Ivw3U5jI16ERqZxiKQwk34VJbB0niX9w=="],
 
