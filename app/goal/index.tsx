@@ -1,7 +1,14 @@
-import { Text } from "react-native";
+import { View } from "react-native";
+
+import { GoalHeader, GoalList } from "@/features/goal";
 
 function Goal() {
-  return <Text>목표 등록 페이지</Text>;
+  return (
+    <View className="flex-1 bg-main">
+      <GoalHeader />
+      <GoalList />
+    </View>
+  );
 }
 
 export default Goal;
