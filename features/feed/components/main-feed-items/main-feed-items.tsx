@@ -1,5 +1,4 @@
-import type { Dispatch, SetStateAction } from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import type { FlatList } from "react-native";
 import { View } from "react-native";
 import Animated, { FadeInDown, LinearTransition } from "react-native-reanimated";
@@ -13,15 +12,15 @@ import {
   EmptyList,
   GoalItem,
 } from "@/components";
+import { DDuDuEditorSheet, useDDuDuEditorSheet } from "@/features/ddudu";
 import { useToggle } from "@/hooks";
 import type { MainDDuDusType, MainDailyListType } from "@/types/response/feed/feed";
-import { remToPx } from "@/utils";
+import { hexConvertForRGBA, remToPx } from "@/utils";
 
-import { MainDDuDuInput, MainDDuDuItem } from "./components";
+import { MainDDuDuItem } from "./components";
 import {
   useDDuDuDate,
   useDDuDuDateMutation,
-  useDDuDuEdit,
   useDDuDuMutation,
   useDDuDuTime,
   useDDuDuTimeMutation,
@@ -38,8 +37,11 @@ function MainFeedItems({
   selectedDDuDuDate,
   isCalendarOpen = true,
 }: MainFeedItemsProps) {
-  const [createGoalId, setCreateGoalId] = useState<number | null>(null);
+  const [currentDDuDuId, setCurrentDDuDuId] = useState(-1);
   const listRef = useRef<FlatList<MainDailyListType>>(null);
+
+  const { editorSheetState, handleOpenCreateEditor, handleOpenEditEditor, handleCloseEditor } =
+    useDDuDuEditorSheet();
 
   const {
     isToggle: isDDuDuSheetToggle,
@@ -70,28 +72,6 @@ function MainFeedItems({
     handleToggleOn: handleAlertModalToggleOn,
     handleToggleOff: handleAlertModalToggleOff,
   } = useToggle();
-
-  const handleSetCreateGoalId: Dispatch<SetStateAction<boolean>> = (value) => {
-    if (typeof value === "function") {
-      const nextValue = value(false);
-      if (!nextValue) {
-        setCreateGoalId(null);
-      }
-      return;
-    }
-
-    if (!value) {
-      setCreateGoalId(null);
-    }
-  };
-
-  const {
-    currentDDuDuId,
-    editDDuDuId,
-    setCurrentDDuDuId,
-    handleCloseDDuDuInput,
-    handleUpdateEditDDuDuId,
-  } = useDDuDuEdit({ setIsCreateDDuDu: handleSetCreateGoalId });
 
   const {
     selectedDate,
@@ -127,31 +107,6 @@ function MainFeedItems({
     handleDDuDuTimeSheetToggleOff,
   });
 
-  useEffect(() => {
-    setCreateGoalId(null);
-  }, [dailyList]);
-
-  const dduduItemHeight = useMemo(() => remToPx(3.2), []);
-  const dduduItemSpacing = useMemo(() => remToPx(1), []);
-
-  useEffect(() => {
-    if (!createGoalId) {
-      return;
-    }
-
-    const targetIndex = dailyList.findIndex((goalGroup) => goalGroup.goal.id === createGoalId);
-    if (targetIndex === -1) {
-      return;
-    }
-
-    requestAnimationFrame(() => {
-      listRef.current?.scrollToIndex({
-        index: targetIndex,
-        animated: true,
-        viewPosition: 1,
-      });
-    });
-  }, [createGoalId, dailyList]);
   const handleDDuDuSheetOpen = (id: number) => {
     setCurrentDDuDuId(id);
     handleDDuDuSheetToggleOn();
@@ -162,95 +117,100 @@ function MainFeedItems({
     handleDDuDuSheetToggleOff();
   };
 
-  const handleOpenDDuDuInput = (goal: MainDailyListType["goal"]) => {
+  const handleOpenCreateSheet = (goal: MainDailyListType["goal"]) => {
     if (goal.status === "DONE") {
       handleAlertModalToggleOn();
       return;
     }
 
-    setCreateGoalId(goal.id);
+    handleOpenCreateEditor(goal.id);
   };
 
-  const handleCloseInput = () => {
-    handleCloseDDuDuInput();
-    setCreateGoalId(null);
+  const handleEditDDuDu = (id: number) => {
+    handleDDuDuSheetToggleOff();
+    handleOpenEditEditor(id);
   };
 
   return (
-    <View className="mt-[0.8rem] px-4 flex-1">
+    <View className="mt-[0.8rem] flex-1 px-4">
       <Animated.View style={{ flex: 1 }}>
         <Animated.FlatList
           contentContainerStyle={{ marginTop: remToPx(0.8) }}
           ref={listRef}
           data={dailyList}
           keyExtractor={(item) => item.goal.id.toString()}
-          style={{ flex: 1, borderTopWidth: 1, borderTopColor: "rgba(255, 255, 255, 0.16)" }}
+          style={{ flex: 1 }}
           itemLayoutAnimation={LinearTransition.duration(180)}
           showsVerticalScrollIndicator={false}
           scrollEnabled={!isCalendarOpen}
           bounces={!isCalendarOpen}
           alwaysBounceVertical={!isCalendarOpen}
           overScrollMode="always"
-          ListEmptyComponent={() => <EmptyList text="No goals yet." />}
-          renderItem={({ item }) => (
-            <Animated.View entering={FadeInDown.duration(180)}>
-              <View
-                className="border rounded-radius10 p-3 mb-4"
-                style={{ borderColor: `#${item.goal.color}` }}
-              >
-                <GoalItem
-                  className="p-[1rem]"
-                  type="create"
-                  height={remToPx(1.8) + 15}
-                  goal={item.goal}
-                  onPress={() => handleOpenDDuDuInput(item.goal)}
-                />
+          ListEmptyComponent={() => <EmptyList text="목표를 먼저 생성해보세요." />}
+          renderItem={({ item }) => {
+            const groupBorderColor = hexConvertForRGBA({ hex: item.goal.color, alpha: 0.35 });
+            const thinBorderColor = hexConvertForRGBA({ hex: item.goal.color, alpha: 0.28 });
+            const emptyBackgroundColor = hexConvertForRGBA({ hex: item.goal.color, alpha: 0.12 });
+
+            return (
+              <Animated.View entering={FadeInDown.duration(180)}>
                 <View
-                  className="mx-[1rem] mb-[1rem]"
-                  style={{ borderBottomWidth: 1, borderBottomColor: "rgba(255, 255, 255, 0.14)" }}
-                />
-
-                {item.ddudus.length === 0 && <EmptyList text="아직 생성된 뚜두가 없어요" />}
-
-                {item.ddudus.map((dduduItem: MainDDuDusType) => (
-                  <Animated.View
-                    key={dduduItem.id}
-                    style={{ height: dduduItemHeight, marginBottom: dduduItemSpacing }}
+                  className="mb-4 overflow-hidden rounded-radius15 border-[0.16rem]"
+                  style={{ borderColor: groupBorderColor }}
+                >
+                  <View
+                    className="border-b-[0.16rem]"
+                    style={{ borderBottomColor: groupBorderColor }}
                   >
-                    {dduduItem.id === editDDuDuId ? (
-                      <MainDDuDuInput
-                        type="edit"
-                        goalId={item.goal.id}
-                        color={item.goal.color}
-                        dduduItem={dduduItem}
-                        selectedDDuDuDate={selectedDDuDuDate}
-                        onCloseDDuDuInput={handleCloseInput}
-                      />
-                    ) : (
-                      <MainDDuDuItem
-                        id={dduduItem.id}
-                        ddudu={dduduItem.name}
-                        status={dduduItem.status}
-                        color={item.goal.color}
-                        onDDuDuCompleteToggle={onDDuDuCompleteToggle}
-                        onTextPress={handleUpdateEditDDuDuId}
-                        handleToggleOn={() => handleDDuDuSheetOpen(dduduItem.id)}
-                      />
-                    )}
-                  </Animated.View>
-                ))}
+                    <GoalItem
+                      className="w-full"
+                      type="create"
+                      isRounded={false}
+                      height={remToPx(1.8) + 15}
+                      goal={item.goal}
+                      onPress={() => handleOpenCreateSheet(item.goal)}
+                    />
+                  </View>
 
-                {createGoalId === item.goal.id && (
-                  <MainDDuDuInput
-                    goalId={item.goal.id}
-                    color={item.goal.color}
-                    selectedDDuDuDate={selectedDDuDuDate}
-                    onCloseDDuDuInput={handleCloseInput}
-                  />
-                )}
-              </View>
-            </Animated.View>
-          )}
+                  <View>
+                    {item.ddudus.length === 0 && (
+                      <View style={{ backgroundColor: emptyBackgroundColor }}>
+                        <EmptyList
+                          text="아직 생성된 뚜두가 없어요."
+                          className="w-full items-center py-[2rem]"
+                          textClassName="mt-[0.8rem] text-size14 text-black_300"
+                          iconStroke="#8E8E93"
+                        />
+                      </View>
+                    )}
+
+                    {item.ddudus.map((dduduItem: MainDDuDusType, index: number) => {
+                      const showThinBorder = index !== item.ddudus.length - 1;
+
+                      return (
+                        <Animated.View
+                          key={dduduItem.id}
+                          style={{
+                            borderBottomWidth: showThinBorder ? 1 : 0,
+                            borderBottomColor: thinBorderColor,
+                          }}
+                        >
+                          <MainDDuDuItem
+                            id={dduduItem.id}
+                            ddudu={dduduItem.name}
+                            status={dduduItem.status}
+                            color={item.goal.color}
+                            onDDuDuCompleteToggle={onDDuDuCompleteToggle}
+                            handleToggleOn={() => handleDDuDuSheetOpen(dduduItem.id)}
+                          />
+                        </Animated.View>
+                      );
+                    })}
+                  </View>
+                </View>
+              </Animated.View>
+            );
+          }}
         />
       </Animated.View>
 
@@ -258,15 +218,15 @@ function MainFeedItems({
         <AlertModal
           isToggle={isAlertModalToggle}
           handleToggleOff={handleAlertModalToggleOff}
-          title="Alert"
-          message="This goal is already completed."
+          title="알림"
+          message="종료된 목표에는 뚜두를 추가할 수 없어요."
         />
       )}
 
       {isDDuDuSheetToggle && (
         <DDuDuSheet
           dduduId={currentDDuDuId}
-          handleEditDDuDu={handleUpdateEditDDuDuId}
+          handleEditDDuDu={handleEditDDuDu}
           onDeleteDDuDu={onDeleteDDuDu}
           handleDDuDuSheetToggleOff={handleDDuDuSheetToggleOff}
           handleSelectDifferentDate={handleSelectDifferentDate}
@@ -275,7 +235,19 @@ function MainFeedItems({
           onRepeatCurrentDate={onRepeatCurrentDate}
         />
       )}
+
+      {editorSheetState.isOpen && (
+        <DDuDuEditorSheet
+          mode={editorSheetState.mode}
+          goalId={editorSheetState.goalId}
+          dduduId={editorSheetState.dduduId}
+          selectedDate={selectedDDuDuDate}
+          onClose={handleCloseEditor}
+        />
+      )}
+
       {isAlarmSheetToggle && <AlarmSheet onClose={handleAlarmSheetToggleOff} />}
+
       {isCalendarSheetToggle && (
         <BottomSingleCalendar
           currentDate={currentDate}
@@ -285,6 +257,7 @@ function MainFeedItems({
           handleCalendarSheetToggleOff={handleCalendarSheetToggleOff}
         />
       )}
+
       {isDDuDuTimeSheetToggle && (
         <DDuDuTimeSheet
           currentDDuDuTime={currentDDuDuTime}

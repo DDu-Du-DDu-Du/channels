@@ -2,7 +2,7 @@ import { Pressable, View } from "react-native";
 
 import { PlusIcon } from "@/icons";
 import { GoalType } from "@/types/response/goal/goal";
-import { remToPx } from "@/utils";
+import { hexConvertForRGBA, remToPx } from "@/utils";
 
 import SpoqaText from "../spoqa-text/spoqa-text";
 import { useGoalItem } from "./hooks";
@@ -12,6 +12,7 @@ export interface GoalItemProps {
   type?: "create" | "management";
   goal: GoalType;
   height?: number;
+  isRounded?: boolean;
   onPress?: (id?: number) => void;
 }
 
@@ -20,26 +21,35 @@ function GoalItem({
   type = "management",
   goal,
   height = remToPx(1.8) + 15,
+  isRounded = true,
   onPress,
 }: GoalItemProps) {
   const { handlePress } = useGoalItem({ id: goal.id, onPress });
+  const isCreateType = type === "create";
+  const leftBackgroundColor = hexConvertForRGBA({ hex: goal.color, alpha: 0.12 });
+  const rightBackgroundColor = hexConvertForRGBA({ hex: goal.color, alpha: 0.2 });
+
   return (
-    <View className={`${className} flex-row items-center justify-between`}>
+    <View
+      className={`${className} w-full flex-row overflow-hidden ${isRounded ? "rounded-radius15" : ""}`}
+      style={{ height }}
+    >
       <View
-        className="inline-flex flex-row items-center px-[1.5rem]"
-        style={{ height: height }}
+        className={`justify-center px-[1.5rem] ${isCreateType ? "w-[80%]" : "w-full"}`}
+        style={{ backgroundColor: leftBackgroundColor }}
       >
         <SpoqaText
           weight="semiBold"
-          className="pr-[0.8rem] text-size15"
+          className="pr-[0.8rem] text-size16"
           style={{ color: `#${goal.color}` }}
         >
           {goal.name}
         </SpoqaText>
       </View>
-      {type === "create" && (
+      {isCreateType && (
         <Pressable
-          className="inline-flex items-center justify-center size-[2.3rem] bg-white_100 rounded-circle"
+          className="h-full w-[20%] items-center justify-center"
+          style={{ backgroundColor: rightBackgroundColor }}
           onPress={handlePress}
         >
           <PlusIcon
