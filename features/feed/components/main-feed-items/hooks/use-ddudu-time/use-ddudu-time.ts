@@ -12,11 +12,11 @@ const useDDuDuTime = ({
   handleDDuDuSheetToggleOff,
 }: UseDDuDuTimeProps) => {
   const [currentDDuDuTime, setCurrentDDuDuTime] = useState<DDuDuTimeType>({
-    beginAt: "",
-    endAt: "",
+    beginAt: null,
+    endAt: null,
   });
 
-  const handleDDuDuTimeSetting = (beginAt: string = "", endAt: string = "") => {
+  const handleDDuDuTimeSetting = (beginAt: string | null = null, endAt: string | null = null) => {
     setCurrentDDuDuTime({ beginAt, endAt });
     handleDDuDuTimeSheetToggleOn();
     handleDDuDuSheetToggleOff();

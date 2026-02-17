@@ -1,6 +1,6 @@
 export interface DDuDuTimeType {
-  beginAt: string;
-  endAt: string;
+  beginAt: string | null;
+  endAt: string | null;
 }
 
 export interface DDuDuTimeRangeType {
@@ -8,4 +8,6 @@ export interface DDuDuTimeRangeType {
   beginMin: number;
   endHour: number;
   endMin: number;
+  isBeginTimeEnabled: boolean;
+  isEndTimeEnabled: boolean;
 }

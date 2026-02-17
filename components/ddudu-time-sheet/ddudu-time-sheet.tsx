@@ -28,12 +28,12 @@ function DDuDuTimeSheet({
   currentDDuDuTime,
   onChangeDDuDuTime,
   onClose,
-  title = "\uB69C\uB450\uC2DC\uAC04 \uC124\uC815",
+  title = "뚜두시간 설정",
   showBackArrow = false,
   onPressBack,
-  confirmLabel = "\uD655\uC778",
-  defaultBeginTimeEnabled = true,
-  defaultEndTimeEnabled = true,
+  confirmLabel = "확인",
+  defaultBeginTimeEnabled,
+  defaultEndTimeEnabled,
   onChangeBeginTimeEnabled,
   onChangeEndTimeEnabled,
 }: DDuDuTimeSheetProps) {
@@ -52,8 +52,12 @@ function DDuDuTimeSheet({
     handleClearErrorMessage,
   } = useTimeUpdate({ currentDDuDuTime, onChangeDDuDuTime });
 
-  const [isBeginTimeEnabled, setIsBeginTimeEnabled] = useState(defaultBeginTimeEnabled);
-  const [isEndTimeEnabled, setIsEndTimeEnabled] = useState(defaultEndTimeEnabled);
+  const [isBeginTimeEnabled, setIsBeginTimeEnabled] = useState(
+    defaultBeginTimeEnabled ?? Boolean(currentDDuDuTime.beginAt),
+  );
+  const [isEndTimeEnabled, setIsEndTimeEnabled] = useState(
+    defaultEndTimeEnabled ?? Boolean(currentDDuDuTime.endAt),
+  );
 
   useEffect(() => {
     openSheet();
@@ -91,14 +95,28 @@ function DDuDuTimeSheet({
 
   const handleConfirm = () => {
     if (!isBeginTimeEnabled) {
-      onChangeDDuDuTime({ beginHour, beginMin, endHour, endMin });
+      onChangeDDuDuTime({
+        beginHour,
+        beginMin,
+        endHour,
+        endMin,
+        isBeginTimeEnabled: false,
+        isEndTimeEnabled: false,
+      });
       closeSheet();
       onClose();
       return;
     }
 
     if (!isEndTimeEnabled) {
-      onChangeDDuDuTime({ beginHour, beginMin, endHour: beginHour, endMin: beginMin });
+      onChangeDDuDuTime({
+        beginHour,
+        beginMin,
+        endHour,
+        endMin,
+        isBeginTimeEnabled: true,
+        isEndTimeEnabled: false,
+      });
       closeSheet();
       onClose();
       return;
@@ -144,10 +162,10 @@ function DDuDuTimeSheet({
             </SpoqaText>
           </View>
 
-          <View className="flex-row flex-wrap justify-center gap-[1.5rem] rounded-radius10 bg-white_100 p-[1.6rem]">
+          <View className="flex-row justify-center gap-[1rem] rounded-radius10 bg-white_100 p-[1.6rem]">
             <View className="mr-[1rem]">
               <View className="mb-[1rem] flex-row items-center gap-[0.8rem]">
-                <SpoqaText className="text-size13">{"\uC2DC\uC791\uC2DC\uAC04"}</SpoqaText>
+                <SpoqaText className="text-size13">시작시간</SpoqaText>
                 <Switch
                   value={isBeginTimeEnabled}
                   onValueChange={handleToggleBeginTime}
@@ -177,7 +195,7 @@ function DDuDuTimeSheet({
 
             <View>
               <View className="mb-[1rem] flex-row items-center gap-[0.8rem]">
-                <SpoqaText className="text-size13">{"\uC885\uB8CC\uC2DC\uAC04"}</SpoqaText>
+                <SpoqaText className="text-size13">종료시간</SpoqaText>
                 <Switch
                   value={isEndTimeEnabled}
                   onValueChange={handleToggleEndTime}

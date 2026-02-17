@@ -17,15 +17,25 @@ const useTimeUpdate = ({ currentDDuDuTime, onChangeDDuDuTime }: UseTimeUpdatePro
   const [endMin, setEndMin] = useState(0);
 
   useEffect(() => {
-    if (!beginAt || !endAt) {
+    if (!beginAt) {
+      setBeginHour(0);
+      setBeginMin(0);
+      setEndHour(0);
+      setEndMin(0);
       return;
     }
 
     const [beginHour, beginMin] = beginAt.split(":").map(Number);
-    const [endHour, endMin] = endAt.split(":").map(Number);
-
     setBeginHour(beginHour);
     setBeginMin(beginMin);
+
+    if (!endAt) {
+      setEndHour(beginHour);
+      setEndMin(beginMin);
+      return;
+    }
+
+    const [endHour, endMin] = endAt.split(":").map(Number);
     setEndHour(endHour);
     setEndMin(endMin);
   }, [beginAt, endAt]);
@@ -40,7 +50,14 @@ const useTimeUpdate = ({ currentDDuDuTime, onChangeDDuDuTime }: UseTimeUpdatePro
     }
 
     setIsErrorMessage(false);
-    onChangeDDuDuTime({ beginHour, beginMin, endHour, endMin });
+    onChangeDDuDuTime({
+      beginHour,
+      beginMin,
+      endHour,
+      endMin,
+      isBeginTimeEnabled: true,
+      isEndTimeEnabled: true,
+    });
     return true;
   };
 

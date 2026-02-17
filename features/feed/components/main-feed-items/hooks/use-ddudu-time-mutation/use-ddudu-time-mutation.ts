@@ -28,38 +28,48 @@ const useDDuDuTimeMutation = ({
       queryClient.refetchQueries({ queryKey: [FEED_KEY.DDUDU_DETAIL] });
       queryClient.refetchQueries({ queryKey: [FEED_KEY.DAILY_TIMETABLE] });
       queryClient.refetchQueries({ queryKey: [FEED_KEY.DAILY_TIMETABLE, selectedDDuDuDate] });
-      handleUpdateDDuDuTime({ beginAt: "", endAt: "" });
+      handleUpdateDDuDuTime({ beginAt: null, endAt: null });
       handleDDuDuTimeSheetToggleOff();
     },
   });
 
   const onChangeDDuDuTime = (selectedTime: DDuDuTimeRangeType) => {
-    const { beginHour, beginMin, endHour, endMin } = selectedTime;
+    const { beginHour, beginMin, endHour, endMin, isBeginTimeEnabled, isEndTimeEnabled } =
+      selectedTime;
+
+    if (!isBeginTimeEnabled) {
+      if (currentDDuDuTime.beginAt === null && currentDDuDuTime.endAt === null) {
+        handleDDuDuTimeSheetToggleOff();
+        return;
+      }
+
+      dduduChangeTimeMutation.mutate({
+        time: {
+          beginAt: null,
+          endAt: null,
+        },
+        id: currentDDuDuId,
+      });
+      return;
+    }
+
+    const beginAt = `${beginHour < 10 ? `0${beginHour}` : beginHour}:${
+      beginMin < 10 ? `0${beginMin}` : beginMin
+    }:00`;
+    const endAt = isEndTimeEnabled
+      ? `${endHour < 10 ? `0${endHour}` : endHour}:${endMin < 10 ? `0${endMin}` : endMin}:00`
+      : null;
     const time = {
-      beginAt: `${beginHour < 10 ? `0${beginHour}` : beginHour}:${
-        beginMin < 10 ? `0${beginMin}` : beginMin
-      }:00`,
-      endAt: `${endHour < 10 ? `0${endHour}` : endHour}:${endMin < 10 ? `0${endMin}` : endMin}:00`,
+      beginAt,
+      endAt,
     };
 
-    if (!currentDDuDuTime.beginAt || !currentDDuDuTime.endAt) {
-      if (beginHour === 0 && beginMin === 0 && endHour === 0 && endMin === 0) {
-        handleDDuDuTimeSheetToggleOff();
-        return;
-      }
-    } else {
-      const [currentBeginHour, currentBeginMin] = currentDDuDuTime.beginAt.split(":").map(Number);
-      const [currentEndHour, currentEndMin] = currentDDuDuTime.endAt.split(":").map(Number);
+    const isSameAsCurrent =
+      currentDDuDuTime.beginAt === time.beginAt && currentDDuDuTime.endAt === time.endAt;
 
-      if (
-        beginHour === currentBeginHour &&
-        beginMin === currentBeginMin &&
-        endHour === currentEndHour &&
-        endMin === currentEndMin
-      ) {
-        handleDDuDuTimeSheetToggleOff();
-        return;
-      }
+    if (isSameAsCurrent) {
+      handleDDuDuTimeSheetToggleOff();
+      return;
     }
 
     dduduChangeTimeMutation.mutate({

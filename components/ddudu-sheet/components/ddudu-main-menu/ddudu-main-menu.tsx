@@ -38,13 +38,7 @@ function DDuDuMainMenu({
   };
 
   const handleDDuDuTimeChange = () => {
-    if (beginAt && endAt) {
-      handleDDuDuTimeSetting(beginAt, endAt);
-
-      return;
-    }
-
-    handleDDuDuTimeSetting();
+    handleDDuDuTimeSetting(beginAt ?? undefined, endAt ?? undefined);
   };
 
   return (
