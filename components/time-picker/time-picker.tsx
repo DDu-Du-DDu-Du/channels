@@ -21,7 +21,7 @@ function TimePicker({
   width = Platform.OS === "web" ? 72 : 50,
   itemHeight = 40,
   label,
-  days = 999,
+  days = 99,
 }: TimePickerProps) {
   const data: number[] = (() => {
     const length = type === "hour" ? 24 : type === "min" ? 60 : days;
