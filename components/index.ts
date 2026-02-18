@@ -32,6 +32,7 @@ export { default as PrivacySheet } from "./privacy-sheet/privacy-sheet";
 export { default as SelectChip } from "./select-chip/select-chip";
 export { default as SelectOption } from "./select-option/select-option";
 export { default as SheetButton } from "./sheet-button/sheet-button";
+export { default as ShakingCheckIcon } from "./shaking-check-icon/shaking-check-icon";
 export { default as TextInput } from "./text-input/text-input";
 export { default as TimePicker } from "./time-picker/time-picker";
 export { default as TimeSet } from "./time-set/time-set";
