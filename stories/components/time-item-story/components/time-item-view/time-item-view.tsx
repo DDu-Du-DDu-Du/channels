@@ -10,6 +10,7 @@ export interface TimeItemViewProps {
   beginAt?: string;
   endAt?: string;
   color?: string;
+  isFirstItem?: boolean;
   isLastItem?: boolean;
   onDDuDuCompleteToggle?: TimeItemProps["onDDuDuCompleteToggle"];
   onDDuDuSheetOpen?: TimeItemProps["onDDuDuSheetOpen"];
@@ -22,6 +23,7 @@ function TimeItemView({
   beginAt = "09:00",
   endAt = "10:00",
   color = "1363DE",
+  isFirstItem = false,
   isLastItem = false,
   onDDuDuCompleteToggle,
   onDDuDuSheetOpen,
@@ -40,6 +42,7 @@ function TimeItemView({
     <View className="flex-1 items-center justify-center w-full p-4">
       <TimeItem
         ddudu={ddudu}
+        isFirstItem={isFirstItem}
         isLastItem={isLastItem}
         onDDuDuCompleteToggle={onDDuDuCompleteToggle ?? (() => {})}
         onDDuDuSheetOpen={onDDuDuSheetOpen ?? (() => {})}

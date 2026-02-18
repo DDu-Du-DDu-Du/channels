@@ -1,18 +1,36 @@
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 
-import { SpoqaText } from "@/components";
+import { ShakingCheckIcon, SpoqaText } from "@/components";
 import MotionPressable from "@/components/motion/motion-pressable/motion-pressable";
+import LineBox from "@/components/timeline/components/line-box/line-box";
 import type { MainTimeTableDDuDuType } from "@/types/response/feed/feed";
+import { hexConvertForRGBA } from "@/utils";
 
 export interface TimeItemProps {
   ddudu: MainTimeTableDDuDuType;
+  isFirstItem: boolean;
   isLastItem: boolean;
   onDDuDuCompleteToggle: (id: number) => void;
   onDDuDuSheetOpen: (id: number) => void;
 }
 
-function TimeItem({ ddudu, isLastItem, onDDuDuCompleteToggle, onDDuDuSheetOpen }: TimeItemProps) {
+export const TIME_ITEM_CARD_GAP = 5;
+export const TIME_ITEM_BOUNDARY_GAP = TIME_ITEM_CARD_GAP * 3;
+
+function TimeItem({
+  ddudu,
+  isFirstItem,
+  isLastItem,
+  onDDuDuCompleteToggle,
+  onDDuDuSheetOpen,
+}: TimeItemProps) {
   const { id, name, status, beginAt, endAt, color } = ddudu;
+  const isComplete = status === "COMPLETE";
+  const cardBorderColor = hexConvertForRGBA({ hex: color, alpha: 0.32 });
+  const iconCenterOffset =
+    (isFirstItem ? TIME_ITEM_BOUNDARY_GAP / 2 : 0) -
+    (isLastItem ? TIME_ITEM_BOUNDARY_GAP / 2 : 0) -
+    (!isLastItem ? TIME_ITEM_CARD_GAP / 2 : 0);
 
   const handleDDuDuCompleteToggle = () => {
     onDDuDuCompleteToggle(id);
@@ -22,38 +40,62 @@ function TimeItem({ ddudu, isLastItem, onDDuDuCompleteToggle, onDDuDuSheetOpen }
     onDDuDuSheetOpen(id);
   };
 
-  const isComplete = status === "COMPLETE";
-
   return (
-    <View className="relative w-full">
-      <View className="absolute right-[100%] top-0 flex h-full w-[5rem] items-center justify-center">
-        <View className="absolute top-0 z-timeline_icon flex h-[5.7rem] items-center justify-center">
-          <Pressable
-            className="flex h-[2.2rem] w-[2.2rem] items-center justify-center rounded-circle"
-            style={{ backgroundColor: `#${color}` }}
-            onPress={handleDDuDuCompleteToggle}
-          >
-            <View className="flex h-[1.6rem] w-[1.6rem] items-center justify-center rounded-circle bg-white_100">
-              {isComplete && (
-                <View
-                  className="h-[1.2rem] w-[1.2rem] rounded-circle"
-                  style={{ backgroundColor: `#${color}` }}
-                />
-              )}
-            </View>
-          </Pressable>
+    <View
+      className="relative w-full"
+      style={{
+        paddingTop: isFirstItem ? TIME_ITEM_BOUNDARY_GAP : 0,
+        paddingBottom: isLastItem ? TIME_ITEM_BOUNDARY_GAP : 0,
+      }}
+    >
+      <View className="absolute right-[100%] top-0 h-full w-[5rem] items-center justify-center">
+        <View
+          className="absolute top-0 w-full z-timeline_line"
+          style={{ height: "50%" }}
+        >
+          {isFirstItem ? (
+            <LineBox
+              color={color}
+              mode="inline"
+            />
+          ) : (
+            <View
+              className="mx-auto h-full w-[0.2rem]"
+              style={{ backgroundColor: `#${color}` }}
+            />
+          )}
         </View>
 
-        {!isLastItem && (
-          <View
-            className="absolute top-[3rem] z-timeline_line w-[0.2rem]"
-            style={{
-              height: "100%",
-              backgroundColor: "#D9D9D9",
-            }}
+        <View
+          className="absolute inset-0 z-timeline_icon items-center justify-center"
+          style={{ transform: [{ translateY: iconCenterOffset }] }}
+        >
+          <ShakingCheckIcon
+            isChecked={isComplete}
+            color={color}
+            size={27}
+            onPress={handleDDuDuCompleteToggle}
           />
-        )}
+        </View>
+
+        <View
+          className="absolute bottom-0 w-full z-timeline_line"
+          style={{ height: "50%" }}
+        >
+          {isLastItem ? (
+            <LineBox
+              color={color}
+              mode="inline"
+            />
+          ) : (
+            <View
+              className="mx-auto h-full w-[0.2rem]"
+              style={{ backgroundColor: `#${color}` }}
+            />
+          )}
+        </View>
       </View>
+
       <MotionPressable
         whileTap={{ scale: 0.95 }}
         highlightColor={`#${color}`}
@@ -61,7 +103,13 @@ function TimeItem({ ddudu, isLastItem, onDDuDuCompleteToggle, onDDuDuSheetOpen }
         highlightTapOpacity={0.2}
         onPress={handleDDuDuSheetOpen}
       >
-        <View className="w-full min-h-[5.7rem] flex flex-col rounded-radius15 px-[1.6rem] py-[1.2rem]">
+        <View
+          className="w-full min-h-[5.7rem] flex-col rounded-radius15 border bg-white_100 px-[1.6rem] py-[1.2rem]"
+          style={{
+            borderColor: cardBorderColor,
+            marginBottom: isLastItem ? 0 : TIME_ITEM_CARD_GAP,
+          }}
+        >
           <SpoqaText className="text-size14">{name}</SpoqaText>
           <SpoqaText className="text-size11 text-example_gray_800">
             {beginAt && endAt ? `${beginAt} - ${endAt}` : ""}
