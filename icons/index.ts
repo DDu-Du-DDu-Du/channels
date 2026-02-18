@@ -25,3 +25,5 @@ export { default as KakaoLoginIcon } from "./kakao-login-icon/kakao-login-icon";
 export { default as AddListIcon } from "./add-list-icon/add-list-icon";
 export { default as SettingsIcon } from "./settings-icon/settings-icon";
 export { default as ExclamationIcon } from "./exclamation-icon/exclamation-icon";
+export { default as SearchIcon } from "./search-icon/search-icon";
+export { default as TimelineIcon } from "./timeline-icon/timeline-icon";
