@@ -15,6 +15,10 @@ export const FEED_KEY = {
   DDUDU_DETAIL: "dduduDetail",
 };
 
+export const DDUDU_KEY = {
+  SEARCH: "dduduSearch",
+};
+
 export const QUERY_KEY = {
   CREATE: "create",
   EDIT: "edit",

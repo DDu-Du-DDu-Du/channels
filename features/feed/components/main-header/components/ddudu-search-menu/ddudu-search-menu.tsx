@@ -2,8 +2,14 @@ import { Pressable } from "react-native";
 
 import { SearchIcon } from "@/icons";
 
+import { useRouter } from "expo-router";
+
 function DDuDuSearchMenu() {
-  const handlePressDDuDuSearchMenu = () => {};
+  const router = useRouter();
+
+  const handlePressDDuDuSearchMenu = () => {
+    router.push("/ddudu");
+  };
 
   return (
     <Pressable
