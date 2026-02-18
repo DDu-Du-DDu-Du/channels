@@ -2,15 +2,19 @@ import React from "react";
 import Svg, { Path } from "react-native-svg";
 
 export interface IconProps {
+  size?: number;
   fill?: string;
   className?: string;
 }
 
-function ListIcon({ fill = "black", className }: IconProps) {
+function ListIcon({ size = 18, fill = "black", className }: IconProps) {
+  const width = size;
+  const height = (size * 12) / 18;
+
   return (
     <Svg
-      width={18}
-      height={12}
+      width={width}
+      height={height}
       viewBox="0 0 18 12"
       fill={fill}
       className={className}
