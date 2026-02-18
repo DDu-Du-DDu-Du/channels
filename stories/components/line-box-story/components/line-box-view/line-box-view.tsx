@@ -8,6 +8,9 @@ function LineBoxView() {
       <View className="h-[12rem] w-full max-w-[20rem] bg-example_gray_100">
         <LineBox />
       </View>
+      <View className="mt-4 h-[12rem] w-full max-w-[20rem] bg-example_gray_100">
+        <LineBox color="1363DE" />
+      </View>
     </View>
   );
 }
