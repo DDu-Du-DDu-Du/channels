@@ -20,7 +20,7 @@ interface UseFeedDateTypeResult {
 }
 
 const useFeedDateType = ({ view, onSelectDate }: UseFeedDateTypeProps): UseFeedDateTypeResult => {
-  const type: PeriodType = view === "ddudu" ? "MONTH" : "WEEK";
+  const type: PeriodType = view === "list" ? "MONTH" : "WEEK";
   const today = useMemo(() => formatDateToYYYYMMDD(new Date()), []);
   const [selectedDate, setSelectedDate] = useState(today);
   const yearMonth = useMemo(() => selectedDate.slice(0, 7), [selectedDate]);
