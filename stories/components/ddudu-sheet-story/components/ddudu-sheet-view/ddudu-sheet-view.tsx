@@ -14,9 +14,10 @@ export interface DDuDuSheetViewProps {
   onDeleteDDuDu?: (id: number) => void;
   handleDDuDuSheetToggleOff?: () => void;
   handleSelectDifferentDate?: (type: "change" | "repeat", currentDate: string) => void;
-  handleAlarmSetting?: () => void;
+  handleAlarmSetting?: (hasBeginAt: boolean) => void;
   handleDDuDuTimeSetting?: (beginAt?: string, endAt?: string) => void;
   onRepeatCurrentDate?: () => void;
+  onChangeCurrentDate?: () => void;
 }
 
 function DDuDuSheetView({
@@ -29,6 +30,7 @@ function DDuDuSheetView({
   handleAlarmSetting,
   handleDDuDuTimeSetting,
   onRepeatCurrentDate,
+  onChangeCurrentDate,
 }: DDuDuSheetViewProps) {
   const [open, setOpen] = useState(false);
   const [queryClient] = useState(() => new QueryClient());
@@ -68,9 +70,10 @@ function DDuDuSheetView({
               setOpen(false);
             }}
             handleSelectDifferentDate={(t, d) => handleSelectDifferentDate?.(t, d)}
-            handleAlarmSetting={() => handleAlarmSetting?.()}
+            handleAlarmSetting={(hasBeginAt) => handleAlarmSetting?.(hasBeginAt)}
             handleDDuDuTimeSetting={(b?, e?) => handleDDuDuTimeSetting?.(b, e)}
             onRepeatCurrentDate={() => onRepeatCurrentDate?.()}
+            onChangeCurrentDate={() => onChangeCurrentDate?.()}
           />
         </QueryClientProvider>
       )}

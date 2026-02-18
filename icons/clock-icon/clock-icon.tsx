@@ -33,8 +33,8 @@ function ClockIcon({ size = 24, fill = "#A8D86F", className }: IconProps) {
       <Defs>
         <ClipPath id="clip0">
           <Rect
-            width="24"
-            height="24"
+            width={size}
+            height={size}
             fill="white"
           />
         </ClipPath>

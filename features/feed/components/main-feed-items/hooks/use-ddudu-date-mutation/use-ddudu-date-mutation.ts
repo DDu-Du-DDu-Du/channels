@@ -73,9 +73,25 @@ const useDDuDuDateMutation = ({
     });
   };
 
+  const onChangeCurrentDate = () => {
+    dduduChangeDateMutation.mutate(
+      {
+        id: currentDDuDuId,
+        date: formatDateToYYYYMMDD(new Date()),
+      },
+      {
+        onSuccess: () => {
+          handleSuccessDate();
+          handleDDuDuSheetToggleOff();
+        },
+      },
+    );
+  };
+
   return {
     onChangeDDuDuDate,
     onRepeatCurrentDate,
+    onChangeCurrentDate,
   };
 };
 

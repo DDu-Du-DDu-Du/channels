@@ -10,7 +10,7 @@ export interface IconProps {
 function DeleteIcon({ size = 24, fill = "#ED4044", className }: IconProps) {
   return (
     <Svg
-      width={20}
+      width={size}
       height={size}
       viewBox="0 0 20 24"
       fill="none"

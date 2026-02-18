@@ -38,6 +38,7 @@ function MainFeedItems({
   isCalendarOpen = true,
 }: MainFeedItemsProps) {
   const [currentDDuDuId, setCurrentDDuDuId] = useState(-1);
+  const [hasAlarmBeginAt, setHasAlarmBeginAt] = useState(true);
   const listRef = useRef<FlatList<MainDailyListType>>(null);
 
   const { editorSheetState, handleOpenCreateEditor, handleOpenEditEditor, handleCloseEditor } =
@@ -91,7 +92,7 @@ function MainFeedItems({
     handleDDuDuSheetToggleOff,
   });
 
-  const { onChangeDDuDuDate, onRepeatCurrentDate } = useDDuDuDateMutation({
+  const { onChangeDDuDuDate, onRepeatCurrentDate, onChangeCurrentDate } = useDDuDuDateMutation({
     currentDDuDuId,
     currentCalendarType,
     handleSelectedDate,
@@ -112,7 +113,8 @@ function MainFeedItems({
     handleDDuDuSheetToggleOn();
   };
 
-  const handleAlarmSetting = () => {
+  const handleAlarmSetting = (hasBeginAt: boolean) => {
+    setHasAlarmBeginAt(hasBeginAt);
     handleAlarmSheetToggleOn();
     handleDDuDuSheetToggleOff();
   };
@@ -233,6 +235,7 @@ function MainFeedItems({
           handleAlarmSetting={handleAlarmSetting}
           handleDDuDuTimeSetting={handleDDuDuTimeSetting}
           onRepeatCurrentDate={onRepeatCurrentDate}
+          onChangeCurrentDate={onChangeCurrentDate}
         />
       )}
 
@@ -246,7 +249,12 @@ function MainFeedItems({
         />
       )}
 
-      {isAlarmSheetToggle && <AlarmSheet onClose={handleAlarmSheetToggleOff} />}
+      {isAlarmSheetToggle && (
+        <AlarmSheet
+          onClose={handleAlarmSheetToggleOff}
+          hasBeginTime={hasAlarmBeginAt}
+        />
+      )}
 
       {isCalendarSheetToggle && (
         <BottomSingleCalendar

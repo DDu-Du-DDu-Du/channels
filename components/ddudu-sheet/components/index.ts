@@ -1,2 +1,2 @@
-export { default as DDuDuMainMenu } from "./ddudu-main-menu/ddudu-main-menu";
-export { default as DDuDuSubMenu } from "./ddudu-sub-menu/ddudu-sub-menu";
+export { default as DDuDuActionGrid } from "./ddudu-action-grid/ddudu-action-grid";
+export { default as DDuDuFixedRows } from "./ddudu-fixed-rows/ddudu-fixed-rows";
