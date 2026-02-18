@@ -1,7 +1,5 @@
-import { useRef, useState } from "react";
-import type { FlatList } from "react-native";
+import { useState } from "react";
 import { View } from "react-native";
-import Animated, { FadeInDown, LinearTransition } from "react-native-reanimated";
 
 import {
   AlarmSheet,
@@ -9,15 +7,13 @@ import {
   BottomSingleCalendar,
   DDuDuSheet,
   DDuDuTimeSheet,
-  EmptyList,
-  GoalItem,
 } from "@/components";
 import { DDuDuEditorSheet, useDDuDuEditorSheet } from "@/features/ddudu";
+import type { MainFeedView } from "@/features/feed/components/main-feed/main-feed";
 import { useToggle } from "@/hooks";
-import type { MainDDuDusType, MainDailyListType } from "@/types/response/feed/feed";
-import { hexConvertForRGBA, remToPx } from "@/utils";
+import type { MainDailyListType, MainDailyTimeTableType } from "@/types/response/feed/feed";
 
-import { MainDDuDuItem } from "./components";
+import { MainFeedListItems, MainFeedTimelineItems } from "./components";
 import {
   useDDuDuDate,
   useDDuDuDateMutation,
@@ -27,19 +23,24 @@ import {
 } from "./hooks";
 
 export interface MainFeedItemsProps {
+  view: MainFeedView;
   dailyList: MainDailyListType[];
+  dailyTimeTable?: MainDailyTimeTableType;
+  isDailyTimeTableLoading?: boolean;
   selectedDDuDuDate: string;
   isCalendarOpen?: boolean;
 }
 
 function MainFeedItems({
+  view,
   dailyList,
+  dailyTimeTable,
+  isDailyTimeTableLoading = false,
   selectedDDuDuDate,
   isCalendarOpen = true,
 }: MainFeedItemsProps) {
   const [currentDDuDuId, setCurrentDDuDuId] = useState(-1);
   const [hasAlarmBeginAt, setHasAlarmBeginAt] = useState(true);
-  const listRef = useRef<FlatList<MainDailyListType>>(null);
 
   const { editorSheetState, handleOpenCreateEditor, handleOpenEditEditor, handleCloseEditor } =
     useDDuDuEditorSheet();
@@ -135,86 +136,23 @@ function MainFeedItems({
 
   return (
     <View className="mt-[0.8rem] flex-1 px-4">
-      <Animated.View style={{ flex: 1 }}>
-        <Animated.FlatList
-          contentContainerStyle={{ marginTop: remToPx(0.8) }}
-          ref={listRef}
-          data={dailyList}
-          keyExtractor={(item) => item.goal.id.toString()}
-          style={{ flex: 1 }}
-          itemLayoutAnimation={LinearTransition.duration(180)}
-          showsVerticalScrollIndicator={false}
-          scrollEnabled={!isCalendarOpen}
-          bounces={!isCalendarOpen}
-          alwaysBounceVertical={!isCalendarOpen}
-          overScrollMode="always"
-          ListEmptyComponent={() => <EmptyList text="목표를 먼저 생성해보세요." />}
-          renderItem={({ item }) => {
-            const groupBorderColor = hexConvertForRGBA({ hex: item.goal.color, alpha: 0.35 });
-            const thinBorderColor = hexConvertForRGBA({ hex: item.goal.color, alpha: 0.28 });
-            const emptyBackgroundColor = hexConvertForRGBA({ hex: item.goal.color, alpha: 0.12 });
-
-            return (
-              <Animated.View entering={FadeInDown.duration(180)}>
-                <View
-                  className="mb-4 overflow-hidden rounded-radius15 border-[0.16rem]"
-                  style={{ borderColor: groupBorderColor }}
-                >
-                  <View
-                    className="border-b-[0.16rem]"
-                    style={{ borderBottomColor: groupBorderColor }}
-                  >
-                    <GoalItem
-                      className="w-full"
-                      type="create"
-                      isRounded={false}
-                      height={remToPx(1.8) + 15}
-                      goal={item.goal}
-                      onPress={() => handleOpenCreateSheet(item.goal)}
-                    />
-                  </View>
-
-                  <View>
-                    {item.ddudus.length === 0 && (
-                      <View style={{ backgroundColor: emptyBackgroundColor }}>
-                        <EmptyList
-                          text="아직 생성된 뚜두가 없어요."
-                          className="w-full items-center py-[2rem]"
-                          textClassName="mt-[0.8rem] text-size14 text-black_300"
-                          iconStroke="#8E8E93"
-                        />
-                      </View>
-                    )}
-
-                    {item.ddudus.map((dduduItem: MainDDuDusType, index: number) => {
-                      const showThinBorder = index !== item.ddudus.length - 1;
-
-                      return (
-                        <Animated.View
-                          key={dduduItem.id}
-                          style={{
-                            borderBottomWidth: showThinBorder ? 1 : 0,
-                            borderBottomColor: thinBorderColor,
-                          }}
-                        >
-                          <MainDDuDuItem
-                            id={dduduItem.id}
-                            ddudu={dduduItem.name}
-                            status={dduduItem.status}
-                            color={item.goal.color}
-                            onDDuDuCompleteToggle={onDDuDuCompleteToggle}
-                            handleToggleOn={() => handleDDuDuSheetOpen(dduduItem.id)}
-                          />
-                        </Animated.View>
-                      );
-                    })}
-                  </View>
-                </View>
-              </Animated.View>
-            );
-          }}
+      {view === "timeline" ? (
+        <MainFeedTimelineItems
+          dailyTimeTable={dailyTimeTable}
+          isDailyTimeTableLoading={isDailyTimeTableLoading}
+          isCalendarOpen={isCalendarOpen}
+          onDDuDuCompleteToggle={onDDuDuCompleteToggle}
+          onDDuDuSheetOpen={handleDDuDuSheetOpen}
         />
-      </Animated.View>
+      ) : (
+        <MainFeedListItems
+          dailyList={dailyList}
+          isCalendarOpen={isCalendarOpen}
+          onDDuDuCompleteToggle={onDDuDuCompleteToggle}
+          onDDuDuSheetOpen={handleDDuDuSheetOpen}
+          onOpenCreateSheet={handleOpenCreateSheet}
+        />
+      )}
 
       {isAlertModalToggle && (
         <AlertModal

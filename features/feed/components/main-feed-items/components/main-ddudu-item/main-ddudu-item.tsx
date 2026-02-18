@@ -1,15 +1,7 @@
-import { useEffect } from "react";
 import { Pressable, View } from "react-native";
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withSequence,
-  withTiming,
-} from "react-native-reanimated";
 
-import { SpoqaText } from "@/components";
-import { CheckIcon, OptionIcon } from "@/icons";
+import { ShakingCheckIcon, SpoqaText } from "@/components";
+import { OptionIcon } from "@/icons";
 import { hexConvertForRGBA } from "@/utils";
 
 export interface MainDDuDuItemProps {
@@ -37,25 +29,8 @@ function MainDDuDuItem({
     onTextPress?.(id);
   };
 
-  const checkRotate = useSharedValue(0);
-
-  useEffect(() => {
-    checkRotate.value = 0;
-  }, [checkRotate, isComplete]);
-
-  const checkboxIconStyle = useAnimatedStyle(() => ({
-    transform: [{ rotate: `${checkRotate.value}deg` }],
-  }));
-
   const handlePressComplete = () => {
     onDDuDuCompleteToggle(id);
-    checkRotate.value = withSequence(
-      withTiming(-8, { duration: 140, easing: Easing.out(Easing.quad) }),
-      withTiming(8, { duration: 160, easing: Easing.out(Easing.quad) }),
-      withTiming(-5, { duration: 130, easing: Easing.out(Easing.quad) }),
-      withTiming(5, { duration: 120, easing: Easing.out(Easing.quad) }),
-      withTiming(0, { duration: 150, easing: Easing.out(Easing.quad) }),
-    );
   };
 
   const leftBackgroundColor = hexConvertForRGBA({ hex: color, alpha: 0.12 });
@@ -68,19 +43,14 @@ function MainDDuDuItem({
         style={{ backgroundColor: leftBackgroundColor }}
         onPress={handleEditMode}
       >
-        <Pressable
-          accessibilityRole="checkbox"
-          accessibilityState={{ checked: isComplete }}
-          className="w-[25%] items-center justify-center py-[0.9rem]"
-          onPress={handlePressComplete}
-        >
-          <Animated.View style={checkboxIconStyle}>
-            <CheckIcon
-              size={24}
-              fill={isComplete ? `#${color}` : "#D9D9D9"}
-            />
-          </Animated.View>
-        </Pressable>
+        <View className="w-[25%] items-center justify-center py-[0.9rem]">
+          <ShakingCheckIcon
+            isChecked={isComplete}
+            color={color}
+            size={24}
+            onPress={handlePressComplete}
+          />
+        </View>
         <View className="w-[75%] py-[0.9rem] pl-[0.6rem] pr-[1.1rem]">
           <SpoqaText
             weight="regular"

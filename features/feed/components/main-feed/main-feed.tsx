@@ -7,17 +7,35 @@ import { FEED_KEY } from "@/constants/query-key/query-key";
 import FeedCalendar from "@/features/feed/components/feed-calendar/feed-calendar";
 import MainFeedItems from "@/features/feed/components/main-feed-items/main-feed-items";
 import { useMe } from "@/features/user";
-import { getDailyList, getPeriodDDuDus } from "@/service/feed/feed";
+import { getDailyList, getDailyTimeTable, getPeriodDDuDus } from "@/service/feed/feed";
 import { useAuthStore } from "@/stores";
-import type { MainDailyListType, MonthlyWeeklyDDuDuType } from "@/types/response/feed/feed";
+import type {
+  MainDailyListType,
+  MainDailyTimeTableType,
+  MonthlyWeeklyDDuDuType,
+} from "@/types/response/feed/feed";
 import { formatDateToYYYYMMDD } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
 
-export type MainFeedView = "ddudu" | "schedule";
+import { useLocalSearchParams } from "expo-router";
+
+export type MainFeedView = "list" | "timeline";
 
 export interface MainFeedProps {
   onSelectDate?: (date: string) => void;
 }
+
+const toSingleParam = (value: string | string[] | undefined) => {
+  if (Array.isArray(value)) {
+    return value[0];
+  }
+
+  return value;
+};
+
+const resolveFeedView = (view: string | undefined): MainFeedView => {
+  return view === "timeline" ? "timeline" : "list";
+};
 
 const sortByGoalStatus = (list: MainDailyListType[]) =>
   list.sort((a, b) => {
@@ -33,6 +51,8 @@ const sortByGoalStatus = (list: MainDailyListType[]) =>
   });
 
 function MainFeed({ onSelectDate }: MainFeedProps) {
+  const params = useLocalSearchParams<{ view?: string | string[] }>();
+  const view = resolveFeedView(toSingleParam(params.view));
   const hasTokens = useAuthStore((state) => state.accessToken && state.refreshToken);
   const { data: user } = useMe({ readOnly: true });
   const today = useMemo(() => formatDateToYYYYMMDD(new Date()), []);
@@ -70,6 +90,17 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
     select: sortByGoalStatus,
     enabled: isSessionReady,
   });
+
+  const { data: dailyTimeTable, isLoading: isDailyTimeTableLoading } =
+    useQuery<MainDailyTimeTableType>({
+      queryKey: [FEED_KEY.DAILY_TIMETABLE, selectedDate],
+      queryFn: () =>
+        getDailyTimeTable({
+          userId: user?.id,
+          date: selectedDate,
+        }),
+      enabled: isSessionReady && view === "timeline",
+    });
 
   useEffect(() => {
     calendarOpenProgress.value = withTiming(isCalendarOpen ? 1 : 0, {
@@ -128,27 +159,45 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
     ],
   );
 
+  const feedCalendar = (
+    <FeedCalendar
+      date={selectedDate}
+      monthlyDDuDus={periodDDuDus ?? []}
+      onSelectDate={handleSelectDate}
+      onCalendarToggled={setIsCalendarOpen}
+      externalOpenProgress={calendarOpenProgress}
+      onCalendarHeightRangeChange={setCalendarHeightRange}
+      onReadyToggleCalendar={(nextHandleToggleCalendar) => {
+        setHandleToggleCalendar(() => nextHandleToggleCalendar);
+      }}
+    />
+  );
+
+  const feedItems = (
+    <MainFeedItems
+      view={view}
+      dailyList={dailyList ?? []}
+      dailyTimeTable={dailyTimeTable}
+      isDailyTimeTableLoading={isDailyTimeTableLoading}
+      selectedDDuDuDate={selectedDate}
+      isCalendarOpen={isCalendarOpen}
+    />
+  );
+
+  if (view === "timeline") {
+    return (
+      <View className="w-full flex-1">
+        <GestureDetector gesture={calendarListPanGesture}>{feedCalendar}</GestureDetector>
+        {feedItems}
+      </View>
+    );
+  }
+
   return (
     <GestureDetector gesture={calendarListPanGesture}>
       <View className="w-full flex-1">
-        <FeedCalendar
-          date={selectedDate}
-          monthlyDDuDus={periodDDuDus ?? []}
-          onSelectDate={handleSelectDate}
-          onCalendarToggled={setIsCalendarOpen}
-          externalOpenProgress={calendarOpenProgress}
-          onCalendarHeightRangeChange={setCalendarHeightRange}
-          onReadyToggleCalendar={(nextHandleToggleCalendar) => {
-            setHandleToggleCalendar(() => nextHandleToggleCalendar);
-          }}
-        />
-        {dailyList && dailyList.length > 0 && (
-          <MainFeedItems
-            dailyList={dailyList}
-            selectedDDuDuDate={selectedDate}
-            isCalendarOpen={isCalendarOpen}
-          />
-        )}
+        {feedCalendar}
+        {feedItems}
       </View>
     </GestureDetector>
   );
