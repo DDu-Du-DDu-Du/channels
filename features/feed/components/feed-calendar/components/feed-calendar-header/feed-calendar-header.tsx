@@ -1,7 +1,11 @@
 import { Pressable, View } from "react-native";
 
 import { SpoqaText } from "@/components";
-import { GoalMenu } from "@/features/feed/components/main-header/components";
+import {
+  DDuDuSearchMenu,
+  FeedViewToggleMenu,
+  GoalMenu,
+} from "@/features/feed/components/main-header/components";
 import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
 
 interface FeedCalendarHeaderProps {
@@ -57,7 +61,11 @@ function FeedCalendarHeader({ displayMonth, onPrev, onNext }: FeedCalendarHeader
             </Pressable>
           )}
         </View>
-        <GoalMenu />
+        <View className="flex-row items-center gap-[0.8rem]">
+          <FeedViewToggleMenu />
+          <DDuDuSearchMenu />
+          <GoalMenu />
+        </View>
       </View>
     </View>
   );

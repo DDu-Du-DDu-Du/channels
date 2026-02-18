@@ -9,7 +9,7 @@ export default function TabsLayout() {
       />
       <Tabs.Screen
         name="feed/index"
-        initialParams={{ view: "ddudu" }}
+        initialParams={{ view: "list" }}
         options={{ title: "Feed" }}
       />
     </Tabs>
