@@ -25,6 +25,7 @@ export { default as FormTitleInput } from "./form-title-input/form-title-input";
 export { default as FollowRequestItem } from "./follow-request-item/follow-request-item";
 export { default as GoalItem } from "./goal-item/goal-item";
 export { default as Header } from "./header/header";
+export { default as MainHeader } from "./main-header/main-header";
 export { default as InputDate } from "./input-date/input-date";
 export { default as InputRadio } from "./input-radio/input-radio";
 export { default as PeriodGoalMemo } from "./period-goal-memo/period-goal-memo";
