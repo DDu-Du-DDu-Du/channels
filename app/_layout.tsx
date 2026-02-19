@@ -110,6 +110,8 @@ export default function RootLayout() {
                   <Stack.Screen name="goal/index" />
                   <Stack.Screen name="goal/create" />
                   <Stack.Screen name="goal/editor" />
+                  <Stack.Screen name="stats/select" />
+                  <Stack.Screen name="stats/[id]" />
                 </Stack.Protected>
               </Stack>
             </BottomSheetModalProvider>
