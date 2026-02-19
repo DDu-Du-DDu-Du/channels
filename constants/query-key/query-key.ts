@@ -44,3 +44,8 @@ export const REPEAT_DDUDU_KEY = {
 export const USER_KEY = {
   ME: "me",
 };
+
+export const STATS_KEY = {
+  REPORT: "statsReport",
+  SUMMARY: "statsSummary",
+};
