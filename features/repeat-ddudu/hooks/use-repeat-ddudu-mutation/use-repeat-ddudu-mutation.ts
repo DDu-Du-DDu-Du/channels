@@ -1,6 +1,6 @@
 import { useToast } from "@/components/toast/hooks";
 import { normalizeDayOfWeekToKr } from "@/constants";
-import { GOAL_KEY, REPEAT_DDUDU_KEY } from "@/constants/query-key/query-key";
+import { GOAL_KEY, REPEAT_DDUDU_KEY, STATS_KEY } from "@/constants/query-key/query-key";
 import type { RepeatDduduItemType } from "@/features/repeat-ddudu/repeat-ddudu.types";
 import {
   createRepeatDdudu,
@@ -25,7 +25,11 @@ function useRepeatDduduMutation({ goalId }: UseRepeatDduduMutationProps) {
   };
 
   const onSuccessMutation = async () => {
-    await queryClient.invalidateQueries({ queryKey: [GOAL_KEY.GOAL_DETAIL, goalId] });
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: [GOAL_KEY.GOAL_DETAIL, goalId] }),
+      queryClient.invalidateQueries({ queryKey: [STATS_KEY.GOAL_DETAIL_ACHIEVED, goalId] }),
+      queryClient.invalidateQueries({ queryKey: [STATS_KEY.GOAL_DETAIL_POSTPONED, goalId] }),
+    ]);
   };
 
   const createRepeatDduduMutation = useMutation({

@@ -32,8 +32,14 @@ function StatsGoalSelectScreen() {
 
   const { data: goalList = [] } = useQuery<GoalType[]>({
     queryKey: [GOAL_KEY.GOAL_LIST, user?.id],
-    queryFn: () => getGoalList({ userId: user!.id }),
-    enabled: isSessionReady,
+    queryFn: () => {
+      if (!user?.id) {
+        return Promise.resolve([]);
+      }
+
+      return getGoalList({ userId: user.id });
+    },
+    enabled: !!isSessionReady && !!user?.id,
   });
 
   const handlePressBack = () => {

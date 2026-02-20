@@ -68,9 +68,9 @@ export const mapRepeatDduduResponseToItem = (
   repeatDdudu: RepeatDDuDusType,
 ): RepeatDduduItemType => {
   const repeatPattern = repeatDdudu.repeatPattern;
-  const patternInfo = repeatPattern.info;
-  const repeatType = ensureRepeatType(repeatPattern.repeatType ?? patternInfo?.repeatType);
-  const repeatDaysOfMonthRaw = repeatPattern.repeatDaysOfMonth ?? patternInfo?.repeatDaysOfMonth;
+  const patternInfo = repeatPattern?.info;
+  const repeatType = ensureRepeatType(repeatPattern?.repeatType ?? patternInfo?.repeatType);
+  const repeatDaysOfMonthRaw = repeatPattern?.repeatDaysOfMonth ?? patternInfo?.repeatDaysOfMonth;
   const repeatDaysOfMonth = Array.isArray(repeatDaysOfMonthRaw)
     ? repeatDaysOfMonthRaw.map((day) => Number(day))
     : undefined;
@@ -80,10 +80,10 @@ export const mapRepeatDduduResponseToItem = (
     name: repeatDdudu.name,
     repeatType,
     repeatDaysOfWeek: normalizeRepeatDaysOfWeek(
-      repeatPattern.repeatDaysOfWeek ?? patternInfo?.repeatDaysOfWeek,
+      repeatPattern?.repeatDaysOfWeek ?? patternInfo?.repeatDaysOfWeek,
     ),
     repeatDaysOfMonth: repeatDaysOfMonth as RepeatDduduItemType["repeatDaysOfMonth"],
-    lastDayOfMonth: Boolean(repeatPattern.lastDay ?? patternInfo?.lastDayOfMonth),
+    lastDayOfMonth: Boolean(repeatPattern?.lastDay ?? patternInfo?.lastDayOfMonth),
     startDate: repeatDdudu.startDate,
     endDate: repeatDdudu.endDate,
     beginAt: repeatDdudu.beginAt,
