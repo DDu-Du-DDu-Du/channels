@@ -99,7 +99,7 @@ export default function RootLayout() {
             <BottomSheetModalProvider>
               <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Protected guard={storybookEnabled}>
-                  <Stack.Screen name="(storybook)/index" />
+                  <Stack.Screen name="storybook/index" />
                 </Stack.Protected>
                 <Stack.Protected guard={!isLoggedIn}>
                   <Stack.Screen name="auth" />
