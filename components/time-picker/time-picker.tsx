@@ -26,7 +26,7 @@ function TimePicker({
   const data: number[] = (() => {
     const length = type === "hour" ? 24 : type === "min" ? 60 : days;
 
-    return Array.from({ length: length }, (_, i) => i);
+    return Array.from({ length }, (_, i) => i);
   })();
 
   const unitLabel = label ?? (type === "day" ? "일" : type === "hour" ? "시" : "분");
@@ -36,10 +36,10 @@ function TimePicker({
   };
 
   return (
-    <View className="flex-row items-center">
+    <View className="flex-row items-center self-center">
       <View
         className="items-center justify-center rounded-radius10 bg-example_gray_100"
-        style={{ width, height: itemHeight * 3 }}
+        style={{ width: width + 6, height: itemHeight, paddingHorizontal: 3 }}
       >
         <WheelPicker
           data={data}
@@ -49,7 +49,7 @@ function TimePicker({
           width={width}
         />
       </View>
-      <SpoqaText className="px-[0.5rem]">{unitLabel}</SpoqaText>
+      <SpoqaText className="pl-[0.4rem] pr-[0.6rem]">{unitLabel}</SpoqaText>
     </View>
   );
 }
