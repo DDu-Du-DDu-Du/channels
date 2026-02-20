@@ -61,3 +61,67 @@ export interface StatsSummaryResponseType {
   sustenances: StatsSustenanceType[];
   reattainments: StatsReattainmentType[];
 }
+
+export type StatsDayOfWeekType =
+  | "MONDAY"
+  | "TUESDAY"
+  | "WEDNESDAY"
+  | "THURSDAY"
+  | "FRIDAY"
+  | "SATURDAY"
+  | "SUNDAY";
+
+export type StatsDayOfWeekMapType = Record<string, number>;
+
+export interface StatsDetailDayOfWeekStatsType {
+  mostActiveDays: StatsDayOfWeekType[];
+  stats: StatsDayOfWeekMapType;
+}
+
+export interface StatsDetailCalendarItemType {
+  date: string;
+  totalCount: number;
+  uncompletedCount: number;
+}
+
+export interface StatsDetailCalendarStatsType {
+  isAvailable: boolean;
+  stats: StatsDetailCalendarItemType[];
+}
+
+export interface StatsDetailRepeatDduduItemType {
+  repeatDduduId: number;
+  repeatDduduName: string;
+  completedCount: number;
+  totalCount: number;
+}
+
+export interface StatsGoalAchievedOverviewType {
+  achievementCount: number;
+  totalCount: number;
+  achievementRate: number;
+  mostAchievedTime: "AM" | "PM" | string;
+}
+
+export interface StatsGoalAchievedDetailResponseType {
+  goalId: number;
+  overview: StatsGoalAchievedOverviewType;
+  dayOfWeekStats: StatsDetailDayOfWeekStatsType;
+  repeatDduduStats: StatsDetailRepeatDduduItemType[];
+  calendarStats: StatsDetailCalendarStatsType;
+}
+
+export interface StatsGoalPostponedOverviewType {
+  postponedCount: number;
+  reattainedCount: number;
+  totalCount: number;
+  postponementRate: number;
+  reattainmentRate: number;
+}
+
+export interface StatsGoalPostponedDetailResponseType {
+  goalId: number;
+  overview: StatsGoalPostponedOverviewType;
+  dayOfWeekStats: StatsDetailDayOfWeekStatsType;
+  calendarStats: StatsDetailCalendarStatsType;
+}

@@ -48,4 +48,6 @@ export const USER_KEY = {
 export const STATS_KEY = {
   REPORT: "statsReport",
   SUMMARY: "statsSummary",
+  GOAL_DETAIL_ACHIEVED: "statsGoalDetailAchieved",
+  GOAL_DETAIL_POSTPONED: "statsGoalDetailPostponed",
 };
