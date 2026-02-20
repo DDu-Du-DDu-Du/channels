@@ -39,6 +39,8 @@ export { default as TimePicker } from "./time-picker/time-picker";
 export { default as TimeSet } from "./time-set/time-set";
 export { default as ToastProvider } from "./toast/toast-provider";
 export { default as WheelPicker } from "./wheel-picker/wheel-picker";
+export { default as YearMonthPicker } from "./year-month-picker/year-month-picker";
+export { default as YearMonthPickerSheet } from "./year-month-picker-sheet/year-month-picker-sheet";
 
 export { default as DraggableFlatList } from "./draggable-flat-list/draggable-flat-list";
 export { default as DraggableRow } from "./draggable-row/draggable-row";
