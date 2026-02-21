@@ -10,13 +10,13 @@ import {
 import Animated, { interpolate, useAnimatedStyle } from "react-native-reanimated";
 
 import { OutsidePressBackdrop, SpoqaText } from "@/components";
-import { SettingsIcon } from "@/icons";
+import { NotificationIcon, SettingsIcon } from "@/icons";
 import { remToPx } from "@/utils";
 
 import { HamburgerToggle } from "./components";
 import { MAIN_HEADER_SIDEBAR_DURATION, useMainHeaderSidebar } from "./hooks";
 
-import { usePathname, useRouter } from "expo-router";
+import { Href, usePathname, useRouter } from "expo-router";
 
 const FALLBACK_HEADER_HEIGHT = remToPx("6.3rem");
 const SIDEBAR_MENU_ITEMS: { key: string; label: string; route: "/feed" | "/stats" }[] = [
@@ -81,6 +81,10 @@ function MainHeader() {
     setHeaderHeight((prevHeight) => (prevHeight !== nextHeight ? nextHeight : prevHeight));
   }, []);
 
+  const handlePressNotification = () => {
+    router.push("/notification" as Href);
+  };
+
   return (
     <View style={styles.root}>
       <OutsidePressBackdrop
@@ -105,7 +109,19 @@ function MainHeader() {
             </SpoqaText>
           </View>
           <View className="flex flex-row justify-end gap-[0.8rem]">
-            <SettingsIcon stroke="#ffffff" />
+            <Pressable
+              onPress={handlePressNotification}
+              hitSlop={8}
+              className="size-[2.4rem] items-center justify-center"
+            >
+              <NotificationIcon stroke="#FFFFFF" />
+            </Pressable>
+            <Pressable
+              hitSlop={8}
+              className="size-[2.4rem] items-center justify-center"
+            >
+              <SettingsIcon stroke="#FFFFFF" />
+            </Pressable>
           </View>
         </View>
       </OutsidePressBackdrop>
