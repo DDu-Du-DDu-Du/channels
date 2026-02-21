@@ -106,10 +106,12 @@ export default function RootLayout() {
                 </Stack.Protected>
                 <Stack.Protected guard={isLoggedIn || loginDisabled}>
                   <Stack.Screen name="(tabs)" />
+                  <Stack.Screen name="announcement/[id]" />
                   <Stack.Screen name="ddudu" />
                   <Stack.Screen name="goal/index" />
                   <Stack.Screen name="goal/create" />
                   <Stack.Screen name="goal/editor" />
+                  <Stack.Screen name="notification/index" />
                   <Stack.Screen name="stats/select" />
                   <Stack.Screen name="stats/[id]" />
                 </Stack.Protected>
