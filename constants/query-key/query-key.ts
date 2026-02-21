@@ -51,3 +51,8 @@ export const STATS_KEY = {
   GOAL_DETAIL_ACHIEVED: "statsGoalDetailAchieved",
   GOAL_DETAIL_POSTPONED: "statsGoalDetailPostponed",
 };
+
+export const NOTIFICATION_KEY = {
+  INBOX: "notificationInbox",
+  READ: "notificationRead",
+};
