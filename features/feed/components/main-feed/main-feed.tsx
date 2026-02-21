@@ -25,6 +25,8 @@ export interface MainFeedProps {
   onSelectDate?: (date: string) => void;
 }
 
+const DATE_PARAM_RE = /^\d{4}-\d{2}-\d{2}$/;
+
 const toSingleParam = (value: string | string[] | undefined) => {
   if (Array.isArray(value)) {
     return value[0];
@@ -35,6 +37,20 @@ const toSingleParam = (value: string | string[] | undefined) => {
 
 const resolveFeedView = (view: string | undefined): MainFeedView => {
   return view === "timeline" ? "timeline" : "list";
+};
+
+const resolveFeedDate = (date: string | undefined, fallbackDate: string) => {
+  if (!date || !DATE_PARAM_RE.test(date)) {
+    return fallbackDate;
+  }
+
+  const parsedMs = Date.parse(`${date}T00:00:00`);
+
+  if (Number.isNaN(parsedMs)) {
+    return fallbackDate;
+  }
+
+  return date;
 };
 
 const sortByGoalStatus = (list: MainDailyListType[]) =>
@@ -51,12 +67,14 @@ const sortByGoalStatus = (list: MainDailyListType[]) =>
   });
 
 function MainFeed({ onSelectDate }: MainFeedProps) {
-  const params = useLocalSearchParams<{ view?: string | string[] }>();
+  const params = useLocalSearchParams<{ view?: string | string[]; date?: string | string[] }>();
   const view = resolveFeedView(toSingleParam(params.view));
+  const paramDate = toSingleParam(params.date);
   const hasTokens = useAuthStore((state) => state.accessToken && state.refreshToken);
   const { data: user } = useMe({ readOnly: true });
   const today = useMemo(() => formatDateToYYYYMMDD(new Date()), []);
-  const [selectedDate, setSelectedDate] = useState(today);
+  const resolvedParamDate = useMemo(() => resolveFeedDate(paramDate, today), [paramDate, today]);
+  const [selectedDate, setSelectedDate] = useState(resolvedParamDate);
   const [isCalendarOpen, setIsCalendarOpen] = useState(true);
   const [calendarHeightRange, setCalendarHeightRange] = useState(240);
   const dateKey = useMemo(() => selectedDate.slice(0, 7), [selectedDate]);
@@ -68,6 +86,10 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
     setSelectedDate(date);
     onSelectDate?.(date);
   };
+
+  useEffect(() => {
+    setSelectedDate(resolvedParamDate);
+  }, [resolvedParamDate]);
 
   const { data: periodDDuDus } = useQuery<MonthlyWeeklyDDuDuType[]>({
     queryKey: [FEED_KEY.MONTHLY_DDUDUS, dateKey],
