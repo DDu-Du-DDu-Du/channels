@@ -18,6 +18,7 @@ export { default as EditIcon } from "./edit-icon/edit-icon";
 export { default as ListIcon } from "./list-icon/list-icon";
 export { default as MainFeedIcon } from "./main-feed-icon/main-feed-icon";
 export { default as MessageIcon } from "./message-icon/message-icon";
+export { default as NotificationIcon } from "./notification-icon/notification-icon";
 export { default as OptionIcon } from "./option-icon/option-icon";
 export { default as PlusIcon } from "./plus-icon/plus-icon";
 export { default as QuestionIcon } from "./question-icon/question-icon";
