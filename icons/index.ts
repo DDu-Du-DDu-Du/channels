@@ -28,3 +28,6 @@ export { default as SettingsIcon } from "./settings-icon/settings-icon";
 export { default as ExclamationIcon } from "./exclamation-icon/exclamation-icon";
 export { default as SearchIcon } from "./search-icon/search-icon";
 export { default as TimelineIcon } from "./timeline-icon/timeline-icon";
+export { default as SunIcon } from "./sun-icon/sun-icon";
+export { default as MoonIcon } from "./moon-icon/moon-icon";
+export { default as NotionIcon } from "./notion-icon/notion-icon";

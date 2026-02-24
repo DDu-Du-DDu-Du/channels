@@ -20,6 +20,7 @@ import {
   ListIcon,
   MainFeedIcon,
   MessageIcon,
+  MoonIcon,
   NotificationIcon,
   OptionIcon,
   PlusIcon,
@@ -27,6 +28,7 @@ import {
   PublicIcon,
   QuestionIcon,
   SettingsIcon,
+  SunIcon,
 } from "@/icons";
 import type { Meta, StoryObj } from "@storybook/react";
 
@@ -71,6 +73,7 @@ const meta = {
         "ListIcon",
         "MainFeedIcon",
         "MessageIcon",
+        "MoonIcon",
         "NotificationIcon",
         "OptionIcon",
         "PlusIcon",
@@ -78,6 +81,7 @@ const meta = {
         "PublicIcon",
         "QuestionIcon",
         "SettingsIcon",
+        "SunIcon",
       ],
       mapping: {
         AddListIcon: <AddListIcon />,
@@ -101,6 +105,7 @@ const meta = {
         ListIcon: <ListIcon />,
         MainFeedIcon: <MainFeedIcon />,
         MessageIcon: <MessageIcon />,
+        MoonIcon: <MoonIcon />,
         NotificationIcon: <NotificationIcon />,
         OptionIcon: <OptionIcon />,
         PlusIcon: <PlusIcon />,
@@ -108,6 +113,7 @@ const meta = {
         PublicIcon: <PublicIcon />,
         QuestionIcon: <QuestionIcon />,
         SettingsIcon: <SettingsIcon />,
+        SunIcon: <SunIcon />,
       },
       control: { type: "select" },
     },

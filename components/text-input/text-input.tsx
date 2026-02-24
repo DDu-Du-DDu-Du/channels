@@ -7,13 +7,29 @@ export interface TextInputProps {
   placeholder?: string;
   disabled?: boolean;
   className?: string;
+  inputClassName?: string;
+  maxLength?: number;
+  multiline?: boolean;
+  textAlignVertical?: "auto" | "top" | "center" | "bottom";
 }
 
-function TextInput({ name, options = {}, placeholder, disabled, className }: TextInputProps) {
+function TextInput({
+  name,
+  options = {},
+  placeholder,
+  disabled,
+  className,
+  inputClassName,
+  maxLength,
+  multiline,
+  textAlignVertical,
+}: TextInputProps) {
   const { control, formState } = useFormContext();
   const hasError = Boolean((formState.errors as FieldErrors)?.[name]);
 
-  const baseCls = "w-full h-[5.6rem] bg-example_gray_100 rounded-radius15 px-[1.2rem] text-size15";
+  const baseCls = multiline
+    ? "w-full bg-example_gray_100 rounded-radius15 px-[1.2rem] text-size15"
+    : "w-full h-[5.6rem] bg-example_gray_100 rounded-radius15 px-[1.2rem] text-size15";
   const errorCls = hasError ? " border-example_red_500 border-[0.1rem]" : "";
   const disabledCls = disabled ? " opacity-40" : "";
 
@@ -29,7 +45,10 @@ function TextInput({ name, options = {}, placeholder, disabled, className }: Tex
           onBlur={onBlur}
           editable={!disabled}
           placeholder={placeholder}
-          className={`${baseCls} ${errorCls} ${disabledCls} ${className ?? ""}`}
+          maxLength={maxLength}
+          multiline={multiline}
+          textAlignVertical={textAlignVertical}
+          className={`${baseCls} ${errorCls} ${disabledCls} ${className ?? ""} ${inputClassName ?? ""}`}
         />
       )}
     />
