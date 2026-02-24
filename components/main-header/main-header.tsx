@@ -85,6 +85,10 @@ function MainHeader() {
     router.push("/notification" as Href);
   };
 
+  const handlePressSettings = () => {
+    router.push("/settings" as Href);
+  };
+
   return (
     <View style={styles.root}>
       <OutsidePressBackdrop
@@ -117,6 +121,7 @@ function MainHeader() {
               <NotificationIcon stroke="#FFFFFF" />
             </Pressable>
             <Pressable
+              onPress={handlePressSettings}
               hitSlop={8}
               className="size-[2.4rem] items-center justify-center"
             >
