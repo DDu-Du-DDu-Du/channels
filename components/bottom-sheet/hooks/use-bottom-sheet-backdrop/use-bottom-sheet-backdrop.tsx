@@ -8,9 +8,16 @@ import {
 export interface BottomSheetBackdropProps {
   openAlways?: boolean;
   opacity?: number;
+  pressBehavior?: "none" | "close" | "collapse" | number;
+  onPress?: () => void;
 }
 
-function useBottomSheetBackdrop({ openAlways = true, opacity = 0.1 }: BottomSheetBackdropProps) {
+function useBottomSheetBackdrop({
+  openAlways = true,
+  opacity = 0.1,
+  pressBehavior = "close",
+  onPress,
+}: BottomSheetBackdropProps) {
   return useCallback(
     (props: GorhomBackdropProps) => (
       <GorhomBackdrop
@@ -18,10 +25,11 @@ function useBottomSheetBackdrop({ openAlways = true, opacity = 0.1 }: BottomShee
         opacity={opacity}
         disappearsOnIndex={openAlways ? -1 : 0}
         appearsOnIndex={openAlways ? 0 : 1}
-        pressBehavior="close"
+        pressBehavior={pressBehavior}
+        onPress={onPress}
       />
     ),
-    [opacity, openAlways],
+    [onPress, opacity, openAlways, pressBehavior],
   );
 }
 

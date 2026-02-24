@@ -9,28 +9,35 @@ export interface BottomSheetProps {
   children: React.ReactNode;
   ref: React.RefObject<BottomSheetModal | null>;
   onClose?: () => void;
+  onBackdropPress?: () => void;
   defaultHeight?: string | number;
   maxHeight?: string | number;
   fitContent?: boolean;
   maxWidth?: number; // responsive max width (e.g., 768)
   enablePanDownToClose?: boolean;
+  backdropPressBehavior?: "none" | "close" | "collapse" | number;
 }
 
 function BottomSheet({
   children,
   ref,
   onClose,
+  onBackdropPress,
   defaultHeight = "35%",
   maxHeight = "80%",
   fitContent = false,
   maxWidth = 700,
   enablePanDownToClose = true,
+  backdropPressBehavior = "close",
 }: BottomSheetProps) {
   const snapPoint = useMemo(
     () => (fitContent ? [] : [defaultHeight, maxHeight]),
     [defaultHeight, fitContent, maxHeight],
   );
-  const bottomSheetBackdrop = useBottomSheetBackdrop({});
+  const bottomSheetBackdrop = useBottomSheetBackdrop({
+    pressBehavior: backdropPressBehavior,
+    onPress: onBackdropPress,
+  });
   const { width: screenWidth } = useWindowDimensions();
   const isWide = screenWidth > maxWidth || Platform.OS === "web";
   const sideMargin = isWide ? Math.max(0, (screenWidth - maxWidth) / 2) : 0;
