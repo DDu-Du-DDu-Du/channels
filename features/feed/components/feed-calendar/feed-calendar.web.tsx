@@ -12,6 +12,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { WeekCalendar } from "@/components";
+import { useCalendarFirstDay } from "@/hooks";
 import type { MonthlyWeeklyDDuDuType } from "@/types/response/feed/feed";
 
 import { FeedCalendarDayContent, FeedCalendarHeader } from "./components";
@@ -36,6 +37,7 @@ function FeedCalendar({
   externalOpenProgress,
   onCalendarHeightRangeChange,
 }: FeedCalendarProps) {
+  const firstDay = useCalendarFirstDay();
   const { width: screenWidth } = useWindowDimensions();
   const isDesktopWidth = screenWidth >= 1024;
   const calendarContainerClassName = useMemo(
@@ -206,7 +208,7 @@ function FeedCalendar({
             >
               <Calendar
                 current={visibleDate}
-                firstDay={1}
+                firstDay={firstDay}
                 hideExtraDays={false}
                 hideArrows
                 markedDates={markedDates}
@@ -235,7 +237,7 @@ function FeedCalendar({
                 }}
               >
                 <WeekCalendar
-                  firstDay={1}
+                  firstDay={firstDay}
                   calendarWidth={calendarWidth || undefined}
                   markedDates={markedDates}
                   dayComponent={dayComponent}

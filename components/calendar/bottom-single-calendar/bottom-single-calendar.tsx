@@ -4,7 +4,7 @@ import { Calendar, DateData } from "react-native-calendars";
 import { Theme } from "react-native-calendars/src/types";
 
 import { BottomSheet, SpoqaText } from "@/components";
-import { useBottomSheetAction } from "@/hooks";
+import { useBottomSheetAction, useCalendarFirstDay } from "@/hooks";
 import { ArrowLeftIcon, ChevronLeftIcon, ChevronRightIcon } from "@/icons";
 import { formatDateToYYYYMMDD } from "@/utils";
 
@@ -32,6 +32,7 @@ function BottomSingleCalendar({
   onPressBack,
 }: BottomSingleCalendarProps) {
   const { ref, openSheet, closeSheet } = useBottomSheetAction();
+  const firstDay = useCalendarFirstDay();
 
   useEffect(() => {
     openSheet();
@@ -120,7 +121,7 @@ function BottomSingleCalendar({
               },
             } as Theme
           }
-          firstDay={0}
+          firstDay={firstDay}
         />
       </View>
       <View className="px-[2.4rem]">

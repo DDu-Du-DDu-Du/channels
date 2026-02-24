@@ -4,6 +4,7 @@ import { Calendar, DateData } from "react-native-calendars";
 import { MarkingTypes, Theme } from "react-native-calendars/src/types";
 
 import { SpoqaText } from "@/components";
+import { useCalendarFirstDay } from "@/hooks";
 import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
 import { formatDateToYYYYMMDD } from "@/utils";
 
@@ -28,6 +29,7 @@ function BottomMultipleCalendar({
   showArrow = true,
   hideArrow = false,
 }: BottomMultipleCalendarProps) {
+  const firstDay = useCalendarFirstDay();
   const fallbackMarkedDates = selected.reduce<Record<string, { selected: boolean }>>(
     (acc, date) => {
       acc[formatDateToYYYYMMDD(date)] = { selected: true };
@@ -104,7 +106,7 @@ function BottomMultipleCalendar({
           </SpoqaText>
         )}
         hideExtraDays={false}
-        firstDay={0}
+        firstDay={firstDay}
         theme={
           {
             textSectionTitleColor: "#000",

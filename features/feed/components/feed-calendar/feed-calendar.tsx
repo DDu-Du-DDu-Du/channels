@@ -4,6 +4,7 @@ import { CalendarProvider, ExpandableCalendar } from "react-native-calendars";
 import { DateData, DayState, MarkedDates } from "react-native-calendars/src/types";
 import type { SharedValue } from "react-native-reanimated";
 
+import { useCalendarFirstDay } from "@/hooks";
 import type { MonthlyWeeklyDDuDuType } from "@/types/response/feed/feed";
 
 import { FeedCalendarDayContent, FeedCalendarHeader } from "./components";
@@ -28,6 +29,7 @@ function FeedCalendar({
   externalOpenProgress: _externalOpenProgress,
   onCalendarHeightRangeChange: _onCalendarHeightRangeChange,
 }: FeedCalendarProps) {
+  const firstDay = useCalendarFirstDay();
   const { width: screenWidth } = useWindowDimensions();
   const isWebDesktop = Platform.OS === "web" && screenWidth >= 1024;
   const calendarWidth = useMemo(() => (isWebDesktop ? "50%" : "100%"), [isWebDesktop]);
@@ -142,7 +144,7 @@ function FeedCalendar({
           <ExpandableCalendar
             ref={expandableCalendarRef}
             current={visibleDate}
-            firstDay={1}
+            firstDay={firstDay}
             hideArrows
             renderHeader={() => (
               <FeedCalendarHeader
