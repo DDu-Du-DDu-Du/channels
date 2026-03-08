@@ -1,7 +1,11 @@
+import { useMenuActivationTabRouting } from "@/hooks";
+
 import { Redirect } from "expo-router";
 
 function Landing() {
-  return <Redirect href="/feed" />;
+  const { firstActiveHref } = useMenuActivationTabRouting();
+
+  return <Redirect href={firstActiveHref} />;
 }
 
 export default Landing;

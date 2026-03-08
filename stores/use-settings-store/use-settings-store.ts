@@ -6,6 +6,12 @@ import { createJSONStorage, persist } from "zustand/middleware";
 export type WeekStartDay = "sun" | "mon";
 export type MenuActivationKey = "calendar" | "dashboard" | "stats";
 export type RealtimeSyncKey = "notion" | "googleCalendar" | "microsoftTodo";
+export interface MenuActivationItem {
+  isActivated: boolean;
+  priority: number;
+}
+
+export const MENU_ACTIVATION_KEYS: MenuActivationKey[] = ["calendar", "dashboard", "stats"];
 
 export interface SettingsPayload {
   display: {
@@ -13,9 +19,9 @@ export interface SettingsPayload {
     isDarkMode: boolean;
   };
   menuActivation: {
-    calendar: boolean;
-    dashboard: boolean;
-    stats: boolean;
+    calendar: MenuActivationItem;
+    dashboard: MenuActivationItem;
+    stats: MenuActivationItem;
   };
   appConnection: {
     realtimeSync: {
@@ -38,6 +44,7 @@ interface SettingsAction {
   handleSetWeekStartDay: (day: WeekStartDay) => void;
   handleSetDarkMode: (next: boolean) => void;
   handleSetMenuActivation: (key: MenuActivationKey, next: boolean) => void;
+  handleReorderMenuActivation: (nextOrder: MenuActivationKey[]) => void;
   handleSetRealtimeSync: (key: RealtimeSyncKey, next: boolean) => void;
   handleMarkSyncStart: () => void;
   handleMarkSyncSuccess: () => void;
@@ -54,9 +61,18 @@ const DEFAULT_SETTINGS_PAYLOAD: SettingsPayload = {
     isDarkMode: false,
   },
   menuActivation: {
-    calendar: true,
-    dashboard: true,
-    stats: true,
+    calendar: {
+      isActivated: true,
+      priority: 1,
+    },
+    dashboard: {
+      isActivated: true,
+      priority: 2,
+    },
+    stats: {
+      isActivated: true,
+      priority: 3,
+    },
   },
   appConnection: {
     realtimeSync: {
@@ -109,10 +125,30 @@ const useSettingsStore = create<SettingsState>()(
         set((state) => ({
           menuActivation: {
             ...state.menuActivation,
-            [key]: next,
+            [key]: {
+              ...state.menuActivation[key],
+              isActivated: next,
+            },
           },
           dirty: true,
         })),
+
+      handleReorderMenuActivation: (nextOrder) =>
+        set((state) => {
+          const nextMenuActivation = { ...state.menuActivation };
+
+          nextOrder.forEach((key, index) => {
+            nextMenuActivation[key] = {
+              ...nextMenuActivation[key],
+              priority: index + 1,
+            };
+          });
+
+          return {
+            menuActivation: nextMenuActivation,
+            dirty: true,
+          };
+        }),
 
       handleSetRealtimeSync: (key, next) =>
         set((state) => ({
@@ -165,7 +201,51 @@ const useSettingsStore = create<SettingsState>()(
     }),
     {
       name: "settings",
+      version: 2,
       storage: createJSONStorage(() => SessionStorage),
+      migrate: (persistedState, version) => {
+        if (!persistedState || typeof persistedState !== "object") {
+          return persistedState as SettingsState;
+        }
+
+        if (version >= 2) {
+          return persistedState as SettingsState;
+        }
+
+        const previousState = persistedState as Partial<SettingsState> & {
+          menuActivation?: Partial<Record<MenuActivationKey, boolean>>;
+        };
+
+        const fallback = DEFAULT_SETTINGS_PAYLOAD.menuActivation;
+        const previousMenuActivation = previousState.menuActivation;
+
+        return {
+          ...previousState,
+          menuActivation: {
+            calendar: {
+              isActivated:
+                typeof previousMenuActivation?.calendar === "boolean"
+                  ? previousMenuActivation.calendar
+                  : fallback.calendar.isActivated,
+              priority: fallback.calendar.priority,
+            },
+            dashboard: {
+              isActivated:
+                typeof previousMenuActivation?.dashboard === "boolean"
+                  ? previousMenuActivation.dashboard
+                  : fallback.dashboard.isActivated,
+              priority: fallback.dashboard.priority,
+            },
+            stats: {
+              isActivated:
+                typeof previousMenuActivation?.stats === "boolean"
+                  ? previousMenuActivation.stats
+                  : fallback.stats.isActivated,
+              priority: fallback.stats.priority,
+            },
+          },
+        } as SettingsState;
+      },
       partialize: (state) => ({
         display: state.display,
         menuActivation: state.menuActivation,
