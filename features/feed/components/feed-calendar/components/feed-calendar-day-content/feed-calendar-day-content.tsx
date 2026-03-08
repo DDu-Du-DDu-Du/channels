@@ -1,10 +1,10 @@
+import { memo } from "react";
 import { Pressable, View } from "react-native";
 
-import { SpoqaText } from "@/components";
+import { ProgressRing, SpoqaText } from "@/components";
 import { MonthlyWeeklyDDuDuType } from "@/types/response/feed/feed";
 
 import useFeedCalendarDayContent from "../../hooks/use-feed-calendar-day-content/use-feed-calendar-day-content";
-import DailyDDuDu from "../daily-ddudu/daily-ddudu";
 
 export interface FeedCalendarDayContentProps {
   date: string;
@@ -29,31 +29,72 @@ function FeedCalendarDayContent({
     selectedDate,
     onPress,
   });
+
+  const totalCount = dailyStats?.totalCount ?? 0;
+  const uncompletedCount = dailyStats?.uncompletedCount ?? 0;
+  // TODO(server): completedCount API field is expected to replace this derived value.
+  const completedCount = Math.max(0, totalCount - uncompletedCount);
+  const hasTodo = totalCount > 0;
+  const progressPercent = hasTodo ? (completedCount / totalCount) * 100 : 0;
+
   return (
     <Pressable
       onPress={handlePressDate}
-      className={`items-center justify-center gap-2 w-[3rem] h-[5rem] ${isSelected ? "bg-sub_2 rounded-radius5" : ""}`}
+      className="h-[5rem] w-[3rem] items-center justify-center"
     >
-      {dailyStats && dailyStats.totalCount > 0 ? (
-        <DailyDDuDu
-          totalCount={dailyStats.totalCount}
-          doneCount={dailyStats.totalCount - dailyStats.uncompletedCount}
-          restCount={dailyStats.uncompletedCount}
-        />
-      ) : (
-        <View
-          className={`rounded-full shrink-0 w-[2rem] h-[2rem] bg-sub_1 border ${isSelected ? "border-sub_3" : ""} ${disabled ? "border-sub_gray_500" : ""}`}
-        />
-      )}
+      <View className="relative h-[2.8rem] w-[2.8rem] items-center justify-center">
+        {isSelected && (
+          <View
+            className={`absolute h-[2.6rem] w-[2.6rem] rounded-full ${
+              disabled ? "bg-sub_gray_200" : "bg-sub"
+            }`}
+          />
+        )}
 
-      <SpoqaText
-        weight={`${isSelected ? "bold" : "regular"}`}
-        className={`text-size10 ${isSelected ? "text-sub_3" : ""} ${disabled ? "text-sub_gray_500" : ""}`}
-      >
-        {day}
-      </SpoqaText>
+        {hasTodo && (
+          <ProgressRing
+            percent={progressPercent}
+            color="#1363DE"
+            size={24}
+            strokeWidth={2}
+            trackColor="#D0D0D0"
+            animate={isSelected}
+            className="absolute"
+          />
+        )}
+
+        <SpoqaText
+          weight={`${isSelected ? "bold" : "regular"}`}
+          className={`text-size10 ${
+            disabled ? "text-sub_gray_500" : isSelected ? "text-sub_3" : "text-black_500"
+          }`}
+        >
+          {day}
+        </SpoqaText>
+      </View>
     </Pressable>
   );
 }
 
-export default FeedCalendarDayContent;
+const areFeedCalendarDayContentPropsEqual = (
+  prev: FeedCalendarDayContentProps,
+  next: FeedCalendarDayContentProps,
+) => {
+  const prevIsSelected = prev.selectedDate === prev.date;
+  const nextIsSelected = next.selectedDate === next.date;
+  const prevTotalCount = prev.dailyStats?.totalCount ?? 0;
+  const nextTotalCount = next.dailyStats?.totalCount ?? 0;
+  const prevUncompletedCount = prev.dailyStats?.uncompletedCount ?? 0;
+  const nextUncompletedCount = next.dailyStats?.uncompletedCount ?? 0;
+
+  return (
+    prev.date === next.date &&
+    prev.day === next.day &&
+    prev.disabled === next.disabled &&
+    prevIsSelected === nextIsSelected &&
+    prevTotalCount === nextTotalCount &&
+    prevUncompletedCount === nextUncompletedCount
+  );
+};
+
+export default memo(FeedCalendarDayContent, areFeedCalendarDayContentPropsEqual);

@@ -1,14 +1,6 @@
-import { useEffect } from "react";
 import { View } from "react-native";
-import Animated, {
-  Easing,
-  useAnimatedProps,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
-import Svg, { Circle } from "react-native-svg";
 
-import { SpoqaText } from "@/components";
+import { ProgressRing, SpoqaText } from "@/components";
 
 interface ProgressRingCardProps {
   title: string;
@@ -23,8 +15,6 @@ interface ProgressRingCardProps {
   animate?: boolean;
   durationMs?: number;
 }
-
-const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 const clampPercent = (value: number) => {
   if (Number.isNaN(value)) {
@@ -57,27 +47,7 @@ function ProgressRingCard({
 }: ProgressRingCardProps) {
   const safePercent = clampPercent(percent);
   const isZeroDenominator = typeof denominator === "number" && denominator === 0;
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const animatedPercent = useSharedValue(0);
   const targetPercent = isZeroDenominator ? 0 : safePercent;
-
-  useEffect(() => {
-    if (!animate) {
-      animatedPercent.value = targetPercent;
-      return;
-    }
-
-    animatedPercent.value = 0;
-    animatedPercent.value = withTiming(targetPercent, {
-      duration: durationMs,
-      easing: Easing.out(Easing.cubic),
-    });
-  }, [animate, animatedPercent, durationMs, targetPercent]);
-
-  const animatedProps = useAnimatedProps(() => ({
-    strokeDashoffset: circumference * (1 - animatedPercent.value / 100),
-  }));
 
   const percentTextClass = sizeVariant === "large" ? "text-size20" : "text-size18";
   const fractionTextClass = sizeVariant === "large" ? "text-size13" : "text-size12";
@@ -97,44 +67,27 @@ function ProgressRingCard({
       </View>
 
       <View className="items-center justify-center">
-        <Svg
-          width={size}
-          height={size}
-          viewBox={`0 0 ${size} ${size}`}
+        <ProgressRing
+          percent={targetPercent}
+          color={color}
+          size={size}
+          strokeWidth={strokeWidth}
+          trackColor="#D0D0D0"
+          animate={animate}
+          durationMs={durationMs}
         >
-          <Circle
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            stroke="#D0D0D0"
-            strokeWidth={strokeWidth}
-            fill="none"
-          />
-          <AnimatedCircle
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            stroke={color}
-            strokeWidth={strokeWidth}
-            strokeLinecap="round"
-            strokeDasharray={`${circumference} ${circumference}`}
-            animatedProps={animatedProps}
-            fill="none"
-            transform={`rotate(-90 ${size / 2} ${size / 2})`}
-          />
-        </Svg>
-
-        <View className="absolute items-center justify-center">
-          <SpoqaText
-            weight="bold"
-            className={`${percentTextClass} text-black_500`}
-          >
-            {isZeroDenominator ? "-" : `${Math.round(safePercent)}%`}
-          </SpoqaText>
-          <SpoqaText className={`${fractionTextClass} text-example_gray_800`}>
-            {fractionText}
-          </SpoqaText>
-        </View>
+          <View className="items-center justify-center">
+            <SpoqaText
+              weight="bold"
+              className={`${percentTextClass} text-black_500`}
+            >
+              {isZeroDenominator ? "-" : `${Math.round(safePercent)}%`}
+            </SpoqaText>
+            <SpoqaText className={`${fractionTextClass} text-example_gray_800`}>
+              {fractionText}
+            </SpoqaText>
+          </View>
+        </ProgressRing>
       </View>
     </View>
   );

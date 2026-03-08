@@ -30,6 +30,7 @@ export { default as MainHeader } from "./main-header/main-header";
 export { default as InputDate } from "./input-date/input-date";
 export { default as InputRadio } from "./input-radio/input-radio";
 export { default as PeriodGoalMemo } from "./period-goal-memo/period-goal-memo";
+export { default as ProgressRing } from "./progress-ring/progress-ring";
 export { default as PrivacySheet } from "./privacy-sheet/privacy-sheet";
 export { default as SelectChip } from "./select-chip/select-chip";
 export { default as SelectOption } from "./select-option/select-option";
