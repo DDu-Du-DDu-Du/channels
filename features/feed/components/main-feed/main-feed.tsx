@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import { useSharedValue, withTiming } from "react-native-reanimated";
+import { type SharedValue, useSharedValue, withTiming } from "react-native-reanimated";
 
 import { FEED_KEY } from "@/constants/query-key/query-key";
 import FeedCalendar from "@/features/feed/components/feed-calendar/feed-calendar";
@@ -65,6 +65,67 @@ const sortByGoalStatus = (list: MainDailyListType[]) =>
 
     return 1;
   });
+
+interface CreateCalendarPanGestureParams {
+  enabled: boolean;
+  calendarHeightRange: number;
+  calendarOpenProgress: SharedValue<number>;
+  dragStartProgress: SharedValue<number>;
+  isCalendarOpen: boolean;
+  handleToggleCalendar: (() => void) | null;
+  handleSetIsCalendarOpen: (next: boolean) => void;
+}
+
+const createCalendarPanGesture = ({
+  enabled,
+  calendarHeightRange,
+  calendarOpenProgress,
+  dragStartProgress,
+  isCalendarOpen,
+  handleToggleCalendar,
+  handleSetIsCalendarOpen,
+}: CreateCalendarPanGestureParams) => {
+  return Gesture.Pan()
+    .enabled(enabled)
+    .activeOffsetY([-8, 8])
+    .failOffsetX([-16, 16])
+    .onBegin(() => {
+      dragStartProgress.value = calendarOpenProgress.value;
+    })
+    .onUpdate((event) => {
+      const isVerticalGesture = Math.abs(event.translationY) > Math.abs(event.translationX);
+      if (!isVerticalGesture) {
+        return;
+      }
+
+      const range = Math.max(1, calendarHeightRange);
+      const nextProgress = dragStartProgress.value + event.translationY / range;
+      calendarOpenProgress.value = Math.max(0, Math.min(1, nextProgress));
+    })
+    .onEnd((event) => {
+      const isVerticalGesture = Math.abs(event.translationY) > Math.abs(event.translationX);
+      if (!isVerticalGesture) {
+        return;
+      }
+
+      let nextIsOpen = isCalendarOpen;
+
+      if (isCalendarOpen && event.translationY < -16) {
+        nextIsOpen = false;
+      }
+
+      if (!isCalendarOpen && event.translationY > 16) {
+        nextIsOpen = true;
+      }
+
+      if (nextIsOpen !== isCalendarOpen) {
+        handleToggleCalendar?.();
+        return;
+      }
+
+      handleSetIsCalendarOpen(nextIsOpen);
+    });
+};
 
 function MainFeed({ onSelectDate }: MainFeedProps) {
   const params = useLocalSearchParams<{ view?: string | string[]; date?: string | string[] }>();
@@ -130,53 +191,44 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
     });
   }, [calendarOpenProgress, isCalendarOpen]);
 
-  const calendarListPanGesture = useMemo(
+  const calendarPanGesture = useMemo(
     () =>
-      Gesture.Pan()
-        .activeOffsetY([-8, 8])
-        .failOffsetX([-16, 16])
-        .onBegin(() => {
-          dragStartProgress.value = calendarOpenProgress.value;
-        })
-        .onUpdate((event) => {
-          const isVerticalGesture = Math.abs(event.translationY) > Math.abs(event.translationX);
-          if (!isVerticalGesture) {
-            return;
-          }
-
-          const range = Math.max(1, calendarHeightRange);
-          const nextProgress = dragStartProgress.value + event.translationY / range;
-          calendarOpenProgress.value = Math.max(0, Math.min(1, nextProgress));
-        })
-        .onEnd((event) => {
-          const isVerticalGesture = Math.abs(event.translationY) > Math.abs(event.translationX);
-          if (!isVerticalGesture) {
-            return;
-          }
-
-          let nextIsOpen = isCalendarOpen;
-
-          if (isCalendarOpen && event.translationY < -16) {
-            nextIsOpen = false;
-          }
-
-          if (!isCalendarOpen && event.translationY > 16) {
-            nextIsOpen = true;
-          }
-
-          calendarOpenProgress.value = withTiming(nextIsOpen ? 1 : 0, {
-            duration: 220,
-          });
-
-          if (nextIsOpen !== isCalendarOpen) {
-            handleToggleCalendar?.();
-          }
-        }),
+      createCalendarPanGesture({
+        enabled: true,
+        calendarHeightRange,
+        calendarOpenProgress,
+        dragStartProgress,
+        isCalendarOpen,
+        handleToggleCalendar,
+        handleSetIsCalendarOpen: setIsCalendarOpen,
+      }),
     [
       calendarHeightRange,
       calendarOpenProgress,
       dragStartProgress,
       handleToggleCalendar,
+      setIsCalendarOpen,
+      isCalendarOpen,
+    ],
+  );
+
+  const feedPanGesture = useMemo(
+    () =>
+      createCalendarPanGesture({
+        enabled: isCalendarOpen,
+        calendarHeightRange,
+        calendarOpenProgress,
+        dragStartProgress,
+        isCalendarOpen,
+        handleToggleCalendar,
+        handleSetIsCalendarOpen: setIsCalendarOpen,
+      }),
+    [
+      calendarHeightRange,
+      calendarOpenProgress,
+      dragStartProgress,
+      handleToggleCalendar,
+      setIsCalendarOpen,
       isCalendarOpen,
     ],
   );
@@ -206,22 +258,11 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
     />
   );
 
-  if (view === "timeline") {
-    return (
-      <View className="w-full flex-1">
-        <GestureDetector gesture={calendarListPanGesture}>{feedCalendar}</GestureDetector>
-        {feedItems}
-      </View>
-    );
-  }
-
   return (
-    <GestureDetector gesture={calendarListPanGesture}>
-      <View className="w-full flex-1">
-        {feedCalendar}
-        {feedItems}
-      </View>
-    </GestureDetector>
+    <View className="w-full flex-1">
+      <GestureDetector gesture={calendarPanGesture}>{feedCalendar}</GestureDetector>
+      <GestureDetector gesture={feedPanGesture}>{feedItems}</GestureDetector>
+    </View>
   );
 }
 
