@@ -6,17 +6,14 @@ import {
   FeedViewToggleMenu,
   GoalMenu,
 } from "@/features/feed/components/main-header/components";
-import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
+import { ChevronRightIcon } from "@/icons";
 
 interface FeedCalendarHeaderProps {
   displayMonth: string;
-  onPrev?: () => void;
-  onNext?: () => void;
+  onPressMonthPicker?: () => void;
 }
 
-function FeedCalendarHeader({ displayMonth, onPrev, onNext }: FeedCalendarHeaderProps) {
-  const isNavigationEnabled = Boolean(onPrev && onNext);
-
+function FeedCalendarHeader({ displayMonth, onPressMonthPicker }: FeedCalendarHeaderProps) {
   return (
     <View
       className="w-full"
@@ -29,38 +26,23 @@ function FeedCalendarHeader({ displayMonth, onPrev, onNext }: FeedCalendarHeader
       }}
     >
       <View className="w-full flex-row items-center justify-between px-2 pt-1 pb-6">
-        <View className="flex-row items-center">
-          {isNavigationEnabled && (
-            <Pressable
-              onPress={onPrev}
-              hitSlop={8}
-              className="w-6 items-start"
-            >
-              <ChevronLeftIcon
-                size={16}
-                fill="#FFFFFF"
-              />
-            </Pressable>
-          )}
+        <Pressable
+          onPress={onPressMonthPicker}
+          hitSlop={8}
+          accessibilityRole="button"
+          className="flex-row items-center pl-[1rem] gap-[0.6rem]"
+        >
           <SpoqaText
             weight="bold"
-            className={`text-white text-size16 ${isNavigationEnabled ? "px-2" : "w-full text-center"}`}
+            className="text-white text-size16"
           >
             {displayMonth}
           </SpoqaText>
-          {isNavigationEnabled && (
-            <Pressable
-              onPress={onNext}
-              hitSlop={8}
-              className="w-6 items-end"
-            >
-              <ChevronRightIcon
-                size={16}
-                fill="#FFFFFF"
-              />
-            </Pressable>
-          )}
-        </View>
+          <ChevronRightIcon
+            size={14}
+            fill="#FFFFFF"
+          />
+        </Pressable>
         <View className="flex-row items-center gap-[0.8rem]">
           <FeedViewToggleMenu />
           <DDuDuSearchMenu />

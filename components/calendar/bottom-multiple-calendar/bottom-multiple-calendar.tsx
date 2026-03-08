@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 import { View } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
-import { MarkingTypes, Theme } from "react-native-calendars/src/types";
+import { MarkingTypes } from "react-native-calendars/src/types";
 
 import { SpoqaText } from "@/components";
 import { useCalendarFirstDay } from "@/hooks";
 import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
-import { formatDateToYYYYMMDD } from "@/utils";
+import { formatDateToYYYYMMDD, getWeekendHeaderTheme } from "@/utils";
 
 export interface BottomMultipleCalendarProps {
   selected?: Date[];
@@ -107,19 +107,7 @@ function BottomMultipleCalendar({
         )}
         hideExtraDays={false}
         firstDay={firstDay}
-        theme={
-          {
-            textSectionTitleColor: "#000",
-            "stylesheet.calendar.header": {
-              dayTextAtIndex0: {
-                color: "red",
-              },
-              dayTextAtIndex6: {
-                color: "blue",
-              },
-            },
-          } as Theme
-        }
+        theme={{ textSectionTitleColor: "#000", ...getWeekendHeaderTheme(firstDay) }}
       />
     </View>
   );

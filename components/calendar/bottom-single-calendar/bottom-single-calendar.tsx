@@ -1,12 +1,11 @@
 import { useEffect } from "react";
 import { Pressable, View } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
-import { Theme } from "react-native-calendars/src/types";
 
 import { BottomSheet, SpoqaText } from "@/components";
 import { useBottomSheetAction, useCalendarFirstDay } from "@/hooks";
 import { ArrowLeftIcon, ChevronLeftIcon, ChevronRightIcon } from "@/icons";
-import { formatDateToYYYYMMDD } from "@/utils";
+import { formatDateToYYYYMMDD, getWeekendHeaderTheme } from "@/utils";
 
 export interface BottomSingleCalendarProps {
   currentDate: string;
@@ -16,8 +15,11 @@ export interface BottomSingleCalendarProps {
   handleCalendarSheetToggleOff: () => void;
   minDate?: string;
   maxDate?: string;
+  hideExtraDays?: boolean;
+  showSixWeeks?: boolean;
   showBackArrow?: boolean;
   onPressBack?: () => void;
+  confirmButtonLabel?: string;
 }
 
 function BottomSingleCalendar({
@@ -28,8 +30,11 @@ function BottomSingleCalendar({
   handleCalendarSheetToggleOff,
   minDate,
   maxDate,
+  hideExtraDays = false,
+  showSixWeeks = false,
   showBackArrow = false,
   onPressBack,
+  confirmButtonLabel,
 }: BottomSingleCalendarProps) {
   const { ref, openSheet, closeSheet } = useBottomSheetAction();
   const firstDay = useCalendarFirstDay();
@@ -93,34 +98,33 @@ function BottomSingleCalendar({
           monthFormat="yyyy년 MM월"
           renderArrow={(direction) =>
             direction === "left" ? (
-              <ChevronLeftIcon
-                size={20}
-                fill="#000"
-              />
+              <View
+                className="h-[2.8rem] w-[2.8rem] items-center justify-center rounded-full"
+                style={{ backgroundColor: "#E5E7EB" }}
+              >
+                <ChevronLeftIcon
+                  size={14}
+                  fill="#4B5563"
+                />
+              </View>
             ) : (
-              <ChevronRightIcon
-                size={20}
-                fill="#000"
-              />
+              <View
+                className="h-[2.8rem] w-[2.8rem] items-center justify-center rounded-full"
+                style={{ backgroundColor: "#E5E7EB" }}
+              >
+                <ChevronRightIcon
+                  size={14}
+                  fill="#4B5563"
+                />
+              </View>
             )
           }
           renderHeader={(date) => (
             <SpoqaText className="text-size15">{`${date.getFullYear()}년 ${date.getMonth() + 1}월`}</SpoqaText>
           )}
-          hideExtraDays={false}
-          theme={
-            {
-              textSectionTitleColor: "#000",
-              "stylesheet.calendar.header": {
-                dayTextAtIndex0: {
-                  color: "red",
-                },
-                dayTextAtIndex6: {
-                  color: "blue",
-                },
-              },
-            } as Theme
-          }
+          hideExtraDays={hideExtraDays}
+          showSixWeeks={showSixWeeks}
+          theme={{ textSectionTitleColor: "#000", ...getWeekendHeaderTheme(firstDay) }}
           firstDay={firstDay}
         />
       </View>
@@ -134,7 +138,7 @@ function BottomSingleCalendar({
             weight="semiBold"
             className="text-white"
           >
-            확인
+            {confirmButtonLabel ?? "확인"}
           </SpoqaText>
         </Pressable>
       </View>

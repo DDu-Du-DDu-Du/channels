@@ -1,11 +1,13 @@
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Platform, View, useWindowDimensions } from "react-native";
 import { CalendarProvider, ExpandableCalendar } from "react-native-calendars";
 import { DateData, DayState, MarkedDates } from "react-native-calendars/src/types";
 import type { SharedValue } from "react-native-reanimated";
 
+import { BottomSingleCalendar } from "@/components";
 import { useCalendarFirstDay } from "@/hooks";
 import type { MonthlyWeeklyDDuDuType } from "@/types/response/feed/feed";
+import { formatDateToYYYYMMDD, getWeekendHeaderTheme } from "@/utils";
 
 import { FeedCalendarDayContent, FeedCalendarHeader } from "./components";
 import { useFeedCalendarNavigation, useGoalsDDuDuMutation } from "./hooks";
@@ -33,9 +35,11 @@ function FeedCalendar({
   const { width: screenWidth } = useWindowDimensions();
   const isWebDesktop = Platform.OS === "web" && screenWidth >= 1024;
   const calendarWidth = useMemo(() => (isWebDesktop ? "50%" : "100%"), [isWebDesktop]);
-  const { handleMonthChange } = useGoalsDDuDuMutation({ type: "MONTH", date, onSelectDate });
+  const { handleMonthChange } = useGoalsDDuDuMutation();
   const expandableCalendarRef = useRef<{ toggleCalendarPosition: () => boolean } | null>(null);
   const lastHandledMonthRef = useRef<string>("");
+  const [isMonthPickerOpen, setIsMonthPickerOpen] = useState(false);
+  const [monthPickerSelectedDate, setMonthPickerSelectedDate] = useState<Date>();
 
   const handleVisibleMonthChange = useCallback(
     (dateString: string) => {
@@ -54,7 +58,6 @@ function FeedCalendar({
     isOpen,
     visibleDate,
     handleCalendarToggled,
-    handleMovePeriod,
     handleDisplayMonth,
     handleSelectCalendarDate,
   } = useFeedCalendarNavigation({
@@ -66,6 +69,15 @@ function FeedCalendar({
   const handleToggleCalendar = useCallback(() => {
     expandableCalendarRef.current?.toggleCalendarPosition();
   }, []);
+
+  const handleOpenMonthPicker = () => {
+    setMonthPickerSelectedDate(new Date(`${visibleDate}T00:00:00.000Z`));
+    setIsMonthPickerOpen(true);
+  };
+
+  const handleCloseMonthPicker = () => {
+    setIsMonthPickerOpen(false);
+  };
 
   useEffect(() => {
     if (!onReadyToggleCalendar) {
@@ -149,8 +161,7 @@ function FeedCalendar({
             renderHeader={() => (
               <FeedCalendarHeader
                 displayMonth={handleDisplayMonth}
-                onPrev={() => handleMovePeriod("prev")}
-                onNext={() => handleMovePeriod("next")}
+                onPressMonthPicker={handleOpenMonthPicker}
               />
             )}
             onCalendarToggled={(nextIsOpen) => {
@@ -167,9 +178,26 @@ function FeedCalendar({
             }}
             markedDates={markedDates}
             dayComponent={dayComponent}
+            theme={getWeekendHeaderTheme(firstDay)}
           />
         </CalendarProvider>
       </View>
+
+      {isMonthPickerOpen && (
+        <BottomSingleCalendar
+          currentDate={visibleDate}
+          selectedDate={monthPickerSelectedDate}
+          setSelected={setMonthPickerSelectedDate}
+          onChangeDDuDuDate={(selectedDate) => {
+            handleSelectCalendarDate(formatDateToYYYYMMDD(selectedDate));
+            handleCloseMonthPicker();
+          }}
+          handleCalendarSheetToggleOff={handleCloseMonthPicker}
+          hideExtraDays={false}
+          showSixWeeks={true}
+          confirmButtonLabel="이동하기"
+        />
+      )}
     </View>
   );
 }

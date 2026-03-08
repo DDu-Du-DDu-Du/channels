@@ -3,11 +3,15 @@
 import styleConstructor from "react-native-calendars/src/expandableCalendar/style";
 
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { FlatList, View } from "react-native";
-import WeekDaysNames from "react-native-calendars/src/commons/WeekDaysNames";
+import { FlatList, Text, View } from "react-native";
 import constants from "react-native-calendars/src/commons/constants";
 import { extractCalendarProps } from "react-native-calendars/src/componentUpdater";
-import { getWeekDates, onSameDateRange, sameWeek } from "react-native-calendars/src/dateutils";
+import {
+  getWeekDates,
+  onSameDateRange,
+  sameWeek,
+  weekDayNames,
+} from "react-native-calendars/src/dateutils";
 import CalendarContext from "react-native-calendars/src/expandableCalendar/Context";
 import type { WeekCalendarProps } from "react-native-calendars/src/expandableCalendar/WeekCalendar";
 import { UpdateSources } from "react-native-calendars/src/expandableCalendar/commons";
@@ -147,13 +151,32 @@ function WeekCalendar(props: WeekCalendarProps) {
   const keyExtractor = useCallback((item: any, index: any) => `${item}-${index}`, []);
 
   const renderWeekDaysNames = useMemo(() => {
+    const headerTheme = (theme as Record<string, Record<string, object>> | undefined)?.[
+      "stylesheet.calendar.header"
+    ];
+    const dayNames = weekDayNames(firstDay);
+
     return (
-      <WeekDaysNames
-        firstDay={firstDay}
-        style={style.current.dayHeader}
-      />
+      <>
+        {dayNames.map((day, index) => {
+          const dayTextAtIndexKey = `dayTextAtIndex${index}`;
+          const dayTextStyle = headerTheme?.[dayTextAtIndexKey];
+
+          return (
+            <Text
+              allowFontScaling={false}
+              key={index}
+              style={[style.current.dayHeader, dayTextStyle]}
+              numberOfLines={1}
+              accessibilityLabel=""
+            >
+              {day}
+            </Text>
+          );
+        })}
+      </>
     );
-  }, [firstDay]);
+  }, [firstDay, theme]);
 
   const weekCalendarStyle = useMemo(() => {
     return [

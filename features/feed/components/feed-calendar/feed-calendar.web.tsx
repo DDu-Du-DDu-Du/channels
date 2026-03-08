@@ -11,9 +11,10 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { WeekCalendar } from "@/components";
+import { BottomSingleCalendar, WeekCalendar } from "@/components";
 import { useCalendarFirstDay } from "@/hooks";
 import type { MonthlyWeeklyDDuDuType } from "@/types/response/feed/feed";
+import { formatDateToYYYYMMDD, getWeekendHeaderTheme } from "@/utils";
 
 import { FeedCalendarDayContent, FeedCalendarHeader } from "./components";
 import { useFeedCalendarNavigation, useGoalsDDuDuMutation } from "./hooks";
@@ -48,14 +49,15 @@ function FeedCalendar({
   const [monthHeight, setMonthHeight] = useState(0);
   const [weekHeight, setWeekHeight] = useState(0);
   const lastHandledMonthRef = useRef("");
+  const [isMonthPickerOpen, setIsMonthPickerOpen] = useState(false);
+  const [monthPickerSelectedDate, setMonthPickerSelectedDate] = useState<Date>();
   const internalOpenProgress = useSharedValue(1);
   const openProgress = externalOpenProgress ?? internalOpenProgress;
-  const { handleMonthChange } = useGoalsDDuDuMutation({ type: "MONTH", date, onSelectDate });
+  const { handleMonthChange } = useGoalsDDuDuMutation();
   const {
     isOpen,
     visibleDate,
     handleToggleCalendar,
-    handleMovePeriod,
     handleDisplayMonth,
     handleSelectCalendarDate,
   } = useFeedCalendarNavigation({
@@ -86,6 +88,15 @@ function FeedCalendar({
   useEffect(() => {
     onCalendarToggled?.(isOpen);
   }, [isOpen, onCalendarToggled]);
+
+  const handleOpenMonthPicker = () => {
+    setMonthPickerSelectedDate(new Date(`${visibleDate}T00:00:00.000Z`));
+    setIsMonthPickerOpen(true);
+  };
+
+  const handleCloseMonthPicker = () => {
+    setIsMonthPickerOpen(false);
+  };
 
   useEffect(() => {
     if (externalOpenProgress) {
@@ -141,6 +152,11 @@ function FeedCalendar({
       return acc;
     }, {});
   }, [monthlyDDuDus]);
+  const visibleMonthKey = useMemo(() => visibleDate.slice(0, 7), [visibleDate]);
+  const monthCalendarKey = useMemo(
+    () => `${visibleMonthKey}-${firstDay}`,
+    [firstDay, visibleMonthKey],
+  );
 
   const dayComponent = useCallback(
     ({
@@ -191,8 +207,7 @@ function FeedCalendar({
         <View>
           <FeedCalendarHeader
             displayMonth={handleDisplayMonth}
-            onPrev={() => handleMovePeriod("prev")}
-            onNext={() => handleMovePeriod("next")}
+            onPressMonthPicker={handleOpenMonthPicker}
           />
 
           <Animated.View style={calendarAnimatedStyle}>
@@ -207,7 +222,8 @@ function FeedCalendar({
               }}
             >
               <Calendar
-                current={visibleDate}
+                key={monthCalendarKey}
+                initialDate={visibleDate}
                 firstDay={firstDay}
                 hideExtraDays={false}
                 hideArrows
@@ -217,6 +233,7 @@ function FeedCalendar({
                   handleSelectCalendarDate(newDate.dateString);
                 }}
                 dayComponent={dayComponent}
+                theme={getWeekendHeaderTheme(firstDay)}
               />
             </Animated.View>
 
@@ -241,6 +258,7 @@ function FeedCalendar({
                   calendarWidth={calendarWidth || undefined}
                   markedDates={markedDates}
                   dayComponent={dayComponent}
+                  theme={getWeekendHeaderTheme(firstDay)}
                 />
               </CalendarProvider>
             </Animated.View>
@@ -256,6 +274,22 @@ function FeedCalendar({
           </View>
         </View>
       </View>
+
+      {isMonthPickerOpen && (
+        <BottomSingleCalendar
+          currentDate={visibleDate}
+          selectedDate={monthPickerSelectedDate}
+          setSelected={setMonthPickerSelectedDate}
+          onChangeDDuDuDate={(selectedDate) => {
+            handleSelectCalendarDate(formatDateToYYYYMMDD(selectedDate));
+            handleCloseMonthPicker();
+          }}
+          handleCalendarSheetToggleOff={handleCloseMonthPicker}
+          hideExtraDays={false}
+          showSixWeeks={true}
+          confirmButtonLabel="이동하기"
+        />
+      )}
     </View>
   );
 }
