@@ -1,7 +1,8 @@
 import { useRef } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 
-import { SpoqaText } from "@/components";
+import { ConfirmModal, SpoqaText } from "@/components";
+import { useToggle } from "@/hooks";
 import { ArrowLeftIcon } from "@/icons";
 import { useAuthStore } from "@/stores";
 
@@ -15,6 +16,11 @@ function SettingsScreen() {
   const router = useRouter();
   const bugReportSheetRef = useRef<BugReportSheetHandle | null>(null);
   const clearSession = useAuthStore((state) => state.clearSession);
+  const {
+    isToggle: isLogoutConfirmOpen,
+    handleToggleOn: handleOpenLogoutConfirm,
+    handleToggleOff: handleCloseLogoutConfirm,
+  } = useToggle();
   const appVersion = Constants.expoConfig?.version ?? "-";
 
   const handlePressBack = () => {
@@ -42,6 +48,14 @@ function SettingsScreen() {
   };
 
   const handlePressLogout = () => {
+    handleOpenLogoutConfirm();
+  };
+
+  const handleLogoutConfirmResult = (isComplete: boolean) => {
+    if (!isComplete) {
+      return;
+    }
+
     // TODO: 로그아웃 서버 API 개발 후 fetch 로직 추가
     clearSession();
     router.replace("/");
@@ -73,7 +87,7 @@ function SettingsScreen() {
         showsVerticalScrollIndicator={false}
       >
         <SettingsRow
-          label="화면표시"
+          label="화면 표시"
           onPress={handlePressDisplay}
         />
         <SettingsRow
@@ -85,7 +99,7 @@ function SettingsScreen() {
           onPress={handlePressAppConnection}
         />
         <SettingsRow
-          label="버그리포트"
+          label="버그 리포트"
           onPress={handlePressBugReport}
         />
         <SettingsRow
@@ -104,6 +118,16 @@ function SettingsScreen() {
       </ScrollView>
 
       <BugReportSheet ref={bugReportSheetRef} />
+
+      <ConfirmModal
+        isToggle={isLogoutConfirmOpen}
+        title="로그아웃하시겠어요?"
+        message="현재 계정에서 로그아웃됩니다."
+        completeText="로그아웃"
+        incompleteText="취소"
+        handleToggleOff={handleCloseLogoutConfirm}
+        onCompleteCheck={handleLogoutConfirmResult}
+      />
     </View>
   );
 }
