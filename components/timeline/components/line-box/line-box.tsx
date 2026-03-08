@@ -20,8 +20,8 @@ function LineBox({ color, className = "", style, mode = "absolute" }: LineBoxPro
       style={style}
     >
       <View
-        className="h-full w-[0.2rem] border-l-[0.2rem] border-dashed"
-        style={{ borderLeftColor: color ? `#${color}` : "#D9D9D9" }}
+        className="h-full w-[0.2rem]"
+        style={{ backgroundColor: color ? `#${color}` : "#D9D9D9" }}
       />
     </View>
   );
