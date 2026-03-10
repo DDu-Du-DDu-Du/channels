@@ -1,40 +1,14 @@
-import { Pressable, ScrollView, View } from "react-native";
+import { ActivityIndicator, Pressable, ScrollView, View } from "react-native";
 
-import { SpoqaText } from "@/components";
+import { EmptyList, SpoqaText } from "@/components";
+import { useAnnouncementDetailScreen } from "@/features/announcement/hooks";
 import { ArrowLeftIcon } from "@/icons";
 
-import { useLocalSearchParams, useRouter } from "expo-router";
-
-interface AnnouncementDetailDummyType {
-  title: string;
-  date: string;
-  body: string;
-}
-
-const ANNOUNCEMENT_DUMMY_MAP: Record<string, AnnouncementDetailDummyType> = {
-  "3001": {
-    title: "업데이트 안내",
-    date: "2024.02.22",
-    body: "공지사항 내용이 들어갈 곳 공지사항 내용이 들어갈 곳\n\n공지사항 내용이 들어갈 곳 공지사항 내용이 들어갈 곳 공지사항 내용이 들어갈 곳 공지사항 내용이 들어갈 곳 공지사항 내용이 들어갈 곳 공지사항 내용이 들어갈 곳 공지사항 내용이 들어갈 곳 공지사항 내용이 들어갈 곳",
-  },
-  "3002": {
-    title: "점검 일정 안내",
-    date: "2024.02.20",
-    body: "점검 일정 관련 공지사항 더미 내용입니다.",
-  },
-};
+import { useRouter } from "expo-router";
 
 function AnnouncementDetailScreen() {
   const router = useRouter();
-  const params = useLocalSearchParams<{ id?: string | string[] }>();
-  const id = Array.isArray(params.id) ? params.id[0] : params.id;
-
-  // TODO: Replace this dummy lookup with announcement detail API response.
-  const detail = ANNOUNCEMENT_DUMMY_MAP[id ?? ""] ?? {
-    title: "공지사항",
-    date: "",
-    body: "공지사항 상세 내용이 준비 중입니다.",
-  };
+  const { detail, isLoading, isError } = useAnnouncementDetailScreen();
 
   const handlePressBack = () => {
     router.back();
@@ -61,24 +35,42 @@ function AnnouncementDetailScreen() {
         </SpoqaText>
       </View>
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 28 }}
-      >
-        <SpoqaText
-          weight="semiBold"
-          className="text-size18 text-black_500"
+      {isLoading ? (
+        <View className="py-[3.2rem]">
+          <ActivityIndicator
+            size="small"
+            color="#8E8E8E"
+          />
+        </View>
+      ) : isError ? (
+        <EmptyList text="공지사항 상세를 불러오지 못했어요." />
+      ) : !detail ? (
+        <EmptyList text="공지사항 상세가 없어요." />
+      ) : (
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 28 }}
         >
-          {detail.title}
-        </SpoqaText>
-        <SpoqaText className="mt-[0.8rem] text-size14 text-example_gray_900">
-          {detail.date}
-        </SpoqaText>
+          <SpoqaText
+            weight="semiBold"
+            className="text-size18 text-black_500"
+          >
+            {detail.title}
+          </SpoqaText>
+          <SpoqaText className="mt-[0.8rem] text-size14 text-example_gray_900">
+            {detail.dateText}
+          </SpoqaText>
+          {detail.author ? (
+            <SpoqaText className="mt-[0.4rem] text-size13 text-example_gray_900">
+              작성자: {detail.author}
+            </SpoqaText>
+          ) : null}
 
-        <View className="my-[1.6rem] h-[1px] bg-[#D9D9D9]" />
+          <View className="my-[1.6rem] h-[1px] bg-[#D9D9D9]" />
 
-        <SpoqaText className="text-size16 leading-[3rem] text-black_500">{detail.body}</SpoqaText>
-      </ScrollView>
+          <SpoqaText className="text-size16 leading-[3rem] text-black_500">{detail.body}</SpoqaText>
+        </ScrollView>
+      )}
     </View>
   );
 }

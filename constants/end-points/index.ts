@@ -7,3 +7,4 @@ export { default as USER } from "./user/user";
 export { default as AUTH } from "./auth/auth";
 export { default as NOTIFICATION } from "./notification/notification";
 export { default as STATS } from "./stats/stats";
+export { default as ANNOUNCEMENT } from "./announcement/announcement";

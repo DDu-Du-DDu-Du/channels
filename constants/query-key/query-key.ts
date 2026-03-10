@@ -56,3 +56,8 @@ export const NOTIFICATION_KEY = {
   INBOX: "notificationInbox",
   READ: "notificationRead",
 };
+
+export const ANNOUNCEMENT_KEY = {
+  LIST: "announcementList",
+  DETAIL: "announcementDetail",
+};

@@ -1,59 +1,70 @@
-import { Pressable, ScrollView, View } from "react-native";
+import { ActivityIndicator, FlatList, Pressable, View } from "react-native";
 
-import { SpoqaText } from "@/components";
+import { EmptyList, SpoqaText } from "@/components";
+import { AnnouncementListViewItem, useAnnouncementScreen } from "@/features/announcement";
 import { ArrowLeftIcon } from "@/icons";
 
 import { useRouter } from "expo-router";
 
-const DUMMY_ANNOUNCEMENTS = [
-  { id: "3001", title: "서비스 업데이트 안내", date: "2026.02.22" },
-  { id: "3002", title: "점검 일정 공지", date: "2026.02.20" },
-];
-
 function Announcement() {
   const router = useRouter();
+  const {
+    announcementViewItems,
+    isLoading,
+    isError,
+    isFetchingNextPage,
+    handlePressAnnouncement,
+    handleLoadMore,
+  } = useAnnouncementScreen();
 
   const handlePressBack = () => {
     router.back();
   };
 
-  const handlePressAnnouncement = (id: string) => {
-    router.push({
-      pathname: "/announcement/[id]",
-      params: { id },
-    });
+  const renderEmpty = () => {
+    if (isLoading) {
+      return <EmptyList text="불러오는 중..." />;
+    }
+
+    if (isError) {
+      return <EmptyList text="공지사항을 불러오지 못했어요." />;
+    }
+
+    return <EmptyList text="공지사항이 없어요." />;
   };
 
-  // TODO: 서버 공지사항 fetch 로직 추가
-
   return (
-    <View className="flex-1 bg-[#F5F5F5] px-[2.4rem] pt-[2.4rem]">
-      <View className="relative items-center justify-center pb-[2.8rem]">
-        <Pressable
-          onPress={handlePressBack}
-          className="absolute left-0 top-0 size-[2.4rem] items-start justify-center"
-          hitSlop={8}
-        >
-          <ArrowLeftIcon
-            size={16}
-            stroke="#1F1F1F"
-          />
-        </Pressable>
-        <SpoqaText
-          weight="bold"
-          className="text-size18 text-black_500"
-        >
-          공지사항
-        </SpoqaText>
-      </View>
-
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 24 }}
-      >
-        {DUMMY_ANNOUNCEMENTS.map((item) => (
+    <View className="flex-1 bg-[#F5F5F5]">
+      <FlatList<AnnouncementListViewItem>
+        data={announcementViewItems}
+        keyExtractor={(item) => item.key}
+        contentContainerStyle={{
+          paddingHorizontal: 24,
+          paddingTop: 24,
+          paddingBottom: 28,
+        }}
+        ListHeaderComponent={
+          <View className="relative items-center justify-center pb-[2.8rem]">
+            <Pressable
+              onPress={handlePressBack}
+              className="absolute left-0 top-0 size-[2.4rem] items-start justify-center"
+              hitSlop={8}
+            >
+              <ArrowLeftIcon
+                size={16}
+                stroke="#1F1F1F"
+              />
+            </Pressable>
+            <SpoqaText
+              weight="bold"
+              className="text-size18 text-black_500"
+            >
+              공지사항
+            </SpoqaText>
+          </View>
+        }
+        renderItem={({ item }) => (
           <Pressable
-            key={item.id}
             onPress={() => handlePressAnnouncement(item.id)}
             className="border-b border-[#E5E5E5] py-[1.4rem]"
           >
@@ -64,11 +75,25 @@ function Announcement() {
               {item.title}
             </SpoqaText>
             <SpoqaText className="mt-[0.4rem] text-size12 text-example_gray_900">
-              {item.date}
+              {item.dateText}
             </SpoqaText>
           </Pressable>
-        ))}
-      </ScrollView>
+        )}
+        ListEmptyComponent={renderEmpty}
+        ListFooterComponent={
+          isFetchingNextPage ? (
+            <View className="py-[1.2rem]">
+              <ActivityIndicator
+                size="small"
+                color="#8E8E8E"
+              />
+            </View>
+          ) : null
+        }
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.35}
+        showsVerticalScrollIndicator={false}
+      />
     </View>
   );
 }
