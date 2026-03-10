@@ -17,6 +17,7 @@ function useDDuDuSearchQuery({ query }: UseDDuDuSearchQueryProps) {
         size: 20,
         cursor: pageParam,
       }),
+    // TODO(server): add hasNext boolean in ddudu search response and prefer it for hasNextPage decision.
     getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,
   });
 }

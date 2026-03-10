@@ -11,6 +11,7 @@ function useNotificationInboxQuery() {
         size: 20,
         cursor: pageParam,
       }),
+    // TODO(server): add hasNext boolean in notification inbox response and prefer it for hasNextPage decision.
     getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,
   });
 }
