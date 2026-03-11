@@ -1,7 +1,9 @@
-import { FONTS } from "./constants";
+const FONTS = require("./constants/fonts/fonts").default ?? require("./constants/fonts/fonts");
+const { createTailwindColorTokens } = require("./constants/theme");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: "class",
   content: [
     "./app/**/*.{js,jsx,ts,tsx}",
     "./components/**/*.{js,jsx,ts,tsx}",
@@ -12,52 +14,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        white_100: "#FFFFFF",
-        black_500: "#000000",
-
-        transparent_10: "#23232310",
-        transparent_30: "#23232330",
-        transparent_50: "#23232350",
-        transparent_90: "#23232390",
-
-        example_gray_100: "#F5F5F5",
-        example_gray_200: "#F1F1F1",
-        example_gray_300: "#E6E6E6",
-        example_gray_500: "#D3D3D3",
-        example_gray_700: "#D9D9D9",
-        example_gray_800: "#7f7f7f",
-        example_gray_900: "#B6B6B6",
-        example_gray_1000: "#a8a8a8",
-        example_gray_1100: "#9c9c9c",
-        example_gray_1200: "#8e8e8e",
-
-        background: "#FFFFFF",
-
-        placeholder_100: "#DDDDE3",
-
-        text_primary: "",
-        text_secondary: "",
-
-        // 임시 컬러
-        example_green_100: "#00C73C",
-        example_yellow_400: "#FEE500",
-        example_yellow_500: "#FFD400",
-        example_red_500: "#ED4044",
-        red_500: "#ED4044",
-        example_orange_500: "#FFA500",
-
-        // 메인 컬러
-        main: "#1363DE",
-        sub: "#e7f0fe",
-
-        // 서브 컬러
-        sub_1: "#f8f8f8",
-        sub_2: "#efefef",
-        sub_3: "#1363DE",
-        sub_4: "#7db0fbff",
-        sub_gray_100: "#FCFCFC",
-        sub_gray_200: "#E1E1E1",
-        sub_gray_500: "#bebebe",
+        ...createTailwindColorTokens({ themeName: "wireframe", mode: "light" }),
+        "neutral-dark": createTailwindColorTokens({ themeName: "wireframe", mode: "dark" }).neutral,
+        "role-dark": createTailwindColorTokens({ themeName: "wireframe", mode: "dark" }).role,
+        "ui-dark": createTailwindColorTokens({ themeName: "wireframe", mode: "dark" }).ui,
+        "domain-dark": createTailwindColorTokens({ themeName: "wireframe", mode: "dark" }).domain,
       },
 
       borderRadius: {
@@ -89,9 +50,6 @@ module.exports = {
       },
 
       boxShadow: {
-        /* TODO
-          추후 디자인 고려하여 값 추가
-        */
         shadow_100: "0 0.8rem 2.4rem rgba(149, 157, 165, 0.2)",
         shadow_300: "",
         shadow_500: "0.3rem 0.3rem 2rem 0 rgba(0, 0, 0, 0.06)",
@@ -110,7 +68,6 @@ module.exports = {
       },
 
       zIndex: {
-        // 각 컴포넌트별 z index => 0 ~ 100
         timeline_dashed: "22",
         timeline_line: "23",
         timeline_icon: "24",

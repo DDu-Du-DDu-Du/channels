@@ -19,7 +19,7 @@ export interface SpoqaTextProps extends TextProps {
 function SpoqaText({ children, className, weight = "medium", ...others }: SpoqaTextProps) {
   return (
     <Text
-      className={`${fontWeights[weight]} ${className ?? ""}`}
+      className={`${fontWeights[weight]} text-role-text-primary dark:text-role-dark-text-primary ${className ?? ""}`}
       {...others}
     >
       {children}
