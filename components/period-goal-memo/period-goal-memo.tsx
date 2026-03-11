@@ -34,7 +34,7 @@ function PeriodGoalMemo({
       className={`${className} relative w-full rounded-radius10`}
       style={{ marginBottom: remToPx(minHeight) + 10 }}
     >
-      <View className="absolute z-monthly_goal_textarea w-full bg-example_gray_200 rounded-radius10 p-3">
+      <View className="absolute z-monthly_goal_textarea w-full bg-role-surface-subtle dark:bg-role-dark-surface-subtle rounded-radius10 p-3">
         <TextInput
           ref={inputRef}
           multiline

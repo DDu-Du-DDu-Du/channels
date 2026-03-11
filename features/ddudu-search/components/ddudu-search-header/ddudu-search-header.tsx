@@ -22,7 +22,7 @@ function DDuDuSearchHeader({ onBackPress }: DDuDuSearchHeaderProps) {
       </Pressable>
       <SpoqaText
         weight="bold"
-        className="text-size17 text-white"
+        className="text-size17 text-role-text-inverse dark:text-role-dark-text-inverse"
       >
         투두 검색
       </SpoqaText>

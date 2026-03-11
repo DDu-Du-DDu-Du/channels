@@ -14,7 +14,7 @@ function TimeStamp({ children, fillParentHeight = false }: TimeStampProps) {
     <View
       className={`flex w-[5rem] items-center justify-center pl-[1rem] ${wrapperHeightClassName}`}
     >
-      <View className="flex h-[2.4rem] w-[4rem] items-center justify-center rounded-[0.5rem] bg-white_100">
+      <View className="flex h-[2.4rem] w-[4rem] items-center justify-center rounded-[0.5rem] bg-role-surface-canvas dark:bg-role-dark-surface-canvas">
         <SpoqaText className="text-size11">{children}</SpoqaText>
       </View>
     </View>

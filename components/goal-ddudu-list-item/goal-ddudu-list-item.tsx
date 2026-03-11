@@ -41,10 +41,10 @@ function GoalDDuDuListItem({
       >
         <SpoqaText className="text-size13 leading-[1.3rem]">{title}</SpoqaText>
         <View className="flex-row">
-          <SpoqaText className="mr-[0.5rem] text-size11 font-light text-example_gray_900">
+          <SpoqaText className="mr-[0.5rem] text-size11 font-light text-role-text-secondary dark:text-role-dark-text-secondary">
             {repeatDays}
           </SpoqaText>
-          <SpoqaText className="text-size11 font-light text-example_gray_900">
+          <SpoqaText className="text-size11 font-light text-role-text-secondary dark:text-role-dark-text-secondary">
             {formatDateRange(startDate, endDate)}
           </SpoqaText>
         </View>

@@ -11,7 +11,7 @@ function ExampleIcon({ size = 32 }: ExampleIconProps) {
 
   return (
     <View
-      className="bg-example_gray_700 rounded-circle items-center justify-center"
+      className="bg-role-surface-muted dark:bg-role-dark-surface-muted rounded-circle items-center justify-center"
       style={{ width: size, height: size }}
     >
       <QuestionIcon

@@ -68,21 +68,21 @@ function RepeatDduduStatsSection({
 
   return (
     <>
-      <View className="mt-[1.2rem] rounded-radius15 bg-sub_1 px-[1.4rem] py-[1.4rem]">
+      <View className="mt-[1.2rem] rounded-radius15 bg-role-surface-panel dark:bg-role-dark-surface-panel px-[1.4rem] py-[1.4rem]">
         <View className="items-center">
-          <View className="rounded-circle bg-example_gray_100 px-[1.2rem] py-[0.5rem]">
+          <View className="rounded-circle bg-role-surface-panel dark:bg-role-dark-surface-panel px-[1.2rem] py-[0.5rem]">
             <SpoqaText
               weight="semiBold"
-              className="text-size15 text-black_500"
+              className="text-size15 text-role-text-primary dark:text-role-dark-text-primary"
             >
               반복투두
             </SpoqaText>
           </View>
         </View>
 
-        <View className="mt-[1.2rem] border-t border-sub_gray_200 pt-[1rem]">
+        <View className="mt-[1.2rem] border-t border-role-border-default dark:border-role-dark-border-default pt-[1rem]">
           {sorted.length === 0 ? (
-            <SpoqaText className="text-center text-size13 text-example_gray_800">
+            <SpoqaText className="text-center text-size13 text-role-text-tertiary dark:text-role-dark-text-tertiary">
               데이터가 없어요
             </SpoqaText>
           ) : (

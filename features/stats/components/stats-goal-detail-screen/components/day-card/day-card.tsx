@@ -33,22 +33,22 @@ function DayCard({ title, subtitle, stats, color, dayOrder, dayLabelMap }: DayCa
   const max = Math.max(...values, 0);
 
   return (
-    <View className="rounded-radius15 bg-sub_1 px-[1.2rem] py-[1.4rem]">
+    <View className="rounded-radius15 bg-role-surface-panel dark:bg-role-dark-surface-panel px-[1.2rem] py-[1.4rem]">
       <View className="items-center">
-        <View className="rounded-circle bg-example_gray_100 px-[1.2rem] py-[0.5rem]">
+        <View className="rounded-circle bg-role-surface-panel dark:bg-role-dark-surface-panel px-[1.2rem] py-[0.5rem]">
           <SpoqaText
             weight="semiBold"
-            className="text-size15 text-black_500"
+            className="text-size15 text-role-text-primary dark:text-role-dark-text-primary"
           >
             {title}
           </SpoqaText>
         </View>
-        <SpoqaText className="mt-[0.8rem] text-center text-size13 text-example_gray_800">
+        <SpoqaText className="mt-[0.8rem] text-center text-size13 text-role-text-tertiary dark:text-role-dark-text-tertiary">
           {subtitle}
         </SpoqaText>
       </View>
 
-      <View className="mt-[1rem] border-t border-sub_gray_200 pt-[1rem]">
+      <View className="mt-[1rem] border-t border-role-border-default dark:border-role-dark-border-default pt-[1rem]">
         <View className="flex-row items-end justify-between px-[0.2rem]">
           {dayOrder.map((day, index) => (
             <DayOfWeekBar

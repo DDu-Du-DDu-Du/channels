@@ -34,7 +34,7 @@ function FeedCalendarHeader({ displayMonth, onPressMonthPicker }: FeedCalendarHe
         >
           <SpoqaText
             weight="bold"
-            className="text-white text-size16"
+            className="text-role-text-inverse dark:text-role-dark-text-inverse text-size16"
           >
             {displayMonth}
           </SpoqaText>

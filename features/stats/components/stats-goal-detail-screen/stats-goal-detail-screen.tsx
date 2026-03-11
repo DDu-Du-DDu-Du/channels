@@ -132,13 +132,13 @@ function StatsGoalDetailScreen() {
         />
 
         {isLoading ? (
-          <SpoqaText className="mt-[1.6rem] text-size14 text-example_gray_900">
+          <SpoqaText className="mt-[1.6rem] text-size14 text-role-text-secondary dark:text-role-dark-text-secondary">
             불러오는 중...
           </SpoqaText>
         ) : null}
 
         {isError ? (
-          <SpoqaText className="mt-[1.6rem] text-size14 text-example_red_500">
+          <SpoqaText className="mt-[1.6rem] text-size14 text-role-status-error dark:text-role-dark-status-error">
             통계 데이터를 불러오지 못했어요.
           </SpoqaText>
         ) : null}

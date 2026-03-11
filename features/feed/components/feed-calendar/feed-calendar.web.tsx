@@ -264,12 +264,12 @@ function FeedCalendar({
             </Animated.View>
           </Animated.View>
 
-          <View className="items-center justify-center py-2 bg-white_100 rounded-b-radius10">
+          <View className="items-center justify-center py-2 bg-role-surface-canvas dark:bg-role-dark-surface-canvas rounded-b-radius10">
             <Pressable
               onPress={handleToggleCalendar}
               hitSlop={8}
             >
-              <View className="h-[0.35rem] w-[2.8rem] rounded-full bg-sub_gray_500" />
+              <View className="h-[0.35rem] w-[2.8rem] rounded-full bg-role-surface-card dark:bg-role-dark-surface-card_gray_500" />
             </Pressable>
           </View>
         </View>

@@ -28,7 +28,7 @@ function InputDateSingle({ label, onChange, todayDate, minDate, maxDate }: Input
     <View className="relative w-[12rem]">
       <Pressable
         accessibilityRole="button"
-        className="h-[4rem] rounded-radius10 bg-example_gray_100 justify-center pl-[1.8rem]"
+        className="h-[4rem] rounded-radius10 bg-role-surface-panel dark:bg-role-dark-surface-panel justify-center pl-[1.8rem]"
         onPress={handleToggleOn}
       >
         <SpoqaText className="text-size13">{label}</SpoqaText>

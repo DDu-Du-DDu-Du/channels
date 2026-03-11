@@ -9,7 +9,7 @@ interface AvatarEditProps {
 function AvatarEdit({ size }: AvatarEditProps) {
   return (
     <View
-      className={`absolute bottom-0 right-0 rounded-full bg-white_100 shadow-shadow_500 ${AVATAR_ICON[size]}`}
+      className={`absolute bottom-0 right-0 rounded-full bg-role-surface-canvas dark:bg-role-dark-surface-canvas shadow-shadow_500 ${AVATAR_ICON[size]}`}
     ></View>
   );
 }

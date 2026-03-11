@@ -65,7 +65,11 @@ function DDuDuSubMenu({
             Icon={<AlarmIcon />}
             title="알림 설정하기"
             buttonType="sub"
-            rightPlace={<SpoqaText className="text-size13 text-example_gray_700">없음</SpoqaText>}
+            rightPlace={
+              <SpoqaText className="text-size13 text-role-text-tertiary dark:text-role-dark-text-tertiary">
+                없음
+              </SpoqaText>
+            }
             onPress={handleAlarmSetting}
           />
           <SheetButton

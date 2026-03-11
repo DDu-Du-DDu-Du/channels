@@ -66,7 +66,7 @@ function RepeatTypeSelect({
       )}
 
       {repeatType === "MONTHLY" && (
-        <View className="gap-[0.6rem] rounded-radius15 border border-example_gray_700 bg-white_100 p-[0.8rem]">
+        <View className="gap-[0.6rem] rounded-radius15 border border-role-border-strong dark:border-role-dark-border-strong bg-role-surface-canvas dark:bg-role-dark-surface-canvas p-[0.8rem]">
           {MONTHLY_ROWS.map((row, rowIndex) => (
             <View
               key={`month-row-${rowIndex}`}

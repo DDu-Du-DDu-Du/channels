@@ -81,13 +81,13 @@ function YearMonthPicker({
         {label ? (
           <SpoqaText
             weight="semiBold"
-            className="mb-[0.8rem] text-size13 text-black_500"
+            className="mb-[0.8rem] text-size13 text-role-text-primary dark:text-role-dark-text-primary"
           >
             {label}
           </SpoqaText>
         ) : null}
         <View className="flex-row items-center justify-center gap-[0.8rem]">
-          <View className="items-center rounded-radius10 bg-example_gray_100 px-[0.6rem] py-[0.4rem]">
+          <View className="items-center rounded-radius10 bg-role-surface-panel dark:bg-role-dark-surface-panel px-[0.6rem] py-[0.4rem]">
             <WheelPicker
               data={years}
               value={toYearIndex(value.year, minYear)}
@@ -96,8 +96,10 @@ function YearMonthPicker({
               width={getPickerWidth()}
             />
           </View>
-          <SpoqaText className="text-size14 text-black_500">년</SpoqaText>
-          <View className="items-center rounded-radius10 bg-example_gray_100 px-[0.6rem] py-[0.4rem]">
+          <SpoqaText className="text-size14 text-role-text-primary dark:text-role-dark-text-primary">
+            년
+          </SpoqaText>
+          <View className="items-center rounded-radius10 bg-role-surface-panel dark:bg-role-dark-surface-panel px-[0.6rem] py-[0.4rem]">
             <WheelPicker
               data={months}
               value={toMonthIndex(value.month)}
@@ -106,10 +108,12 @@ function YearMonthPicker({
               width={getPickerWidth()}
             />
           </View>
-          <SpoqaText className="text-size14 text-black_500">월</SpoqaText>
+          <SpoqaText className="text-size14 text-role-text-primary dark:text-role-dark-text-primary">
+            월
+          </SpoqaText>
         </View>
         {type === "to" && toWarningText ? (
-          <SpoqaText className="mt-[0.6rem] text-size12 text-example_red_500">
+          <SpoqaText className="mt-[0.6rem] text-size12 text-role-status-error dark:text-role-dark-status-error">
             {toWarningText}
           </SpoqaText>
         ) : null}

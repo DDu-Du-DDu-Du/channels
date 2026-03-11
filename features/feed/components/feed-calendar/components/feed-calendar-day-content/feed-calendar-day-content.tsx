@@ -46,7 +46,9 @@ function FeedCalendarDayContent({
         {isSelected && (
           <View
             className={`absolute h-[2.6rem] w-[2.6rem] rounded-full ${
-              disabled ? "bg-sub_gray_200" : "bg-sub"
+              disabled
+                ? "bg-role-surface-subtle dark:bg-role-dark-surface-subtle"
+                : "bg-role-surface-card dark:bg-role-dark-surface-card"
             }`}
           />
         )}
@@ -66,7 +68,11 @@ function FeedCalendarDayContent({
         <SpoqaText
           weight={`${isSelected ? "bold" : "regular"}`}
           className={`text-size10 ${
-            disabled ? "text-sub_gray_500" : isSelected ? "text-sub_3" : "text-black_500"
+            disabled
+              ? "text-role-text-tertiary dark:text-role-dark-text-tertiary"
+              : isSelected
+                ? "text-role-text-secondary dark:text-role-dark-text-secondary"
+                : "text-role-text-primary dark:text-role-dark-text-primary"
           }`}
         >
           {day}

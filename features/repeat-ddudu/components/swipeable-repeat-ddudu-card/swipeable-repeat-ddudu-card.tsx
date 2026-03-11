@@ -36,17 +36,17 @@ function SwipeableRepeatDduduCard({
     >
       <Pressable
         onPress={onPress}
-        className="rounded-radius15 bg-white_100 px-[1.2rem] py-[1rem]"
+        className="rounded-radius15 bg-role-surface-canvas dark:bg-role-dark-surface-canvas px-[1.2rem] py-[1rem]"
       >
         <View className="flex-row items-start justify-between gap-[0.8rem]">
           <View className="flex-1">
             <SpoqaText
               weight="medium"
-              className="text-size14 text-black"
+              className="text-size14 text-role-text-primary dark:text-role-dark-text-primary"
             >
               {repeatDdudu.name}
             </SpoqaText>
-            <SpoqaText className="mt-[0.4rem] text-size12 text-example_gray_900">
+            <SpoqaText className="mt-[0.4rem] text-size12 text-role-text-secondary dark:text-role-dark-text-secondary">
               {buildRepeatDduduDescription(repeatDdudu)}
             </SpoqaText>
           </View>

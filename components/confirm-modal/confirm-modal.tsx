@@ -61,7 +61,7 @@ function ConfirmModal({
       )}
       <View className="flex-row gap-[1rem] px-[1rem] pb-[1rem]">
         <Pressable
-          className="h-[5.2rem] flex-1 items-center justify-center rounded-[1rem] bg-example_gray_100"
+          className="h-[5.2rem] flex-1 items-center justify-center rounded-[1rem] bg-role-surface-panel dark:bg-role-dark-surface-panel"
           onPress={handleClickComplete}
         >
           <SpoqaText
@@ -72,7 +72,7 @@ function ConfirmModal({
           </SpoqaText>
         </Pressable>
         <Pressable
-          className="h-[5.2rem] flex-1 items-center justify-center rounded-[1rem] bg-example_gray_100"
+          className="h-[5.2rem] flex-1 items-center justify-center rounded-[1rem] bg-role-surface-panel dark:bg-role-dark-surface-panel"
           onPress={handleClickIncomplete}
         >
           <SpoqaText

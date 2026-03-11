@@ -69,12 +69,12 @@ function PrivacySheet({ goalPrivacy, isShow, onClose, onClick }: PrivacySheetPro
         <View className="p-[2rem] box-border">
           <PrivacyTypeController list={PRIVACY_LIST} />
           <Pressable
-            className="w-full h-[5.6rem] bg-main rounded-radius15 items-center justify-center"
+            className="w-full h-[5.6rem] bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg rounded-radius15 items-center justify-center"
             onPress={handlePrivacySubmit}
           >
             <SpoqaText
               weight="semiBold"
-              className="text-white"
+              className="text-role-text-inverse dark:text-role-dark-text-inverse"
             >
               확인
             </SpoqaText>

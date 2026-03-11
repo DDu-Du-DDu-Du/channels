@@ -51,15 +51,21 @@ function DDuDuEditorForm({
         placeholder="뚜두 제목"
       />
       {titleWarning ? (
-        <SpoqaText className="text-size13 text-example_red_500">{titleWarning}</SpoqaText>
+        <SpoqaText className="text-size13 text-role-status-error dark:text-role-dark-status-error">
+          {titleWarning}
+        </SpoqaText>
       ) : null}
 
       <Pressable
-        className="rounded-radius15 bg-white_100 px-[1.2rem] py-[1.2rem]"
+        className="rounded-radius15 bg-role-surface-canvas dark:bg-role-dark-surface-canvas px-[1.2rem] py-[1.2rem]"
         onPress={onPressOpenCalendar}
       >
-        <SpoqaText className="mb-[0.4rem] text-size12 text-example_gray_900">날짜</SpoqaText>
-        <SpoqaText className="text-size14 text-black">{state.scheduledOn}</SpoqaText>
+        <SpoqaText className="mb-[0.4rem] text-size12 text-role-text-secondary dark:text-role-dark-text-secondary">
+          날짜
+        </SpoqaText>
+        <SpoqaText className="text-size14 text-role-text-primary dark:text-role-dark-text-primary">
+          {state.scheduledOn}
+        </SpoqaText>
       </Pressable>
 
       <DDuDuDetailToggle
@@ -71,8 +77,8 @@ function DDuDuEditorForm({
         <View className="gap-[1rem]">
           <FormSection
             label="시간 설정"
-            labelClassName="text-size14 text-black"
-            className="rounded-radius15 bg-white_100 px-[1.2rem]"
+            labelClassName="text-size14 text-role-text-primary dark:text-role-dark-text-primary"
+            className="rounded-radius15 bg-role-surface-canvas dark:bg-role-dark-surface-canvas px-[1.2rem]"
             rightContent={
               <ChevronRightIcon
                 size={14}
@@ -101,8 +107,10 @@ function DDuDuEditorForm({
             onChangeMinute={onChangeReminderMinute}
           />
 
-          <View className="rounded-radius15 bg-white_100 p-[1.2rem]">
-            <SpoqaText className="mb-[0.8rem] text-size14 text-black">메모 입력</SpoqaText>
+          <View className="rounded-radius15 bg-role-surface-canvas dark:bg-role-dark-surface-canvas p-[1.2rem]">
+            <SpoqaText className="mb-[0.8rem] text-size14 text-role-text-primary dark:text-role-dark-text-primary">
+              메모 입력
+            </SpoqaText>
             {/* TODO: to-be added after server implementation */}
             <RNTextInput
               value={state.memo}
@@ -110,7 +118,7 @@ function DDuDuEditorForm({
               placeholder="메모를 입력해주세요"
               multiline
               textAlignVertical="top"
-              className="h-[10rem] rounded-radius15 bg-example_gray_100 px-[1.2rem] py-[1rem] text-size14"
+              className="h-[10rem] rounded-radius15 bg-role-surface-panel dark:bg-role-dark-surface-panel px-[1.2rem] py-[1rem] text-size14"
             />
           </View>
         </View>
@@ -120,8 +128,8 @@ function DDuDuEditorForm({
         label={mode === "create" ? "뚜두 생성" : "뚜두 수정"}
         onPress={onSubmit}
         className="mt-[0.4rem]"
-        bodyClassName={`bg-main ${isPending ? "opacity-50" : ""}`}
-        labelClassName="text-white"
+        bodyClassName={`bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg ${isPending ? "opacity-50" : ""}`}
+        labelClassName="text-role-text-inverse dark:text-role-dark-text-inverse"
       />
     </View>
   );

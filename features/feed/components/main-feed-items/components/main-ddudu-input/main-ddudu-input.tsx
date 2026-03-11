@@ -60,7 +60,7 @@ function MainDDuDuInput({
   return (
     <View className="flex-row items-center justify-between">
       <View
-        className="w-[2rem] h-[2rem] rounded-circle border-2 bg-white mr-[1rem]"
+        className="w-[2rem] h-[2rem] rounded-circle border-2 bg-role-surface-canvas dark:bg-role-dark-surface-canvas mr-[1rem]"
         style={{ borderColor: `#${color}` }}
       />
       <View className="flex-1">

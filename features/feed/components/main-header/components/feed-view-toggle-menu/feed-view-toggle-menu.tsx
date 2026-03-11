@@ -34,10 +34,12 @@ function FeedViewToggleMenu() {
     <Pressable
       onPress={handlePressToggleView}
       hitSlop={8}
-      className="h-[3.2rem] w-[14.3rem] flex-row items-center overflow-hidden rounded-full border border-white"
+      className="h-[3.2rem] w-[14.3rem] flex-row items-center overflow-hidden rounded-full border border-role-border-subtle dark:border-role-dark-border-subtle"
     >
-      <View className="flex-[4] items-center justify-center border-r border-white">
-        <SpoqaText className="text-size12 text-white">보기</SpoqaText>
+      <View className="flex-[4] items-center justify-center border-r border-role-border-subtle dark:border-role-dark-border-subtle">
+        <SpoqaText className="text-size12 text-role-text-inverse dark:text-role-dark-text-inverse">
+          보기
+        </SpoqaText>
       </View>
 
       <View className="flex-[7] flex-row items-center gap-[0.4rem] pl-[0.9rem]">
@@ -52,7 +54,9 @@ function FeedViewToggleMenu() {
             fill="#FFFFFF"
           />
         )}
-        <SpoqaText className="text-size13 text-white">{currentLabel}</SpoqaText>
+        <SpoqaText className="text-size13 text-role-text-inverse dark:text-role-dark-text-inverse">
+          {currentLabel}
+        </SpoqaText>
       </View>
     </Pressable>
   );

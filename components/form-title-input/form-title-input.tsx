@@ -18,13 +18,17 @@ function FormTitleInput({
   required = false,
 }: FormTitleInputProps) {
   return (
-    <View className={`relative rounded-radius15 bg-white_100 px-[1.2rem] ${className ?? ""}`}>
+    <View
+      className={`relative rounded-radius15 bg-role-surface-canvas dark:bg-role-dark-surface-canvas px-[1.2rem] ${className ?? ""}`}
+    >
       {required && !value && (
         <View
           pointerEvents="none"
           className="absolute left-[1.2rem] top-1/2 z-10 -translate-y-1/2"
         >
-          <SpoqaText className="text-size15 text-example_red_500">{"*"}</SpoqaText>
+          <SpoqaText className="text-size15 text-role-status-error dark:text-role-dark-status-error">
+            {"*"}
+          </SpoqaText>
         </View>
       )}
       <RNTextInput
@@ -33,7 +37,7 @@ function FormTitleInput({
         onBlur={onBlur}
         placeholder={placeholder}
         placeholderTextColor="#B5B5B5"
-        className={`h-[5.6rem] text-size15 text-black ${required ? "pl-[1.2rem]" : ""}`}
+        className={`h-[5.6rem] text-size15 text-role-text-primary dark:text-role-dark-text-primary ${required ? "pl-[1.2rem]" : ""}`}
       />
     </View>
   );

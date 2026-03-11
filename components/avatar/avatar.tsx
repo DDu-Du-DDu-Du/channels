@@ -36,7 +36,7 @@ function Avatar({ type = "view", size = "small", user, users, onChangeAvatar }: 
         className="w-full h-full"
         onPress={handleClickAvatar}
       >
-        <View className="w-full h-full overflow-hidden rounded-circle bg-white_100 shadow-shadow_500">
+        <View className="w-full h-full overflow-hidden rounded-circle bg-role-surface-canvas dark:bg-role-dark-surface-canvas shadow-shadow_500">
           <ProfileImage
             className="rounded-circle w-full h-full"
             source={preview}

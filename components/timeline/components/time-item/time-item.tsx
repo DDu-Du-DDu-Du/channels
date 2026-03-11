@@ -104,14 +104,14 @@ function TimeItem({
         onPress={handleDDuDuSheetOpen}
       >
         <View
-          className="w-full min-h-[5.7rem] flex-col rounded-radius15 border bg-white_100 px-[1.6rem] py-[1.2rem]"
+          className="w-full min-h-[5.7rem] flex-col rounded-radius15 border bg-role-surface-canvas dark:bg-role-dark-surface-canvas px-[1.6rem] py-[1.2rem]"
           style={{
             borderColor: cardBorderColor,
             marginBottom: isLastItem ? 0 : TIME_ITEM_CARD_GAP,
           }}
         >
           <SpoqaText className="text-size14">{name}</SpoqaText>
-          <SpoqaText className="text-size11 text-example_gray_800">
+          <SpoqaText className="text-size11 text-role-text-tertiary dark:text-role-dark-text-tertiary">
             {beginAt && endAt ? `${beginAt} - ${endAt}` : ""}
           </SpoqaText>
         </View>

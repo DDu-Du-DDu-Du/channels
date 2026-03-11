@@ -10,7 +10,7 @@ export { default as ConfirmModal } from "./confirm-modal/confirm-modal";
 
 export { default as AlarmSheet } from "./alarm-sheet/alarm-sheet";
 export { default as AnimatedSwitch } from "./animated-switch/animated-switch";
-export { default as Button } from "./button/button";
+export { default as Button } from "./button/Button";
 export { default as BottomMultipleCalendar } from "./calendar/bottom-multiple-calendar/bottom-multiple-calendar";
 export { default as BottomSingleCalendar } from "./calendar/bottom-single-calendar/bottom-single-calendar";
 export { default as WeekCalendar } from "./calendar/week-calendar/week-calendar";

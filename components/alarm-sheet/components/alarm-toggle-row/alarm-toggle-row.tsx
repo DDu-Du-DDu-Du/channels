@@ -9,7 +9,7 @@ export interface AlarmToggleRowProps {
 
 function AlarmToggleRow({ enabled, onToggle }: AlarmToggleRowProps) {
   return (
-    <View className="flex-row items-center justify-between bg-white_100 px-[1.6rem] py-[1rem] rounded-radius10">
+    <View className="flex-row items-center justify-between bg-role-surface-canvas dark:bg-role-dark-surface-canvas px-[1.6rem] py-[1rem] rounded-radius10">
       <SpoqaText className="text-size13">미리 알림 받기</SpoqaText>
       <Switch
         value={enabled}

@@ -61,9 +61,9 @@ function ImageUpload({
       <Pressable
         onPress={handlePressUpload}
         disabled={disabled || isLoading || items.length >= maxCount}
-        className="h-[4.2rem] items-center justify-center rounded-radius12 border border-[#D5D5D5] bg-[#FFFFFF]"
+        className="h-[4.2rem] items-center justify-center rounded-radius12 border border-role-border-default dark:border-role-dark-border-default bg-role-surface-canvas dark:bg-role-dark-surface-canvas"
       >
-        <SpoqaText className="text-size13 text-black_500">
+        <SpoqaText className="text-size13 text-role-text-primary dark:text-role-dark-text-primary">
           {isLoading ? "업로드 중..." : "이미지 업로드"}
         </SpoqaText>
       </Pressable>
@@ -80,12 +80,12 @@ function ImageUpload({
           >
             <Image
               source={{ uri: item.uri }}
-              className="size-[7.2rem] rounded-radius10 bg-[#EAEAEA]"
+              className="size-[7.2rem] rounded-radius10 bg-role-surface-subtle dark:bg-role-dark-surface-subtle"
               resizeMode="cover"
             />
             <Pressable
               onPress={() => onRemoveImage(item.id)}
-              className="absolute right-[-0.6rem] top-[-0.6rem] size-[1.8rem] items-center justify-center rounded-circle bg-black_500"
+              className="absolute right-[-0.6rem] top-[-0.6rem] size-[1.8rem] items-center justify-center rounded-circle bg-role-surface-inverse dark:bg-role-dark-surface-inverse"
             >
               <CloseIcon
                 size={10}

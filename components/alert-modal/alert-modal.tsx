@@ -46,12 +46,12 @@ function AlertModal({
         </View>
       )}
       <Pressable
-        className="mx-auto mb-[0.9rem] h-[5.2rem] w-[94%] items-center justify-center rounded-[1rem] bg-main"
+        className="mx-auto mb-[0.9rem] h-[5.2rem] w-[94%] items-center justify-center rounded-[1rem] bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg"
         onPress={handleToggleOff}
       >
         <SpoqaText
           weight="semiBold"
-          className="text-white text-size15"
+          className="text-role-text-inverse dark:text-role-dark-text-inverse text-size15"
         >
           {completeText}
         </SpoqaText>

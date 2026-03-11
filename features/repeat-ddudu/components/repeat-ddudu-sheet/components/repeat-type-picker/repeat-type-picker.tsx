@@ -11,7 +11,7 @@ export interface RepeatTypePickerProps {
 
 function RepeatTypePicker({ value, onChange }: RepeatTypePickerProps) {
   return (
-    <View className="rounded-radius15 border border-example_gray_700 bg-white_100 p-[0.8rem]">
+    <View className="rounded-radius15 border border-role-border-strong dark:border-role-dark-border-strong bg-role-surface-canvas dark:bg-role-dark-surface-canvas p-[0.8rem]">
       <View className="flex-row gap-[0.6rem]">
         <SelectChip
           label={"매일"}

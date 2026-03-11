@@ -77,24 +77,26 @@ function StatsReportSection({ report, isLoading, isError }: StatsReportSectionPr
   const secondRowMetrics = REPORT_METRICS.slice(3);
 
   return (
-    <View className="border-t border-sub_gray_200 pt-[2rem]">
+    <View className="border-t border-role-border-default dark:border-role-dark-border-default pt-[2rem]">
       <SpoqaText
         weight="bold"
-        className="text-size20 text-white_100"
+        className="text-size20 text-role-text-inverse dark:text-role-dark-text-inverse"
       >
         요약 리포트
       </SpoqaText>
-      <SpoqaText className="mt-[0.6rem] text-size15 text-example_gray_900">
+      <SpoqaText className="mt-[0.6rem] text-size15 text-role-text-secondary dark:text-role-dark-text-secondary">
         저번 달 대비 이번 달의 성과예요
       </SpoqaText>
       {isLoading && (
         <View className="mt-[1.4rem]">
-          <SpoqaText className="text-size14 text-example_gray_900">불러오는 중...</SpoqaText>
+          <SpoqaText className="text-size14 text-role-text-secondary dark:text-role-dark-text-secondary">
+            불러오는 중...
+          </SpoqaText>
         </View>
       )}
       {isError && !isLoading && (
         <View className="mt-[1.4rem]">
-          <SpoqaText className="text-size14 text-example_red_500">
+          <SpoqaText className="text-size14 text-role-status-error dark:text-role-dark-status-error">
             요약 리포트를 불러오지 못했어요.
           </SpoqaText>
         </View>

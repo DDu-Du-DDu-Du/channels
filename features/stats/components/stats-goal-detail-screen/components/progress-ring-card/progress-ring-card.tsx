@@ -55,12 +55,12 @@ function ProgressRingCard({
 
   return (
     <View
-      className={`items-center rounded-radius10 bg-sub_1 px-[1.2rem] py-[1.2rem] ${containerClassName ?? ""}`}
+      className={`items-center rounded-radius10 bg-role-surface-panel dark:bg-role-dark-surface-panel px-[1.2rem] py-[1.2rem] ${containerClassName ?? ""}`}
     >
-      <View className="mb-[0.6rem] rounded-circle bg-example_gray_100 px-[1.2rem] py-[0.4rem]">
+      <View className="mb-[0.6rem] rounded-circle bg-role-surface-panel dark:bg-role-dark-surface-panel px-[1.2rem] py-[0.4rem]">
         <SpoqaText
           weight="semiBold"
-          className={`${titleClass} text-black_500`}
+          className={`${titleClass} text-role-text-primary dark:text-role-dark-text-primary`}
         >
           {title}
         </SpoqaText>
@@ -79,11 +79,13 @@ function ProgressRingCard({
           <View className="items-center justify-center">
             <SpoqaText
               weight="bold"
-              className={`${percentTextClass} text-black_500`}
+              className={`${percentTextClass} text-role-text-primary dark:text-role-dark-text-primary`}
             >
               {isZeroDenominator ? "-" : `${Math.round(safePercent)}%`}
             </SpoqaText>
-            <SpoqaText className={`${fractionTextClass} text-example_gray_800`}>
+            <SpoqaText
+              className={`${fractionTextClass} text-role-text-tertiary dark:text-role-dark-text-tertiary`}
+            >
               {fractionText}
             </SpoqaText>
           </View>

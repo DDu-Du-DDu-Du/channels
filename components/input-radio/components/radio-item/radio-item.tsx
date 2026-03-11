@@ -13,8 +13,10 @@ export interface RadioItemProps {
 
 function RadioItem({ label, selected, onPress, disabled, className }: RadioItemProps) {
   const base =
-    "px-[1.2rem] py-[1.4rem] text-size13 leading-[1.3rem] rounded-radius10 border-solid border-[1px] border-example_gray_100";
-  const selectedCls = selected ? " font-medium bg-example_gray_100" : "";
+    "px-[1.2rem] py-[1.4rem] text-size13 leading-[1.3rem] rounded-radius10 border-solid border-[1px] border-role-border-subtle dark:border-role-dark-border-subtle";
+  const selectedCls = selected
+    ? " font-medium bg-role-surface-panel dark:bg-role-dark-surface-panel"
+    : "";
   const disabledCls = disabled ? " opacity-50" : "";
 
   return (

@@ -11,10 +11,10 @@ interface StatsHeaderProps {
 
 function StatsHeader({ yearMonthLabel, handlePrevMonth, handleNextMonth }: StatsHeaderProps) {
   return (
-    <View className="mb-[1.6rem] rounded-radius15 bg-sub_1 px-[2rem] py-[1rem]">
+    <View className="mb-[1.6rem] rounded-radius15 bg-role-surface-panel dark:bg-role-dark-surface-panel px-[2rem] py-[1rem]">
       <View className="flex-row items-center justify-between">
         <Pressable
-          className="size-[3rem] items-center justify-center rounded-circle bg-example_gray_300"
+          className="size-[3rem] items-center justify-center rounded-circle bg-role-surface-subtle dark:bg-role-dark-surface-subtle"
           hitSlop={8}
           onPress={handlePrevMonth}
         >
@@ -25,12 +25,12 @@ function StatsHeader({ yearMonthLabel, handlePrevMonth, handleNextMonth }: Stats
         </Pressable>
         <SpoqaText
           weight="bold"
-          className="text-size17 text-black_500"
+          className="text-size17 text-role-text-primary dark:text-role-dark-text-primary"
         >
           {yearMonthLabel}
         </SpoqaText>
         <Pressable
-          className="size-[3rem] items-center justify-center rounded-circle bg-example_gray_300"
+          className="size-[3rem] items-center justify-center rounded-circle bg-role-surface-subtle dark:bg-role-dark-surface-subtle"
           hitSlop={8}
           onPress={handleNextMonth}
         >

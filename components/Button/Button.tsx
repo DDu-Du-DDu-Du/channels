@@ -14,8 +14,8 @@ function Button({
   label,
   onPress,
   className,
-  bodyClassName = "bg-white_100",
-  labelClassName = "text-black",
+  bodyClassName = "bg-role-surface-canvas dark:bg-role-dark-surface-canvas",
+  labelClassName = "text-role-text-primary dark:text-role-dark-text-primary",
 }: ButtonProps) {
   return (
     <Pressable

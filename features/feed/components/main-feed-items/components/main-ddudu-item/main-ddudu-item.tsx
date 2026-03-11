@@ -54,7 +54,7 @@ function MainDDuDuItem({
         <View className="w-[75%] py-[0.9rem] pl-[0.6rem] pr-[1.1rem]">
           <SpoqaText
             weight="regular"
-            className="text-size14 text-black"
+            className="text-size14 text-role-text-primary dark:text-role-dark-text-primary"
             numberOfLines={1}
           >
             {ddudu}

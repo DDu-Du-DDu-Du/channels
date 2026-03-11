@@ -22,20 +22,26 @@ function DateInputSet({
   return (
     <View className="flex-row gap-[0.8rem]">
       <Pressable
-        className="flex-1 rounded-radius15 bg-white_100 px-[1rem] py-[0.8rem]"
+        className="flex-1 rounded-radius15 bg-role-surface-canvas dark:bg-role-dark-surface-canvas px-[1rem] py-[0.8rem]"
         onPress={onPressStart}
       >
-        <SpoqaText className="mb-[0.4rem] text-size11 text-example_gray_900">
+        <SpoqaText className="mb-[0.4rem] text-size11 text-role-text-secondary dark:text-role-dark-text-secondary">
           {startLabel}
         </SpoqaText>
-        <SpoqaText className="text-size14 text-black">{startDate}</SpoqaText>
+        <SpoqaText className="text-size14 text-role-text-primary dark:text-role-dark-text-primary">
+          {startDate}
+        </SpoqaText>
       </Pressable>
       <Pressable
-        className="flex-1 rounded-radius15 bg-white_100 px-[1rem] py-[0.8rem]"
+        className="flex-1 rounded-radius15 bg-role-surface-canvas dark:bg-role-dark-surface-canvas px-[1rem] py-[0.8rem]"
         onPress={onPressEnd}
       >
-        <SpoqaText className="mb-[0.4rem] text-size11 text-example_gray_900">{endLabel}</SpoqaText>
-        <SpoqaText className="text-size14 text-black">{endDate}</SpoqaText>
+        <SpoqaText className="mb-[0.4rem] text-size11 text-role-text-secondary dark:text-role-dark-text-secondary">
+          {endLabel}
+        </SpoqaText>
+        <SpoqaText className="text-size14 text-role-text-primary dark:text-role-dark-text-primary">
+          {endDate}
+        </SpoqaText>
       </Pressable>
     </View>
   );

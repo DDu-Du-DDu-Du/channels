@@ -115,7 +115,9 @@ function GoalEditorScreen({ goalId }: GoalEditorScreenProps) {
   if (isPending) {
     return (
       <View className="flex-1 items-center justify-center">
-        <SpoqaText className="text-size14 text-white">{"목표 정보를 불러오는 중..."}</SpoqaText>
+        <SpoqaText className="text-size14 text-role-text-inverse dark:text-role-dark-text-inverse">
+          {"목표 정보를 불러오는 중..."}
+        </SpoqaText>
       </View>
     );
   }
@@ -123,7 +125,7 @@ function GoalEditorScreen({ goalId }: GoalEditorScreenProps) {
   if (!goalDetail || isError) {
     return (
       <View className="flex-1 items-center justify-center">
-        <SpoqaText className="text-size14 text-white">
+        <SpoqaText className="text-size14 text-role-text-inverse dark:text-role-dark-text-inverse">
           {"목표 정보를 불러오지 못했습니다."}
         </SpoqaText>
       </View>

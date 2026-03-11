@@ -58,7 +58,7 @@ function GoalList() {
           onPress={() => handlePressGoal(item.id)}
           style={{ borderRadius: 15 }}
         >
-          <View className="w-full rounded-radius15 bg-white_100 px-[1.8rem] py-[1.6rem]">
+          <View className="w-full rounded-radius15 bg-role-surface-canvas dark:bg-role-dark-surface-canvas px-[1.8rem] py-[1.6rem]">
             <SpoqaText
               weight="semiBold"
               className="text-size15"

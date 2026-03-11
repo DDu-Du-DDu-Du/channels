@@ -100,16 +100,16 @@ function StatsGoalSection({ yearMonth, summary, isLoading, isError }: StatsGoalS
   };
 
   return (
-    <View className="mt-[2.4rem] border-t border-sub_gray_200 pt-[2rem]">
+    <View className="mt-[2.4rem] border-t border-role-border-default dark:border-role-dark-border-default pt-[2rem]">
       <View className="mb-[2rem] flex-row items-center justify-between">
         <View className="flex-1 pr-[1rem]">
           <SpoqaText
             weight="bold"
-            className="text-size20 text-white_100"
+            className="text-size20 text-role-text-inverse dark:text-role-dark-text-inverse"
           >
             목표 통계
           </SpoqaText>
-          <SpoqaText className="mt-[0.6rem] text-size15 text-example_gray_900">
+          <SpoqaText className="mt-[0.6rem] text-size15 text-role-text-secondary dark:text-role-dark-text-secondary">
             어떤 목표의 달성률이 가장 높을까요?
           </SpoqaText>
         </View>
@@ -118,7 +118,9 @@ function StatsGoalSection({ yearMonth, summary, isLoading, isError }: StatsGoalS
           hitSlop={8}
           onPress={handlePressGoalDetail}
         >
-          <SpoqaText className="text-size14 text-example_gray_900">목표 상세통계</SpoqaText>
+          <SpoqaText className="text-size14 text-role-text-secondary dark:text-role-dark-text-secondary">
+            목표 상세통계
+          </SpoqaText>
           <ArrowRightIcon
             size={14}
             stroke="#B6B6B6"
@@ -127,10 +129,12 @@ function StatsGoalSection({ yearMonth, summary, isLoading, isError }: StatsGoalS
       </View>
 
       {isLoading && (
-        <SpoqaText className="text-size14 text-example_gray_900">불러오는 중...</SpoqaText>
+        <SpoqaText className="text-size14 text-role-text-secondary dark:text-role-dark-text-secondary">
+          불러오는 중...
+        </SpoqaText>
       )}
       {isError && !isLoading && (
-        <SpoqaText className="text-size14 text-example_red_500">
+        <SpoqaText className="text-size14 text-role-status-error dark:text-role-dark-status-error">
           목표 통계를 불러오지 못했어요.
         </SpoqaText>
       )}

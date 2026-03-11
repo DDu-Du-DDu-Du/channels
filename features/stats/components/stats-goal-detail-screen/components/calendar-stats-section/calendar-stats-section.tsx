@@ -54,7 +54,7 @@ function CalendarStatsSection({
   const monthLabel = `${fromMonth.substring(0, 4)}년 ${Number(fromMonth.substring(5, 7))}월 투두`;
 
   return (
-    <View className="mt-[1.2rem] rounded-radius15 bg-sub_1 px-[1.4rem] py-[1.4rem]">
+    <View className="mt-[1.2rem] rounded-radius15 bg-role-surface-panel dark:bg-role-dark-surface-panel px-[1.4rem] py-[1.4rem]">
       <BottomMultipleCalendar
         markedDates={markedDates}
         disableDayPress
@@ -68,18 +68,24 @@ function CalendarStatsSection({
 
         <View className="flex-1 flex-row items-center justify-center gap-[1.2rem]">
           <View className="flex-row items-center gap-[0.4rem]">
-            <View className="size-[0.8rem] rounded-circle bg-example_green_100" />
-            <SpoqaText className="text-size12 text-example_gray_800">달성</SpoqaText>
+            <View className="size-[0.8rem] rounded-circle bg-role-status-success dark:bg-role-dark-status-success" />
+            <SpoqaText className="text-size12 text-role-text-tertiary dark:text-role-dark-text-tertiary">
+              달성
+            </SpoqaText>
           </View>
           <View className="flex-row items-center gap-[0.4rem]">
-            <View className="size-[0.8rem] rounded-circle bg-example_red_500" />
-            <SpoqaText className="text-size12 text-example_gray_800">미룸</SpoqaText>
+            <View className="size-[0.8rem] rounded-circle bg-role-status-error dark:bg-role-dark-status-error" />
+            <SpoqaText className="text-size12 text-role-text-tertiary dark:text-role-dark-text-tertiary">
+              미룸
+            </SpoqaText>
           </View>
         </View>
 
         <View className="w-[7.2rem] items-end">
           <Pressable onPress={() => router.push("/feed")}>
-            <SpoqaText className="text-size11 text-example_gray_900">피드로 이동</SpoqaText>
+            <SpoqaText className="text-size11 text-role-text-secondary dark:text-role-dark-text-secondary">
+              피드로 이동
+            </SpoqaText>
           </Pressable>
         </View>
       </View>

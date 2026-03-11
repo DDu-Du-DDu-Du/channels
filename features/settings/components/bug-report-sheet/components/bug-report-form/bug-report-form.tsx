@@ -68,8 +68,10 @@ const BugReportForm = forwardRef<BugReportFormHandle, BugReportFormProps>(functi
       >
         <View>
           <View className="mb-[0.8rem] flex-row justify-between">
-            <SpoqaText className="text-size14 text-black_500">제목</SpoqaText>
-            <SpoqaText className="text-size12 text-example_gray_900">
+            <SpoqaText className="text-size14 text-role-text-primary dark:text-role-dark-text-primary">
+              제목
+            </SpoqaText>
+            <SpoqaText className="text-size12 text-role-text-secondary dark:text-role-dark-text-secondary">
               {title.length}/{TITLE_MAX_LENGTH}
             </SpoqaText>
           </View>
@@ -82,8 +84,10 @@ const BugReportForm = forwardRef<BugReportFormHandle, BugReportFormProps>(functi
 
         <View>
           <View className="mb-[0.8rem] flex-row justify-between">
-            <SpoqaText className="text-size14 text-black_500">내용</SpoqaText>
-            <SpoqaText className="text-size12 text-example_gray_900">
+            <SpoqaText className="text-size14 text-role-text-primary dark:text-role-dark-text-primary">
+              내용
+            </SpoqaText>
+            <SpoqaText className="text-size12 text-role-text-secondary dark:text-role-dark-text-secondary">
               {content.length}/{CONTENT_MAX_LENGTH}
             </SpoqaText>
           </View>
@@ -98,7 +102,9 @@ const BugReportForm = forwardRef<BugReportFormHandle, BugReportFormProps>(functi
         </View>
 
         <View>
-          <SpoqaText className="mb-[0.8rem] text-size14 text-black_500">이미지</SpoqaText>
+          <SpoqaText className="mb-[0.8rem] text-size14 text-role-text-primary dark:text-role-dark-text-primary">
+            이미지
+          </SpoqaText>
           <Controller
             control={methods.control}
             name="images"

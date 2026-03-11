@@ -46,7 +46,7 @@ function RepeatTimeSelect({
     <>
       <FormSection
         label={"시간 설정"}
-        labelClassName="text-size14 text-black"
+        labelClassName="text-size14 text-role-text-primary dark:text-role-dark-text-primary"
         rightContent={
           <Pressable onPress={handleOpenTimeSheet}>
             <ArrowRightIcon

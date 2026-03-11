@@ -90,7 +90,11 @@ function WheelPicker({ data, value, onChange, itemHeight = 44, width = 72 }: Whe
                 }}
               >
                 <SpoqaText
-                  className={i === value ? "text-size15" : "text-size13 text-example_gray_800"}
+                  className={
+                    i === value
+                      ? "text-size15"
+                      : "text-size13 text-role-text-tertiary dark:text-role-dark-text-tertiary"
+                  }
                 >
                   {String(d)}
                 </SpoqaText>

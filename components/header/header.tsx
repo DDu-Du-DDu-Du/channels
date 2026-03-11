@@ -24,7 +24,7 @@ function Header({
   return (
     <View
       pointerEvents="box-none"
-      className="absolute top-0 h-[5.2rem] w-full max-w-[60rem] items-center justify-center z-header bg-white_100"
+      className="absolute top-0 h-[5.2rem] w-full max-w-[60rem] items-center justify-center z-header bg-role-surface-canvas dark:bg-role-dark-surface-canvas"
     >
       <HeaderButton
         buttonPosition="LEFT"

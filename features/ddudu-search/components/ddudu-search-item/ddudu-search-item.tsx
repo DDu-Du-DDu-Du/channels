@@ -16,7 +16,7 @@ function DDuDuSearchItem({ item, onCompleteToggle, onOpenMenu }: DDuDuSearchItem
   const isCompleted = status === "COMPLETE";
 
   return (
-    <View className="mb-[0.7rem] w-full flex-row items-center rounded-radius15 border-[0.1rem] border-white/15 bg-white/6">
+    <View className="mb-[0.7rem] w-full flex-row items-center rounded-radius15 border-[0.1rem] border-role-border-subtle dark:border-role-dark-border-subtle/15 bg-role-surface-canvas dark:bg-role-dark-surface-canvas/6">
       <View className="items-center justify-center px-[1.1rem] py-[1.2rem]">
         <ShakingCheckIcon
           isChecked={isCompleted}
@@ -34,13 +34,13 @@ function DDuDuSearchItem({ item, onCompleteToggle, onOpenMenu }: DDuDuSearchItem
         <SpoqaText
           weight="regular"
           numberOfLines={1}
-          className="text-size14 text-white"
+          className="text-size14 text-role-text-inverse dark:text-role-dark-text-inverse"
         >
           {item.name}
         </SpoqaText>
         <SpoqaText
           weight="regular"
-          className="mt-[0.3rem] text-size12 text-white/65"
+          className="mt-[0.3rem] text-size12 text-role-text-inverse dark:text-role-dark-text-inverse/65"
         >
           {item.scheduledOn}
         </SpoqaText>

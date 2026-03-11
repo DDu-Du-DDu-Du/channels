@@ -138,15 +138,17 @@ function ImageUpload({
           alignItems: "center",
         }}
       >
-        <SpoqaText className="text-size13 text-example_gray_900">
+        <SpoqaText className="text-size13 text-role-text-secondary dark:text-role-dark-text-secondary">
           이미지를 드래그해서 놓거나 업로드 버튼을 눌러 주세요.
         </SpoqaText>
         <Pressable
           onPress={handlePressUpload}
           disabled={disabled || items.length >= maxCount}
-          className="mt-[1rem] h-[3.6rem] items-center justify-center rounded-radius10 bg-main px-[1.2rem]"
+          className="mt-[1rem] h-[3.6rem] items-center justify-center rounded-radius10 bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg px-[1.2rem]"
         >
-          <SpoqaText className="text-size13 text-white_100">업로드</SpoqaText>
+          <SpoqaText className="text-size13 text-role-text-inverse dark:text-role-dark-text-inverse">
+            업로드
+          </SpoqaText>
         </Pressable>
       </View>
 
@@ -162,12 +164,12 @@ function ImageUpload({
           >
             <Image
               source={{ uri: item.uri }}
-              className="size-[7.2rem] rounded-radius10 bg-[#EAEAEA]"
+              className="size-[7.2rem] rounded-radius10 bg-role-surface-subtle dark:bg-role-dark-surface-subtle"
               resizeMode="cover"
             />
             <Pressable
               onPress={() => handleRemoveImage(item.id)}
-              className="absolute right-[-0.6rem] top-[-0.6rem] size-[1.8rem] items-center justify-center rounded-circle bg-black_500"
+              className="absolute right-[-0.6rem] top-[-0.6rem] size-[1.8rem] items-center justify-center rounded-circle bg-role-surface-inverse dark:bg-role-dark-surface-inverse"
             >
               <CloseIcon
                 size={10}

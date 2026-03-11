@@ -31,7 +31,7 @@ function GoalHeader() {
         </Pressable>
         <SpoqaText
           weight="bold"
-          className="text-size15 text-white"
+          className="text-size15 text-role-text-inverse dark:text-role-dark-text-inverse"
         >
           Goals
         </SpoqaText>

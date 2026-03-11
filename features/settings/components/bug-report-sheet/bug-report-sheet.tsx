@@ -75,7 +75,7 @@ const BugReportSheet = forwardRef<BugReportSheetHandle>(function BugReportSheet(
         backdropPressBehavior="collapse"
         onBackdropPress={handleRequestDismiss}
       >
-        <View className="flex h-full bg-[#F7F7F7] px-[2rem] pb-[2.2rem] pt-[1.8rem]">
+        <View className="flex h-full bg-role-surface-panel dark:bg-role-dark-surface-panel px-[2rem] pb-[2.2rem] pt-[1.8rem]">
           <View className="relative items-center justify-center pb-[2rem]">
             <Pressable
               onPress={handleRequestDismiss}
@@ -89,7 +89,7 @@ const BugReportSheet = forwardRef<BugReportSheetHandle>(function BugReportSheet(
             </Pressable>
             <SpoqaText
               weight="bold"
-              className="text-size17 text-black_500"
+              className="text-size17 text-role-text-primary dark:text-role-dark-text-primary"
             >
               버그리포트 제보
             </SpoqaText>
@@ -104,8 +104,8 @@ const BugReportSheet = forwardRef<BugReportSheetHandle>(function BugReportSheet(
             label="제보하기"
             onPress={handleSubmitReport}
             className="mt-[1.2rem]"
-            bodyClassName="bg-main"
-            labelClassName="text-white_100"
+            bodyClassName="bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg"
+            labelClassName="text-role-text-inverse dark:text-role-dark-text-inverse"
           />
         </View>
       </BottomSheet>

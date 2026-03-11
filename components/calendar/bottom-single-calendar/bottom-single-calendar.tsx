@@ -131,12 +131,12 @@ function BottomSingleCalendar({
       <View className="px-[2.4rem]">
         <Pressable
           accessibilityRole="button"
-          className="mb-[2rem] h-[5.6rem] w-[100%] max-w-[50rem] items-center justify-center rounded-radius15 bg-main"
+          className="mb-[2rem] h-[5.6rem] w-[100%] max-w-[50rem] items-center justify-center rounded-radius15 bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg"
           onPress={handleConfirm}
         >
           <SpoqaText
             weight="semiBold"
-            className="text-white"
+            className="text-role-text-inverse dark:text-role-dark-text-inverse"
           >
             {confirmButtonLabel ?? "확인"}
           </SpoqaText>

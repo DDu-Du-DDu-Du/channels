@@ -45,11 +45,11 @@ function UserListItem({ type, user, isFollowing, isPrivate, isRequestFollow }: U
       <Pressable
         className={`w-[8rem] h-[3rem] rounded-radius10 items-center justify-center ${
           type === "FOLLOW" && isFollow
-            ? "border border-example_gray_700"
+            ? "border border-role-border-strong dark:border-role-dark-border-strong"
             : type === "FOLLOWING" && isFollow
-              ? "bg-example_gray_100"
+              ? "bg-role-surface-panel dark:bg-role-dark-surface-panel"
               : !isFollow
-                ? "bg-example_gray_700"
+                ? "bg-role-surface-muted dark:bg-role-dark-surface-muted"
                 : ""
         }`}
         onPress={handleToggleFollow}

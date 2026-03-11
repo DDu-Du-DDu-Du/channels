@@ -11,7 +11,7 @@ export interface AlarmPickersRowProps {
 
 function AlarmPickersRow({ onDayChange, onHourChange, onMinuteChange }: AlarmPickersRowProps) {
   return (
-    <View className="flex-row bg-white_100 py-[1rem] rounded-radius10 justify-center">
+    <View className="flex-row bg-role-surface-canvas dark:bg-role-dark-surface-canvas py-[1rem] rounded-radius10 justify-center">
       <View className="flex-row">
         <TimePicker
           onChange={onDayChange}

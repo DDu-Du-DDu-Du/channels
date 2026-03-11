@@ -84,7 +84,11 @@ function WheelPicker({
         >
           <SpoqaText
             weight={index === value ? "semiBold" : "regular"}
-            className={index === value ? "text-size15" : "text-size13 text-example_gray_800"}
+            className={
+              index === value
+                ? "text-size15"
+                : "text-size13 text-role-text-tertiary dark:text-role-dark-text-tertiary"
+            }
           >
             {String(item)}
           </SpoqaText>

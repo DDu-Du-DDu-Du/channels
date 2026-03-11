@@ -141,7 +141,7 @@ function RepeatDduduSheet({
           title={sheetTitle}
           onPressBack={handleRequestCloseSheet}
           iconStroke="#000000"
-          titleClassName="text-size15 text-black"
+          titleClassName="text-size15 text-role-text-primary dark:text-role-dark-text-primary"
           className="px-[2rem] pb-[0.8rem] pt-[1.6rem]"
         />
 
@@ -154,7 +154,7 @@ function RepeatDduduSheet({
               className="mt-[0.8rem]"
             />
             {isTitleError && (
-              <SpoqaText className="mt-[0.6rem] text-size12 text-example_red_500">
+              <SpoqaText className="mt-[0.6rem] text-size12 text-role-status-error dark:text-role-dark-status-error">
                 {"제목을 입력해주세요"}
               </SpoqaText>
             )}
@@ -189,8 +189,8 @@ function RepeatDduduSheet({
 
           <Button
             label={submitLabel}
-            bodyClassName="bg-main"
-            labelClassName="text-white"
+            bodyClassName="bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg"
+            labelClassName="text-role-text-inverse dark:text-role-dark-text-inverse"
             onPress={handleConfirm}
           />
         </View>

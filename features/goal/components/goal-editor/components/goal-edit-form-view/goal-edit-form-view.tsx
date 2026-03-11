@@ -46,7 +46,7 @@ function GoalEditFormView({
     <Pressable
       onPress={onPressOpenColorSheet}
       accessibilityRole="button"
-      className="h-[4.2rem] w-[8.2rem] flex-row items-center justify-between rounded-radius10 bg-white_100 px-[1.1rem]"
+      className="h-[4.2rem] w-[8.2rem] flex-row items-center justify-between rounded-radius10 bg-role-surface-canvas dark:bg-role-dark-surface-canvas px-[1.1rem]"
     >
       <View
         className="h-[2.4rem] w-[2.4rem] rounded-circle"
@@ -89,7 +89,7 @@ function GoalEditFormView({
                   required
                 />
                 {error?.message && (
-                  <SpoqaText className="mt-[0.6rem] text-size12 text-example_red_500">
+                  <SpoqaText className="mt-[0.6rem] text-size12 text-role-status-error dark:text-role-dark-status-error">
                     {error.message}
                   </SpoqaText>
                 )}
@@ -106,7 +106,7 @@ function GoalEditFormView({
             label={"반복뚜두 관리"}
             rightContent={
               <View className="flex-row items-center gap-[0.4rem]">
-                <SpoqaText className="text-size13 text-white">{`${repeatDduduCount}개`}</SpoqaText>
+                <SpoqaText className="text-size13 text-role-text-inverse dark:text-role-dark-text-inverse">{`${repeatDduduCount}개`}</SpoqaText>
                 <ArrowRightIcon
                   size={14}
                   stroke="#FFFFFF"
@@ -120,7 +120,7 @@ function GoalEditFormView({
             <Button
               label={"종료하기"}
               className="flex-1"
-              bodyClassName="bg-white_100"
+              bodyClassName="bg-role-surface-canvas dark:bg-role-dark-surface-canvas"
               onPress={onPressTerminateGoal}
             />
             <Button

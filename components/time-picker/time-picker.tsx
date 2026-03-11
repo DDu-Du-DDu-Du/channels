@@ -38,7 +38,7 @@ function TimePicker({
   return (
     <View className="flex-row items-center self-center">
       <View
-        className="items-center justify-center rounded-radius10 bg-example_gray_100"
+        className="items-center justify-center rounded-radius10 bg-role-surface-panel dark:bg-role-dark-surface-panel"
         style={{ width: width + 6, height: itemHeight, paddingHorizontal: 3 }}
       >
         <WheelPicker

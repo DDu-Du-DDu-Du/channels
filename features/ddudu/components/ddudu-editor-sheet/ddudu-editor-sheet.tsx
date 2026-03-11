@@ -161,18 +161,20 @@ function DDuDuEditorSheet({
         defaultHeight={state.detailOpen ? "90%" : "35%"}
         maxHeight="90%"
       >
-        <View className="w-full bg-example_gray_100">
+        <View className="w-full bg-role-surface-panel dark:bg-role-dark-surface-panel">
           <FormHeader
             title={mode === "create" ? "뚜두 생성" : "뚜두 수정"}
             onPressBack={handleClose}
-            titleClassName="text-size15 text-black"
+            titleClassName="text-size15 text-role-text-primary dark:text-role-dark-text-primary"
             iconStroke="#000000"
             className="px-[2.4rem] pb-[1.2rem] pt-[1.6rem]"
           />
 
           {isLoading ? (
             <View className="px-[2.4rem] pb-[2.4rem]">
-              <SpoqaText className="text-size14 text-example_gray_900">불러오는 중...</SpoqaText>
+              <SpoqaText className="text-size14 text-role-text-secondary dark:text-role-dark-text-secondary">
+                불러오는 중...
+              </SpoqaText>
             </View>
           ) : (
             <ScrollView

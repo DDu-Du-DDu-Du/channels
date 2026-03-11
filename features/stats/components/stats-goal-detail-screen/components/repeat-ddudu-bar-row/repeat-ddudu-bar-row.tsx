@@ -60,7 +60,7 @@ function RepeatDduduBarRow({
           ]}
         >
           <SpoqaText
-            className="px-[1.2rem] text-size14 text-black_500"
+            className="px-[1.2rem] text-size14 text-role-text-primary dark:text-role-dark-text-primary"
             numberOfLines={1}
           >
             {item.repeatDduduName}
@@ -68,7 +68,7 @@ function RepeatDduduBarRow({
         </Animated.View>
       </View>
       <View className="w-[12%] min-w-[3.8rem] shrink-0">
-        <SpoqaText className="text-right text-size13 text-example_gray_1000">
+        <SpoqaText className="text-right text-size13 text-role-text-tertiary dark:text-role-dark-text-tertiary">
           {`${item.completedCount}회`}
         </SpoqaText>
       </View>

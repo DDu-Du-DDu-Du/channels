@@ -56,7 +56,7 @@ function AvatarList({ users }: AvatarListProps) {
               initial={{ type: BounceInLeft }}
               exit={{ type: BounceOutLeft }}
               whileTap={{ scale: 0.95 }}
-              className="z-10 px-[0.5rem] py-[0.5rem] bg-white_100 shadow-shadow_500 rounded-radius5 flex-row"
+              className="z-10 px-[0.5rem] py-[0.5rem] bg-role-surface-canvas dark:bg-role-dark-surface-canvas shadow-shadow_500 rounded-radius5 flex-row"
             >
               {users.map((user) => (
                 <View

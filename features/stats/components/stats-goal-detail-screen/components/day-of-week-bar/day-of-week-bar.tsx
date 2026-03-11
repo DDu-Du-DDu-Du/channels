@@ -38,7 +38,7 @@ function DayOfWeekBar({ label, ratio, color, durationMs = 450 }: DayOfWeekBarPro
   return (
     <View className="items-center gap-[0.6rem]">
       <View
-        className="w-[3.2rem] overflow-hidden bg-example_gray_300"
+        className="w-[3.2rem] overflow-hidden bg-role-surface-subtle dark:bg-role-dark-surface-subtle"
         style={styles.track}
       >
         <Animated.View
@@ -53,7 +53,9 @@ function DayOfWeekBar({ label, ratio, color, durationMs = 450 }: DayOfWeekBarPro
           ]}
         />
       </View>
-      <SpoqaText className="text-size12 text-example_gray_1000">{label}</SpoqaText>
+      <SpoqaText className="text-size12 text-role-text-tertiary dark:text-role-dark-text-tertiary">
+        {label}
+      </SpoqaText>
     </View>
   );
 }

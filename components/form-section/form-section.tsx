@@ -15,7 +15,7 @@ function FormSection({
   label,
   rightContent,
   onPress,
-  labelClassName = "text-size14 text-white",
+  labelClassName = "text-size14 text-role-text-inverse dark:text-role-dark-text-inverse",
   className = "",
 }: FormSectionProps) {
   const content = (

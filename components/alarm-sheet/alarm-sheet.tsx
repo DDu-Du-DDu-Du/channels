@@ -83,11 +83,11 @@ function AlarmSheet({ onClose, onConfirm, hasBeginTime = true }: AlarmSheetProps
         <Pressable
           accessibilityRole="button"
           onPress={handleConfirm}
-          className="z-1 mt-[1rem] h-[5rem] w-full items-center justify-center rounded-radius15 bg-main"
+          className="z-1 mt-[1rem] h-[5rem] w-full items-center justify-center rounded-radius15 bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg"
         >
           <SpoqaText
             weight="semiBold"
-            className="text-white"
+            className="text-role-text-inverse dark:text-role-dark-text-inverse"
           >
             확인
           </SpoqaText>

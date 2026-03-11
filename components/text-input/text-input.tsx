@@ -28,9 +28,11 @@ function TextInput({
   const hasError = Boolean((formState.errors as FieldErrors)?.[name]);
 
   const baseCls = multiline
-    ? "w-full bg-example_gray_100 rounded-radius15 px-[1.2rem] text-size15"
-    : "w-full h-[5.6rem] bg-example_gray_100 rounded-radius15 px-[1.2rem] text-size15";
-  const errorCls = hasError ? " border-example_red_500 border-[0.1rem]" : "";
+    ? "w-full bg-role-surface-panel dark:bg-role-dark-surface-panel rounded-radius15 px-[1.2rem] text-size15"
+    : "w-full h-[5.6rem] bg-role-surface-panel dark:bg-role-dark-surface-panel rounded-radius15 px-[1.2rem] text-size15";
+  const errorCls = hasError
+    ? " border-role-status-error dark:border-role-dark-status-error border-[0.1rem]"
+    : "";
   const disabledCls = disabled ? " opacity-40" : "";
 
   return (

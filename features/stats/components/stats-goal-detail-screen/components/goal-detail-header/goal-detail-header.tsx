@@ -38,7 +38,7 @@ function GoalDetailHeader({ goalName, handlePressBack, onPressEdit }: GoalDetail
 
       <SpoqaText
         weight="bold"
-        className="text-size15 text-white_100"
+        className="text-size15 text-role-text-inverse dark:text-role-dark-text-inverse"
       >
         {goalName}
       </SpoqaText>
