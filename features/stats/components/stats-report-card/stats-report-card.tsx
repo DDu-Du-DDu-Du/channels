@@ -25,9 +25,11 @@ const DELTA_TEXT_CLASS: Record<DeltaTone, string> = {
 
 function StatsReportCard({ title, valueLabel, deltaLabel, deltaTone }: StatsReportCardProps) {
   return (
-    <View className="flex-1 rounded-radius15 bg-role-surface-panel dark:bg-role-dark-surface-panel px-[1.2rem] py-[1.6rem]">
+    <View className="flex-1 rounded-radius15 border border-ui-card-default-border bg-ui-card-default-bg px-[1.2rem] py-[1.6rem] dark:border-ui-dark-card-default-border dark:bg-ui-dark-card-default-bg">
       <View className="flex-1 items-center justify-center gap-[0.8rem] pb-[0.8rem]">
-        <SpoqaText className="text-size14">{title}</SpoqaText>
+        <SpoqaText className="text-size14 text-role-text-primary dark:text-role-dark-text-primary">
+          {title}
+        </SpoqaText>
         <SpoqaText
           weight="bold"
           className="text-size20 text-role-text-primary dark:text-role-dark-text-primary"

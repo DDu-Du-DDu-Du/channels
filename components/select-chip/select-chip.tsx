@@ -29,9 +29,9 @@ function SelectChip({
   borderColor,
   borderWidth = 1,
 }: SelectChipProps) {
-  const defaultSelectedBackground = useThemeColorToken("role.surface.subtle");
-  const defaultUnselectedBackground = useThemeColorToken("role.surface.canvas");
-  const defaultBorderColor = useThemeColorToken("role.border.default");
+  const defaultSelectedBackground = useThemeColorToken("ui.button.choice.selected.bg");
+  const defaultUnselectedBackground = useThemeColorToken("ui.button.choice.unselected.bg");
+  const defaultBorderColor = useThemeColorToken("ui.button.choice.selected.border");
   const selectedBackground = selectedBackgroundColor ?? defaultSelectedBackground;
   const unselectedBackground = unselectedBackgroundColor ?? defaultUnselectedBackground;
   const resolvedBorderColor = borderColor ?? defaultBorderColor;

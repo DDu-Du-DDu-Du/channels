@@ -80,7 +80,7 @@ function StatsReportSection({ report, isLoading, isError }: StatsReportSectionPr
     <View className="border-t border-role-border-default dark:border-role-dark-border-default pt-[2rem]">
       <SpoqaText
         weight="bold"
-        className="text-size20 text-role-text-inverse dark:text-role-dark-text-inverse"
+        className="text-size20 text-role-text-primary dark:text-role-dark-text-primary"
       >
         요약 리포트
       </SpoqaText>

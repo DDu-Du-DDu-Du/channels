@@ -4,6 +4,7 @@ import { SpoqaText } from "@/components";
 import StatsGoalChartCard, {
   StatsGoalChartItem,
 } from "@/features/stats/components/stats-goal-chart-card/stats-goal-chart-card";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { ArrowRightIcon } from "@/icons";
 import { StatsSummaryResponseType } from "@/types/response/stats/stats";
 
@@ -58,6 +59,7 @@ const toChartItems = <T extends StatsGoalSourceItem>(
 
 function StatsGoalSection({ yearMonth, summary, isLoading, isError }: StatsGoalSectionProps) {
   const router = useRouter();
+  const iconStroke = useThemeColorToken("ui.icon.muted");
 
   const charts: StatsGoalChartConfig[] = [
     {
@@ -105,7 +107,7 @@ function StatsGoalSection({ yearMonth, summary, isLoading, isError }: StatsGoalS
         <View className="flex-1 pr-[1rem]">
           <SpoqaText
             weight="bold"
-            className="text-size20 text-role-text-inverse dark:text-role-dark-text-inverse"
+            className="text-size20 text-role-text-primary dark:text-role-dark-text-primary"
           >
             목표 통계
           </SpoqaText>
@@ -123,7 +125,7 @@ function StatsGoalSection({ yearMonth, summary, isLoading, isError }: StatsGoalS
           </SpoqaText>
           <ArrowRightIcon
             size={14}
-            stroke="#B6B6B6"
+            stroke={iconStroke}
           />
         </Pressable>
       </View>

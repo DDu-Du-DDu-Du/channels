@@ -1,11 +1,13 @@
 import { Pressable } from "react-native";
 
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { AddListIcon } from "@/icons";
 
 import { useRouter } from "expo-router";
 
 function GoalMenu() {
   const router = useRouter();
+  const iconFill = useThemeColorToken("ui.icon.default");
 
   const handlePressGoalMenu = () => {
     router.push("/goal");
@@ -16,7 +18,7 @@ function GoalMenu() {
       onPress={handlePressGoalMenu}
       hitSlop={8}
     >
-      <AddListIcon fill="#FFFFFF" />
+      <AddListIcon fill={iconFill} />
     </Pressable>
   );
 }

@@ -32,9 +32,9 @@ export const useResolvedIconColor = (
   tone: IconTone = "default",
 ): string => {
   const colors: Record<IconTone, string> = {
-    default: useThemeColorToken("role.icon.default"),
-    muted: useThemeColorToken("role.icon.muted"),
-    inverse: useThemeColorToken("role.icon.inverse"),
+    default: useThemeColorToken("ui.icon.default"),
+    muted: useThemeColorToken("ui.icon.muted"),
+    inverse: useThemeColorToken("ui.icon.inverse"),
     "status-success": useThemeColorToken("role.status.success"),
     "status-warning": useThemeColorToken("role.status.warning"),
     "status-error": useThemeColorToken("role.status.error"),

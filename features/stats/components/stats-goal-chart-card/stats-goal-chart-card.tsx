@@ -72,12 +72,12 @@ function StatsGoalChartCard({ title, unit, items }: StatsGoalChartCardProps) {
     <View className="mb-[3.2rem]">
       <SpoqaText
         weight="semiBold"
-        className="mb-[1.3rem] text-size18 text-role-text-inverse dark:text-role-dark-text-inverse"
+        className="mb-[1.3rem] text-size18 text-role-text-primary dark:text-role-dark-text-primary"
       >
         {title}
       </SpoqaText>
 
-      <View className="rounded-radius15 bg-role-surface-subtle dark:bg-role-dark-surface-subtle px-[1.2rem] py-[1.2rem]">
+      <View className="rounded-radius15 border border-ui-card-default-border bg-role-surface-subtle px-[1.2rem] py-[1.2rem] dark:border-ui-dark-card-default-border dark:bg-role-dark-surface-subtle">
         {sortedItems.length === 0 ? (
           <View className="h-[14rem] items-center justify-center">
             <SpoqaText className="text-size14 text-role-text-tertiary dark:text-role-dark-text-tertiary">

@@ -7,7 +7,7 @@ import { Href, useRouter } from "expo-router";
 
 function MainHeader() {
   const router = useRouter();
-  const iconStroke = useThemeColorToken("role.icon.inverse");
+  const iconStroke = useThemeColorToken("ui.icon.default");
 
   const handlePressNotification = () => {
     router.push("/notification" as Href);
@@ -20,7 +20,7 @@ function MainHeader() {
   return (
     <View style={styles.root}>
       <View
-        className="pt-[2rem] pb-[1.5rem] px-[2.4rem] bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg flex flex-row justify-end items-center"
+        className="pt-[2rem] pb-[1.5rem] px-[2.4rem] bg-role-surface-panel dark:bg-role-dark-surface-panel flex flex-row justify-end items-center"
         style={styles.headerLayer}
       >
         <View className="flex flex-row justify-end gap-[0.8rem]">
