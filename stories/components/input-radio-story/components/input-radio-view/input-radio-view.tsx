@@ -28,9 +28,11 @@ function InputRadioView({ onSubmit }: InputRadioViewProps) {
         <Pressable
           accessibilityRole="button"
           onPress={submit}
-          className="px-[1.2rem] py-[0.8rem] bg-main rounded-radius10"
+          className="px-[1.2rem] py-[0.8rem] bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg rounded-radius10"
         >
-          <SpoqaText className="text-white">제출</SpoqaText>
+          <SpoqaText className="text-role-text-inverse dark:text-role-dark-text-inverse">
+            제출
+          </SpoqaText>
         </Pressable>
       </View>
     </FormProvider>

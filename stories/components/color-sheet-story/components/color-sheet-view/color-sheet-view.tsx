@@ -27,7 +27,9 @@ function ColorSheetView({
         className="px-4 py-2 rounded-radius10 mb-4"
         style={{ backgroundColor: selected }}
       >
-        <SpoqaText className="text-white">Open ColorSheet</SpoqaText>
+        <SpoqaText className="text-role-text-inverse dark:text-role-dark-text-inverse">
+          Open ColorSheet
+        </SpoqaText>
       </Pressable>
       <SpoqaText className="mb-2">Selected: {selected}</SpoqaText>
 

@@ -15,7 +15,7 @@ function FormSectionView({
   onPress,
 }: FormSectionViewProps) {
   return (
-    <View className="flex-1 items-center justify-center bg-main px-[2.4rem]">
+    <View className="flex-1 items-center justify-center bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg px-[2.4rem]">
       <FormSection
         label={label}
         rightContent={

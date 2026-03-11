@@ -21,9 +21,11 @@ function BottomSheetView({
     <View className="flex-1 items-center justify-center">
       <Pressable
         onPress={openSheet}
-        className="px-4 py-2 bg-example_gray_700 rounded-radius10"
+        className="px-4 py-2 bg-role-surface-muted dark:bg-role-dark-surface-muted rounded-radius10"
       >
-        <Text className="text-white">Open BottomSheet</Text>
+        <Text className="text-role-text-inverse dark:text-role-dark-text-inverse">
+          Open BottomSheet
+        </Text>
       </Pressable>
 
       <BottomSheet
@@ -42,19 +44,19 @@ function BottomSheetView({
           <View className="flex-row justify-center gap-[12px]">
             <Pressable
               onPress={snapToDefault}
-              className="px-3 py-2 bg-example_gray_100 rounded-radius10"
+              className="px-3 py-2 bg-role-surface-panel dark:bg-role-dark-surface-panel rounded-radius10"
             >
               <SpoqaText className="text-size13">Default</SpoqaText>
             </Pressable>
             <Pressable
               onPress={snapToMax}
-              className="px-3 py-2 bg-example_gray_100 rounded-radius10"
+              className="px-3 py-2 bg-role-surface-panel dark:bg-role-dark-surface-panel rounded-radius10"
             >
               <SpoqaText className="text-size13">Max</SpoqaText>
             </Pressable>
             <Pressable
               onPress={() => closeSheet()}
-              className="px-3 py-2 bg-example_gray_100 rounded-radius10"
+              className="px-3 py-2 bg-role-surface-panel dark:bg-role-dark-surface-panel rounded-radius10"
             >
               <SpoqaText className="text-size13">Close</SpoqaText>
             </Pressable>

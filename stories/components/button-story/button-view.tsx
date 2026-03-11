@@ -9,7 +9,7 @@ export interface ButtonViewProps {
 
 function ButtonView({ label = "목표 등록", onPress }: ButtonViewProps) {
   return (
-    <View className="flex-1 items-center justify-center bg-main px-[2.4rem]">
+    <View className="flex-1 items-center justify-center bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg px-[2.4rem]">
       <View className="w-full">
         <Button
           label={label}

@@ -36,7 +36,9 @@ function DDuDuSubMenuView({
         handleAlarmSetting={() => handleAlarmSetting?.()}
         onRepeatCurrentDate={() => onRepeatCurrentDate?.()}
       />
-      <SpoqaText className="mt-4 text-example_gray_700">Sub menu preview</SpoqaText>
+      <SpoqaText className="mt-4 text-role-text-tertiary dark:text-role-dark-text-tertiary">
+        Sub menu preview
+      </SpoqaText>
     </View>
   );
 }

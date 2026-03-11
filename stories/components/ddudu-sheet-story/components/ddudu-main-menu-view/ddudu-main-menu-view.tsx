@@ -45,7 +45,9 @@ function DDuDuMainMenuView({
         handleDDuDuTimeSetting={(b?, e?) => handleDDuDuTimeSetting?.(b, e)}
         handleDDuDuSheetToggleOff={() => handleDDuDuSheetToggleOff?.()}
       />
-      <SpoqaText className="mt-4 text-example_gray_700">Main menu preview</SpoqaText>
+      <SpoqaText className="mt-4 text-role-text-tertiary dark:text-role-dark-text-tertiary">
+        Main menu preview
+      </SpoqaText>
     </View>
   );
 }

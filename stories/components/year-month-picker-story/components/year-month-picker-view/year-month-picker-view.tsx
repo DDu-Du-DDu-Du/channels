@@ -24,17 +24,19 @@ function YearMonthPickerView({ rangeEnabled = false }: YearMonthPickerViewProps)
   return (
     <View className="flex-1 items-center justify-center p-4">
       <Pressable
-        className="rounded-radius10 bg-example_gray_200 px-[1.6rem] py-[1rem]"
+        className="rounded-radius10 bg-role-surface-subtle dark:bg-role-dark-surface-subtle px-[1.6rem] py-[1rem]"
         onPress={() => setOpen(true)}
       >
-        <SpoqaText className="text-size14 text-black_500">Open YearMonthPicker</SpoqaText>
+        <SpoqaText className="text-size14 text-role-text-primary dark:text-role-dark-text-primary">
+          Open YearMonthPicker
+        </SpoqaText>
       </Pressable>
 
       <Pressable
-        className="mt-[1.2rem] rounded-radius10 bg-example_gray_200 px-[1.6rem] py-[1rem]"
+        className="mt-[1.2rem] rounded-radius10 bg-role-surface-subtle dark:bg-role-dark-surface-subtle px-[1.6rem] py-[1rem]"
         onPress={() => setIsRangeEnabled((prev) => !prev)}
       >
-        <SpoqaText className="text-size14 text-black_500">{`Range: ${isRangeEnabled ? "On" : "Off"}`}</SpoqaText>
+        <SpoqaText className="text-size14 text-role-text-primary dark:text-role-dark-text-primary">{`Range: ${isRangeEnabled ? "On" : "Off"}`}</SpoqaText>
       </Pressable>
 
       <YearMonthPickerSheet

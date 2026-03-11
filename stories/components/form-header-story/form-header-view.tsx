@@ -9,7 +9,7 @@ export interface FormHeaderViewProps {
 
 function FormHeaderView({ title = "목표등록", onPressBack }: FormHeaderViewProps) {
   return (
-    <View className="flex-1 bg-main">
+    <View className="flex-1 bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg">
       <FormHeader
         title={title}
         onPressBack={onPressBack ?? (() => {})}

@@ -28,9 +28,11 @@ function DDuDuTimeSheetView({ onClose, onChangeDDuDuTime }: DDuDuTimeSheetViewPr
       {!open ? (
         <Pressable
           onPress={() => setOpen(true)}
-          className="px-4 py-2 bg-example_gray_700 rounded-radius10"
+          className="px-4 py-2 bg-role-surface-muted dark:bg-role-dark-surface-muted rounded-radius10"
         >
-          <SpoqaText className="text-white">Open DDuDuTimeSheet</SpoqaText>
+          <SpoqaText className="text-role-text-inverse dark:text-role-dark-text-inverse">
+            Open DDuDuTimeSheet
+          </SpoqaText>
         </Pressable>
       ) : (
         <DDuDuTimeSheet

@@ -19,9 +19,11 @@ function PrivacySheetView({ goalPrivacy = "PUBLIC", onClose, onClick }: PrivacyS
     <View className="flex-1 items-center justify-center p-4">
       <Pressable
         onPress={handleToggleOn}
-        className="px-4 py-2 bg-example_gray_700 rounded-radius10 mb-4"
+        className="px-4 py-2 bg-role-surface-muted dark:bg-role-dark-surface-muted rounded-radius10 mb-4"
       >
-        <SpoqaText className="text-white">Open PrivacySheet</SpoqaText>
+        <SpoqaText className="text-role-text-inverse dark:text-role-dark-text-inverse">
+          Open PrivacySheet
+        </SpoqaText>
       </Pressable>
       <SpoqaText className="mb-2">Selected: {selected}</SpoqaText>
 
