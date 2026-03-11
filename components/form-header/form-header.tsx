@@ -1,6 +1,7 @@
 import { Pressable, View } from "react-native";
 
 import { SpoqaText } from "@/components";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { ArrowLeftIcon } from "@/icons";
 
 export interface FormHeaderProps {
@@ -14,10 +15,13 @@ export interface FormHeaderProps {
 function FormHeader({
   title,
   onPressBack,
-  titleClassName = "text-size15 text-white",
-  iconStroke = "#FFFFFF",
+  titleClassName = "text-size15 text-role-text-inverse dark:text-role-dark-text-inverse",
+  iconStroke,
   className = "px-[2.4rem] pb-[1.6rem] pt-[2.4rem]",
 }: FormHeaderProps) {
+  const defaultIconStroke = useThemeColorToken("role.icon.inverse");
+  const resolvedIconStroke = iconStroke ?? defaultIconStroke;
+
   return (
     <View className={className}>
       <View className="relative items-center justify-center">
@@ -29,7 +33,7 @@ function FormHeader({
           >
             <ArrowLeftIcon
               size={16}
-              stroke={iconStroke}
+              stroke={resolvedIconStroke}
             />
           </Pressable>
         )}

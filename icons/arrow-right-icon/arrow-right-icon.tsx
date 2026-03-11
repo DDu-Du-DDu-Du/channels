@@ -1,13 +1,17 @@
 import React from "react";
 import Svg, { Path } from "react-native-svg";
 
+import { useResolvedIconColor } from "@/icons/use-resolved-icon-color";
+
 export interface IconProps {
   size?: number;
   stroke?: string;
   className?: string;
 }
 
-function ArrowRightIcon({ size = 32, stroke = "black", className }: IconProps) {
+function ArrowRightIcon({ size = 32, stroke, className }: IconProps) {
+  const resolvedStroke = useResolvedIconColor(stroke, "default");
+
   return (
     <Svg
       width={size}
@@ -18,7 +22,7 @@ function ArrowRightIcon({ size = 32, stroke = "black", className }: IconProps) {
     >
       <Path
         d="M1 17L11 9L1 1"
-        stroke={stroke}
+        stroke={resolvedStroke}
         strokeWidth={1.5}
       />
     </Svg>

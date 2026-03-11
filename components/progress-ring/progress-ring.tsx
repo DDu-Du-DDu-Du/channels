@@ -8,6 +8,8 @@ import Animated, {
 } from "react-native-reanimated";
 import Svg, { Circle } from "react-native-svg";
 
+import { useThemeColorToken } from "@/hooks/use-theme-color";
+
 export interface ProgressRingProps {
   percent: number;
   color: string;
@@ -44,13 +46,15 @@ function ProgressRing({
   color,
   size,
   strokeWidth,
-  trackColor = "#D0D0D0",
+  trackColor,
   animate = true,
   durationMs = 550,
   animationSignal,
   className,
   children,
 }: ProgressRingProps) {
+  const defaultTrackColor = useThemeColorToken("role.border.default");
+  const resolvedTrackColor = trackColor ?? defaultTrackColor;
   const safePercent = clampPercent(percent);
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
@@ -99,7 +103,7 @@ function ProgressRing({
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke={trackColor}
+          stroke={resolvedTrackColor}
           strokeWidth={strokeWidth}
           fill="none"
         />

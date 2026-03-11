@@ -2,6 +2,7 @@ import { Pressable, View } from "react-native";
 
 import { SpoqaText } from "@/components";
 import { useAppConnectionSettings } from "@/features/settings/hooks";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { ArrowLeftIcon, NotionIcon } from "@/icons";
 
 import { SettingsRow } from "../settings-row";
@@ -11,6 +12,7 @@ import { useRouter } from "expo-router";
 
 function AppConnectionSettingsScreen() {
   const router = useRouter();
+  const iconStroke = useThemeColorToken("role.icon.default");
   const realtimeSyncSettings = useAppConnectionSettings();
 
   const handlePressBack = () => {
@@ -27,12 +29,12 @@ function AppConnectionSettingsScreen() {
         >
           <ArrowLeftIcon
             size={16}
-            stroke="#1F1F1F"
+            stroke={iconStroke}
           />
         </Pressable>
         <SpoqaText
           weight="bold"
-          className="text-size18 text-black_500"
+          className="text-size18 text-role-text-primary dark:text-role-dark-text-primary"
         >
           앱 연결
         </SpoqaText>

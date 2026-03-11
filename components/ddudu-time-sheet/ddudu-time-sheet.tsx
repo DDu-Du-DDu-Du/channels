@@ -4,6 +4,7 @@ import { Pressable, Switch, View } from "react-native";
 import { BottomSheet, SpoqaText } from "@/components";
 import { DDuDuTimeRangeType, DDuDuTimeType } from "@/features/feed/feed.types";
 import { useBottomSheetAction } from "@/hooks";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { ArrowLeftIcon } from "@/icons";
 
 import TimePicker from "../time-picker/time-picker";
@@ -37,6 +38,13 @@ function DDuDuTimeSheet({
   onChangeBeginTimeEnabled,
   onChangeEndTimeEnabled,
 }: DDuDuTimeSheetProps) {
+  const iconStrokeColor = useThemeColorToken("role.icon.default");
+  const switchOffTrackColor = useThemeColorToken("role.border.default");
+  const switchOnTrackColor = useThemeColorToken("role.status.success");
+  const switchThumbColor = useThemeColorToken("role.surface.canvas");
+  const enabledPickerBgColor = useThemeColorToken("role.surface.canvas");
+  const disabledPickerBgColor = useThemeColorToken("role.surface.subtle");
+
   const { ref, openSheet, closeSheet } = useBottomSheetAction();
   const {
     beginHour,
@@ -150,7 +158,7 @@ function DDuDuTimeSheet({
               >
                 <ArrowLeftIcon
                   size={16}
-                  stroke="#000000"
+                  stroke={iconStrokeColor}
                 />
               </Pressable>
             )}
@@ -162,20 +170,24 @@ function DDuDuTimeSheet({
             </SpoqaText>
           </View>
 
-          <View className="flex-row justify-center gap-[1rem] rounded-radius10 bg-white_100 p-[1.6rem]">
+          <View className="flex-row justify-center gap-[1rem] rounded-radius10 bg-role-surface-canvas dark:bg-role-dark-surface-canvas p-[1.6rem]">
             <View className="mr-[1rem]">
               <View className="mb-[1rem] flex-row items-center gap-[0.8rem]">
                 <SpoqaText className="text-size13">시작시간</SpoqaText>
                 <Switch
                   value={isBeginTimeEnabled}
                   onValueChange={handleToggleBeginTime}
-                  trackColor={{ false: "#D9D9D9", true: "#35CB72" }}
-                  thumbColor="#FFFFFF"
+                  trackColor={{ false: switchOffTrackColor, true: switchOnTrackColor }}
+                  thumbColor={switchThumbColor}
                 />
               </View>
               <View
                 className="flex-row items-center gap-[0.5rem] rounded-radius10 px-[0.4rem] py-[0.3rem]"
-                style={{ backgroundColor: isBeginTimeEnabled ? "#FFFFFF" : "#EFEFEF" }}
+                style={{
+                  backgroundColor: isBeginTimeEnabled
+                    ? enabledPickerBgColor
+                    : disabledPickerBgColor,
+                }}
                 pointerEvents={isBeginTimeEnabled ? "auto" : "none"}
               >
                 <TimePicker
@@ -199,15 +211,18 @@ function DDuDuTimeSheet({
                 <Switch
                   value={isEndTimeEnabled}
                   onValueChange={handleToggleEndTime}
-                  trackColor={{ false: "#D9D9D9", true: "#35CB72" }}
-                  thumbColor="#FFFFFF"
+                  trackColor={{ false: switchOffTrackColor, true: switchOnTrackColor }}
+                  thumbColor={switchThumbColor}
                   disabled={!isBeginTimeEnabled}
                 />
               </View>
               <View
                 className="flex-row item-center gap-[0.5rem] rounded-radius10 px-[0.4rem] py-[0.3rem]"
                 style={{
-                  backgroundColor: isEndTimeEnabled && isBeginTimeEnabled ? "#FFFFFF" : "#EFEFEF",
+                  backgroundColor:
+                    isEndTimeEnabled && isBeginTimeEnabled
+                      ? enabledPickerBgColor
+                      : disabledPickerBgColor,
                 }}
                 pointerEvents={isEndTimeEnabled && isBeginTimeEnabled ? "auto" : "none"}
               >
@@ -228,7 +243,7 @@ function DDuDuTimeSheet({
           </View>
 
           {isErrorMessage && isBeginTimeEnabled && isEndTimeEnabled ? (
-            <SpoqaText className="mt-[0.8rem] text-example_red_500">
+            <SpoqaText className="mt-[0.8rem] text-role-status-error dark:text-role-dark-status-error">
               {DDUDU_TIME_SHEET.TIME_RANGE_ERROR_MESSAGE}
             </SpoqaText>
           ) : null}
@@ -237,11 +252,11 @@ function DDuDuTimeSheet({
         <Pressable
           accessibilityRole="button"
           onPress={handleConfirm}
-          className="z-1 h-[5rem] w-full items-center justify-center rounded-radius15 bg-main"
+          className="z-1 h-[5rem] w-full items-center justify-center rounded-radius15 bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg"
         >
           <SpoqaText
             weight="semiBold"
-            className="text-white"
+            className="text-role-text-inverse dark:text-role-dark-text-inverse"
           >
             {confirmLabel}
           </SpoqaText>

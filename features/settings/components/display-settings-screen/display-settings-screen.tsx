@@ -2,6 +2,7 @@ import { Pressable, View } from "react-native";
 
 import { SelectChip, SpoqaText } from "@/components";
 import { useDisplaySettings } from "@/features/settings/hooks";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { ArrowLeftIcon } from "@/icons";
 
 import { SettingsRow } from "../settings-row";
@@ -11,6 +12,9 @@ import { useRouter } from "expo-router";
 
 function DisplaySettingsScreen() {
   const router = useRouter();
+  const iconStroke = useThemeColorToken("role.icon.default");
+  const selectedChipBg = useThemeColorToken("role.surface.subtle");
+  const chipBorderColor = useThemeColorToken("role.border.default");
   const { weekStartDay, handleChangeWeekStartDay, isDarkMode, handleToggleDarkMode } =
     useDisplaySettings();
 
@@ -28,12 +32,12 @@ function DisplaySettingsScreen() {
         >
           <ArrowLeftIcon
             size={16}
-            stroke="#1F1F1F"
+            stroke={iconStroke}
           />
         </Pressable>
         <SpoqaText
           weight="bold"
-          className="text-size18 text-black_500"
+          className="text-size18 text-role-text-primary dark:text-role-dark-text-primary"
         >
           화면표시
         </SpoqaText>
@@ -47,17 +51,17 @@ function DisplaySettingsScreen() {
               label="일"
               selected={weekStartDay === "sun"}
               onPress={() => handleChangeWeekStartDay("sun")}
-              selectedBackgroundColor="#DDE9FF"
-              borderColor="#C9D8F5"
-              selectedTextClassName="text-main"
+              selectedBackgroundColor={selectedChipBg}
+              borderColor={chipBorderColor}
+              selectedTextClassName="text-role-text-secondary dark:text-role-dark-text-secondary"
             />
             <SelectChip
               label="월"
               selected={weekStartDay === "mon"}
               onPress={() => handleChangeWeekStartDay("mon")}
-              selectedBackgroundColor="#DDE9FF"
-              borderColor="#C9D8F5"
-              selectedTextClassName="text-main"
+              selectedBackgroundColor={selectedChipBg}
+              borderColor={chipBorderColor}
+              selectedTextClassName="text-role-text-secondary dark:text-role-dark-text-secondary"
             />
           </View>
         }

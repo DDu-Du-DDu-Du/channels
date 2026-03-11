@@ -2,6 +2,7 @@ import { View } from "react-native";
 import Animated, { FadeInDown, LinearTransition } from "react-native-reanimated";
 
 import { EmptyList, GoalItem } from "@/components";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import type { MainDDuDusType, MainDailyListType } from "@/types/response/feed/feed";
 import { hexConvertForRGBA, remToPx } from "@/utils";
 
@@ -22,6 +23,7 @@ function MainFeedListItems({
   onDDuDuSheetOpen,
   onOpenCreateSheet,
 }: MainFeedListItemsProps) {
+  const emptyIconStroke = useThemeColorToken("role.icon.muted");
   return (
     <Animated.View style={{ flex: 1 }}>
       <Animated.FlatList
@@ -67,8 +69,8 @@ function MainFeedListItems({
                       <EmptyList
                         text="아직 생성된 뚜두가 없어요."
                         className="w-full items-center py-[2rem]"
-                        textClassName="mt-[0.8rem] text-size14 text-black_300"
-                        iconStroke="#8E8E93"
+                        textClassName="mt-[0.8rem] text-size14 text-role-text-secondary dark:text-role-dark-text-secondary"
+                        iconStroke={emptyIconStroke}
                       />
                     </View>
                   )}

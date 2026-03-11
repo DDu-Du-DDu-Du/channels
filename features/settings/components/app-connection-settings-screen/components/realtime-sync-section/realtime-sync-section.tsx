@@ -1,6 +1,7 @@
 import { View } from "react-native";
 
 import { AnimatedSwitch, SpoqaText } from "@/components";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { NotionIcon } from "@/icons";
 
 import { SettingsRow } from "../../../settings-row";
@@ -17,16 +18,20 @@ interface RealtimeSyncSectionProps {
 }
 
 function RealtimeSyncSection({ notion, googleCalendar, microsoftTodo }: RealtimeSyncSectionProps) {
+  const offBackgroundColor = useThemeColorToken("role.surface.subtle");
+  const onBackgroundColor = useThemeColorToken("ui.button.primary.bg");
+  const thumbColor = useThemeColorToken("role.surface.canvas");
+
   return (
     <View className="pt-[2rem]">
       <SpoqaText
         weight="semiBold"
-        className="mb-[0.8rem] text-size14 text-black_500"
+        className="mb-[0.8rem] text-size14 text-role-text-primary dark:text-role-dark-text-primary"
       >
         실시간 연동
       </SpoqaText>
 
-      <View className="overflow-hidden rounded-radius10 border border-[#E5E5E5] bg-[#FFFFFF] px-[1.4rem]">
+      <View className="overflow-hidden rounded-radius10 border border-role-border-subtle dark:border-role-dark-border-subtle bg-role-surface-canvas dark:bg-role-dark-surface-canvas px-[1.4rem]">
         <SettingsRow
           label="Notion"
           leftContent={<NotionIcon size={16} />}
@@ -35,10 +40,10 @@ function RealtimeSyncSection({ notion, googleCalendar, microsoftTodo }: Realtime
               size="large"
               value={notion.isToggle}
               onValueChange={notion.handleValueChange}
-              offBackgroundColor="#E1E1E1"
-              onBackgroundColor="#1363DE"
-              offThumbColor="#FFFFFF"
-              onThumbColor="#FFFFFF"
+              offBackgroundColor={offBackgroundColor}
+              onBackgroundColor={onBackgroundColor}
+              offThumbColor={thumbColor}
+              onThumbColor={thumbColor}
             />
           }
         />
@@ -49,10 +54,10 @@ function RealtimeSyncSection({ notion, googleCalendar, microsoftTodo }: Realtime
               size="large"
               value={googleCalendar.isToggle}
               onValueChange={googleCalendar.handleValueChange}
-              offBackgroundColor="#E1E1E1"
-              onBackgroundColor="#1363DE"
-              offThumbColor="#FFFFFF"
-              onThumbColor="#FFFFFF"
+              offBackgroundColor={offBackgroundColor}
+              onBackgroundColor={onBackgroundColor}
+              offThumbColor={thumbColor}
+              onThumbColor={thumbColor}
             />
           }
         />
@@ -64,10 +69,10 @@ function RealtimeSyncSection({ notion, googleCalendar, microsoftTodo }: Realtime
               size="large"
               value={microsoftTodo.isToggle}
               onValueChange={microsoftTodo.handleValueChange}
-              offBackgroundColor="#E1E1E1"
-              onBackgroundColor="#1363DE"
-              offThumbColor="#FFFFFF"
-              onThumbColor="#FFFFFF"
+              offBackgroundColor={offBackgroundColor}
+              onBackgroundColor={onBackgroundColor}
+              offThumbColor={thumbColor}
+              onThumbColor={thumbColor}
             />
           }
         />

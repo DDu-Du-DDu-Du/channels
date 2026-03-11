@@ -16,6 +16,7 @@ import {
 } from "@/components";
 import { DDuDuEditorSheet, useDDuDuEditorSheet } from "@/features/ddudu";
 import { useDDuDuSearchActions, useDDuDuSearchQuery } from "@/features/ddudu-search/hooks";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import type { DDuDuSearchItemType } from "@/types/response/ddudu/ddudu";
 import { formatDateToYYYYMMDD } from "@/utils";
 
@@ -27,6 +28,7 @@ import { useRouter } from "expo-router";
 
 function DDuDuSearchScreen() {
   const router = useRouter();
+  const spinnerColor = useThemeColorToken("role.text.inverse");
   const [searchText, setSearchText] = useState("");
   const [debouncedSearchText, setDebouncedSearchText] = useState("");
   const searchBarProgress = useSharedValue(0);
@@ -130,7 +132,7 @@ function DDuDuSearchScreen() {
   };
 
   return (
-    <View className="flex-1 bg-main pt-[1.2rem]">
+    <View className="flex-1 bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg pt-[1.2rem]">
       <Animated.View style={animatedHeaderStyle}>
         <DDuDuSearchHeader onBackPress={handleBackPress} />
       </Animated.View>
@@ -162,7 +164,7 @@ function DDuDuSearchScreen() {
               <View className="py-[1.2rem]">
                 <ActivityIndicator
                   size="small"
-                  color="#FFFFFF"
+                  color={spinnerColor}
                 />
               </View>
             ) : null

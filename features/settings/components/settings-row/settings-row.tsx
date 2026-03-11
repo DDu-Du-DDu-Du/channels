@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { Pressable, View } from "react-native";
 
 import { SpoqaText } from "@/components";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { ChevronRightIcon } from "@/icons";
 
 interface SettingsRowProps {
@@ -22,11 +23,14 @@ function SettingsRow({
   onPress,
   showChevron = false,
   rightContent,
-  textColor = "#1F1F1F",
+  textColor,
   hasBottomBorder = true,
 }: SettingsRowProps) {
+  const defaultTextColor = useThemeColorToken("role.text.primary");
+  const resolvedTextColor = textColor ?? defaultTextColor;
+  const chevronColor = useThemeColorToken("role.icon.muted");
   const rowClassName = `min-h-[5.2rem] flex-row items-center justify-between py-[1.2rem] ${
-    hasBottomBorder ? "border-b border-[#E5E5E5]" : ""
+    hasBottomBorder ? "border-b border-role-border-subtle dark:border-role-dark-border-subtle" : ""
   }`;
 
   const content = (
@@ -36,20 +40,22 @@ function SettingsRow({
         <SpoqaText
           weight="medium"
           className="text-size15"
-          style={{ color: textColor }}
+          style={{ color: resolvedTextColor }}
         >
           {label}
         </SpoqaText>
       </View>
       <View className="flex-row items-center gap-[0.6rem]">
         {value ? (
-          <SpoqaText className="text-size13 text-example_gray_900">{value}</SpoqaText>
+          <SpoqaText className="text-size13 text-role-text-secondary dark:text-role-dark-text-secondary">
+            {value}
+          </SpoqaText>
         ) : null}
         {rightContent}
         {showChevron ? (
           <ChevronRightIcon
             size={16}
-            stroke="#9C9C9C"
+            fill={chevronColor}
           />
         ) : null}
       </View>

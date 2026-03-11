@@ -6,6 +6,7 @@ import FormHeader from "@/components/form-header/form-header";
 import SpoqaText from "@/components/spoqa-text/spoqa-text";
 import YearMonthPicker, { YearMonthValue } from "@/components/year-month-picker/year-month-picker";
 import { useBottomSheetAction } from "@/hooks";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 
 interface YearMonthPickerSheetProps {
   open: boolean;
@@ -33,6 +34,7 @@ function YearMonthPickerSheet({
   onClose,
 }: YearMonthPickerSheetProps) {
   const { ref, openSheet, closeSheet } = useBottomSheetAction();
+  const iconStroke = useThemeColorToken("role.icon.default");
   const [toValidationMessage, setToValidationMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -87,8 +89,8 @@ function YearMonthPickerSheet({
         <FormHeader
           title="월 선택"
           onPressBack={handlePressBack}
-          iconStroke="#000000"
-          titleClassName="text-size16 text-black_500"
+          iconStroke={iconStroke}
+          titleClassName="text-size16 text-role-text-primary dark:text-role-dark-text-primary"
           className="px-0 pb-[0.6rem] pt-0"
         />
 
@@ -107,12 +109,12 @@ function YearMonthPickerSheet({
 
         <Pressable
           accessibilityRole="button"
-          className="h-[5rem] items-center justify-center rounded-radius15 bg-main"
+          className="h-[5rem] items-center justify-center rounded-radius15 bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg"
           onPress={handlePressConfirm}
         >
           <SpoqaText
             weight="semiBold"
-            className="text-size15 text-white_100"
+            className="text-size15 text-role-text-inverse dark:text-role-dark-text-inverse"
           >
             확인
           </SpoqaText>

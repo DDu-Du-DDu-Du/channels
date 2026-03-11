@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 
 import { Avatar, SpoqaText } from "@/components";
 import MotionPressable from "@/components/motion/motion-pressable/motion-pressable";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { UserType } from "@/types/response/user/user";
 import getRelativeTime from "@/utils/get-relative-time/get-relative-time";
 
@@ -18,6 +19,8 @@ function FollowRequestItem({
   onFollowRequestCheck,
 }: FollowRequestItemProps) {
   const timeAge = useMemo(() => getRelativeTime(followRequestAt), [followRequestAt]);
+  const denyBackgroundColor = useThemeColorToken("role.surface.card");
+  const acceptBackgroundColor = useThemeColorToken("role.surface.muted");
 
   const handleDenyPress = () => {
     onFollowRequestCheck(false);
@@ -41,7 +44,7 @@ function FollowRequestItem({
       <View className="flex-row justify-between gap-[1rem]">
         <MotionPressable
           accessibilityRole="button"
-          style={styles.denyButton}
+          style={[styles.denyButton, { backgroundColor: denyBackgroundColor }]}
           whileTap={{ scale: 0.95 }}
           onPress={handleDenyPress}
         >
@@ -49,11 +52,13 @@ function FollowRequestItem({
         </MotionPressable>
         <MotionPressable
           accessibilityRole="button"
-          style={styles.acceptButton}
+          style={[styles.acceptButton, { backgroundColor: acceptBackgroundColor }]}
           whileTap={{ scale: 0.95 }}
           onPress={handleAcceptPress}
         >
-          <SpoqaText className="text-size11 text-white">수락</SpoqaText>
+          <SpoqaText className="text-size11 text-role-text-inverse dark:text-role-dark-text-inverse">
+            수락
+          </SpoqaText>
         </MotionPressable>
       </View>
     </View>
@@ -76,7 +81,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 10,
-    backgroundColor: "#F1F1F1", // approx example_gray_100
   },
   acceptButton: {
     flex: 1,
@@ -84,6 +88,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 10,
-    backgroundColor: "#4A4A4A", // approx example_gray_700
   },
 });

@@ -3,6 +3,7 @@ import { View } from "react-native";
 
 import { AnimatedSwitch, DraggableFlatList } from "@/components";
 import { useMenuActivationToggles } from "@/features/settings/hooks";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { DragIcon } from "@/icons";
 import { MenuActivationKey } from "@/stores/use-settings-store/use-settings-store";
 import { remToPx } from "@/utils";
@@ -26,6 +27,9 @@ function MenuActivationDraggableList({
   isValidationEnabled = true,
   onValidationError,
 }: MenuActivationDraggableListProps) {
+  const offBackgroundColor = useThemeColorToken("role.surface.subtle");
+  const onBackgroundColor = useThemeColorToken("ui.button.primary.bg");
+  const thumbColor = useThemeColorToken("role.surface.canvas");
   const { calendar, dashboard, stats, priorities, handleReorderMenuActivation } =
     useMenuActivationToggles({
       isValidationEnabled,
@@ -36,21 +40,21 @@ function MenuActivationDraggableList({
     () =>
       [
         {
-          id: "calendar",
+          id: "calendar" as MenuActivationKey,
           label: "캘린더",
           isToggle: calendar.isToggle,
           priority: priorities.calendar,
           handleValueChange: calendar.handleValueChange,
         },
         {
-          id: "dashboard",
+          id: "dashboard" as MenuActivationKey,
           label: "대시보드",
           isToggle: dashboard.isToggle,
           priority: priorities.dashboard,
           handleValueChange: dashboard.handleValueChange,
         },
         {
-          id: "stats",
+          id: "stats" as MenuActivationKey,
           label: "통계",
           isToggle: stats.isToggle,
           priority: priorities.stats,
@@ -80,10 +84,10 @@ function MenuActivationDraggableList({
             size="large"
             value={item.isToggle}
             onValueChange={item.handleValueChange}
-            offBackgroundColor="#E1E1E1"
-            onBackgroundColor="#1363DE"
-            offThumbColor="#FFFFFF"
-            onThumbColor="#FFFFFF"
+            offBackgroundColor={offBackgroundColor}
+            onBackgroundColor={onBackgroundColor}
+            offThumbColor={thumbColor}
+            onThumbColor={thumbColor}
           />
         }
       />

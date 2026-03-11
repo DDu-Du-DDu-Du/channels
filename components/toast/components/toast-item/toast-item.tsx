@@ -10,6 +10,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import type { ToastType } from "@/components/toast/toast-provider.type";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { CloseIcon } from "@/icons";
 
 import { useToastTypeColor } from "./hooks";
@@ -28,6 +29,10 @@ const toastWidth = 250;
 function ToastItem({ id, message, deleteTime, type, onClose }: ToastItemProps) {
   const progress = useSharedValue(1);
   const fillColor = useToastTypeColor({ type });
+  const closeIconColor = useThemeColorToken("role.icon.muted");
+  const cardBackgroundColor = useThemeColorToken("role.surface.canvas");
+  const barTrackColor = useThemeColorToken("role.surface.muted");
+  const shadowColor = useThemeColorToken("role.surface.inverse");
 
   useEffect(() => {
     progress.value = withTiming(0, { duration: deleteTime, easing: Easing.linear });
@@ -42,7 +47,7 @@ function ToastItem({ id, message, deleteTime, type, onClose }: ToastItemProps) {
       entering={BounceInDown.duration(200)}
       exiting={FadeOut}
     >
-      <Animated.View style={styles.card}>
+      <Animated.View style={[styles.card, { backgroundColor: cardBackgroundColor, shadowColor }]}>
         <Pressable
           accessibilityRole="button"
           hitSlop={8}
@@ -51,7 +56,7 @@ function ToastItem({ id, message, deleteTime, type, onClose }: ToastItemProps) {
         >
           <CloseIcon
             size={16}
-            fill="#B6B6B6"
+            fill={closeIconColor}
           />
         </Pressable>
 
@@ -64,7 +69,7 @@ function ToastItem({ id, message, deleteTime, type, onClose }: ToastItemProps) {
           </Animated.Text>
         </View>
 
-        <View style={styles.barTrack}>
+        <View style={[styles.barTrack, { backgroundColor: barTrackColor }]}>
           <Animated.View style={[styles.barFill, { backgroundColor: fillColor }, barStyle]} />
         </View>
       </Animated.View>
@@ -77,10 +82,8 @@ const styles = StyleSheet.create({
     width: toastWidth,
     height: toastHeight,
     borderRadius: 10,
-    backgroundColor: "#FFFFFF",
     overflow: "hidden",
     // simple shadow
-    shadowColor: "#000",
     shadowOpacity: 0.2,
     shadowRadius: 20,
     shadowOffset: { width: 0, height: 0 },
@@ -106,7 +109,6 @@ const styles = StyleSheet.create({
   barTrack: {
     width: "100%",
     height: 5,
-    backgroundColor: "#9CA3AF", // example_gray_500 approx
     justifyContent: "flex-start",
     alignItems: "flex-start",
   },

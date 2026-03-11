@@ -4,6 +4,8 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useSharedValue } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
 
+import { useThemeColorToken } from "@/hooks/use-theme-color";
+
 import { usePressableAnimations } from "./hooks";
 
 export interface MotionPressableProps {
@@ -31,10 +33,12 @@ function MotionPressable({
   onPress,
   onHoverIn,
   onHoverOut,
-  highlightColor = "#000000",
+  highlightColor,
   highlightTapOpacity = 0.06,
   highlightHoverOpacity = 0.03,
 }: MotionPressableProps) {
+  const defaultHighlightColor = useThemeColorToken("role.surface.inverse");
+  const resolvedHighlightColor = highlightColor ?? defaultHighlightColor;
   const pressed = useSharedValue(false);
   const hovered = useSharedValue(false);
 
@@ -91,7 +95,7 @@ function MotionPressable({
           pointerEvents="none"
           style={[
             StyleSheet.absoluteFillObject,
-            { backgroundColor: highlightColor, borderRadius: 10 },
+            { backgroundColor: resolvedHighlightColor, borderRadius: 10 },
             overlayAnimatedStyle,
           ]}
         />

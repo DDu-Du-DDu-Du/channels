@@ -1,6 +1,7 @@
 import { Pressable, View } from "react-native";
 
 import { SpoqaText } from "@/components";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { ArrowLeftIcon } from "@/icons";
 
 import { MenuActivationDraggableList } from "./components";
@@ -17,6 +18,7 @@ function MenuActivationSettingsScreen({
   onValidationError,
 }: MenuActivationSettingsScreenProps) {
   const router = useRouter();
+  const iconStroke = useThemeColorToken("role.icon.default");
 
   const handlePressBack = () => {
     router.back();
@@ -32,12 +34,12 @@ function MenuActivationSettingsScreen({
         >
           <ArrowLeftIcon
             size={16}
-            stroke="#1F1F1F"
+            stroke={iconStroke}
           />
         </Pressable>
         <SpoqaText
           weight="bold"
-          className="text-size18 text-black_500"
+          className="text-size18 text-role-text-primary dark:text-role-dark-text-primary"
         >
           메뉴 활성화
         </SpoqaText>

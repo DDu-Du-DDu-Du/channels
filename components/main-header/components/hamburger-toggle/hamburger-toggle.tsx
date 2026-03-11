@@ -8,12 +8,15 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
+import { useThemeColorToken } from "@/hooks/use-theme-color";
+
 interface HamburgerToggleProps {
   isOpen: boolean;
   onPress: () => void;
 }
 
 function HamburgerToggle({ isOpen, onPress }: HamburgerToggleProps) {
+  const lineColor = useThemeColorToken("role.icon.inverse");
   const progress = useSharedValue(isOpen ? 1 : 0);
 
   useEffect(() => {
@@ -47,9 +50,15 @@ function HamburgerToggle({ isOpen, onPress }: HamburgerToggleProps) {
       className="h-[2.4rem] w-[2.4rem] items-center justify-center"
     >
       <View style={styles.iconContainer}>
-        <Animated.View style={[styles.line, topLineAnimatedStyle]} />
-        <Animated.View style={[styles.line, middleLineAnimatedStyle]} />
-        <Animated.View style={[styles.line, bottomLineAnimatedStyle]} />
+        <Animated.View
+          style={[styles.line, { backgroundColor: lineColor }, topLineAnimatedStyle]}
+        />
+        <Animated.View
+          style={[styles.line, { backgroundColor: lineColor }, middleLineAnimatedStyle]}
+        />
+        <Animated.View
+          style={[styles.line, { backgroundColor: lineColor }, bottomLineAnimatedStyle]}
+        />
       </View>
     </Pressable>
   );
@@ -65,7 +74,6 @@ const styles = StyleSheet.create({
     width: 20,
     height: 2,
     borderRadius: 999,
-    backgroundColor: "#FFFFFF",
   },
 });
 

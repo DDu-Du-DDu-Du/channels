@@ -2,6 +2,7 @@ import React from "react";
 import { ActivityIndicator, Pressable, View } from "react-native";
 
 import { SpoqaText } from "@/components";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { parseUtc } from "@/utils";
 
 import { Href, useRouter } from "expo-router";
@@ -48,12 +49,15 @@ function ReminderNotification({
   body,
   context,
   createdAt,
-  bgColor = "#F5F5F5",
+  bgColor,
   isLoading = false,
   disabled = false,
   onPress,
 }: ReminderNotificationProps) {
   const router = useRouter();
+  const defaultBgColor = useThemeColorToken("role.surface.panel");
+  const resolvedBgColor = bgColor ?? defaultBgColor;
+  const spinnerColor = useThemeColorToken("role.text.tertiary");
   const rightMetaText = resolveRightMetaText(createdAt);
 
   const handlePress = () => {
@@ -77,27 +81,29 @@ function ReminderNotification({
   return (
     <View className="w-full">
       <Pressable
-        className="rounded-radius15 bg-example_gray_100 px-[2rem] py-[1.6rem]"
-        style={{ backgroundColor: bgColor }}
+        className="rounded-radius15 bg-role-surface-panel dark:bg-role-dark-surface-panel px-[2rem] py-[1.6rem]"
+        style={{ backgroundColor: resolvedBgColor }}
         onPress={disabled ? undefined : handlePress}
       >
         <View className="flex-row items-start justify-between gap-[1.2rem]">
           <View className="flex-1 gap-[0.5rem]">
             <SpoqaText
               weight="semiBold"
-              className="text-size13 leading-[1.8rem] text-black_500"
+              className="text-size13 leading-[1.8rem] text-role-text-primary dark:text-role-dark-text-primary"
             >
               {title}
             </SpoqaText>
-            <SpoqaText className="text-size11 text-example_gray_900">{body}</SpoqaText>
+            <SpoqaText className="text-size11 text-role-text-secondary dark:text-role-dark-text-secondary">
+              {body}
+            </SpoqaText>
           </View>
           {isLoading ? (
             <ActivityIndicator
               size="small"
-              color="#6B6B6B"
+              color={spinnerColor}
             />
           ) : rightMetaText ? (
-            <SpoqaText className="pt-[0.2rem] text-size11 text-example_gray_900">
+            <SpoqaText className="pt-[0.2rem] text-size11 text-role-text-secondary dark:text-role-dark-text-secondary">
               {rightMetaText}
             </SpoqaText>
           ) : null}

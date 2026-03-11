@@ -2,6 +2,7 @@ import React from "react";
 import { DimensionValue, Pressable, View } from "react-native";
 
 import { SpoqaText } from "@/components";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { remToPx } from "@/utils";
 
 export interface SelectOptionProps {
@@ -14,16 +15,20 @@ export interface SelectOptionProps {
 
 function SelectOption({
   children,
-  backgroundColor = "#F5F5F5",
+  backgroundColor,
   width,
   className = "",
   onPress,
 }: SelectOptionProps) {
+  const defaultBackgroundColor = useThemeColorToken("role.surface.panel");
+  const resolvedBackgroundColor = backgroundColor ?? defaultBackgroundColor;
+  const indicatorColor = useThemeColorToken("role.border.strong");
+
   return (
     <Pressable
       onPress={onPress}
       className={`relative pl-[1.4rem] pr-[2.4rem] py-[1rem] rounded-[1rem] ${className}`}
-      style={{ backgroundColor, width }}
+      style={{ backgroundColor: resolvedBackgroundColor, width }}
     >
       <SpoqaText className="inline-block text-size13 leading-[1.3rem]">{children}</SpoqaText>
 
@@ -37,7 +42,7 @@ function SelectOption({
           height: 0,
           borderStyle: "solid",
           borderTopWidth: remToPx("0.4rem"),
-          borderTopColor: "#D9D9D9", // example_gray_700
+          borderTopColor: indicatorColor,
           borderLeftWidth: remToPx("0.3rem"),
           borderRightWidth: remToPx("0.3rem"),
           borderLeftColor: "transparent",

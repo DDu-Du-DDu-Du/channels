@@ -3,6 +3,7 @@ import { Pressable, ScrollView, View } from "react-native";
 
 import { ConfirmModal, SpoqaText } from "@/components";
 import { useToggle } from "@/hooks";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { ArrowLeftIcon } from "@/icons";
 import { useAuthStore } from "@/stores";
 
@@ -14,6 +15,8 @@ import { useRouter } from "expo-router";
 
 function SettingsScreen() {
   const router = useRouter();
+  const iconStroke = useThemeColorToken("role.icon.default");
+  const dangerTextColor = useThemeColorToken("role.status.error");
   const bugReportSheetRef = useRef<BugReportSheetHandle | null>(null);
   const clearSession = useAuthStore((state) => state.clearSession);
   const {
@@ -71,12 +74,12 @@ function SettingsScreen() {
         >
           <ArrowLeftIcon
             size={16}
-            stroke="#1F1F1F"
+            stroke={iconStroke}
           />
         </Pressable>
         <SpoqaText
           weight="bold"
-          className="text-size18 text-black_500"
+          className="text-size18 text-role-text-primary dark:text-role-dark-text-primary"
         >
           설정
         </SpoqaText>
@@ -113,7 +116,7 @@ function SettingsScreen() {
         <SettingsRow
           label="로그아웃"
           onPress={handlePressLogout}
-          textColor="#D64C4C"
+          textColor={dangerTextColor}
         />
       </ScrollView>
 

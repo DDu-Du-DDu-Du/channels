@@ -9,6 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { SpoqaText } from "@/components";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 
 export interface StatsGoalChartItem {
   goalId: number;
@@ -54,6 +55,7 @@ function AnimatedBar({ targetHeight, color, progress }: AnimatedBarProps) {
 }
 
 function StatsGoalChartCard({ title, unit, items }: StatsGoalChartCardProps) {
+  const fallbackItemColor = useThemeColorToken("role.text.tertiary");
   const sortedItems = [...items].sort((a, b) => b.value - a.value);
   const maxValue = Math.max(...sortedItems.map((item) => item.value), 0);
   const progress = useSharedValue(0);
@@ -70,15 +72,17 @@ function StatsGoalChartCard({ title, unit, items }: StatsGoalChartCardProps) {
     <View className="mb-[3.2rem]">
       <SpoqaText
         weight="semiBold"
-        className="mb-[1.3rem] text-size18 text-white_100"
+        className="mb-[1.3rem] text-size18 text-role-text-inverse dark:text-role-dark-text-inverse"
       >
         {title}
       </SpoqaText>
 
-      <View className="rounded-radius15 bg-example_gray_200 px-[1.2rem] py-[1.2rem]">
+      <View className="rounded-radius15 bg-role-surface-subtle dark:bg-role-dark-surface-subtle px-[1.2rem] py-[1.2rem]">
         {sortedItems.length === 0 ? (
           <View className="h-[14rem] items-center justify-center">
-            <SpoqaText className="text-size14 text-example_gray_1100">데이터가 없어요.</SpoqaText>
+            <SpoqaText className="text-size14 text-role-text-tertiary dark:text-role-dark-text-tertiary">
+              데이터가 없어요.
+            </SpoqaText>
           </View>
         ) : (
           <ScrollView
@@ -89,7 +93,7 @@ function StatsGoalChartCard({ title, unit, items }: StatsGoalChartCardProps) {
             {sortedItems.map((item, index) => {
               const ratio = maxValue > 0 ? item.value / maxValue : 0;
               const targetHeight = Math.max(12, Math.round(120 * ratio));
-              const itemColor = item.color ?? "#8E8E8E";
+              const itemColor = item.color ?? fallbackItemColor;
 
               return (
                 <View
@@ -98,7 +102,7 @@ function StatsGoalChartCard({ title, unit, items }: StatsGoalChartCardProps) {
                 >
                   <View className="mb-[0.8rem] h-[2.2rem] items-center justify-end">
                     <SpoqaText
-                      className={`text-size13 ${index === 0 ? "text-black_500" : "text-example_gray_800"}`}
+                      className={`text-size13 ${index === 0 ? "text-role-text-primary dark:text-role-dark-text-primary" : "text-role-text-tertiary dark:text-role-dark-text-tertiary"}`}
                     >
                       {`${formatNumber(item.value)}${unit}`}
                     </SpoqaText>
@@ -112,9 +116,9 @@ function StatsGoalChartCard({ title, unit, items }: StatsGoalChartCardProps) {
                     />
                   </View>
 
-                  <View className="mt-[0.9rem] border-t border-example_gray_500 pt-[1rem]">
+                  <View className="mt-[0.9rem] border-t border-role-border-default dark:border-role-dark-border-default pt-[1rem]">
                     <View
-                      className={`rounded-radius10 px-[0.8rem] py-[0.7rem] ${index === 0 ? "bg-example_gray_100" : "bg-example_gray_300"}`}
+                      className={`rounded-radius10 px-[0.8rem] py-[0.7rem] ${index === 0 ? "bg-role-surface-panel dark:bg-role-dark-surface-panel" : "bg-role-surface-subtle dark:bg-role-dark-surface-subtle"}`}
                     >
                       <SpoqaText
                         className="text-center text-size13 leading-[1.6rem]"

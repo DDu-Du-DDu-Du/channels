@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import Animated, { type SharedValue, interpolate, useAnimatedStyle } from "react-native-reanimated";
 
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { SearchIcon } from "@/icons";
+import { hexConvertForRGBA } from "@/utils";
 
 export interface DDuDuSearchBarProps {
   value: string;
@@ -12,6 +14,16 @@ export interface DDuDuSearchBarProps {
 
 function DDuDuSearchBar({ value, onChangeText, progress }: DDuDuSearchBarProps) {
   const [containerWidth, setContainerWidth] = useState(0);
+  const iconColor = useThemeColorToken("role.icon.inverse");
+  const placeholderColor = useThemeColorToken("role.text.inverse");
+  const translucentBorderColor = useMemo(
+    () => hexConvertForRGBA({ hex: iconColor, alpha: 0.25 }),
+    [iconColor],
+  );
+  const translucentBackgroundColor = useMemo(
+    () => hexConvertForRGBA({ hex: iconColor, alpha: 0.24 }),
+    [iconColor],
+  );
 
   const animatedSearchBarStyle = useAnimatedStyle(() => {
     const collapsedWidth = 56;
@@ -31,22 +43,31 @@ function DDuDuSearchBar({ value, onChangeText, progress }: DDuDuSearchBarProps) 
       className="w-full items-center px-4 pb-[0.8rem]"
       onLayout={(event) => setContainerWidth(event.nativeEvent.layout.width - 32)}
     >
-      <Animated.View style={[animatedSearchBarStyle, styles.searchBarContainer]}>
+      <Animated.View
+        style={[
+          animatedSearchBarStyle,
+          styles.searchBarContainer,
+          {
+            borderColor: translucentBorderColor,
+            backgroundColor: translucentBackgroundColor,
+          },
+        ]}
+      >
         <View className="h-full flex-row items-center">
           <Animated.View style={[{ flex: 1 }, animatedInputStyle]}>
             <TextInput
               value={value}
               onChangeText={onChangeText}
               placeholder="투두를 검색하세요"
-              placeholderTextColor="#B5B5BA"
-              className="h-full text-size15 text-white"
+              placeholderTextColor={placeholderColor}
+              className="h-full text-size15 text-role-text-inverse dark:text-role-dark-text-inverse"
               autoFocus
               returnKeyType="search"
             />
           </Animated.View>
           <SearchIcon
             size={20}
-            stroke="#FFFFFF"
+            stroke={iconColor}
           />
         </View>
       </Animated.View>
@@ -60,8 +81,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderRadius: 999,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.25)",
-    backgroundColor: "rgba(255, 255, 255, 0.24)",
     paddingLeft: 16,
     paddingRight: 14,
   },

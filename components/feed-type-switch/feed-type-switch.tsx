@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
 import { SpoqaText } from "@/components";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { remToPx } from "@/utils";
 
 import { useFeedTypeSwitchToggle } from "./hooks";
@@ -22,6 +23,8 @@ function FeedTypeSwitch({
   alternativeOption = "schedule",
   className,
 }: FeedTypeSwitchProps) {
+  const pillBackgroundColor = useThemeColorToken("ui.button.primary.bg");
+  const pillBorderColor = useThemeColorToken("role.surface.canvas");
   const { toggle, handleToggleToFirst, handleToggleToSecond } = useFeedTypeSwitchToggle({
     selectedOption,
     alternativeOption,
@@ -63,14 +66,25 @@ function FeedTypeSwitch({
   return (
     <View
       onLayout={onLayoutContainer}
-      className={`relative flex flex-row w-[16rem] h-[3rem] bg-white_100 rounded-[5rem] shadow-shadow_100 overflow-hidden ${className ?? ""}`}
+      className={`relative flex flex-row w-[16rem] h-[3rem] bg-role-surface-canvas dark:bg-role-dark-surface-canvas rounded-[5rem] shadow-shadow_100 overflow-hidden ${className ?? ""}`}
     >
-      <Animated.View style={[pillStyle, styles.pill]} />
+      <Animated.View
+        style={[
+          pillStyle,
+          styles.pill,
+          {
+            backgroundColor: pillBackgroundColor,
+            borderColor: pillBorderColor,
+          },
+        ]}
+      />
       <Pressable
         className="flex-1 items-center justify-center z-10"
         onPress={handleToggleToFirst}
       >
-        <SpoqaText className={`text-size13 ${isFirstSelected ? "text-white_100 font-medium" : ""}`}>
+        <SpoqaText
+          className={`text-size13 ${isFirstSelected ? "text-role-text-inverse dark:text-role-dark-text-inverse font-medium" : ""}`}
+        >
           {firstLabel}
         </SpoqaText>
       </Pressable>
@@ -79,7 +93,7 @@ function FeedTypeSwitch({
         onPress={handleToggleToSecond}
       >
         <SpoqaText
-          className={`text-size13 ${!isFirstSelected ? "text-white_100 font-medium" : ""}`}
+          className={`text-size13 ${!isFirstSelected ? "text-role-text-inverse dark:text-role-dark-text-inverse font-medium" : ""}`}
         >
           {secondLabel}
         </SpoqaText>
@@ -95,9 +109,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "50%",
     height: "100%",
-    backgroundColor: "#1363DE",
     borderWidth: 2,
-    borderColor: "#F5F5F5",
     borderRadius: remToPx("1.5rem"),
   },
 });

@@ -7,6 +7,8 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
+import { useThemeColorToken } from "@/hooks/use-theme-color";
+
 type SwitchSize = "default" | "large";
 
 export interface AnimatedSwitchProps {
@@ -36,16 +38,24 @@ function AnimatedSwitch({
   size = "default",
   onIcon,
   offIcon,
-  onBackgroundColor = "#3D3D3D",
-  offBackgroundColor = "#EAEAEA",
+  onBackgroundColor,
+  offBackgroundColor,
   thumbColor,
-  onThumbColor = "#FFFFFF",
-  offThumbColor = "#FFFFFF",
+  onThumbColor,
+  offThumbColor,
   trackWidth,
   trackHeight,
   trackPadding,
   thumbSize,
 }: AnimatedSwitchProps) {
+  const defaultOnBackground = useThemeColorToken("role.surface.muted");
+  const defaultOffBackground = useThemeColorToken("role.surface.subtle");
+  const defaultThumbColor = useThemeColorToken("role.surface.canvas");
+  const onBackground = onBackgroundColor ?? defaultOnBackground;
+  const offBackground = offBackgroundColor ?? defaultOffBackground;
+  const onThumb = onThumbColor ?? defaultThumbColor;
+  const offThumb = offThumbColor ?? defaultThumbColor;
+
   const sizePreset = useMemo(
     () =>
       size === "large"
@@ -71,17 +81,13 @@ function AnimatedSwitch({
   }, [progress, value]);
 
   const trackStyle = useAnimatedStyle(() => ({
-    backgroundColor: interpolateColor(
-      progress.value,
-      [0, 1],
-      [offBackgroundColor, onBackgroundColor],
-    ),
+    backgroundColor: interpolateColor(progress.value, [0, 1], [offBackground, onBackground]),
   }));
 
   const thumbStyle = useAnimatedStyle(() => ({
     backgroundColor: thumbColor
       ? thumbColor
-      : interpolateColor(progress.value, [0, 1], [offThumbColor, onThumbColor]),
+      : interpolateColor(progress.value, [0, 1], [offThumb, onThumb]),
     transform: [{ translateX: withTiming(progress.value * travelDistance, { duration: 150 }) }],
   }));
 

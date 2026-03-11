@@ -6,12 +6,20 @@ import {
   DduduNotificationListEntry,
   useNotificationScreen,
 } from "@/features/notification/hooks";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { ArrowLeftIcon } from "@/icons";
 
 import { useRouter } from "expo-router";
 
 function NotificationScreen() {
   const router = useRouter();
+  const iconStroke = useThemeColorToken("role.icon.default");
+  const spinnerColor = useThemeColorToken("role.text.tertiary");
+  const spinnerEmphasisColor = useThemeColorToken("role.text.secondary");
+  const selectedChipBg = useThemeColorToken("role.surface.subtle");
+  const unselectedChipBg = useThemeColorToken("role.surface.panel");
+  const chipBorderColor = useThemeColorToken("role.border.default");
+  const reminderBg = useThemeColorToken("role.surface.subtle");
   const {
     selectedContext,
     setSelectedContext,
@@ -36,7 +44,7 @@ function NotificationScreen() {
         <View className="py-[3.2rem]">
           <ActivityIndicator
             size="small"
-            color="#8E8E8E"
+            color={spinnerColor}
           />
         </View>
       );
@@ -44,7 +52,7 @@ function NotificationScreen() {
 
     return (
       <View className="py-[3.2rem]">
-        <SpoqaText className="text-center text-size13 text-example_gray_900">
+        <SpoqaText className="text-center text-size13 text-role-text-secondary dark:text-role-dark-text-secondary">
           {selectedContext === "ANNOUNCEMENT" ? "공지사항이 없어요." : "알림이 없어요."}
         </SpoqaText>
       </View>
@@ -61,12 +69,12 @@ function NotificationScreen() {
         >
           <ArrowLeftIcon
             size={16}
-            stroke="#1F1F1F"
+            stroke={iconStroke}
           />
         </Pressable>
         <SpoqaText
           weight="bold"
-          className="text-size18 text-black_500"
+          className="text-size18 text-role-text-primary dark:text-role-dark-text-primary"
         >
           알림
         </SpoqaText>
@@ -77,25 +85,25 @@ function NotificationScreen() {
           label="투두"
           selected={selectedContext === "DDUDU"}
           onPress={() => setSelectedContext("DDUDU")}
-          selectedBackgroundColor="#E7E7E7"
-          unselectedBackgroundColor="#F5F5F5"
-          selectedTextClassName="text-black_500"
-          unselectedTextClassName="text-example_gray_900"
-          borderColor="#DDDDDD"
+          selectedBackgroundColor={selectedChipBg}
+          unselectedBackgroundColor={unselectedChipBg}
+          selectedTextClassName="text-role-text-primary dark:text-role-dark-text-primary"
+          unselectedTextClassName="text-role-text-secondary dark:text-role-dark-text-secondary"
+          borderColor={chipBorderColor}
         />
         <View className="relative">
           <SelectChip
             label="공지사항"
             selected={selectedContext === "ANNOUNCEMENT"}
             onPress={() => setSelectedContext("ANNOUNCEMENT")}
-            selectedBackgroundColor="#E7E7E7"
-            unselectedBackgroundColor="#F5F5F5"
-            selectedTextClassName="text-black_500"
-            unselectedTextClassName="text-example_gray_900"
-            borderColor="#DDDDDD"
+            selectedBackgroundColor={selectedChipBg}
+            unselectedBackgroundColor={unselectedChipBg}
+            selectedTextClassName="text-role-text-primary dark:text-role-dark-text-primary"
+            unselectedTextClassName="text-role-text-secondary dark:text-role-dark-text-secondary"
+            borderColor={chipBorderColor}
           />
           {hasUnreadAnnouncement ? (
-            <View className="absolute left-[0.4rem] top-[0.2rem] size-[0.7rem] rounded-circle bg-example_red_500" />
+            <View className="absolute left-[0.4rem] top-[0.2rem] size-[0.7rem] rounded-circle bg-role-status-error dark:bg-role-dark-status-error" />
           ) : null}
         </View>
       </View>
@@ -104,7 +112,7 @@ function NotificationScreen() {
 
   if (selectedContext === "DDUDU") {
     return (
-      <View className="flex-1 bg-[#F5F5F5]">
+      <View className="flex-1 bg-role-surface-panel dark:bg-role-dark-surface-panel">
         <FlatList<DduduNotificationListEntry>
           data={dduduListEntries}
           keyExtractor={(item) => item.key}
@@ -118,9 +126,11 @@ function NotificationScreen() {
             if (item.type === "header") {
               return (
                 <View className="mb-[1.2rem] mt-[0.8rem] flex-row items-center gap-[1.2rem]">
-                  <View className="h-[1px] flex-1 bg-[#DEDEDE]" />
-                  <SpoqaText className="text-size11 text-[#C6C6C6]">{item.label}</SpoqaText>
-                  <View className="h-[1px] flex-1 bg-[#DEDEDE]" />
+                  <View className="h-[1px] flex-1 bg-role-border-subtle dark:bg-role-dark-border-subtle" />
+                  <SpoqaText className="text-size11 text-role-text-tertiary dark:text-role-dark-text-tertiary">
+                    {item.label}
+                  </SpoqaText>
+                  <View className="h-[1px] flex-1 bg-role-border-subtle dark:bg-role-dark-border-subtle" />
                 </View>
               );
             }
@@ -133,7 +143,7 @@ function NotificationScreen() {
                   body={item.item.body}
                   context={item.item.context}
                   createdAt={item.item.createdAt}
-                  bgColor="#E9E9E9"
+                  bgColor={reminderBg}
                   isLoading={loadingNotificationId === item.item.id}
                   disabled={loadingNotificationId !== null}
                   onPress={() => handlePressDduduNotification(item.item)}
@@ -147,7 +157,7 @@ function NotificationScreen() {
               <View className="py-[1.2rem]">
                 <ActivityIndicator
                   size="small"
-                  color="#8E8E8E"
+                  color={spinnerColor}
                 />
               </View>
             ) : null
@@ -161,7 +171,7 @@ function NotificationScreen() {
   }
 
   return (
-    <View className="flex-1 bg-[#F5F5F5]">
+    <View className="flex-1 bg-role-surface-panel dark:bg-role-dark-surface-panel">
       <FlatList<AnnouncementViewItem>
         data={announcementViewItems}
         keyExtractor={(item) => item.key}
@@ -175,28 +185,28 @@ function NotificationScreen() {
           <Pressable
             onPress={() => handlePressAnnouncement(item.item)}
             disabled={loadingNotificationId !== null}
-            className="flex-row items-center gap-[0.8rem] border-b border-[#DEDEDE] py-[1.4rem]"
+            className="flex-row items-center gap-[0.8rem] border-b border-role-border-subtle dark:border-role-dark-border-subtle py-[1.4rem]"
           >
             <View className="w-[0.7rem] items-center justify-center">
               {item.isUnread ? (
-                <View className="size-[0.6rem] rounded-circle bg-example_red_500" />
+                <View className="size-[0.6rem] rounded-circle bg-role-status-error dark:bg-role-dark-status-error" />
               ) : null}
             </View>
             <View className="flex-1">
               <SpoqaText
                 weight="semiBold"
-                className="text-size14 text-black_500"
+                className="text-size14 text-role-text-primary dark:text-role-dark-text-primary"
               >
                 {item.item.title}
               </SpoqaText>
-              <SpoqaText className="mt-[0.4rem] text-size12 text-example_gray_900">
+              <SpoqaText className="mt-[0.4rem] text-size12 text-role-text-secondary dark:text-role-dark-text-secondary">
                 {item.dateText}
               </SpoqaText>
             </View>
             {loadingNotificationId === item.item.id ? (
               <ActivityIndicator
                 size="small"
-                color="#6B6B6B"
+                color={spinnerEmphasisColor}
               />
             ) : null}
           </Pressable>
@@ -207,7 +217,7 @@ function NotificationScreen() {
             <View className="py-[1.2rem]">
               <ActivityIndicator
                 size="small"
-                color="#8E8E8E"
+                color={spinnerColor}
               />
             </View>
           ) : null

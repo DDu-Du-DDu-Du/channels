@@ -1,11 +1,13 @@
 import { Pressable, StyleSheet, View } from "react-native";
 
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { NotificationIcon, SettingsIcon } from "@/icons";
 
 import { Href, useRouter } from "expo-router";
 
 function MainHeader() {
   const router = useRouter();
+  const iconStroke = useThemeColorToken("role.icon.inverse");
 
   const handlePressNotification = () => {
     router.push("/notification" as Href);
@@ -18,7 +20,7 @@ function MainHeader() {
   return (
     <View style={styles.root}>
       <View
-        className="pt-[2rem] pb-[1.5rem] px-[2.4rem] bg-main flex flex-row justify-end items-center"
+        className="pt-[2rem] pb-[1.5rem] px-[2.4rem] bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg flex flex-row justify-end items-center"
         style={styles.headerLayer}
       >
         <View className="flex flex-row justify-end gap-[0.8rem]">
@@ -27,14 +29,14 @@ function MainHeader() {
             hitSlop={8}
             className="size-[2.4rem] items-center justify-center"
           >
-            <NotificationIcon stroke="#FFFFFF" />
+            <NotificationIcon stroke={iconStroke} />
           </Pressable>
           <Pressable
             onPress={handlePressSettings}
             hitSlop={8}
             className="size-[2.4rem] items-center justify-center"
           >
-            <SettingsIcon stroke="#FFFFFF" />
+            <SettingsIcon stroke={iconStroke} />
           </Pressable>
         </View>
       </View>

@@ -1,4 +1,5 @@
 import { AnimatedSwitch } from "@/components";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { MoonIcon, SunIcon } from "@/icons";
 
 import { SettingsRow } from "../../../settings-row";
@@ -9,6 +10,13 @@ interface DarkModeSwitchRowProps {
 }
 
 function DarkModeSwitchRow({ isDarkMode, handleToggleDarkMode }: DarkModeSwitchRowProps) {
+  const offIconColor = useThemeColorToken("role.icon.default");
+  const onIconColor = useThemeColorToken("role.icon.inverse");
+  const offBackgroundColor = useThemeColorToken("role.surface.subtle");
+  const onBackgroundColor = useThemeColorToken("role.surface.muted");
+  const offThumbColor = useThemeColorToken("role.surface.canvas");
+  const onThumbColor = useThemeColorToken("role.surface.canvas");
+
   return (
     <SettingsRow
       label="다크모드"
@@ -20,19 +28,19 @@ function DarkModeSwitchRow({ isDarkMode, handleToggleDarkMode }: DarkModeSwitchR
           offIcon={
             <SunIcon
               size={16}
-              fill="#4B5563"
+              fill={offIconColor}
             />
           }
           onIcon={
             <MoonIcon
               size={16}
-              fill="#F9FAFB"
+              fill={onIconColor}
             />
           }
-          offBackgroundColor="#E5E7EB"
-          onBackgroundColor="#2F333A"
-          offThumbColor="#FFFFFF"
-          onThumbColor="#D1D5DB"
+          offBackgroundColor={offBackgroundColor}
+          onBackgroundColor={onBackgroundColor}
+          offThumbColor={offThumbColor}
+          onThumbColor={onThumbColor}
         />
       }
     />

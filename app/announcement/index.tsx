@@ -2,11 +2,14 @@ import { ActivityIndicator, FlatList, Pressable, View } from "react-native";
 
 import { EmptyList, SpoqaText } from "@/components";
 import { AnnouncementListViewItem, useAnnouncementScreen } from "@/features/announcement";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { ArrowLeftIcon } from "@/icons";
 
 import { useRouter } from "expo-router";
 
 function Announcement() {
+  const iconStroke = useThemeColorToken("role.icon.default");
+  const spinnerColor = useThemeColorToken("role.text.tertiary");
   const router = useRouter();
   const {
     announcementViewItems,
@@ -34,7 +37,7 @@ function Announcement() {
   };
 
   return (
-    <View className="flex-1 bg-[#F5F5F5]">
+    <View className="flex-1 bg-role-surface-panel dark:bg-role-dark-surface-panel">
       <FlatList<AnnouncementListViewItem>
         data={announcementViewItems}
         keyExtractor={(item) => item.key}
@@ -52,12 +55,12 @@ function Announcement() {
             >
               <ArrowLeftIcon
                 size={16}
-                stroke="#1F1F1F"
+                stroke={iconStroke}
               />
             </Pressable>
             <SpoqaText
               weight="bold"
-              className="text-size18 text-black_500"
+              className="text-size18 text-role-text-primary dark:text-role-dark-text-primary"
             >
               공지사항
             </SpoqaText>
@@ -66,15 +69,15 @@ function Announcement() {
         renderItem={({ item }) => (
           <Pressable
             onPress={() => handlePressAnnouncement(item.id)}
-            className="border-b border-[#E5E5E5] py-[1.4rem]"
+            className="border-b border-role-border-subtle dark:border-role-dark-border-subtle py-[1.4rem]"
           >
             <SpoqaText
               weight="semiBold"
-              className="text-size15 text-black_500"
+              className="text-size15 text-role-text-primary dark:text-role-dark-text-primary"
             >
               {item.title}
             </SpoqaText>
-            <SpoqaText className="mt-[0.4rem] text-size12 text-example_gray_900">
+            <SpoqaText className="mt-[0.4rem] text-size12 text-role-text-secondary dark:text-role-dark-text-secondary">
               {item.dateText}
             </SpoqaText>
           </Pressable>
@@ -85,7 +88,7 @@ function Announcement() {
             <View className="py-[1.2rem]">
               <ActivityIndicator
                 size="small"
-                color="#8E8E8E"
+                color={spinnerColor}
               />
             </View>
           ) : null

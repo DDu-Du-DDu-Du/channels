@@ -2,11 +2,14 @@ import { ActivityIndicator, Pressable, ScrollView, View } from "react-native";
 
 import { EmptyList, SpoqaText } from "@/components";
 import { useAnnouncementDetailScreen } from "@/features/announcement/hooks";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { ArrowLeftIcon } from "@/icons";
 
 import { useRouter } from "expo-router";
 
 function AnnouncementDetailScreen() {
+  const iconStroke = useThemeColorToken("role.icon.default");
+  const spinnerColor = useThemeColorToken("role.text.tertiary");
   const router = useRouter();
   const { detail, isLoading, isError } = useAnnouncementDetailScreen();
 
@@ -15,7 +18,7 @@ function AnnouncementDetailScreen() {
   };
 
   return (
-    <View className="flex-1 bg-[#F5F5F5] px-[1.6rem] pt-[2.4rem]">
+    <View className="flex-1 bg-role-surface-panel dark:bg-role-dark-surface-panel px-[1.6rem] pt-[2.4rem]">
       <View className="relative items-center justify-center pb-[2.8rem]">
         <Pressable
           onPress={handlePressBack}
@@ -24,12 +27,12 @@ function AnnouncementDetailScreen() {
         >
           <ArrowLeftIcon
             size={16}
-            stroke="#1F1F1F"
+            stroke={iconStroke}
           />
         </Pressable>
         <SpoqaText
           weight="bold"
-          className="text-size18 text-black_500"
+          className="text-size18 text-role-text-primary dark:text-role-dark-text-primary"
         >
           공지사항
         </SpoqaText>
@@ -39,7 +42,7 @@ function AnnouncementDetailScreen() {
         <View className="py-[3.2rem]">
           <ActivityIndicator
             size="small"
-            color="#8E8E8E"
+            color={spinnerColor}
           />
         </View>
       ) : isError ? (
@@ -53,22 +56,24 @@ function AnnouncementDetailScreen() {
         >
           <SpoqaText
             weight="semiBold"
-            className="text-size18 text-black_500"
+            className="text-size18 text-role-text-primary dark:text-role-dark-text-primary"
           >
             {detail.title}
           </SpoqaText>
-          <SpoqaText className="mt-[0.8rem] text-size14 text-example_gray_900">
+          <SpoqaText className="mt-[0.8rem] text-size14 text-role-text-secondary dark:text-role-dark-text-secondary">
             {detail.dateText}
           </SpoqaText>
           {detail.author ? (
-            <SpoqaText className="mt-[0.4rem] text-size13 text-example_gray_900">
+            <SpoqaText className="mt-[0.4rem] text-size13 text-role-text-secondary dark:text-role-dark-text-secondary">
               작성자: {detail.author}
             </SpoqaText>
           ) : null}
 
-          <View className="my-[1.6rem] h-[1px] bg-[#D9D9D9]" />
+          <View className="my-[1.6rem] h-[1px] bg-role-surface-muted dark:bg-role-dark-surface-muted" />
 
-          <SpoqaText className="text-size16 leading-[3rem] text-black_500">{detail.body}</SpoqaText>
+          <SpoqaText className="text-size16 leading-[3rem] text-role-text-primary dark:text-role-dark-text-primary">
+            {detail.body}
+          </SpoqaText>
         </ScrollView>
       )}
     </View>

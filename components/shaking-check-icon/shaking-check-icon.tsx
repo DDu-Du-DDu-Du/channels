@@ -7,6 +7,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { CheckIcon } from "@/icons";
 import { hexConvertForRGBA } from "@/utils";
 
@@ -28,6 +29,7 @@ function ShakingCheckIcon({
   accessibilityRole = "checkbox",
 }: ShakingCheckIconProps) {
   const checkRotate = useSharedValue(0);
+  const uncheckedFillColor = useThemeColorToken("role.icon.muted");
   const borderStrokeColor = hexConvertForRGBA({ hex: color, alpha: borderStrokeAlpha });
 
   const checkboxIconStyle = useAnimatedStyle(() => ({
@@ -55,7 +57,7 @@ function ShakingCheckIcon({
       <Animated.View style={checkboxIconStyle}>
         <CheckIcon
           size={size}
-          fill={isChecked ? `#${color}` : "#D9D9D9"}
+          fill={isChecked ? `#${color}` : uncheckedFillColor}
           stroke={borderStrokeColor}
           strokeWidth={1.25}
         />

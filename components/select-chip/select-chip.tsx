@@ -1,5 +1,7 @@
 import { Pressable } from "react-native";
 
+import { useThemeColorToken } from "@/hooks/use-theme-color";
+
 import SpoqaText from "../spoqa-text/spoqa-text";
 
 export interface SelectChipProps {
@@ -20,20 +22,27 @@ function SelectChip({
   selected,
   onPress,
   className,
-  selectedBackgroundColor = "#F0F0F0",
-  unselectedBackgroundColor = "#FFFFFF",
-  selectedTextClassName = "text-black",
-  unselectedTextClassName = "text-black",
-  borderColor = "#D9D9D9",
+  selectedBackgroundColor,
+  unselectedBackgroundColor,
+  selectedTextClassName = "text-role-text-primary dark:text-role-dark-text-primary",
+  unselectedTextClassName = "text-role-text-primary dark:text-role-dark-text-primary",
+  borderColor,
   borderWidth = 1,
 }: SelectChipProps) {
+  const defaultSelectedBackground = useThemeColorToken("role.surface.subtle");
+  const defaultUnselectedBackground = useThemeColorToken("role.surface.canvas");
+  const defaultBorderColor = useThemeColorToken("role.border.default");
+  const selectedBackground = selectedBackgroundColor ?? defaultSelectedBackground;
+  const unselectedBackground = unselectedBackgroundColor ?? defaultUnselectedBackground;
+  const resolvedBorderColor = borderColor ?? defaultBorderColor;
+
   return (
     <Pressable
       onPress={onPress}
       className={`h-[3.2rem] min-w-[3.2rem] items-center justify-center rounded-radius10 px-[0.8rem] ${className ?? ""}`}
       style={{
-        backgroundColor: selected ? selectedBackgroundColor : unselectedBackgroundColor,
-        borderColor,
+        backgroundColor: selected ? selectedBackground : unselectedBackground,
+        borderColor: resolvedBorderColor,
         borderWidth,
       }}
     >
