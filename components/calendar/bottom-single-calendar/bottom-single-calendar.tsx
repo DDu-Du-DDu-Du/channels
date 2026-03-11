@@ -1,11 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Pressable, View } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
 
 import { BottomSheet, SpoqaText } from "@/components";
 import { useBottomSheetAction, useCalendarFirstDay } from "@/hooks";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { ArrowLeftIcon, ChevronLeftIcon, ChevronRightIcon } from "@/icons";
-import { formatDateToYYYYMMDD, getWeekendHeaderTheme } from "@/utils";
+import { useSettingsStore } from "@/stores";
+import { formatDateToYYYYMMDD, getCalendarTheme } from "@/utils";
 
 export interface BottomSingleCalendarProps {
   currentDate: string;
@@ -38,6 +40,19 @@ function BottomSingleCalendar({
 }: BottomSingleCalendarProps) {
   const { ref, openSheet, closeSheet } = useBottomSheetAction();
   const firstDay = useCalendarFirstDay();
+  const isDarkMode = useSettingsStore((state) => state.display.isDarkMode);
+  const backIconStroke = useThemeColorToken("ui.icon.default");
+  const arrowBg = useThemeColorToken("ui.arrow.bg");
+  const arrowIconFill = useThemeColorToken("ui.arrow.icon");
+  const calendarTheme = useMemo(
+    () =>
+      getCalendarTheme({
+        themeName: "wireframe",
+        mode: isDarkMode ? "dark" : "light",
+        firstDay,
+      }),
+    [firstDay, isDarkMode],
+  );
 
   useEffect(() => {
     openSheet();
@@ -83,7 +98,7 @@ function BottomSingleCalendar({
           >
             <ArrowLeftIcon
               size={16}
-              stroke="#000000"
+              stroke={backIconStroke}
             />
           </Pressable>
         </View>
@@ -100,31 +115,31 @@ function BottomSingleCalendar({
             direction === "left" ? (
               <View
                 className="h-[2.8rem] w-[2.8rem] items-center justify-center rounded-full"
-                style={{ backgroundColor: "#E5E7EB" }}
+                style={{ backgroundColor: arrowBg }}
               >
                 <ChevronLeftIcon
                   size={14}
-                  fill="#4B5563"
+                  fill={arrowIconFill}
                 />
               </View>
             ) : (
               <View
                 className="h-[2.8rem] w-[2.8rem] items-center justify-center rounded-full"
-                style={{ backgroundColor: "#E5E7EB" }}
+                style={{ backgroundColor: arrowBg }}
               >
                 <ChevronRightIcon
                   size={14}
-                  fill="#4B5563"
+                  fill={arrowIconFill}
                 />
               </View>
             )
           }
           renderHeader={(date) => (
-            <SpoqaText className="text-size15">{`${date.getFullYear()}년 ${date.getMonth() + 1}월`}</SpoqaText>
+            <SpoqaText className="text-size15 text-role-text-primary dark:text-role-dark-text-primary">{`${date.getFullYear()}년 ${date.getMonth() + 1}월`}</SpoqaText>
           )}
           hideExtraDays={hideExtraDays}
           showSixWeeks={showSixWeeks}
-          theme={{ textSectionTitleColor: "#000", ...getWeekendHeaderTheme(firstDay) }}
+          theme={calendarTheme}
           firstDay={firstDay}
         />
       </View>

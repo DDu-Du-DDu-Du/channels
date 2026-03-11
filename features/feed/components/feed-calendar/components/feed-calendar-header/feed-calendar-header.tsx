@@ -6,6 +6,7 @@ import {
   FeedViewToggleMenu,
   GoalMenu,
 } from "@/features/feed/components/main-header/components";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { ChevronRightIcon } from "@/icons";
 
 interface FeedCalendarHeaderProps {
@@ -14,6 +15,8 @@ interface FeedCalendarHeaderProps {
 }
 
 function FeedCalendarHeader({ displayMonth, onPressMonthPicker }: FeedCalendarHeaderProps) {
+  const iconFill = useThemeColorToken("ui.icon.default");
+
   return (
     <View
       className="w-full"
@@ -34,13 +37,13 @@ function FeedCalendarHeader({ displayMonth, onPressMonthPicker }: FeedCalendarHe
         >
           <SpoqaText
             weight="bold"
-            className="text-role-text-inverse dark:text-role-dark-text-inverse text-size16"
+            className="text-role-text-primary dark:text-role-dark-text-primary text-size16"
           >
             {displayMonth}
           </SpoqaText>
           <ChevronRightIcon
             size={14}
-            fill="#FFFFFF"
+            fill={iconFill}
           />
         </Pressable>
         <View className="flex-row items-center gap-[0.8rem]">

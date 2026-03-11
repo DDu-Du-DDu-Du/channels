@@ -37,7 +37,7 @@ function WeekCalendar(props: WeekCalendarProps) {
   const { date, numberOfDays, updateSource, setDate, timelineLeftInset } = context;
 
   const visibleWeek = useRef(date);
-  const style = useRef(styleConstructor(theme));
+  const styles = useMemo(() => styleConstructor(theme), [theme]);
   const items = useRef(getDatesArray(current ?? date, firstDay, numberOfDays));
   const [listData, setListData] = useState(items.current);
   const changedItems = useRef(constants.isRTL);
@@ -166,7 +166,7 @@ function WeekCalendar(props: WeekCalendarProps) {
             <Text
               allowFontScaling={false}
               key={index}
-              style={[style.current.dayHeader, dayTextStyle]}
+              style={[styles.dayHeader, dayTextStyle]}
               numberOfLines={1}
               accessibilityLabel=""
             >
@@ -176,18 +176,15 @@ function WeekCalendar(props: WeekCalendarProps) {
         })}
       </>
     );
-  }, [firstDay, theme]);
+  }, [firstDay, styles, theme]);
 
   const weekCalendarStyle = useMemo(() => {
-    return [
-      allowShadow && style.current.containerShadow,
-      !hideDayNames && style.current.containerWrapper,
-    ];
-  }, [allowShadow, hideDayNames]);
+    return [allowShadow && styles.containerShadow, !hideDayNames && styles.containerWrapper];
+  }, [allowShadow, hideDayNames, styles]);
 
   const containerStyle = useMemo(() => {
-    return [style.current.week, style.current.weekCalendar];
-  }, []);
+    return [styles.week, styles.weekCalendar];
+  }, [styles]);
 
   const getItemLayout = useCallback(
     (_: any, index: number) => {
@@ -268,11 +265,11 @@ function WeekCalendar(props: WeekCalendarProps) {
       style={weekCalendarStyle}
     >
       {!hideDayNames && <View style={containerStyle}>{renderWeekDaysNames}</View>}
-      <View style={style.current.container}>
+      <View style={styles.container}>
         <FlatList
           testID={`${testID}.list`}
           ref={list}
-          style={style.current.container}
+          style={styles.container}
           data={listData}
           horizontal
           showsHorizontalScrollIndicator={false}

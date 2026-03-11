@@ -13,8 +13,9 @@ import Animated, {
 
 import { BottomSingleCalendar, WeekCalendar } from "@/components";
 import { useCalendarFirstDay } from "@/hooks";
+import { useSettingsStore } from "@/stores";
 import type { MonthlyWeeklyDDuDuType } from "@/types/response/feed/feed";
-import { formatDateToYYYYMMDD, getWeekendHeaderTheme } from "@/utils";
+import { formatDateToYYYYMMDD, getCalendarTheme } from "@/utils";
 
 import { FeedCalendarDayContent, FeedCalendarHeader } from "./components";
 import { useFeedCalendarNavigation, useGoalsDDuDuMutation } from "./hooks";
@@ -39,6 +40,7 @@ function FeedCalendar({
   onCalendarHeightRangeChange,
 }: FeedCalendarProps) {
   const firstDay = useCalendarFirstDay();
+  const isDarkMode = useSettingsStore((state) => state.display.isDarkMode);
   const { width: screenWidth } = useWindowDimensions();
   const isDesktopWidth = screenWidth >= 1024;
   const calendarContainerClassName = useMemo(
@@ -157,6 +159,15 @@ function FeedCalendar({
     () => `${visibleMonthKey}-${firstDay}`,
     [firstDay, visibleMonthKey],
   );
+  const calendarTheme = useMemo(
+    () =>
+      getCalendarTheme({
+        themeName: "wireframe",
+        mode: isDarkMode ? "dark" : "light",
+        firstDay,
+      }),
+    [firstDay, isDarkMode],
+  );
 
   const dayComponent = useCallback(
     ({
@@ -233,7 +244,7 @@ function FeedCalendar({
                   handleSelectCalendarDate(newDate.dateString);
                 }}
                 dayComponent={dayComponent}
-                theme={getWeekendHeaderTheme(firstDay)}
+                theme={calendarTheme}
               />
             </Animated.View>
 
@@ -258,7 +269,7 @@ function FeedCalendar({
                   calendarWidth={calendarWidth || undefined}
                   markedDates={markedDates}
                   dayComponent={dayComponent}
-                  theme={getWeekendHeaderTheme(firstDay)}
+                  theme={calendarTheme}
                 />
               </CalendarProvider>
             </Animated.View>
@@ -269,7 +280,7 @@ function FeedCalendar({
               onPress={handleToggleCalendar}
               hitSlop={8}
             >
-              <View className="h-[0.35rem] w-[2.8rem] rounded-full bg-role-surface-card dark:bg-role-dark-surface-card_gray_500" />
+              <View className="h-[0.35rem] w-[2.8rem] rounded-full bg-role-surface-card dark:bg-role-dark-surface-card" />
             </Pressable>
           </View>
         </View>

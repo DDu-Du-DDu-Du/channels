@@ -5,8 +5,10 @@ import { MarkingTypes } from "react-native-calendars/src/types";
 
 import { SpoqaText } from "@/components";
 import { useCalendarFirstDay } from "@/hooks";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
-import { formatDateToYYYYMMDD, getWeekendHeaderTheme } from "@/utils";
+import { useSettingsStore } from "@/stores";
+import { formatDateToYYYYMMDD, getCalendarTheme } from "@/utils";
 
 export interface BottomMultipleCalendarProps {
   selected?: Date[];
@@ -30,6 +32,17 @@ function BottomMultipleCalendar({
   hideArrow = false,
 }: BottomMultipleCalendarProps) {
   const firstDay = useCalendarFirstDay();
+  const isDarkMode = useSettingsStore((state) => state.display.isDarkMode);
+  const arrowIconFill = useThemeColorToken("ui.arrow.icon");
+  const calendarTheme = useMemo(
+    () =>
+      getCalendarTheme({
+        themeName: "wireframe",
+        mode: isDarkMode ? "dark" : "light",
+        firstDay,
+      }),
+    [firstDay, isDarkMode],
+  );
   const fallbackMarkedDates = selected.reduce<Record<string, { selected: boolean }>>(
     (acc, date) => {
       acc[formatDateToYYYYMMDD(date)] = { selected: true };
@@ -90,24 +103,24 @@ function BottomMultipleCalendar({
           return direction === "left" ? (
             <ChevronLeftIcon
               size={20}
-              fill="#000"
+              fill={arrowIconFill}
             />
           ) : (
             <ChevronRightIcon
               size={20}
-              fill="#000"
+              fill={arrowIconFill}
             />
           );
         }}
         renderHeader={(date) => (
-          <SpoqaText className="text-size15">
+          <SpoqaText className="text-size15 text-role-text-primary dark:text-role-dark-text-primary">
             {monthLabel ??
               `${date?.getFullYear?.() ?? new Date().getFullYear()}년 ${(date?.getMonth?.() ?? new Date().getMonth()) + 1}월`}
           </SpoqaText>
         )}
         hideExtraDays={false}
         firstDay={firstDay}
-        theme={{ textSectionTitleColor: "#000", ...getWeekendHeaderTheme(firstDay) }}
+        theme={calendarTheme}
       />
     </View>
   );

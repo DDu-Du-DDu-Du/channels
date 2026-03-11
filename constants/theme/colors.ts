@@ -25,6 +25,8 @@ type RolePalette = {
     card: string;
     subtle: string;
     muted: string;
+    choiceSelected: string;
+    choiceUnselected: string;
     inverse: string;
   };
   text: {
@@ -89,6 +91,8 @@ const ROLE_PALETTE_BY_THEME: Record<ThemeName, Record<ThemeMode, RolePalette>> =
         card: FOUNDATION.neutral[100],
         subtle: FOUNDATION.neutral[200],
         muted: FOUNDATION.neutral[300],
+        choiceSelected: FOUNDATION.neutral[200],
+        choiceUnselected: FOUNDATION.neutral[0],
         inverse: FOUNDATION.neutral[900],
       },
       text: {
@@ -103,7 +107,7 @@ const ROLE_PALETTE_BY_THEME: Record<ThemeName, Record<ThemeMode, RolePalette>> =
         strong: FOUNDATION.neutral[500],
       },
       icon: {
-        default: FOUNDATION.neutral[700],
+        default: FOUNDATION.neutral[900],
         muted: FOUNDATION.neutral[500],
         inverse: FOUNDATION.neutral[0],
       },
@@ -121,6 +125,8 @@ const ROLE_PALETTE_BY_THEME: Record<ThemeName, Record<ThemeMode, RolePalette>> =
         card: FOUNDATION.neutral[600],
         subtle: FOUNDATION.neutral[500],
         muted: FOUNDATION.neutral[400],
+        choiceSelected: FOUNDATION.neutral[700],
+        choiceUnselected: FOUNDATION.neutral[500],
         inverse: FOUNDATION.neutral[0],
       },
       text: {
@@ -161,6 +167,18 @@ const UI_ALIAS_ROLE_PATHS = {
       text: "text.secondary",
       border: "border.default",
     },
+    choice: {
+      selected: {
+        bg: "surface.choiceSelected",
+        text: "text.primary",
+        border: "border.default",
+      },
+      unselected: {
+        bg: "surface.choiceUnselected",
+        text: "text.primary",
+        border: "border.default",
+      },
+    },
   },
   arrow: {
     bg: "surface.subtle",
@@ -168,8 +186,30 @@ const UI_ALIAS_ROLE_PATHS = {
     border: "border.default",
   },
   header: {
-    bg: "surface.card",
+    bg: "surface.panel",
     text: "text.primary",
+  },
+  icon: {
+    default: "icon.default",
+    muted: "icon.muted",
+    inverse: "icon.inverse",
+  },
+  input: {
+    default: {
+      bg: "surface.card",
+      text: "text.primary",
+      placeholder: "text.secondary",
+      border: "border.default",
+    },
+    focus: {
+      border: "border.strong",
+    },
+  },
+  card: {
+    default: {
+      bg: "surface.card",
+      border: "border.default",
+    },
   },
 } as const;
 
@@ -231,6 +271,18 @@ export type ThemeColorMap = {
         text: string;
         border: string;
       };
+      choice: {
+        selected: {
+          bg: string;
+          text: string;
+          border: string;
+        };
+        unselected: {
+          bg: string;
+          text: string;
+          border: string;
+        };
+      };
     };
     arrow: {
       bg: string;
@@ -240,6 +292,28 @@ export type ThemeColorMap = {
     header: {
       bg: string;
       text: string;
+    };
+    icon: {
+      default: string;
+      muted: string;
+      inverse: string;
+    };
+    input: {
+      default: {
+        bg: string;
+        text: string;
+        placeholder: string;
+        border: string;
+      };
+      focus: {
+        border: string;
+      };
+    };
+    card: {
+      default: {
+        bg: string;
+        border: string;
+      };
     };
   };
   domain: {

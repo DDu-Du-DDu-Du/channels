@@ -6,8 +6,9 @@ import type { SharedValue } from "react-native-reanimated";
 
 import { BottomSingleCalendar } from "@/components";
 import { useCalendarFirstDay } from "@/hooks";
+import { useSettingsStore } from "@/stores";
 import type { MonthlyWeeklyDDuDuType } from "@/types/response/feed/feed";
-import { formatDateToYYYYMMDD, getWeekendHeaderTheme } from "@/utils";
+import { formatDateToYYYYMMDD, getCalendarTheme } from "@/utils";
 
 import { FeedCalendarDayContent, FeedCalendarHeader } from "./components";
 import { useFeedCalendarNavigation, useGoalsDDuDuMutation } from "./hooks";
@@ -32,6 +33,7 @@ function FeedCalendar({
   onCalendarHeightRangeChange: _onCalendarHeightRangeChange,
 }: FeedCalendarProps) {
   const firstDay = useCalendarFirstDay();
+  const isDarkMode = useSettingsStore((state) => state.display.isDarkMode);
   const { width: screenWidth } = useWindowDimensions();
   const isWebDesktop = Platform.OS === "web" && screenWidth >= 1024;
   const calendarWidth = useMemo(() => (isWebDesktop ? "50%" : "100%"), [isWebDesktop]);
@@ -137,6 +139,15 @@ function FeedCalendar({
       return acc;
     }, {});
   }, [monthlyDDuDus]);
+  const calendarTheme = useMemo(
+    () =>
+      getCalendarTheme({
+        themeName: "wireframe",
+        mode: isDarkMode ? "dark" : "light",
+        firstDay,
+      }),
+    [firstDay, isDarkMode],
+  );
 
   return (
     <View className="items-center py-2 w-full">
@@ -178,7 +189,7 @@ function FeedCalendar({
             }}
             markedDates={markedDates}
             dayComponent={dayComponent}
-            theme={getWeekendHeaderTheme(firstDay)}
+            theme={calendarTheme}
           />
         </CalendarProvider>
       </View>
