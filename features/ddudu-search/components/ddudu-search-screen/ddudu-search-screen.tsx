@@ -132,7 +132,7 @@ function DDuDuSearchScreen() {
   };
 
   return (
-    <View className="flex-1 bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg pt-[1.2rem]">
+    <View className="flex-1 pt-[1.2rem]">
       <Animated.View style={animatedHeaderStyle}>
         <DDuDuSearchHeader onBackPress={handleBackPress} />
       </Animated.View>
