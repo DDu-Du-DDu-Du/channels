@@ -43,7 +43,7 @@ function getCalendarTheme({ themeName, mode, firstDay }: GetCalendarThemeParams)
       },
       ...((weekendHeaderTheme["stylesheet.calendar.header"] as Record<string, unknown>) ?? {}),
     },
-  };
+  } as Theme;
 }
 
 export default getCalendarTheme;

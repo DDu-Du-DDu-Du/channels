@@ -43,6 +43,10 @@ function BottomMultipleCalendar({
       }),
     [firstDay, isDarkMode],
   );
+  const calendarKey = useMemo(
+    () => `bottom-multiple-${firstDay}-${isDarkMode ? "dark" : "light"}`,
+    [firstDay, isDarkMode],
+  );
   const fallbackMarkedDates = selected.reduce<Record<string, { selected: boolean }>>(
     (acc, date) => {
       acc[formatDateToYYYYMMDD(date)] = { selected: true };
@@ -91,6 +95,7 @@ function BottomMultipleCalendar({
   return (
     <View className="w-full">
       <Calendar
+        key={calendarKey}
         markedDates={resolvedMarkedDates}
         markingType={markingType}
         onDayPress={handleDayPress}

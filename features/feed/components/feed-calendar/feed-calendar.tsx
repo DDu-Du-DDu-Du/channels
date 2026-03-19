@@ -148,6 +148,10 @@ function FeedCalendar({
       }),
     [firstDay, isDarkMode],
   );
+  const expandableCalendarKey = useMemo(
+    () => `expandable-${firstDay}-${isDarkMode ? "dark" : "light"}`,
+    [firstDay, isDarkMode],
+  );
 
   return (
     <View className="items-center py-2 w-full">
@@ -165,6 +169,7 @@ function FeedCalendar({
           }}
         >
           <ExpandableCalendar
+            key={expandableCalendarKey}
             ref={expandableCalendarRef}
             current={visibleDate}
             firstDay={firstDay}

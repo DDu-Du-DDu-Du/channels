@@ -14,7 +14,7 @@ function getWeekendHeaderTheme(firstDay: number): Theme {
         color: "blue",
       },
     },
-  };
+  } as Theme;
 }
 
 export default getWeekendHeaderTheme;

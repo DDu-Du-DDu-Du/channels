@@ -13,7 +13,6 @@ import { useRouter } from "expo-router";
 function DisplaySettingsScreen() {
   const router = useRouter();
   const iconStroke = useThemeColorToken("role.icon.default");
-  const selectedChipBg = useThemeColorToken("role.surface.subtle");
   const chipBorderColor = useThemeColorToken("role.border.default");
   const { weekStartDay, handleChangeWeekStartDay, isDarkMode, handleToggleDarkMode } =
     useDisplaySettings();
@@ -51,7 +50,6 @@ function DisplaySettingsScreen() {
               label="일"
               selected={weekStartDay === "sun"}
               onPress={() => handleChangeWeekStartDay("sun")}
-              selectedBackgroundColor={selectedChipBg}
               borderColor={chipBorderColor}
               selectedTextClassName="text-role-text-secondary dark:text-role-dark-text-secondary"
             />
@@ -59,7 +57,6 @@ function DisplaySettingsScreen() {
               label="월"
               selected={weekStartDay === "mon"}
               onPress={() => handleChangeWeekStartDay("mon")}
-              selectedBackgroundColor={selectedChipBg}
               borderColor={chipBorderColor}
               selectedTextClassName="text-role-text-secondary dark:text-role-dark-text-secondary"
             />

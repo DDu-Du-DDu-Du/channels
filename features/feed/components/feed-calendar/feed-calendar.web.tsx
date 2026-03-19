@@ -155,9 +155,14 @@ function FeedCalendar({
     }, {});
   }, [monthlyDDuDus]);
   const visibleMonthKey = useMemo(() => visibleDate.slice(0, 7), [visibleDate]);
+  const calendarModeKey = isDarkMode ? "dark" : "light";
   const monthCalendarKey = useMemo(
-    () => `${visibleMonthKey}-${firstDay}`,
-    [firstDay, visibleMonthKey],
+    () => `${visibleMonthKey}-${firstDay}-${calendarModeKey}`,
+    [calendarModeKey, firstDay, visibleMonthKey],
+  );
+  const weekCalendarKey = useMemo(
+    () => `week-${firstDay}-${calendarModeKey}`,
+    [calendarModeKey, firstDay],
   );
   const calendarTheme = useMemo(
     () =>
@@ -265,6 +270,7 @@ function FeedCalendar({
                 }}
               >
                 <WeekCalendar
+                  key={weekCalendarKey}
                   firstDay={firstDay}
                   calendarWidth={calendarWidth || undefined}
                   markedDates={markedDates}

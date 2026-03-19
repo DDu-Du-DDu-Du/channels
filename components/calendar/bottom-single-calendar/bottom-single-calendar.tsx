@@ -53,6 +53,10 @@ function BottomSingleCalendar({
       }),
     [firstDay, isDarkMode],
   );
+  const calendarKey = useMemo(
+    () => `bottom-single-${firstDay}-${isDarkMode ? "dark" : "light"}`,
+    [firstDay, isDarkMode],
+  );
 
   useEffect(() => {
     openSheet();
@@ -105,6 +109,7 @@ function BottomSingleCalendar({
       )}
       <View className="w-full px-[2.4rem] pb-[1.5rem]">
         <Calendar
+          key={calendarKey}
           current={selectedString || currentDate}
           markedDates={markedDates}
           onDayPress={handleDayPress}
