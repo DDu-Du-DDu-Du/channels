@@ -17,3 +17,11 @@ export async function socialLogin({ socialToken, providerType }: SocialLoginRequ
 
   return response.json();
 }
+
+export async function logout() {
+  const response = await fetchApi(AUTH.LOGOUT, { method: "DELETE" }, true);
+
+  if (!response.ok && response.status !== 204) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+}

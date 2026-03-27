@@ -5,6 +5,7 @@ import { ConfirmModal, SpoqaText } from "@/components";
 import { useToggle } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { ArrowLeftIcon } from "@/icons";
+import { logout } from "@/service/auth/auth";
 import { useAuthStore } from "@/stores";
 
 import { BugReportSheet, BugReportSheetHandle } from "../bug-report-sheet";
@@ -54,12 +55,17 @@ function SettingsScreen() {
     handleOpenLogoutConfirm();
   };
 
-  const handleLogoutConfirmResult = (isComplete: boolean) => {
+  const handleLogoutConfirmResult = async (isComplete: boolean) => {
     if (!isComplete) {
       return;
     }
 
-    // TODO: 로그아웃 서버 API 개발 후 fetch 로직 추가
+    try {
+      await logout();
+    } catch {
+      // Ignore logout API failure and continue local sign-out.
+    }
+
     clearSession();
     router.replace("/");
   };

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import { useSettingsStore } from "@/stores";
 
@@ -9,24 +9,32 @@ interface UseSettingsBootstrapParams {
 }
 
 function useSettingsBootstrap({ enabled }: UseSettingsBootstrapParams) {
+  const dirty = useSettingsStore((state) => state.dirty);
   const handleHydrateSettings = useSettingsStore((state) => state.handleHydrateSettings);
-  const { handleFetchSettings } = useSettingsQuery();
+  const { data, isSuccess, dataUpdatedAt } = useSettingsQuery({ enabled });
+  const lastHydratedAtRef = useRef(0);
 
   useEffect(() => {
     if (!enabled) {
+      lastHydratedAtRef.current = 0;
       return;
     }
 
-    // TODO: settings GET API 준비 후 초기 hydrate 연결
-    // const bootstrap = async () => {
-    //   const payload = await handleFetchSettings();
-    //   if (!payload) return;
-    //   handleHydrateSettings(payload);
-    // };
-    // bootstrap();
-    void handleFetchSettings;
-    void handleHydrateSettings;
-  }, [enabled, handleFetchSettings, handleHydrateSettings]);
+    if (!isSuccess || !data) {
+      return;
+    }
+
+    if (dirty) {
+      return;
+    }
+
+    if (lastHydratedAtRef.current === dataUpdatedAt) {
+      return;
+    }
+
+    lastHydratedAtRef.current = dataUpdatedAt;
+    handleHydrateSettings(data);
+  }, [data, dataUpdatedAt, dirty, enabled, handleHydrateSettings, isSuccess]);
 }
 
 export default useSettingsBootstrap;

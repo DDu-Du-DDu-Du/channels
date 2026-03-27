@@ -19,7 +19,7 @@ function useSettingsSync({ enabled = true, debounceMs = 1200 }: UseSettingsSyncP
   const handleMarkSyncStart = useSettingsStore((state) => state.handleMarkSyncStart);
   const handleMarkSyncSuccess = useSettingsStore((state) => state.handleMarkSyncSuccess);
   const handleMarkSyncError = useSettingsStore((state) => state.handleMarkSyncError);
-  const { handleSyncSettings } = useSettingsMutation();
+  const { handleSyncSettings, isSyncPending } = useSettingsMutation();
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const settingsPayload = useMemo<SettingsPayload>(
@@ -34,7 +34,7 @@ function useSettingsSync({ enabled = true, debounceMs = 1200 }: UseSettingsSyncP
   const serializedPayload = useMemo(() => JSON.stringify(settingsPayload), [settingsPayload]);
 
   useEffect(() => {
-    if (!enabled || !dirty || isSyncing) {
+    if (!enabled || !dirty || isSyncing || isSyncPending) {
       return;
     }
 
@@ -69,6 +69,7 @@ function useSettingsSync({ enabled = true, debounceMs = 1200 }: UseSettingsSyncP
     handleMarkSyncStart,
     handleMarkSyncSuccess,
     handleSyncSettings,
+    isSyncPending,
     isSyncing,
     serializedPayload,
     settingsPayload,

@@ -5,13 +5,11 @@ import { View } from "react-native";
 import { LocaleConfig } from "react-native-calendars";
 
 import { ToastProvider } from "@/components";
-import { useSettingsBootstrap, useSettingsSync } from "@/features/settings/hooks";
+import { OutsidePressProvider, SettingsProvider, TanstackProvider } from "@/providers";
 import AuthProvider from "@/providers/auth-provider/auth-provider";
 import { useAuthStore, useSettingsStore } from "@/stores";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { initializeKakaoSDK } from "@react-native-kakao/core";
-
-import { OutsidePressProvider, TanstackProvider } from "../providers";
 
 import Constants from "expo-constants";
 import { useFonts } from "expo-font";
@@ -71,10 +69,6 @@ export default function RootLayout() {
   const hasHydrated = useAuthStore((state) => state.hasHydrated);
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
   const isDarkMode = useSettingsStore((state) => state.display.isDarkMode);
-  const isSettingsEnabled = isLoggedIn || loginDisabled;
-
-  useSettingsSync({ enabled: isSettingsEnabled });
-  useSettingsBootstrap({ enabled: isSettingsEnabled });
 
   useEffect(() => {
     initializeKakaoSDK(Constants.expoConfig?.extra?.env.kakaoNativeKey, {
@@ -104,35 +98,37 @@ export default function RootLayout() {
       <TanstackProvider>
         <ToastProvider>
           <AuthProvider>
-            <OutsidePressProvider>
-              <BottomSheetModalProvider>
-                <Stack screenOptions={{ headerShown: false }}>
-                  <Stack.Protected guard={storybookEnabled}>
-                    <Stack.Screen name="storybook/index" />
-                  </Stack.Protected>
-                  <Stack.Protected guard={!isLoggedIn}>
-                    <Stack.Screen name="auth" />
-                  </Stack.Protected>
-                  <Stack.Protected guard={isLoggedIn || loginDisabled}>
-                    <Stack.Screen name="(tabs)" />
-                    <Stack.Screen name="index" />
-                    <Stack.Screen name="announcement/index" />
-                    <Stack.Screen name="announcement/[id]" />
-                    <Stack.Screen name="ddudu" />
-                    <Stack.Screen name="goal/index" />
-                    <Stack.Screen name="goal/create" />
-                    <Stack.Screen name="goal/editor" />
-                    <Stack.Screen name="notification/index" />
-                    <Stack.Screen name="settings/index" />
-                    <Stack.Screen name="settings/display" />
-                    <Stack.Screen name="settings/menu-activation" />
-                    <Stack.Screen name="settings/app-connection" />
-                    <Stack.Screen name="stats/select" />
-                    <Stack.Screen name="stats/[id]" />
-                  </Stack.Protected>
-                </Stack>
-              </BottomSheetModalProvider>
-            </OutsidePressProvider>
+            <SettingsProvider>
+              <OutsidePressProvider>
+                <BottomSheetModalProvider>
+                  <Stack screenOptions={{ headerShown: false }}>
+                    <Stack.Protected guard={storybookEnabled}>
+                      <Stack.Screen name="storybook/index" />
+                    </Stack.Protected>
+                    <Stack.Protected guard={!isLoggedIn}>
+                      <Stack.Screen name="auth" />
+                    </Stack.Protected>
+                    <Stack.Protected guard={isLoggedIn || loginDisabled}>
+                      <Stack.Screen name="(tabs)" />
+                      <Stack.Screen name="index" />
+                      <Stack.Screen name="announcement/index" />
+                      <Stack.Screen name="announcement/[id]" />
+                      <Stack.Screen name="Todo" />
+                      <Stack.Screen name="goal/index" />
+                      <Stack.Screen name="goal/create" />
+                      <Stack.Screen name="goal/editor" />
+                      <Stack.Screen name="notification/index" />
+                      <Stack.Screen name="settings/index" />
+                      <Stack.Screen name="settings/display" />
+                      <Stack.Screen name="settings/menu-activation" />
+                      <Stack.Screen name="settings/app-connection" />
+                      <Stack.Screen name="stats/select" />
+                      <Stack.Screen name="stats/[id]" />
+                    </Stack.Protected>
+                  </Stack>
+                </BottomSheetModalProvider>
+              </OutsidePressProvider>
+            </SettingsProvider>
           </AuthProvider>
         </ToastProvider>
       </TanstackProvider>
