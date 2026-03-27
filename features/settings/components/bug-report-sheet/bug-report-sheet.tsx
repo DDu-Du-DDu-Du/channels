@@ -4,6 +4,7 @@ import { Pressable, View } from "react-native";
 import { BottomSheet, Button, ConfirmModal, SpoqaText } from "@/components";
 import { useToast } from "@/components/toast/hooks";
 import { useBottomSheetAction, useToggle } from "@/hooks";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { ArrowLeftIcon } from "@/icons";
 
 import { BugReportForm, BugReportFormHandle } from "./components";
@@ -14,6 +15,7 @@ export interface BugReportSheetHandle {
 }
 
 const BugReportSheet = forwardRef<BugReportSheetHandle>(function BugReportSheet(_, ref) {
+  const iconStroke = useThemeColorToken("ui.icon.default");
   const { ref: bottomSheetRef, openSheet, closeSheet } = useBottomSheetAction();
   const { createToast } = useToast();
   const bugReportFormRef = useRef<BugReportFormHandle | null>(null);
@@ -46,7 +48,7 @@ const BugReportSheet = forwardRef<BugReportSheetHandle>(function BugReportSheet(
   };
 
   const handleSubmitAction = () => {
-    // TODO: Submit bug report API.
+    // Todo: Submit bug report API.
   };
 
   const handleSubmitForm = () => {
@@ -84,7 +86,7 @@ const BugReportSheet = forwardRef<BugReportSheetHandle>(function BugReportSheet(
             >
               <ArrowLeftIcon
                 size={16}
-                stroke="#1F1F1F"
+                stroke={iconStroke}
               />
             </Pressable>
             <SpoqaText

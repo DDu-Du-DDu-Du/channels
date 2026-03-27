@@ -66,7 +66,7 @@ function PrivacySheet({ goalPrivacy, isShow, onClose, onClick }: PrivacySheetPro
       fitContent
     >
       <FormProvider {...methods}>
-        <View className="p-[2rem] box-border">
+        <View className="box-border bg-role-surface-panel p-[2rem] dark:bg-role-dark-surface-panel">
           <PrivacyTypeController list={PRIVACY_LIST} />
           <Pressable
             className="w-full h-[5.6rem] bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg rounded-radius15 items-center justify-center"

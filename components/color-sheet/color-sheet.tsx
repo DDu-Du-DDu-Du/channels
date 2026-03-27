@@ -42,7 +42,7 @@ function ColorSheet({ isShow, pickedColor, disabled, onClick, onClose }: ColorSh
       fitContent
     >
       <FormProvider {...methods}>
-        <View className="p-[2rem] items-center">
+        <View className="items-center bg-role-surface-panel p-[2rem] dark:bg-role-dark-surface-panel">
           <ColorPickController
             list={COLOR_LIST}
             disabled={disabled}

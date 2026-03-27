@@ -3,7 +3,7 @@ import { Pressable, View } from "react-native";
 
 import { BottomSheet, SpoqaText } from "@/components";
 import { useToast } from "@/components/toast/hooks";
-import { DDuDuReminderPanel } from "@/features/ddudu";
+import { TodoReminderPanel } from "@/features/todo";
 import { useBottomSheetAction } from "@/hooks";
 
 export interface AlarmSheetProps {
@@ -65,10 +65,12 @@ function AlarmSheet({ onClose, onConfirm, hasBeginTime = true }: AlarmSheetProps
       onClose={onClose}
       fitContent
     >
-      <View className="w-full max-w-[50rem] p-[1rem]">
+      <View className="w-full max-w-[50rem] bg-role-surface-panel p-[1rem] dark:bg-role-dark-surface-panel">
         <View className="mb-[0.6rem] px-[0.5rem] gap-[0.8rem]">
-          <SpoqaText className="my-[0.6rem] font-spoqa-medium text-size15">미리알림 설정</SpoqaText>
-          <DDuDuReminderPanel
+          <SpoqaText className="my-[0.6rem] font-spoqa-medium text-size15 text-role-text-primary dark:text-role-dark-text-primary">
+            미리알림 설정
+          </SpoqaText>
+          <TodoReminderPanel
             enabled={enabled}
             day={dayBefore}
             hour={hourBefore}
