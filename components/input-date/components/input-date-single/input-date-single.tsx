@@ -39,7 +39,7 @@ function InputDateSingle({ label, onChange, todayDate, minDate, maxDate }: Input
           currentDate={current}
           selectedDate={selectedDate}
           setSelected={handleSelectDate}
-          onChangeDDuDuDate={handleChangeDate}
+          onChangeTodoDate={handleChangeDate}
           handleCalendarSheetToggleOff={handleToggleOff}
           minDate={minDate}
           maxDate={maxDate}

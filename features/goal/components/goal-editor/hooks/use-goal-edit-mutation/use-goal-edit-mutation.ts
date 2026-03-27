@@ -65,7 +65,7 @@ function useGoalEditMutation({
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: [GOAL_KEY.GOAL_LIST] });
       await queryClient.invalidateQueries({ queryKey: [GOAL_KEY.GOAL_DETAIL, goalId] });
-      createToast("목표를 종료했습니다.", { type: "success" });
+      createToast("목표를 종료했습니다.", { type: "safe" });
     },
     onError: (error) => onErrorMutation(error, "목표 종료에 실패했습니다."),
   });

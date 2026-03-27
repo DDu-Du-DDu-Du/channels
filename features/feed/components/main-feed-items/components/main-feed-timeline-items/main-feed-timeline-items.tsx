@@ -5,21 +5,21 @@ import { EmptyList } from "@/components";
 import { TimeItem, TimeStamp } from "@/components/timeline/components";
 import type {
   MainDailyTimeTableType,
-  MainTimeTableDDuDuType,
+  MainTimeTableTodoType,
   MainTimeTableType,
 } from "@/types/response/feed/feed";
 
 interface TimelineSectionType {
   label: string;
-  ddudus: MainTimeTableDDuDuType[];
+  Todos: MainTimeTableTodoType[];
 }
 
 export interface MainFeedTimelineItemsProps {
   dailyTimeTable?: MainDailyTimeTableType;
   isDailyTimeTableLoading: boolean;
   isCalendarOpen: boolean;
-  onDDuDuCompleteToggle: (id: number) => void;
-  onDDuDuSheetOpen: (id: number) => void;
+  onTodoCompleteToggle: (id: number) => void;
+  onTodosheetOpen: (id: number) => void;
 }
 
 const formatTimestampLabel = (beginAt: string) => {
@@ -28,13 +28,15 @@ const formatTimestampLabel = (beginAt: string) => {
 };
 
 const mapTimedSection = (timeTable: MainTimeTableType): TimelineSectionType | null => {
-  if (timeTable.ddudus.length === 0) {
+  const todos = timeTable.todos ?? timeTable.Todos ?? [];
+
+  if (todos.length === 0) {
     return null;
   }
 
   return {
     label: formatTimestampLabel(timeTable.beginAt),
-    ddudus: timeTable.ddudus,
+    Todos: todos,
   };
 };
 
@@ -42,28 +44,32 @@ function MainFeedTimelineItems({
   dailyTimeTable,
   isDailyTimeTableLoading,
   isCalendarOpen,
-  onDDuDuCompleteToggle,
-  onDDuDuSheetOpen,
+  onTodoCompleteToggle,
+  onTodosheetOpen,
 }: MainFeedTimelineItemsProps) {
   const timelineSections = useMemo(() => {
     const timedSections = (dailyTimeTable?.timetable ?? [])
       .map(mapTimedSection)
       .filter((section): section is TimelineSectionType => section !== null);
 
-    const unassignedDdudus = (dailyTimeTable?.unassignedDdudus ?? []).flatMap((daily) =>
-      daily.ddudus.map<MainTimeTableDDuDuType>((ddudu) => ({
-        id: ddudu.id,
-        name: ddudu.name,
-        status: ddudu.status,
+    const unassignedTodos = (
+      dailyTimeTable?.unassignedTodos ??
+      dailyTimeTable?.unassignedTodos ??
+      []
+    ).flatMap((daily) =>
+      (daily.todos ?? daily.Todos ?? []).map<MainTimeTableTodoType>((Todo) => ({
+        id: Todo.id,
+        name: Todo.name,
+        status: Todo.status,
         goalId: daily.goal.id,
         color: daily.goal.color,
       })),
     );
 
-    if (unassignedDdudus.length > 0) {
+    if (unassignedTodos.length > 0) {
       timedSections.push({
         label: "미정",
-        ddudus: unassignedDdudus,
+        Todos: unassignedTodos,
       });
     }
 
@@ -92,12 +98,12 @@ function MainFeedTimelineItems({
         {!isDailyTimeTableLoading && hasTimelineItems && (
           <View className="relative">
             {timelineSections.map((section, sectionIndex) =>
-              section.ddudus.map((ddudu, dduduIndex) => (
+              section.Todos.map((Todo, TodoIndex) => (
                 <View
-                  key={`${section.label}-${ddudu.id}-${sectionIndex}-${dduduIndex}`}
+                  key={`${section.label}-${Todo.id}-${sectionIndex}-${TodoIndex}`}
                   className="w-full flex-row"
                 >
-                  {dduduIndex === 0 ? (
+                  {TodoIndex === 0 ? (
                     <View className="w-[5rem]">
                       <TimeStamp fillParentHeight>{section.label}</TimeStamp>
                     </View>
@@ -107,11 +113,11 @@ function MainFeedTimelineItems({
 
                   <View className="flex-1 pl-[5rem] pr-[0.4rem]">
                     <TimeItem
-                      ddudu={ddudu}
-                      isFirstItem={dduduIndex === 0}
-                      isLastItem={dduduIndex === section.ddudus.length - 1}
-                      onDDuDuCompleteToggle={onDDuDuCompleteToggle}
-                      onDDuDuSheetOpen={onDDuDuSheetOpen}
+                      Todo={Todo}
+                      isFirstItem={TodoIndex === 0}
+                      isLastItem={TodoIndex === section.Todos.length - 1}
+                      onTodoCompleteToggle={onTodoCompleteToggle}
+                      onTodosheetOpen={onTodosheetOpen}
                     />
                   </View>
                 </View>

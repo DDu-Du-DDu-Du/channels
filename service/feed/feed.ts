@@ -1,10 +1,10 @@
 import { fetchApi } from "@/api";
 import { FEED } from "@/constants/end-points";
-import { DDuDuTimeType } from "@/features/feed/feed.types";
+import { TodoTimeType } from "@/features/feed/feed.types";
 import {
-  RequestDDuDu,
-  RequestDDuDuChangeDate,
   RequestPeriodGoalMemo,
+  RequestTodo,
+  RequestTodoChangeDate,
 } from "@/types/request/feed/feed";
 
 interface GetDailyListProps {
@@ -121,21 +121,21 @@ export const fetchEditGoals = async ({ contents, periodGoalsId }: FetchEditGoals
   return response.json();
 };
 
-export const getWeeklyDDuDus = async ({ userId, date }: GetDailyListProps) => {
-  return getPeriodDDuDus({ userId, date, type: "WEEK" });
+export const getWeeklyTodos = async ({ userId, date }: GetDailyListProps) => {
+  return getPeriodTodos({ userId, date, type: "WEEK" });
 };
 
-export const getMonthlyDDuDus = async ({ userId, date }: GetDailyListProps) => {
-  return getPeriodDDuDus({ userId, date, type: "MONTH" });
+export const getMonthlyTodos = async ({ userId, date }: GetDailyListProps) => {
+  return getPeriodTodos({ userId, date, type: "MONTH" });
 };
 
-interface GetPeriodDDuDusProps extends GetDailyListProps {
+interface GetPeriodTodosProps extends GetDailyListProps {
   type: "WEEK" | "MONTH";
 }
 
-export const getPeriodDDuDus = async ({ userId, date, type }: GetPeriodDDuDusProps) => {
+export const getPeriodTodos = async ({ userId, date, type }: GetPeriodTodosProps) => {
   const selectedDate = `&date=${date}`;
-  const endpoint = type === "WEEK" ? FEED.WEEKLY_DDUDUS : FEED.MONTHLY_DDUDUS;
+  const endpoint = type === "WEEK" ? FEED.WEEKLY_TODOS : FEED.MONTHLY_TODOS;
 
   const response = await fetchApi(
     `${endpoint}?userId=${userId}${selectedDate}`,
@@ -155,8 +155,8 @@ export const getPeriodDDuDus = async ({ userId, date, type }: GetPeriodDDuDusPro
   return response.json();
 };
 
-export const getDDuDuDetail = async ({ id }: FetchUpdateDDuDuProps) => {
-  const response = await fetchApi(`${FEED.DDUDU}/${id}`, { method: "GET" }, true);
+export const getTodoDetail = async ({ id }: FetchUpdateTodoProps) => {
+  const response = await fetchApi(`${FEED.TODO}/${id}`, { method: "GET" }, true);
 
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
@@ -165,16 +165,16 @@ export const getDDuDuDetail = async ({ id }: FetchUpdateDDuDuProps) => {
   return response.json();
 };
 
-interface FetchCreateDDuDuProps {
-  requestDDuDu: RequestDDuDu;
+interface FetchCreateTodoProps {
+  requestTodo: RequestTodo;
 }
 
-export const fetchCreateDDuDu = async ({ requestDDuDu }: FetchCreateDDuDuProps) => {
+export const fetchCreateTodo = async ({ requestTodo }: FetchCreateTodoProps) => {
   const response = await fetchApi(
-    `${FEED.DDUDU}`,
+    `${FEED.TODO}`,
     {
       method: "POST",
-      body: JSON.stringify(requestDDuDu),
+      body: JSON.stringify(requestTodo),
     },
     true,
   );
@@ -186,17 +186,17 @@ export const fetchCreateDDuDu = async ({ requestDDuDu }: FetchCreateDDuDuProps) 
   return response.json();
 };
 
-interface FetchEditDDuDuProps {
+interface FetchEditTodoProps {
   id: number;
-  name: string;
+  requestTodo: RequestTodo;
 }
 
-export const fetchEditDDuDu = async ({ id, name }: FetchEditDDuDuProps) => {
+export const fetchEditTodo = async ({ id, requestTodo }: FetchEditTodoProps) => {
   const response = await fetchApi(
-    `${FEED.DDUDU}/${id}`,
+    `${FEED.TODO}/${id}`,
     {
       method: "PUT",
-      body: JSON.stringify({ name }),
+      body: JSON.stringify(requestTodo),
     },
     true,
   );
@@ -208,12 +208,12 @@ export const fetchEditDDuDu = async ({ id, name }: FetchEditDDuDuProps) => {
   return response.json();
 };
 
-interface FetchUpdateDDuDuProps {
+interface FetchUpdateTodoProps {
   id: number;
 }
 
-export const fetchDeleteDDuDu = async ({ id }: FetchUpdateDDuDuProps) => {
-  const response = await fetchApi(`${FEED.DDUDU}/${id}`, { method: "DELETE" }, true);
+export const fetchDeleteTodo = async ({ id }: FetchUpdateTodoProps) => {
+  const response = await fetchApi(`${FEED.TODO}/${id}`, { method: "DELETE" }, true);
 
   if (response.status === 204) {
     return response.status;
@@ -224,24 +224,24 @@ export const fetchDeleteDDuDu = async ({ id }: FetchUpdateDDuDuProps) => {
   }
 };
 
-export const fetchCompleteToggleDDuDu = async ({ id }: FetchUpdateDDuDuProps) => {
-  const response = await fetchApi(`${FEED.DDUDU}/${id}/status`, { method: "PATCH" }, true);
+export const fetchCompleteToggleTodo = async ({ id }: FetchUpdateTodoProps) => {
+  const response = await fetchApi(`${FEED.TODO}/${id}/status`, { method: "PATCH" }, true);
 
   if (response.status !== 204) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 };
 
-interface fetchDDuDuDateProps {
+interface fetchTodoDateProps {
   id: number;
   date: string;
 }
 
-export const fetchDDuDuChangeDate = async ({ id, date }: fetchDDuDuDateProps) => {
-  const changedDate: RequestDDuDuChangeDate = { newDate: date };
+export const fetchTodoChangeDate = async ({ id, date }: fetchTodoDateProps) => {
+  const changedDate: RequestTodoChangeDate = { newDate: date };
 
   const response = await fetchApi(
-    `${FEED.DDUDU}/${id}/date`,
+    `${FEED.TODO}/${id}/date`,
     {
       method: "PUT",
       body: JSON.stringify(changedDate),
@@ -256,9 +256,9 @@ export const fetchDDuDuChangeDate = async ({ id, date }: fetchDDuDuDateProps) =>
   return response.status;
 };
 
-export const fetchDDuDuRepeatDate = async ({ id, date }: fetchDDuDuDateProps) => {
+export const fetchTodoRepeatDate = async ({ id, date }: fetchTodoDateProps) => {
   const response = await fetchApi(
-    `${FEED.DDUDU}/${id}/repeat`,
+    `${FEED.TODO}/${id}/repeat`,
     {
       method: "POST",
       body: JSON.stringify({ repeatOn: date }),
@@ -273,14 +273,14 @@ export const fetchDDuDuRepeatDate = async ({ id, date }: fetchDDuDuDateProps) =>
   return response.json();
 };
 
-interface FetchDDuDUChangeTimeProps {
-  time: DDuDuTimeType;
+interface FetchTodoChangeTimeProps {
+  time: TodoTimeType;
   id: number;
 }
 
-export const fetchDDuDuChangeTime = async ({ time, id }: FetchDDuDUChangeTimeProps) => {
+export const fetchTodoChangeTime = async ({ time, id }: FetchTodoChangeTimeProps) => {
   const response = await fetchApi(
-    `${FEED.DDUDU}/${id}/period`,
+    `${FEED.TODO}/${id}/period`,
     {
       method: "PUT",
       body: JSON.stringify(time),

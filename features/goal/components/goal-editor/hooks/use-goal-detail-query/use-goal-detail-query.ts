@@ -1,11 +1,11 @@
 import { GOAL_KEY } from "@/constants/query-key/query-key";
-import { type RepeatDduduItemType, mapRepeatDduduResponseToItem } from "@/features/repeat-ddudu";
+import { type RepeatTodoItemType, mapRepeatTodoResponseToItem } from "@/features/repeat-todo";
 import { getGoalDetail } from "@/service/goal/goal";
 import type { GoalDetailType } from "@/types/response/goal/goal";
 import { useQuery } from "@tanstack/react-query";
 
-export type GoalEditorDetailType = Omit<GoalDetailType, "repeatDdudus"> & {
-  repeatDdudus: RepeatDduduItemType[];
+export type GoalEditorDetailType = Omit<GoalDetailType, "repeatTodos"> & {
+  repeatTodos: RepeatTodoItemType[];
 };
 
 interface UseGoalDetailQueryProps {
@@ -20,7 +20,9 @@ function useGoalDetailQuery({ goalId }: UseGoalDetailQueryProps) {
 
       return {
         ...goalDetail,
-        repeatDdudus: (goalDetail.repeatDdudus ?? []).map(mapRepeatDduduResponseToItem),
+        repeatTodos: (goalDetail.repeatTodos ?? goalDetail.repeatTodos ?? []).map(
+          mapRepeatTodoResponseToItem,
+        ),
       };
     },
     enabled: Boolean(goalId),

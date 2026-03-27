@@ -1,5 +1,5 @@
 import { ColorSheet, FormHeader } from "@/components";
-import { RepeatDduduSheet, useRepeatDduduState, useRepeatSheet } from "@/features/repeat-ddudu";
+import { RepeatTodosheet, useRepeatSheet, useRepeatTodostate } from "@/features/repeat-todo";
 import { usePressBack } from "@/hooks";
 import { GoalType } from "@/types/response/goal/goal";
 
@@ -27,32 +27,32 @@ function GoalEditorForm({ pageTitle, submitLabel, goal, defaultTitle = "" }: Goa
   });
   const { ref, closeSheet, handlePressOpenRepeatSheet } = useRepeatSheet();
   const {
-    repeatDdudus,
-    selectedRepeatDdudu,
-    handlePrepareCreateRepeatDdudu,
-    handleSelectRepeatDdudu,
-    handleClearSelectedRepeatDdudu,
-    handleSaveRepeatDdudu,
-    handleDeleteRepeatDdudu,
-  } = useRepeatDduduState();
+    repeatTodos,
+    selectedRepeatTodo,
+    handlePrepareCreateRepeatTodo,
+    handleSelectRepeatTodo,
+    handleClearSelectedRepeatTodo,
+    handleSaveRepeatTodo,
+    handleDeleteRepeatTodo,
+  } = useRepeatTodostate();
 
   const handleOpenCreateRepeatSheet = () => {
-    handlePrepareCreateRepeatDdudu();
+    handlePrepareCreateRepeatTodo();
     handlePressOpenRepeatSheet();
   };
 
-  const handlePressRepeatDduduCard = (index: number) => {
-    handleSelectRepeatDdudu(index);
+  const handlePressRepeatTodoCard = (index: number) => {
+    handleSelectRepeatTodo(index);
     handlePressOpenRepeatSheet();
   };
 
   const handleCloseRepeatSheet = () => {
     closeSheet();
-    handleClearSelectedRepeatDdudu();
+    handleClearSelectedRepeatTodo();
   };
 
   const handleDismissRepeatSheet = () => {
-    handleClearSelectedRepeatDdudu();
+    handleClearSelectedRepeatTodo();
   };
 
   return (
@@ -66,11 +66,11 @@ function GoalEditorForm({ pageTitle, submitLabel, goal, defaultTitle = "" }: Goa
         submitLabel={submitLabel}
         defaultTitle={initialTitle}
         pickedColor={pickedColor}
-        repeatDdudus={repeatDdudus}
+        repeatTodos={repeatTodos}
         onPressOpenColorSheet={handlePressOpenColorSheet}
         onPressOpenRepeatSheet={handleOpenCreateRepeatSheet}
-        onPressRepeatDduduCard={handlePressRepeatDduduCard}
-        onPressDeleteRepeatDduduCard={handleDeleteRepeatDdudu}
+        onPressRepeatTodoCard={handlePressRepeatTodoCard}
+        onPressDeleteRepeatTodoCard={handleDeleteRepeatTodo}
       />
 
       <ColorSheet
@@ -80,13 +80,13 @@ function GoalEditorForm({ pageTitle, submitLabel, goal, defaultTitle = "" }: Goa
         onClose={handleCloseColorSheet}
       />
 
-      <RepeatDduduSheet
+      <RepeatTodosheet
         bottomSheetRef={ref}
         onClose={handleCloseRepeatSheet}
         onDismiss={handleDismissRepeatSheet}
-        repeatDdudu={selectedRepeatDdudu}
+        repeatTodo={selectedRepeatTodo}
         sheetTitle={"반복 생성"}
-        onSubmit={handleSaveRepeatDdudu}
+        onSubmit={handleSaveRepeatTodo}
       />
     </>
   );

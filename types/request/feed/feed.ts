@@ -4,12 +4,18 @@ export interface RequestPeriodGoalMemo {
   planDate: string;
 }
 
-export interface RequestDDuDu {
+export interface RequestTodo {
   goalId: number;
   name: string;
+  memo?: string;
   scheduledOn: string;
+  beginAt?: string;
+  endAt?: string;
+  remindDays?: number;
+  remindHours?: number;
+  remindMinutes?: number;
 }
 
-export interface RequestDDuDuChangeDate {
+export interface RequestTodoChangeDate {
   newDate: string;
 }

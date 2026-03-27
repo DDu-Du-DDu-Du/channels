@@ -4,7 +4,7 @@ export {
   normalizeDayOfWeekToKr,
   WEEK_DAY_KR_TO_EN,
   WEEK_DAY_TO_KR,
-} from "./repeat-ddudu/repeat-ddudu";
+} from "./repeat-todo/repeat-todo";
 export { createTailwindColorTokens, getThemeColorMap, getThemeColorToken } from "./theme";
 export type {
   ThemeColorMap,

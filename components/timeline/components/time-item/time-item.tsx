@@ -3,28 +3,28 @@ import { View } from "react-native";
 import { ShakingCheckIcon, SpoqaText } from "@/components";
 import MotionPressable from "@/components/motion/motion-pressable/motion-pressable";
 import LineBox from "@/components/timeline/components/line-box/line-box";
-import type { MainTimeTableDDuDuType } from "@/types/response/feed/feed";
+import type { MainTimeTableTodoType } from "@/types/response/feed/feed";
 import { hexConvertForRGBA } from "@/utils";
 
 export interface TimeItemProps {
-  ddudu: MainTimeTableDDuDuType;
+  Todo: MainTimeTableTodoType;
   isFirstItem: boolean;
   isLastItem: boolean;
-  onDDuDuCompleteToggle: (id: number) => void;
-  onDDuDuSheetOpen: (id: number) => void;
+  onTodoCompleteToggle: (id: number) => void;
+  onTodosheetOpen: (id: number) => void;
 }
 
 export const TIME_ITEM_CARD_GAP = 5;
 export const TIME_ITEM_BOUNDARY_GAP = TIME_ITEM_CARD_GAP * 3;
 
 function TimeItem({
-  ddudu,
+  Todo,
   isFirstItem,
   isLastItem,
-  onDDuDuCompleteToggle,
-  onDDuDuSheetOpen,
+  onTodoCompleteToggle,
+  onTodosheetOpen,
 }: TimeItemProps) {
-  const { id, name, status, beginAt, endAt, color } = ddudu;
+  const { id, name, status, beginAt, endAt, color } = Todo;
   const isComplete = status === "COMPLETE";
   const cardBorderColor = hexConvertForRGBA({ hex: color, alpha: 0.32 });
   const iconCenterOffset =
@@ -32,12 +32,12 @@ function TimeItem({
     (isLastItem ? TIME_ITEM_BOUNDARY_GAP / 2 : 0) -
     (!isLastItem ? TIME_ITEM_CARD_GAP / 2 : 0);
 
-  const handleDDuDuCompleteToggle = () => {
-    onDDuDuCompleteToggle(id);
+  const handleTodoCompleteToggle = () => {
+    onTodoCompleteToggle(id);
   };
 
-  const handleDDuDuSheetOpen = () => {
-    onDDuDuSheetOpen(id);
+  const handleTodosheetOpen = () => {
+    onTodosheetOpen(id);
   };
 
   return (
@@ -74,7 +74,7 @@ function TimeItem({
             isChecked={isComplete}
             color={color}
             size={27}
-            onPress={handleDDuDuCompleteToggle}
+            onPress={handleTodoCompleteToggle}
           />
         </View>
 
@@ -101,7 +101,7 @@ function TimeItem({
         highlightColor={`#${color}`}
         highlightHoverOpacity={0.1}
         highlightTapOpacity={0.2}
-        onPress={handleDDuDuSheetOpen}
+        onPress={handleTodosheetOpen}
       >
         <View
           className="w-full min-h-[5.7rem] flex-col rounded-radius15 border bg-role-surface-canvas dark:bg-role-dark-surface-canvas px-[1.6rem] py-[1.2rem]"

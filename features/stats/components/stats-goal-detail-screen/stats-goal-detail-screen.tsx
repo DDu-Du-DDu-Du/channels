@@ -2,8 +2,8 @@ import { useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 
 import { SpoqaText, YearMonthPickerSheet } from "@/components";
-import { GOAL_KEY } from "@/constants/query-key/query-key";
-import { RepeatDduduItemType, mapRepeatDduduResponseToItem } from "@/features/repeat-ddudu";
+import { GOAL_KEY, STATS_KEY } from "@/constants/query-key/query-key";
+import { RepeatTodoItemType, mapRepeatTodoResponseToItem } from "@/features/repeat-todo";
 import {
   CalendarStatsSection,
   DayOfWeekStatsSection,
@@ -11,12 +11,14 @@ import {
   GoalOverallStatsSection,
   MonthOverviewSection,
   MonthSelectionSection,
-  RepeatDduduStatsSection,
+  RepeatTodostatsSection,
 } from "@/features/stats/components/stats-goal-detail-screen/components";
 import { useGoalDetailMonthRange, useGoalDetailStatsQuery } from "@/features/stats/hooks";
 import { getGoalDetail } from "@/service/goal/goal";
+import { getGoalDetailSummaryStats } from "@/service/stats/stats";
 import { GoalDetailType } from "@/types/response/goal/goal";
-import type { RepeatDDuDusType } from "@/types/response/repeat-ddudu/repeat-ddudu";
+import type { RepeatTodosType } from "@/types/response/repeat-todo/repeat-todo";
+import { StatsGoalDetailSummaryResponseType } from "@/types/response/stats/stats";
 import { useQuery } from "@tanstack/react-query";
 
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -30,6 +32,19 @@ const toSingleParam = (value: string | string[] | undefined) => {
 };
 
 const FALLBACK_GOAL_COLOR = "#7A7A7A";
+
+const formatDateTimeToKoreanDate = (value?: string) => {
+  if (!value) {
+    return "-";
+  }
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return "-";
+  }
+
+  return `${parsed.getFullYear()}. ${parsed.getMonth() + 1}. ${parsed.getDate()}`;
+};
 
 function StatsGoalDetailScreen() {
   const router = useRouter();
@@ -59,6 +74,11 @@ function StatsGoalDetailScreen() {
     queryFn: () => getGoalDetail({ goalId }),
     enabled: goalId > 0,
   });
+  const goalSummaryQuery = useQuery<StatsGoalDetailSummaryResponseType>({
+    queryKey: [STATS_KEY.GOAL_DETAIL_SUMMARY, goalId],
+    queryFn: () => getGoalDetailSummaryStats({ goalId }),
+    enabled: goalId > 0,
+  });
 
   // We intentionally do not sync picker changes to router query params.
   // Query keys (fromMonth/toMonth) drive data refresh without route churn.
@@ -68,26 +88,22 @@ function StatsGoalDetailScreen() {
     toMonth: toMonthText,
   });
 
-  const repeatDduduItems = useMemo<RepeatDduduItemType[]>(
+  const repeatTodoItems = useMemo<RepeatTodoItemType[]>(
     () =>
-      (goalDetailQuery.data?.repeatDdudus ?? [])
-        .filter((item): item is RepeatDDuDusType => Boolean(item && typeof item === "object"))
-        .map(mapRepeatDduduResponseToItem),
-    [goalDetailQuery.data?.repeatDdudus],
+      (goalDetailQuery.data?.repeatTodos ?? goalDetailQuery.data?.repeatTodos ?? [])
+        .filter((item): item is RepeatTodosType => Boolean(item && typeof item === "object"))
+        .map(mapRepeatTodoResponseToItem),
+    [goalDetailQuery.data?.repeatTodos],
   );
 
   const goalName = goalDetailQuery.data?.name ?? "Goal";
-  // TODO(server): goalColor source should be integrated in detailed stats response.
-  const goalColor = goalDetailQuery.data?.color
-    ? `#${goalDetailQuery.data.color}`
+  const goalColorRaw =
+    achievedQuery.data?.goalColor ?? postponedQuery.data?.goalColor ?? goalDetailQuery.data?.color;
+  const goalColor = goalColorRaw
+    ? goalColorRaw.startsWith("#")
+      ? goalColorRaw
+      : `#${goalColorRaw}`
     : FALLBACK_GOAL_COLOR;
-
-  // TODO(server): replace with overall stats API response.
-  const overallDummy = {
-    createdAt: "2024. 4. 12",
-    createdDduduCount: 49,
-    completionRate: 80,
-  };
 
   const handlePressBack = () => {
     router.back();
@@ -118,9 +134,9 @@ function StatsGoalDetailScreen() {
         />
 
         <GoalOverallStatsSection
-          createdAt={overallDummy.createdAt}
-          createdDduduCount={overallDummy.createdDduduCount}
-          completionRate={overallDummy.completionRate}
+          createdAt={formatDateTimeToKoreanDate(goalSummaryQuery.data?.createdAt)}
+          createdTodoCount={goalSummaryQuery.data?.totalCount ?? 0}
+          completionRate={goalSummaryQuery.data?.completeRate ?? 0}
         />
 
         <MonthSelectionSection
@@ -157,10 +173,10 @@ function StatsGoalDetailScreen() {
               goalColor={goalColor}
             />
 
-            <RepeatDduduStatsSection
+            <RepeatTodostatsSection
               goalId={goalId}
-              repeatDduduStats={achievedQuery.data?.repeatDduduStats}
-              repeatDduduItems={repeatDduduItems}
+              repeatTodostats={achievedQuery.data?.repeatTodostats}
+              repeatTodoItems={repeatTodoItems}
               goalColor={goalColor}
             />
 

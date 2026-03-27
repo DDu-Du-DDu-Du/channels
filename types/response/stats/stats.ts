@@ -22,35 +22,35 @@ export interface StatsReportResponseType {
 export interface StatsCreationCountType {
   goalId: number;
   goalName: string;
-  goalColor?: string;
+  goalColor: string;
   count: number;
 }
 
 export interface StatsAchievementType {
   goalId: number;
   goalName: string;
-  goalColor?: string;
+  goalColor: string;
   achievementRate: number;
 }
 
 export interface StatsPostponementType {
   goalId: number;
   goalName: string;
-  goalColor?: string;
+  goalColor: string;
   postponementCount: number;
 }
 
 export interface StatsSustenanceType {
   goalId: number;
   goalName: string;
-  goalColor?: string;
+  goalColor: string;
   sustenanceCount: number;
 }
 
 export interface StatsReattainmentType {
   goalId: number;
   goalName: string;
-  goalColor?: string;
+  goalColor: string;
   reattainmentRate: number;
 }
 
@@ -81,6 +81,7 @@ export interface StatsDetailDayOfWeekStatsType {
 export interface StatsDetailCalendarItemType {
   date: string;
   totalCount: number;
+  completedCount?: number;
   uncompletedCount: number;
 }
 
@@ -89,9 +90,9 @@ export interface StatsDetailCalendarStatsType {
   stats: StatsDetailCalendarItemType[];
 }
 
-export interface StatsDetailRepeatDduduItemType {
-  repeatDduduId: number;
-  repeatDduduName: string;
+export interface StatsDetailRepeatTodoItemType {
+  repeatTodoId: number;
+  repeatTodoName: string;
   completedCount: number;
   totalCount: number;
 }
@@ -105,9 +106,10 @@ export interface StatsGoalAchievedOverviewType {
 
 export interface StatsGoalAchievedDetailResponseType {
   goalId: number;
+  goalColor: string;
   overview: StatsGoalAchievedOverviewType;
   dayOfWeekStats: StatsDetailDayOfWeekStatsType;
-  repeatDduduStats: StatsDetailRepeatDduduItemType[];
+  repeatTodostats: StatsDetailRepeatTodoItemType[];
   calendarStats: StatsDetailCalendarStatsType;
 }
 
@@ -121,7 +123,17 @@ export interface StatsGoalPostponedOverviewType {
 
 export interface StatsGoalPostponedDetailResponseType {
   goalId: number;
+  goalColor: string;
   overview: StatsGoalPostponedOverviewType;
   dayOfWeekStats: StatsDetailDayOfWeekStatsType;
   calendarStats: StatsDetailCalendarStatsType;
+}
+
+export interface StatsGoalDetailSummaryResponseType {
+  id: number;
+  name: string;
+  createdAt: string;
+  totalCount: number;
+  completedCount: number;
+  completeRate: number;
 }

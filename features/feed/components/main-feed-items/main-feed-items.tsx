@@ -5,21 +5,21 @@ import {
   AlarmSheet,
   AlertModal,
   BottomSingleCalendar,
-  DDuDuSheet,
-  DDuDuTimeSheet,
+  TodoTimeSheet,
+  Todosheet,
 } from "@/components";
-import { DDuDuEditorSheet, useDDuDuEditorSheet } from "@/features/ddudu";
 import type { MainFeedView } from "@/features/feed/components/main-feed/main-feed";
+import { TodoEditorSheet, useTodoEditorSheet } from "@/features/todo";
 import { useToggle } from "@/hooks";
 import type { MainDailyListType, MainDailyTimeTableType } from "@/types/response/feed/feed";
 
 import { MainFeedListItems, MainFeedTimelineItems } from "./components";
 import {
-  useDDuDuDate,
-  useDDuDuDateMutation,
-  useDDuDuMutation,
-  useDDuDuTime,
-  useDDuDuTimeMutation,
+  useTodoDate,
+  useTodoDateMutation,
+  useTodoMutation,
+  useTodoTime,
+  useTodoTimeMutation,
 } from "./hooks";
 
 export interface MainFeedItemsProps {
@@ -27,7 +27,7 @@ export interface MainFeedItemsProps {
   dailyList: MainDailyListType[];
   dailyTimeTable?: MainDailyTimeTableType;
   isDailyTimeTableLoading?: boolean;
-  selectedDDuDuDate: string;
+  selectedTodoDate: string;
   isCalendarOpen?: boolean;
 }
 
@@ -36,19 +36,19 @@ function MainFeedItems({
   dailyList,
   dailyTimeTable,
   isDailyTimeTableLoading = false,
-  selectedDDuDuDate,
+  selectedTodoDate,
   isCalendarOpen = true,
 }: MainFeedItemsProps) {
-  const [currentDDuDuId, setCurrentDDuDuId] = useState(-1);
+  const [currentTodoId, setCurrentTodoId] = useState(-1);
   const [hasAlarmBeginAt, setHasAlarmBeginAt] = useState(true);
 
   const { editorSheetState, handleOpenCreateEditor, handleOpenEditEditor, handleCloseEditor } =
-    useDDuDuEditorSheet();
+    useTodoEditorSheet();
 
   const {
-    isToggle: isDDuDuSheetToggle,
-    handleToggleOn: handleDDuDuSheetToggleOn,
-    handleToggleOff: handleDDuDuSheetToggleOff,
+    isToggle: isTodosheetToggle,
+    handleToggleOn: handleTodosheetToggleOn,
+    handleToggleOff: handleTodosheetToggleOff,
   } = useToggle();
 
   const {
@@ -64,9 +64,9 @@ function MainFeedItems({
   } = useToggle();
 
   const {
-    isToggle: isDDuDuTimeSheetToggle,
-    handleToggleOn: handleDDuDuTimeSheetToggleOn,
-    handleToggleOff: handleDDuDuTimeSheetToggleOff,
+    isToggle: isTodoTimeSheetToggle,
+    handleToggleOn: handleTodoTimeSheetToggleOn,
+    handleToggleOff: handleTodoTimeSheetToggleOff,
   } = useToggle();
 
   const {
@@ -81,43 +81,43 @@ function MainFeedItems({
     currentCalendarType,
     handleSelectedDate,
     handleSelectDifferentDate,
-  } = useDDuDuDate({ handleCalendarSheetToggleOn, handleDDuDuSheetToggleOff });
+  } = useTodoDate({ handleCalendarSheetToggleOn, handleTodosheetToggleOff });
 
-  const { currentDDuDuTime, handleDDuDuTimeSetting, handleUpdateDDuDuTime } = useDDuDuTime({
-    handleDDuDuTimeSheetToggleOn,
-    handleDDuDuSheetToggleOff,
+  const { currentTodoTime, handleTodoTimeSetting, handleUpdateTodoTime } = useTodoTime({
+    handleTodoTimeSheetToggleOn,
+    handleTodosheetToggleOff,
   });
 
-  const { onDDuDuCompleteToggle, onDeleteDDuDu } = useDDuDuMutation({
-    selectedDDuDuDate,
-    handleDDuDuSheetToggleOff,
+  const { onTodoCompleteToggle, onDeleteTodo } = useTodoMutation({
+    selectedTodoDate,
+    handleTodosheetToggleOff,
   });
 
-  const { onChangeDDuDuDate, onRepeatCurrentDate, onChangeCurrentDate } = useDDuDuDateMutation({
-    currentDDuDuId,
+  const { onChangeTodoDate, onRepeatCurrentDate, onChangeCurrentDate } = useTodoDateMutation({
+    currentTodoId,
     currentCalendarType,
     handleSelectedDate,
     handleCalendarSheetToggleOff,
-    handleDDuDuSheetToggleOff,
+    handleTodosheetToggleOff,
   });
 
-  const { onChangeDDuDuTime } = useDDuDuTimeMutation({
-    currentDDuDuTime,
-    currentDDuDuId,
-    selectedDDuDuDate,
-    handleUpdateDDuDuTime,
-    handleDDuDuTimeSheetToggleOff,
+  const { onChangeTodoTime } = useTodoTimeMutation({
+    currentTodoTime,
+    currentTodoId,
+    selectedTodoDate,
+    handleUpdateTodoTime,
+    handleTodoTimeSheetToggleOff,
   });
 
-  const handleDDuDuSheetOpen = (id: number) => {
-    setCurrentDDuDuId(id);
-    handleDDuDuSheetToggleOn();
+  const handleTodosheetOpen = (id: number) => {
+    setCurrentTodoId(id);
+    handleTodosheetToggleOn();
   };
 
   const handleAlarmSetting = (hasBeginAt: boolean) => {
     setHasAlarmBeginAt(hasBeginAt);
     handleAlarmSheetToggleOn();
-    handleDDuDuSheetToggleOff();
+    handleTodosheetToggleOff();
   };
 
   const handleOpenCreateSheet = (goal: MainDailyListType["goal"]) => {
@@ -129,8 +129,8 @@ function MainFeedItems({
     handleOpenCreateEditor(goal.id);
   };
 
-  const handleEditDDuDu = (id: number) => {
-    handleDDuDuSheetToggleOff();
+  const handleEditTodo = (id: number) => {
+    handleTodosheetToggleOff();
     handleOpenEditEditor(id);
   };
 
@@ -141,15 +141,15 @@ function MainFeedItems({
           dailyTimeTable={dailyTimeTable}
           isDailyTimeTableLoading={isDailyTimeTableLoading}
           isCalendarOpen={isCalendarOpen}
-          onDDuDuCompleteToggle={onDDuDuCompleteToggle}
-          onDDuDuSheetOpen={handleDDuDuSheetOpen}
+          onTodoCompleteToggle={onTodoCompleteToggle}
+          onTodosheetOpen={handleTodosheetOpen}
         />
       ) : (
         <MainFeedListItems
           dailyList={dailyList}
           isCalendarOpen={isCalendarOpen}
-          onDDuDuCompleteToggle={onDDuDuCompleteToggle}
-          onDDuDuSheetOpen={handleDDuDuSheetOpen}
+          onTodoCompleteToggle={onTodoCompleteToggle}
+          onTodosheetOpen={handleTodosheetOpen}
           onOpenCreateSheet={handleOpenCreateSheet}
         />
       )}
@@ -159,30 +159,30 @@ function MainFeedItems({
           isToggle={isAlertModalToggle}
           handleToggleOff={handleAlertModalToggleOff}
           title="알림"
-          message="종료된 목표에는 뚜두를 추가할 수 없어요."
+          message="종료된 목표에는 투두를 추가할 수 없어요."
         />
       )}
 
-      {isDDuDuSheetToggle && (
-        <DDuDuSheet
-          dduduId={currentDDuDuId}
-          handleEditDDuDu={handleEditDDuDu}
-          onDeleteDDuDu={onDeleteDDuDu}
-          handleDDuDuSheetToggleOff={handleDDuDuSheetToggleOff}
+      {isTodosheetToggle && (
+        <Todosheet
+          TodoId={currentTodoId}
+          handleEditTodo={handleEditTodo}
+          onDeleteTodo={onDeleteTodo}
+          handleTodosheetToggleOff={handleTodosheetToggleOff}
           handleSelectDifferentDate={handleSelectDifferentDate}
           handleAlarmSetting={handleAlarmSetting}
-          handleDDuDuTimeSetting={handleDDuDuTimeSetting}
+          handleTodoTimeSetting={handleTodoTimeSetting}
           onRepeatCurrentDate={onRepeatCurrentDate}
           onChangeCurrentDate={onChangeCurrentDate}
         />
       )}
 
       {editorSheetState.isOpen && (
-        <DDuDuEditorSheet
+        <TodoEditorSheet
           mode={editorSheetState.mode}
           goalId={editorSheetState.goalId}
-          dduduId={editorSheetState.dduduId}
-          selectedDate={selectedDDuDuDate}
+          TodoId={editorSheetState.TodoId}
+          selectedDate={selectedTodoDate}
           onClose={handleCloseEditor}
         />
       )}
@@ -199,16 +199,16 @@ function MainFeedItems({
           currentDate={currentDate}
           selectedDate={selectedDate}
           setSelected={handleSelectedDate}
-          onChangeDDuDuDate={onChangeDDuDuDate}
+          onChangeTodoDate={onChangeTodoDate}
           handleCalendarSheetToggleOff={handleCalendarSheetToggleOff}
         />
       )}
 
-      {isDDuDuTimeSheetToggle && (
-        <DDuDuTimeSheet
-          currentDDuDuTime={currentDDuDuTime}
-          onChangeDDuDuTime={onChangeDDuDuTime}
-          onClose={handleDDuDuTimeSheetToggleOff}
+      {isTodoTimeSheetToggle && (
+        <TodoTimeSheet
+          currentTodoTime={currentTodoTime}
+          onChangeTodoTime={onChangeTodoTime}
+          onClose={handleTodoTimeSheetToggleOff}
         />
       )}
     </View>

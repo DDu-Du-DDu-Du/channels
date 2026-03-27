@@ -6,5 +6,5 @@ export { default as GoalOverallStatsSection } from "./goal-overall-stats-section
 export { default as MiniMetricCard } from "./mini-metric-card/mini-metric-card";
 export { default as MonthOverviewSection } from "./month-overview-section/month-overview-section";
 export { default as MonthSelectionSection } from "./month-selection-section/month-selection-section";
-export { default as RepeatDduduBarRow } from "./repeat-ddudu-bar-row/repeat-ddudu-bar-row";
-export { default as RepeatDduduStatsSection } from "./repeat-ddudu-stats-section/repeat-ddudu-stats-section";
+export { default as RepeatTodoBarRow } from "./repeat-todo-bar-row/repeat-todo-bar-row";
+export { default as RepeatTodostatsSection } from "./repeat-todo-stats-section/repeat-todo-stats-section";

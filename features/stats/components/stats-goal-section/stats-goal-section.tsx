@@ -20,7 +20,7 @@ interface StatsGoalSectionProps {
 interface StatsGoalSourceItem {
   goalId: number;
   goalName: string;
-  goalColor?: string;
+  goalColor: string;
 }
 
 interface StatsGoalChartConfig {
@@ -30,16 +30,8 @@ interface StatsGoalChartConfig {
   items: StatsGoalChartItem[];
 }
 
-const FALLBACK_GOAL_COLORS = ["#5D7DB3", "#6FA57A", "#B08A4A", "#9A7BC7", "#BF6D6D", "#5C9FA3"];
-
-// TODO(server): stats summary item에 goalColor(hex) 필드 추가 후 fallback 제거
-const resolveGoalColor = (goalId: number, goalColor?: string) => {
-  if (goalColor) {
-    return goalColor.startsWith("#") ? goalColor : `#${goalColor}`;
-  }
-
-  return FALLBACK_GOAL_COLORS[goalId % FALLBACK_GOAL_COLORS.length];
-};
+const resolveGoalColor = (goalColor: string) =>
+  goalColor.startsWith("#") ? goalColor : `#${goalColor}`;
 
 const toChartItems = <T extends StatsGoalSourceItem>(
   list: T[] | undefined,
@@ -53,7 +45,7 @@ const toChartItems = <T extends StatsGoalSourceItem>(
     goalId: item.goalId,
     goalName: item.goalName,
     value: Number(item[valueKey] ?? 0),
-    color: resolveGoalColor(item.goalId, item.goalColor),
+    color: resolveGoalColor(item.goalColor),
   }));
 };
 
@@ -64,7 +56,7 @@ function StatsGoalSection({ yearMonth, summary, isLoading, isError }: StatsGoalS
   const charts: StatsGoalChartConfig[] = [
     {
       key: "creationCounts",
-      title: "가장 많은 뚜두를 만든 목표",
+      title: "가장 많은 투두를 만든 목표",
       unit: "개",
       items: toChartItems(summary?.creationCounts, "count"),
     },

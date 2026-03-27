@@ -1,12 +1,9 @@
 import type { DayOfWeekKr } from "@/types/common/day-of-week";
 
 import { GoalPrivacyType } from "../../response/goal/goal";
-import { RepeatDduduRequestType } from "../repeat-ddudu/repeat-ddudu";
+import { RepeatTodoRequestType } from "../repeat-todo/repeat-todo";
 
-export interface GoalRepeatDduduRequestType extends Omit<
-  RepeatDduduRequestType,
-  "repeatDaysOfWeek"
-> {
+export interface GoalRepeatTodoRequestType extends Omit<RepeatTodoRequestType, "repeatDaysOfWeek"> {
   repeatDaysOfWeek?: DayOfWeekKr[];
 }
 
@@ -14,10 +11,10 @@ export interface GoalRequestType {
   name: string;
   color: string;
   privacyType: GoalPrivacyType;
-  repeatDdudus?: GoalRepeatDduduRequestType[];
+  repeatTodos?: GoalRepeatTodoRequestType[];
 }
 
-export type GoalEditRequestType = Omit<GoalRequestType, "repeatDdudus">;
+export type GoalEditRequestType = Omit<GoalRequestType, "repeatTodos">;
 
 export interface GoalTerminateRequestType {
   status: "DONE";

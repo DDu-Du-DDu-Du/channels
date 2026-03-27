@@ -3,7 +3,7 @@ import { Controller, FormProvider } from "react-hook-form";
 import { Pressable, View } from "react-native";
 
 import { Button, FormSection, FormTitleInput, SpoqaText } from "@/components";
-import { RepeatDduduCards, type RepeatDduduItemType } from "@/features/repeat-ddudu";
+import { RepeatTodoCards, type RepeatTodoItemType } from "@/features/repeat-todo";
 import { ArrowRightIcon } from "@/icons";
 
 import { useGoalMutation } from "../../hooks";
@@ -12,27 +12,27 @@ export interface GoalEditorFormBodyProps {
   submitLabel: string;
   defaultTitle: string;
   pickedColor: string;
-  repeatDdudus: RepeatDduduItemType[];
+  repeatTodos: RepeatTodoItemType[];
   onPressOpenColorSheet: () => void;
   onPressOpenRepeatSheet: () => void;
-  onPressRepeatDduduCard: (index: number) => void;
-  onPressDeleteRepeatDduduCard: (target: { id?: number; tempId?: string }) => void;
+  onPressRepeatTodoCard: (index: number) => void;
+  onPressDeleteRepeatTodoCard: (target: { id?: number; tempId?: string }) => void;
 }
 
 function GoalEditorFormBody({
   submitLabel,
   defaultTitle,
   pickedColor,
-  repeatDdudus,
+  repeatTodos,
   onPressOpenColorSheet,
   onPressOpenRepeatSheet,
-  onPressRepeatDduduCard,
-  onPressDeleteRepeatDduduCard,
+  onPressRepeatTodoCard,
+  onPressDeleteRepeatTodoCard,
 }: GoalEditorFormBodyProps) {
   const { methods, handleUpdateColor, handleSubmitGoal } = useGoalMutation({
     defaultTitle,
     pickedColor,
-    repeatDdudus,
+    repeatTodos,
   });
 
   useEffect(() => {
@@ -107,20 +107,20 @@ function GoalEditorFormBody({
           />
 
           <FormSection
-            label={"반복 뚜두 만들기"}
+            label={"반복 투두 만들기"}
             rightContent={repeatArrow}
             onPress={onPressOpenRepeatSheet}
           />
         </View>
 
         <View className="flex-1 pt-[1.2rem]">
-          <RepeatDduduCards
-            repeatDdudus={repeatDdudus}
-            onPressRepeatDdudu={onPressRepeatDduduCard}
-            onPressDeleteRepeatDdudu={(repeatDdudu) =>
-              onPressDeleteRepeatDduduCard({
-                id: repeatDdudu.id,
-                tempId: repeatDdudu.tempId,
+          <RepeatTodoCards
+            repeatTodos={repeatTodos}
+            onPressRepeatTodo={onPressRepeatTodoCard}
+            onPressDeleteRepeatTodo={(repeatTodo) =>
+              onPressDeleteRepeatTodoCard({
+                id: repeatTodo.id,
+                tempId: repeatTodo.tempId,
               })
             }
           />

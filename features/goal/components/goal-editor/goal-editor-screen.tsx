@@ -4,13 +4,13 @@ import { View } from "react-native";
 import { ColorSheet, ConfirmModal, FormHeader, SpoqaText } from "@/components";
 import { useColorSheet } from "@/features/goal/components/goal-editor-form/hooks";
 import {
-  RepeatDduduItemType,
-  RepeatDduduListView,
-  RepeatDduduSheet,
-  useRepeatDduduListController,
-  useRepeatDduduMutation,
+  RepeatTodoItemType,
+  RepeatTodoListView,
+  RepeatTodosheet,
   useRepeatSheet,
-} from "@/features/repeat-ddudu";
+  useRepeatTodoListController,
+  useRepeatTodoMutation,
+} from "@/features/repeat-todo";
 import { usePressBack } from "@/hooks";
 
 import { GoalEditFormView } from "./components";
@@ -31,20 +31,20 @@ function GoalEditorScreen({ goalId }: GoalEditorScreenProps) {
   const { data: goalDetail, isPending, isError } = useGoalDetailQuery({ goalId });
   const { ref, closeSheet, handlePressOpenRepeatSheet } = useRepeatSheet();
   const {
-    handleCreateRepeatDdudu,
-    handleEditRepeatDdudu,
-    handleDeleteRepeatDdudu: onDeleteRepeatDdudu,
-  } = useRepeatDduduMutation({ goalId });
+    handleCreateRepeatTodo,
+    handleEditRepeatTodo,
+    handleDeleteRepeatTodo: onDeleteRepeatTodo,
+  } = useRepeatTodoMutation({ goalId });
   const {
     isDeleteConfirmOpen,
-    selectedRepeatDdudu,
-    handlePressRepeatDdudu,
-    handleClearSelectedRepeatDdudu,
-    handlePressDeleteRepeatDdudu,
-    handleCompleteDeleteRepeatDdudu,
+    selectedRepeatTodo,
+    handlePressRepeatTodo,
+    handleClearSelectedRepeatTodo,
+    handlePressDeleteRepeatTodo,
+    handleCompleteDeleteRepeatTodo,
     handleCloseDeleteModal,
-  } = useRepeatDduduListController({
-    onDeleteRepeatDdudu,
+  } = useRepeatTodoListController({
+    onDeleteRepeatTodo,
   });
   const { handleTerminateGoal, handleDeleteGoal } = useGoalEditMutation({
     goalId,
@@ -63,9 +63,9 @@ function GoalEditorScreen({ goalId }: GoalEditorScreenProps) {
     color: goalDetail?.color,
   });
 
-  const repeatDdudus = useMemo<RepeatDduduItemType[]>(
-    () => goalDetail?.repeatDdudus ?? [],
-    [goalDetail?.repeatDdudus],
+  const repeatTodos = useMemo<RepeatTodoItemType[]>(
+    () => goalDetail?.repeatTodos ?? [],
+    [goalDetail?.repeatTodos],
   );
 
   const handleOpenRepeatList = () => {
@@ -74,30 +74,30 @@ function GoalEditorScreen({ goalId }: GoalEditorScreenProps) {
 
   const handleOpenCreateRepeatSheet = () => {
     setIsCreateRepeatMode(true);
-    handleClearSelectedRepeatDdudu();
+    handleClearSelectedRepeatTodo();
     handlePressOpenRepeatSheet();
   };
 
-  const handleOpenEditRepeatSheet = (repeatDdudu: RepeatDduduItemType) => {
+  const handleOpenEditRepeatSheet = (repeatTodo: RepeatTodoItemType) => {
     setIsCreateRepeatMode(false);
-    handlePressRepeatDdudu(repeatDdudu);
+    handlePressRepeatTodo(repeatTodo);
     handlePressOpenRepeatSheet();
   };
 
-  const handleSubmitRepeatDdudu = (repeatDdudu: RepeatDduduItemType) => {
+  const handleSubmitRepeatTodo = (repeatTodo: RepeatTodoItemType) => {
     if (isCreateRepeatMode) {
-      handleCreateRepeatDdudu(repeatDdudu);
+      handleCreateRepeatTodo(repeatTodo);
       return;
     }
 
-    if (selectedRepeatDdudu?.id) {
-      handleEditRepeatDdudu(selectedRepeatDdudu.id, repeatDdudu);
+    if (selectedRepeatTodo?.id) {
+      handleEditRepeatTodo(selectedRepeatTodo.id, repeatTodo);
     }
   };
 
   const handleCloseRepeatSheet = () => {
     closeSheet();
-    handleClearSelectedRepeatDdudu();
+    handleClearSelectedRepeatTodo();
   };
 
   const handlePressDeleteGoal = () => {
@@ -146,7 +146,7 @@ function GoalEditorScreen({ goalId }: GoalEditorScreenProps) {
             defaultTitle={goalDetail.name}
             pickedColor={pickedColor}
             privacyType={goalDetail.privacyType}
-            repeatDduduCount={repeatDdudus.length}
+            repeatTodoCount={repeatTodos.length}
             onPressOpenColorSheet={handlePressOpenColorSheet}
             onPressOpenRepeatManagement={handleOpenRepeatList}
             onPressTerminateGoal={handleTerminateGoal}
@@ -154,14 +154,14 @@ function GoalEditorScreen({ goalId }: GoalEditorScreenProps) {
           />
         </>
       ) : (
-        <RepeatDduduListView
-          repeatDdudus={repeatDdudus}
+        <RepeatTodoListView
+          repeatTodos={repeatTodos}
           onPressBack={() => setViewMode("form")}
           onPressAdd={handleOpenCreateRepeatSheet}
-          onPressRepeatDdudu={handleOpenEditRepeatSheet}
-          onPressDeleteRepeatDdudu={handlePressDeleteRepeatDdudu}
+          onPressRepeatTodo={handleOpenEditRepeatSheet}
+          onPressDeleteRepeatTodo={handlePressDeleteRepeatTodo}
           isDeleteConfirmOpen={isDeleteConfirmOpen}
-          onCompleteDeleteRepeatDdudu={handleCompleteDeleteRepeatDdudu}
+          onCompleteDeleteRepeatTodo={handleCompleteDeleteRepeatTodo}
           onCloseDeleteModal={handleCloseDeleteModal}
         />
       )}
@@ -173,14 +173,14 @@ function GoalEditorScreen({ goalId }: GoalEditorScreenProps) {
         onClose={handleCloseColorSheet}
       />
 
-      <RepeatDduduSheet
+      <RepeatTodosheet
         bottomSheetRef={ref}
         onClose={handleCloseRepeatSheet}
-        onDismiss={handleClearSelectedRepeatDdudu}
-        repeatDdudu={selectedRepeatDdudu}
+        onDismiss={handleClearSelectedRepeatTodo}
+        repeatTodo={selectedRepeatTodo}
         sheetTitle={isCreateRepeatMode ? "반복 생성" : "반복 수정"}
         submitLabel={isCreateRepeatMode ? "반복 생성" : "반복 수정"}
-        onSubmit={handleSubmitRepeatDdudu}
+        onSubmit={handleSubmitRepeatTodo}
       />
 
       <ConfirmModal

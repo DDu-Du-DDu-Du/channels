@@ -1,6 +1,6 @@
 export {
   default as useNotificationScreen,
   AnnouncementViewItem,
-  DduduNotificationListEntry,
+  TodoNotificationListEntry,
   NotificationContextTab,
 } from "./use-notification-screen/use-notification-screen";

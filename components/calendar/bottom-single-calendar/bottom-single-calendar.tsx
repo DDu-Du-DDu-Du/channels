@@ -13,7 +13,7 @@ export interface BottomSingleCalendarProps {
   currentDate: string;
   selectedDate: Date | undefined;
   setSelected: (date: Date | undefined) => void;
-  onChangeDDuDuDate: (selectedDate: Date) => void;
+  onChangeTodoDate: (selectedDate: Date) => void;
   handleCalendarSheetToggleOff: () => void;
   minDate?: string;
   maxDate?: string;
@@ -28,7 +28,7 @@ function BottomSingleCalendar({
   currentDate,
   selectedDate,
   setSelected,
-  onChangeDDuDuDate,
+  onChangeTodoDate,
   handleCalendarSheetToggleOff,
   minDate,
   maxDate,
@@ -78,7 +78,7 @@ function BottomSingleCalendar({
       return;
     }
 
-    onChangeDDuDuDate(selectedDate);
+    onChangeTodoDate(selectedDate);
   };
 
   const handlePressBack = () => {

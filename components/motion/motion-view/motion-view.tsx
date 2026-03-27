@@ -63,7 +63,7 @@ function MotionView({
     transform: [{ scale: withTiming(whileTap && pressed.value ? whileTap.scale : 1) }],
   }));
 
-  // TODO: translate 잘못 적용되는 버그 수정 필요
+  // Todo: translate 잘못 적용되는 버그 수정 필요
   const entering = useAnimationSafeChain(initial?.type ?? FadeInUp, {
     duration: durationIn,
     easing: easingIn,

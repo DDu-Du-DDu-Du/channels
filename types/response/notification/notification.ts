@@ -1,4 +1,4 @@
-export type NotificationContextType = "DDUDU" | "ANNOUNCEMENT" | string;
+export type NotificationContextType = "Todo" | "ANNOUNCEMENT" | string;
 
 export interface NotificationInboxItemType {
   id: number;
@@ -16,6 +16,7 @@ export interface NotificationInboxResponseType {
   isEmpty: boolean;
   contents: NotificationInboxItemType[];
   nextCursor: string | null;
+  hasNext: boolean;
 }
 
 export interface NotificationReadResponseType {

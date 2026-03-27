@@ -3,9 +3,10 @@ type MainGoalType = {
   name: string;
   color: string;
   status: "IN_PROGRESS" | "DONE";
+  priority: number;
 };
 
-export type MainDDuDusType = {
+export type MainTodosType = {
   id: number;
   name: string;
   status: "COMPLETE" | "UNCOMPLETED";
@@ -13,26 +14,29 @@ export type MainDDuDusType = {
 
 export interface MainDailyListType {
   goal: MainGoalType;
-  ddudus: MainDDuDusType[];
+  todos: MainTodosType[];
+  Todos?: MainTodosType[];
 }
 
-export interface MonthlyWeeklyDDuDuType {
+export interface MonthlyWeeklyTodoType {
   date: string;
   totalCount: number;
+  completedCount?: number;
   uncompletedCount: number;
 }
 
 export interface MainDailyTimeTableType {
   timetable: MainTimeTableType[];
-  unassignedDdudus: MainDailyListType[];
+  unassignedTodos: MainDailyListType[];
 }
 
 export type MainTimeTableType = {
   beginAt: string;
-  ddudus: MainTimeTableDDuDuType[];
+  todos: MainTimeTableTodoType[];
+  Todos?: MainTimeTableTodoType[];
 };
 
-export interface MainTimeTableDDuDuType {
+export interface MainTimeTableTodoType {
   id: number;
   name: string;
   status: "COMPLETE" | "UNCOMPLETED";

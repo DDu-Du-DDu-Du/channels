@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 
 import { useToast } from "@/components/toast/hooks";
-import { getDDuDuDetail } from "@/service/feed/feed";
+import { getTodoDetail } from "@/service/feed/feed";
 import { patchNotificationRead } from "@/service/notification/notification";
 import type {
   NotificationContextType,
@@ -13,9 +13,9 @@ import { useNotificationInboxQuery } from "../../queries";
 
 import { Href, useRouter } from "expo-router";
 
-export type NotificationContextTab = "DDUDU" | "ANNOUNCEMENT";
+export type NotificationContextTab = "Todo" | "ANNOUNCEMENT";
 
-export type DduduNotificationListEntry =
+export type TodoNotificationListEntry =
   | {
       type: "header";
       key: string;
@@ -34,7 +34,7 @@ export interface AnnouncementViewItem {
   isUnread: boolean;
 }
 
-interface DDuDuDetailResponseType {
+interface TodoDetailResponseType {
   scheduledOn: string;
 }
 
@@ -44,7 +44,7 @@ const DATE_PAD_WIDTH = 2;
 const normalizeContext = (context: NotificationContextType): NotificationContextTab | null => {
   const normalized = String(context).toUpperCase();
 
-  if (normalized === "DDUDU" || normalized === "ANNOUNCEMENT") {
+  if (normalized === "Todo" || normalized === "ANNOUNCEMENT") {
     return normalized;
   }
 
@@ -80,7 +80,7 @@ const resolveAnnouncementDateText = (createdAt: string) => {
 function useNotificationScreen() {
   const router = useRouter();
   const { createToast } = useToast();
-  const [selectedContext, setSelectedContext] = useState<NotificationContextTab>("DDUDU");
+  const [selectedContext, setSelectedContext] = useState<NotificationContextTab>("Todo");
   const [loadingNotificationId, setLoadingNotificationId] = useState<number | null>(null);
   const [optimisticReadIds, setOptimisticReadIds] = useState<Set<number>>(new Set());
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
@@ -90,8 +90,8 @@ function useNotificationScreen() {
     return data?.pages.flatMap((page) => page.contents) ?? [];
   }, [data?.pages]);
 
-  const dduduItems = useMemo(
-    () => sourceItems.filter((item) => normalizeContext(item.context) === "DDUDU"),
+  const TodoItems = useMemo(
+    () => sourceItems.filter((item) => normalizeContext(item.context) === "Todo"),
     [sourceItems],
   );
   const announcementItems = useMemo(
@@ -99,11 +99,11 @@ function useNotificationScreen() {
     [sourceItems],
   );
 
-  const dduduListEntries = useMemo<DduduNotificationListEntry[]>(() => {
-    const entries: DduduNotificationListEntry[] = [];
+  const TodoListEntries = useMemo<TodoNotificationListEntry[]>(() => {
+    const entries: TodoNotificationListEntry[] = [];
     let prevLabel = "";
 
-    dduduItems.forEach((item) => {
+    TodoItems.forEach((item) => {
       const label = resolveGroupLabel(item.createdAt);
 
       if (prevLabel !== label) {
@@ -123,7 +123,7 @@ function useNotificationScreen() {
     });
 
     return entries;
-  }, [dduduItems]);
+  }, [TodoItems]);
 
   const announcementViewItems = useMemo<AnnouncementViewItem[]>(
     () =>
@@ -147,7 +147,7 @@ function useNotificationScreen() {
     }
   };
 
-  const handlePressDduduNotification = async (item: NotificationInboxItemType) => {
+  const handlePressTodoNotification = async (item: NotificationInboxItemType) => {
     if (loadingNotificationId !== null) {
       return;
     }
@@ -155,9 +155,9 @@ function useNotificationScreen() {
     setLoadingNotificationId(item.id);
 
     try {
-      const detail = (await getDDuDuDetail({ id: item.contextId })) as DDuDuDetailResponseType;
+      const detail = (await getTodoDetail({ id: item.contextId })) as TodoDetailResponseType;
       if (!detail?.scheduledOn) {
-        throw new Error("Invalid ddudu detail response");
+        throw new Error("Invalid Todo detail response");
       }
 
       router.push(`/feed?date=${detail.scheduledOn}` as Href);
@@ -201,14 +201,14 @@ function useNotificationScreen() {
   return {
     selectedContext,
     setSelectedContext,
-    dduduListEntries,
+    TodoListEntries,
     announcementViewItems,
     hasUnreadAnnouncement,
     isLoading,
     isFetchingNextPage,
     loadingNotificationId,
     handleLoadMore,
-    handlePressDduduNotification,
+    handlePressTodoNotification,
     handlePressAnnouncement,
   };
 }

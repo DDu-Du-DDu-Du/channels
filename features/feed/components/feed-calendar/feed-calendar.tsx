@@ -7,15 +7,15 @@ import type { SharedValue } from "react-native-reanimated";
 import { BottomSingleCalendar } from "@/components";
 import { useCalendarFirstDay } from "@/hooks";
 import { useSettingsStore } from "@/stores";
-import type { MonthlyWeeklyDDuDuType } from "@/types/response/feed/feed";
+import type { MonthlyWeeklyTodoType } from "@/types/response/feed/feed";
 import { formatDateToYYYYMMDD, getCalendarTheme } from "@/utils";
 
 import { FeedCalendarDayContent, FeedCalendarHeader } from "./components";
-import { useFeedCalendarNavigation, useGoalsDDuDuMutation } from "./hooks";
+import { useFeedCalendarNavigation, useGoalsTodoMutation } from "./hooks";
 
 export interface FeedCalendarProps {
   date: string;
-  monthlyDDuDus: MonthlyWeeklyDDuDuType[];
+  monthlyTodos: MonthlyWeeklyTodoType[];
   onSelectDate: (date: string) => void;
   onCalendarToggled?: (isOpen: boolean) => void;
   onReadyToggleCalendar?: (handleToggleCalendar: () => void) => void;
@@ -25,7 +25,7 @@ export interface FeedCalendarProps {
 
 function FeedCalendar({
   date,
-  monthlyDDuDus,
+  monthlyTodos,
   onSelectDate,
   onCalendarToggled,
   onReadyToggleCalendar,
@@ -37,7 +37,7 @@ function FeedCalendar({
   const { width: screenWidth } = useWindowDimensions();
   const isWebDesktop = Platform.OS === "web" && screenWidth >= 1024;
   const calendarWidth = useMemo(() => (isWebDesktop ? "50%" : "100%"), [isWebDesktop]);
-  const { handleMonthChange } = useGoalsDDuDuMutation();
+  const { handleMonthChange } = useGoalsTodoMutation();
   const expandableCalendarRef = useRef<{ toggleCalendarPosition: () => boolean } | null>(null);
   const lastHandledMonthRef = useRef<string>("");
   const [isMonthPickerOpen, setIsMonthPickerOpen] = useState(false);
@@ -125,20 +125,20 @@ function FeedCalendar({
   };
 
   const monthlyStatsByDate = useMemo(() => {
-    return monthlyDDuDus.reduce<Record<string, MonthlyWeeklyDDuDuType>>((acc, item) => {
+    return monthlyTodos.reduce<Record<string, MonthlyWeeklyTodoType>>((acc, item) => {
       const normalizedDate = item.date.slice(0, 10);
       acc[normalizedDate] = item;
       return acc;
     }, {});
-  }, [monthlyDDuDus]);
+  }, [monthlyTodos]);
 
   const markedDates = useMemo(() => {
-    return monthlyDDuDus.reduce<MarkedDates>((acc, item) => {
+    return monthlyTodos.reduce<MarkedDates>((acc, item) => {
       const normalizedDate = item.date.slice(0, 10);
       acc[normalizedDate] = { marked: item.totalCount > 0 };
       return acc;
     }, {});
-  }, [monthlyDDuDus]);
+  }, [monthlyTodos]);
   const calendarTheme = useMemo(
     () =>
       getCalendarTheme({
@@ -204,7 +204,7 @@ function FeedCalendar({
           currentDate={visibleDate}
           selectedDate={monthPickerSelectedDate}
           setSelected={setMonthPickerSelectedDate}
-          onChangeDDuDuDate={(selectedDate) => {
+          onChangeTodoDate={(selectedDate) => {
             handleSelectCalendarDate(formatDateToYYYYMMDD(selectedDate));
             handleCloseMonthPicker();
           }}

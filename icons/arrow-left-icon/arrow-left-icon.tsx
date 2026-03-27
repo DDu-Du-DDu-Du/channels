@@ -1,4 +1,3 @@
-import React from "react";
 import Svg, { Path } from "react-native-svg";
 
 import { useResolvedIconColor } from "@/icons/use-resolved-icon-color";
@@ -10,7 +9,7 @@ export interface IconProps {
 }
 
 function ArrowLeftIcon({ size = 32, stroke, className }: IconProps) {
-  const resolvedStroke = useResolvedIconColor(stroke, "default");
+  const resolvedStroke = useResolvedIconColor(stroke, "inverse");
 
   return (
     <Svg

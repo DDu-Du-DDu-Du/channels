@@ -4,7 +4,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useToast } from "@/components/toast/hooks";
 import { HEX_COLOR_WITH_OPTIONAL_HASH_REGEX, normalizeDayOfWeekToKr } from "@/constants";
 import { GOAL_KEY } from "@/constants/query-key/query-key";
-import type { RepeatDduduItemType } from "@/features/repeat-ddudu";
+import type { RepeatTodoItemType } from "@/features/repeat-todo";
 import { createGoal } from "@/service/goal/goal";
 import type { GoalRequestType } from "@/types/request/goal/goal";
 import type { GoalPrivacyType } from "@/types/response/goal/goal";
@@ -16,18 +16,18 @@ export interface GoalEditorFormValues {
   title: string;
   color: string;
   privacyType?: GoalPrivacyType;
-  repeatDdudus?: RepeatDduduItemType[];
+  repeatTodos?: RepeatTodoItemType[];
 }
 
 interface UseGoalMutationProps {
   defaultTitle: string;
   pickedColor: string;
-  repeatDdudus: RepeatDduduItemType[];
+  repeatTodos: RepeatTodoItemType[];
 }
 
 const normalizeColorToHex6 = (color: string) => color.replace(/^#/, "").toUpperCase();
 
-function useGoalMutation({ defaultTitle, pickedColor, repeatDdudus }: UseGoalMutationProps) {
+function useGoalMutation({ defaultTitle, pickedColor, repeatTodos }: UseGoalMutationProps) {
   const router = useRouter();
   const { createToast } = useToast();
   const methods = useForm<GoalEditorFormValues>({
@@ -68,12 +68,12 @@ function useGoalMutation({ defaultTitle, pickedColor, repeatDdudus }: UseGoalMut
       name: values.title,
       color: normalizeColorToHex6(values.color),
       privacyType: values.privacyType ?? "PUBLIC",
-      repeatDdudus: repeatDdudus.map((repeatDdudu) => {
-        const { id, tempId, ...repeatDduduWithoutIdentity } = repeatDdudu;
+      repeatTodos: repeatTodos.map((repeatTodo) => {
+        const { id, tempId, ...repeatTodoWithoutIdentity } = repeatTodo;
 
         return {
-          ...repeatDduduWithoutIdentity,
-          repeatDaysOfWeek: repeatDdudu.repeatDaysOfWeek?.map(normalizeDayOfWeekToKr),
+          ...repeatTodoWithoutIdentity,
+          repeatDaysOfWeek: repeatTodo.repeatDaysOfWeek?.map(normalizeDayOfWeekToKr),
         };
       }),
     };

@@ -2,14 +2,14 @@ import { memo } from "react";
 import { Pressable, View } from "react-native";
 
 import { ProgressRing, SpoqaText } from "@/components";
-import { MonthlyWeeklyDDuDuType } from "@/types/response/feed/feed";
+import { MonthlyWeeklyTodoType } from "@/types/response/feed/feed";
 
 import useFeedCalendarDayContent from "../../hooks/use-feed-calendar-day-content/use-feed-calendar-day-content";
 
 export interface FeedCalendarDayContentProps {
   date: string;
   day?: number;
-  dailyStats?: MonthlyWeeklyDDuDuType;
+  dailyStats?: MonthlyWeeklyTodoType;
   selectedDate?: string; // YYYY-MM-DD
   disabled?: boolean;
   onPress?: (date: string) => void;
@@ -32,8 +32,7 @@ function FeedCalendarDayContent({
 
   const totalCount = dailyStats?.totalCount ?? 0;
   const uncompletedCount = dailyStats?.uncompletedCount ?? 0;
-  // TODO(server): completedCount API field is expected to replace this derived value.
-  const completedCount = Math.max(0, totalCount - uncompletedCount);
+  const completedCount = dailyStats?.completedCount ?? Math.max(0, totalCount - uncompletedCount);
   const hasTodo = totalCount > 0;
   const progressPercent = hasTodo ? (completedCount / totalCount) * 100 : 0;
 
@@ -90,6 +89,8 @@ const areFeedCalendarDayContentPropsEqual = (
   const nextIsSelected = next.selectedDate === next.date;
   const prevTotalCount = prev.dailyStats?.totalCount ?? 0;
   const nextTotalCount = next.dailyStats?.totalCount ?? 0;
+  const prevCompletedCount = prev.dailyStats?.completedCount ?? 0;
+  const nextCompletedCount = next.dailyStats?.completedCount ?? 0;
   const prevUncompletedCount = prev.dailyStats?.uncompletedCount ?? 0;
   const nextUncompletedCount = next.dailyStats?.uncompletedCount ?? 0;
 
@@ -99,6 +100,7 @@ const areFeedCalendarDayContentPropsEqual = (
     prev.disabled === next.disabled &&
     prevIsSelected === nextIsSelected &&
     prevTotalCount === nextTotalCount &&
+    prevCompletedCount === nextCompletedCount &&
     prevUncompletedCount === nextUncompletedCount
   );
 };

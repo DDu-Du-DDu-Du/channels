@@ -7,12 +7,12 @@ import { FEED_KEY } from "@/constants/query-key/query-key";
 import FeedCalendar from "@/features/feed/components/feed-calendar/feed-calendar";
 import MainFeedItems from "@/features/feed/components/main-feed-items/main-feed-items";
 import { useMe } from "@/features/user";
-import { getDailyList, getDailyTimeTable, getPeriodDDuDus } from "@/service/feed/feed";
+import { getDailyList, getDailyTimeTable, getPeriodTodos } from "@/service/feed/feed";
 import { useAuthStore } from "@/stores";
 import type {
   MainDailyListType,
   MainDailyTimeTableType,
-  MonthlyWeeklyDDuDuType,
+  MonthlyWeeklyTodoType,
 } from "@/types/response/feed/feed";
 import { formatDateToYYYYMMDD } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
@@ -152,10 +152,10 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
     setSelectedDate(resolvedParamDate);
   }, [resolvedParamDate]);
 
-  const { data: periodDDuDus } = useQuery<MonthlyWeeklyDDuDuType[]>({
-    queryKey: [FEED_KEY.MONTHLY_DDUDUS, dateKey],
+  const { data: periodTodos } = useQuery<MonthlyWeeklyTodoType[]>({
+    queryKey: [FEED_KEY.MONTHLY_Todos, dateKey],
     queryFn: async () =>
-      getPeriodDDuDus({
+      getPeriodTodos({
         userId: user.id,
         date: dateKey,
         type: "MONTH",
@@ -236,7 +236,7 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
   const feedCalendar = (
     <FeedCalendar
       date={selectedDate}
-      monthlyDDuDus={periodDDuDus ?? []}
+      monthlyTodos={periodTodos ?? []}
       onSelectDate={handleSelectDate}
       onCalendarToggled={setIsCalendarOpen}
       externalOpenProgress={calendarOpenProgress}
@@ -253,7 +253,7 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
       dailyList={dailyList ?? []}
       dailyTimeTable={dailyTimeTable}
       isDailyTimeTableLoading={isDailyTimeTableLoading}
-      selectedDDuDuDate={selectedDate}
+      selectedTodoDate={selectedDate}
       isCalendarOpen={isCalendarOpen}
     />
   );

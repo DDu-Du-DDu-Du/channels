@@ -13,7 +13,7 @@ export interface GoalEditFormViewProps {
   defaultTitle: string;
   pickedColor: string;
   privacyType: GoalPrivacyType;
-  repeatDduduCount: number;
+  repeatTodoCount: number;
   onPressOpenColorSheet: () => void;
   onPressOpenRepeatManagement: () => void;
   onPressTerminateGoal: () => void;
@@ -25,7 +25,7 @@ function GoalEditFormView({
   defaultTitle,
   pickedColor,
   privacyType,
-  repeatDduduCount,
+  repeatTodoCount,
   onPressOpenColorSheet,
   onPressOpenRepeatManagement,
   onPressTerminateGoal,
@@ -103,10 +103,10 @@ function GoalEditFormView({
           />
 
           <FormSection
-            label={"반복뚜두 관리"}
+            label={"반복투두 관리"}
             rightContent={
               <View className="flex-row items-center gap-[0.4rem]">
-                <SpoqaText className="text-size13 text-role-text-inverse dark:text-role-dark-text-inverse">{`${repeatDduduCount}개`}</SpoqaText>
+                <SpoqaText className="text-size13 text-role-text-inverse dark:text-role-dark-text-inverse">{`${repeatTodoCount}개`}</SpoqaText>
                 <ArrowRightIcon
                   size={14}
                   stroke="#FFFFFF"

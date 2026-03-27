@@ -29,6 +29,17 @@ function GoalList() {
     },
     enabled: !!isSessionReady && !!user?.id,
   });
+  const sortedGoalList = useMemo(
+    () =>
+      [...goalList].sort((a, b) => {
+        if (a.priority !== b.priority) {
+          return a.priority - b.priority;
+        }
+
+        return a.id - b.id;
+      }),
+    [goalList],
+  );
 
   const handlePressGoal = (goalId: number) => {
     router.push({
@@ -37,11 +48,9 @@ function GoalList() {
     });
   };
 
-  // TODO: 서버에 order 추가 후 리스트에 drag 추가
-
   return (
     <FlatList
-      data={goalList}
+      data={sortedGoalList}
       keyExtractor={(item) => item.id.toString()}
       contentContainerStyle={{
         paddingTop: 8,

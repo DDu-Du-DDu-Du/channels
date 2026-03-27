@@ -17,7 +17,7 @@ function useOauth2Login({ code }: UseOauth2LoginParams) {
     setAuthLoading(true);
 
     const kakaoResult = await login();
-    // TODO: pod install로 나중에 확인해야함
+    // Todo: pod install로 나중에 확인해야함
     const socialToken = kakaoResult?.accessToken;
 
     if (!socialToken) {

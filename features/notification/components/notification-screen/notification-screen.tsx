@@ -3,7 +3,7 @@ import { ActivityIndicator, FlatList, Pressable, View } from "react-native";
 import { ReminderNotification, SelectChip, SpoqaText } from "@/components";
 import {
   AnnouncementViewItem,
-  DduduNotificationListEntry,
+  TodoNotificationListEntry,
   useNotificationScreen,
 } from "@/features/notification/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
@@ -23,14 +23,14 @@ function NotificationScreen() {
   const {
     selectedContext,
     setSelectedContext,
-    dduduListEntries,
+    TodoListEntries,
     announcementViewItems,
     hasUnreadAnnouncement,
     isLoading,
     isFetchingNextPage,
     loadingNotificationId,
     handleLoadMore,
-    handlePressDduduNotification,
+    handlePressTodoNotification,
     handlePressAnnouncement,
   } = useNotificationScreen();
 
@@ -83,8 +83,8 @@ function NotificationScreen() {
       <View className="mb-[1.6rem] flex-row gap-[1.2rem]">
         <SelectChip
           label="투두"
-          selected={selectedContext === "DDUDU"}
-          onPress={() => setSelectedContext("DDUDU")}
+          selected={selectedContext === "Todo"}
+          onPress={() => setSelectedContext("Todo")}
           selectedBackgroundColor={selectedChipBg}
           unselectedBackgroundColor={unselectedChipBg}
           selectedTextClassName="text-role-text-primary dark:text-role-dark-text-primary"
@@ -110,11 +110,11 @@ function NotificationScreen() {
     </View>
   );
 
-  if (selectedContext === "DDUDU") {
+  if (selectedContext === "Todo") {
     return (
       <View className="flex-1 bg-role-surface-panel dark:bg-role-dark-surface-panel">
-        <FlatList<DduduNotificationListEntry>
-          data={dduduListEntries}
+        <FlatList<TodoNotificationListEntry>
+          data={TodoListEntries}
           keyExtractor={(item) => item.key}
           contentContainerStyle={{
             paddingHorizontal: 24,
@@ -146,7 +146,7 @@ function NotificationScreen() {
                   bgColor={reminderBg}
                   isLoading={loadingNotificationId === item.item.id}
                   disabled={loadingNotificationId !== null}
-                  onPress={() => handlePressDduduNotification(item.item)}
+                  onPress={() => handlePressTodoNotification(item.item)}
                 />
               </View>
             );

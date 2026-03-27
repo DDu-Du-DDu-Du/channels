@@ -9,6 +9,7 @@ export interface AnnouncementListResponseType {
   isEmpty: boolean;
   contents: AnnouncementListItemResponseType[];
   nextCursor: string | null;
+  hasNext: boolean;
 }
 
 export interface AnnouncementDetailResponseType {

@@ -2,9 +2,9 @@ import { Pressable, View } from "react-native";
 
 import { SpoqaText } from "@/components";
 import {
-  DDuDuSearchMenu,
   FeedViewToggleMenu,
   GoalMenu,
+  TodosearchMenu,
 } from "@/features/feed/components/main-header/components";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { ChevronRightIcon } from "@/icons";
@@ -48,7 +48,7 @@ function FeedCalendarHeader({ displayMonth, onPressMonthPicker }: FeedCalendarHe
         </Pressable>
         <View className="flex-row items-center gap-[0.8rem]">
           <FeedViewToggleMenu />
-          <DDuDuSearchMenu />
+          <TodosearchMenu />
           <GoalMenu />
         </View>
       </View>

@@ -1,12 +1,12 @@
 const FEED = {
-  DAILY_LIST: "/api/ddudus/daily/list",
-  DAILY_TIMETABLE: "/api/ddudus/daily/timetable",
-  DDUDU: "/api/ddudus",
-  COMPLETE_TOGGLE_DDUDU: "/api/ddudus",
+  DAILY_LIST: "/api/todos/daily/list",
+  DAILY_TIMETABLE: "/api/todos/daily/timetable",
+  TODO: "/api/todos",
+  COMPLETE_TOGGLE_TODO: "/api/todos",
   PERIOD_GOALS: "/api/period-goals",
-  WEEKLY_DDUDUS: "/api/stats/completion/weekly",
-  MONTHLY_DDUDUS: "/api/stats/completion/monthly",
-  DDUDU_DETAIL: "/api/ddudus",
+  WEEKLY_TODOS: "/api/stats/completion/weekly",
+  MONTHLY_TODOS: "/api/stats/completion/monthly",
+  TODO_DETAIL: "/api/todos",
 };
 
 export default FEED;

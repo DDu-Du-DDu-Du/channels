@@ -11,8 +11,8 @@ function useAnnouncementListQuery() {
         size: 20,
         cursor: pageParam,
       }),
-    // TODO(server): add hasNext boolean in announcement list response and prefer it for hasNextPage decision.
-    getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,
+    getNextPageParam: (lastPage) =>
+      lastPage.hasNext ? lastPage.nextCursor || undefined : undefined,
   });
 }
 

@@ -1,22 +1,24 @@
 export const FEED_KEY = {
   DAILY_LIST: "dailyList",
   DAILY_TIMETABLE: "dailyTimeTable",
-  WEEKLY_DDUDUS: "weeklyDDuDus",
-  MONTHLY_DDUDUS: "monthlyDDuDus",
+  WEEKLY_TodoS: "weeklyTodos",
+  MONTHLY_TodoS: "monthlyTodos",
   MONTHLY_GOAL_MEMO: "monthlyGoalMemo",
   WEEKLY_GOAL_MEMO: "weeklyGoalMemo",
-  DELETE_DDUDU: "deleteDDuDu",
-  CREATE_DDUDU: "createDDuDu",
-  EDIT_DDUDU: "editDDuDu",
+  DELETE_Todo: "deleteTodo",
+  CREATE_Todo: "createTodo",
+  EDIT_Todo: "editTodo",
   COMPLETE_TOGGLE: "completeToggle",
-  DDUDU_CHANGE_DATE: "dduduChangeDate",
-  DDUDU_REPEAT_DATE: "dduduRepeatDate",
-  DDUDU_CHANGE_TIME: "dduduChangeTime",
-  DDUDU_DETAIL: "dduduDetail",
+  Todo_CHANGE_DATE: "TodoChangeDate",
+  Todo_REPEAT_DATE: "TodoRepeatDate",
+  Todo_CHANGE_TIME: "TodoChangeTime",
+  Todo_DETAIL: "TodoDetail",
+  WEEKLY_Todos: "weeklyTodos",
+  MONTHLY_Todos: "monthlyTodos",
 };
 
-export const DDUDU_KEY = {
-  SEARCH: "dduduSearch",
+export const Todo_KEY = {
+  SEARCH: "TodoSearch",
 };
 
 export const QUERY_KEY = {
@@ -34,8 +36,8 @@ export const GOAL_KEY = {
   GOAL_STATUS: "goalStatus",
 };
 
-export const REPEAT_DDUDU_KEY = {
-  REPEAT_DDUDU: "repeatDdudu",
+export const REPEAT_Todo_KEY = {
+  REPEAT_Todo: "repeatTodo",
   REPEAT_CREATE: "repeatCreate",
   REPEAT_EDIT: "repeatEdit",
   REPEAT_DELETE: "repeatDelete",
@@ -43,11 +45,13 @@ export const REPEAT_DDUDU_KEY = {
 
 export const USER_KEY = {
   ME: "me",
+  SETTINGS: "settings",
 };
 
 export const STATS_KEY = {
   REPORT: "statsReport",
   SUMMARY: "statsSummary",
+  GOAL_DETAIL_SUMMARY: "statsGoalDetailSummary",
   GOAL_DETAIL_ACHIEVED: "statsGoalDetailAchieved",
   GOAL_DETAIL_POSTPONED: "statsGoalDetailPostponed",
 };

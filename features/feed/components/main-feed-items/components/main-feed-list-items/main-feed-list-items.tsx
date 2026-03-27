@@ -3,24 +3,24 @@ import Animated, { FadeInDown, LinearTransition } from "react-native-reanimated"
 
 import { EmptyList, GoalItem } from "@/components";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
-import type { MainDDuDusType, MainDailyListType } from "@/types/response/feed/feed";
+import type { MainDailyListType, MainTodosType } from "@/types/response/feed/feed";
 import { hexConvertForRGBA, remToPx } from "@/utils";
 
-import MainDDuDuItem from "../main-ddudu-item/main-ddudu-item";
+import MainTodoItem from "../main-todo-item/main-todo-item";
 
 export interface MainFeedListItemsProps {
   dailyList: MainDailyListType[];
   isCalendarOpen: boolean;
-  onDDuDuCompleteToggle: (id: number) => void;
-  onDDuDuSheetOpen: (id: number) => void;
+  onTodoCompleteToggle: (id: number) => void;
+  onTodosheetOpen: (id: number) => void;
   onOpenCreateSheet: (goal: MainDailyListType["goal"]) => void;
 }
 
 function MainFeedListItems({
   dailyList,
   isCalendarOpen,
-  onDDuDuCompleteToggle,
-  onDDuDuSheetOpen,
+  onTodoCompleteToggle,
+  onTodosheetOpen,
   onOpenCreateSheet,
 }: MainFeedListItemsProps) {
   const emptyIconStroke = useThemeColorToken("role.icon.muted");
@@ -39,6 +39,7 @@ function MainFeedListItems({
         overScrollMode="always"
         ListEmptyComponent={() => <EmptyList text="목표를 먼저 생성해보세요." />}
         renderItem={({ item }) => {
+          const todos = item.todos ?? item.Todos ?? [];
           const groupBorderColor = hexConvertForRGBA({ hex: item.goal.color, alpha: 0.35 });
           const thinBorderColor = hexConvertForRGBA({ hex: item.goal.color, alpha: 0.28 });
           const emptyBackgroundColor = hexConvertForRGBA({ hex: item.goal.color, alpha: 0.12 });
@@ -64,10 +65,10 @@ function MainFeedListItems({
                 </View>
 
                 <View>
-                  {item.ddudus.length === 0 && (
+                  {todos.length === 0 && (
                     <View style={{ backgroundColor: emptyBackgroundColor }}>
                       <EmptyList
-                        text="아직 생성된 뚜두가 없어요."
+                        text="아직 생성된 투두가 없어요."
                         className="w-full items-center py-[2rem]"
                         textClassName="mt-[0.8rem] text-size14 text-role-text-secondary dark:text-role-dark-text-secondary"
                         iconStroke={emptyIconStroke}
@@ -75,24 +76,24 @@ function MainFeedListItems({
                     </View>
                   )}
 
-                  {item.ddudus.map((dduduItem: MainDDuDusType, index: number) => {
-                    const showThinBorder = index !== item.ddudus.length - 1;
+                  {todos.map((TodoItem: MainTodosType, index: number) => {
+                    const showThinBorder = index !== todos.length - 1;
 
                     return (
                       <Animated.View
-                        key={dduduItem.id}
+                        key={TodoItem.id}
                         style={{
                           borderBottomWidth: showThinBorder ? 1 : 0,
                           borderBottomColor: thinBorderColor,
                         }}
                       >
-                        <MainDDuDuItem
-                          id={dduduItem.id}
-                          ddudu={dduduItem.name}
-                          status={dduduItem.status}
+                        <MainTodoItem
+                          id={TodoItem.id}
+                          Todo={TodoItem.name}
+                          status={TodoItem.status}
                           color={item.goal.color}
-                          onDDuDuCompleteToggle={onDDuDuCompleteToggle}
-                          handleToggleOn={() => onDDuDuSheetOpen(dduduItem.id)}
+                          onTodoCompleteToggle={onTodoCompleteToggle}
+                          handleToggleOn={() => onTodosheetOpen(TodoItem.id)}
                         />
                       </Animated.View>
                     );

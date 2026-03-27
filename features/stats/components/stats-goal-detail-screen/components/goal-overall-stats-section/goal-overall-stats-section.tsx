@@ -4,13 +4,13 @@ import { SpoqaText } from "@/components";
 
 interface GoalOverallStatsSectionProps {
   createdAt: string;
-  createdDduduCount: number;
+  createdTodoCount: number;
   completionRate: number;
 }
 
 function GoalOverallStatsSection({
   createdAt,
-  createdDduduCount,
+  createdTodoCount,
   completionRate,
 }: GoalOverallStatsSectionProps) {
   return (
@@ -32,7 +32,7 @@ function GoalOverallStatsSection({
           weight="semiBold"
           className="text-center text-size16 text-role-text-primary dark:text-role-dark-text-primary"
         >
-          {`${createdDduduCount}개`}
+          {`${createdTodoCount}개`}
         </SpoqaText>
         <SpoqaText className="mt-[0.4rem] text-center text-size12 text-role-text-tertiary dark:text-role-dark-text-tertiary">
           생성된 투두
