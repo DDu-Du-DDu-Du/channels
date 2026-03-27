@@ -11,7 +11,7 @@ const meta = {
     onPress: { action: "onPress" },
   },
   args: {
-    label: "반복 뚜두 만들기",
+    label: "반복 투두 만들기",
     withPress: true,
   },
 } satisfies Meta<typeof FormSectionView>;

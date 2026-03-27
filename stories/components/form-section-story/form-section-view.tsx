@@ -10,7 +10,7 @@ export interface FormSectionViewProps {
 }
 
 function FormSectionView({
-  label = "반복 뚜두 만들기",
+  label = "반복 투두 만들기",
   withPress = true,
   onPress,
 }: FormSectionViewProps) {

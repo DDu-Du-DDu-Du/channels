@@ -10,9 +10,9 @@ export interface FeedTypeSwitchViewProps {
 }
 
 function FeedTypeSwitchView({
-  firstLabel = "뚜두",
+  firstLabel = "투두",
   secondLabel = "스케줄",
-  selectedOption = "ddudu",
+  selectedOption = "Todo",
   alternativeOption = "schedule",
 }: FeedTypeSwitchViewProps) {
   return (

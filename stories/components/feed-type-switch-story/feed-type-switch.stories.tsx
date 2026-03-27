@@ -12,9 +12,9 @@ const meta = {
     alternativeOption: { control: "text" },
   },
   args: {
-    firstLabel: "뚜두",
+    firstLabel: "투두",
     secondLabel: "스케줄",
-    selectedOption: "ddudu",
+    selectedOption: "Todo",
     alternativeOption: "schedule",
   },
 } satisfies Meta<typeof FeedTypeSwitchView>;

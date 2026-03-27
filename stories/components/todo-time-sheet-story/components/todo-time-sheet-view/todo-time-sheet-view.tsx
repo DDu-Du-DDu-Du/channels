@@ -1,26 +1,26 @@
 import { useState } from "react";
 import { Pressable, View } from "react-native";
 
-import { DDuDuTimeSheet, SpoqaText } from "@/components";
-import type { DDuDuTimeRangeType, DDuDuTimeType } from "@/features/feed/feed.types";
+import { SpoqaText, TodoTimeSheet } from "@/components";
+import type { TodoTimeRangeType, TodoTimeType } from "@/features/feed/feed.types";
 
-export interface DDuDuTimeSheetViewProps {
+export interface TodoTimeSheetViewProps {
   onClose?: () => void;
-  onChangeDDuDuTime?: (selectedTime: DDuDuTimeRangeType) => void;
+  onChangeTodoTime?: (selectedTime: TodoTimeRangeType) => void;
 }
 
-function DDuDuTimeSheetView({ onClose, onChangeDDuDuTime }: DDuDuTimeSheetViewProps) {
+function TodoTimeSheetView({ onClose, onChangeTodoTime }: TodoTimeSheetViewProps) {
   const [open, setOpen] = useState(false);
-  const [current, setCurrent] = useState<DDuDuTimeType>({ beginAt: "09:00", endAt: "10:00" });
+  const [current, setCurrent] = useState<TodoTimeType>({ beginAt: "09:00", endAt: "10:00" });
 
   const toStr = (n: number) => String(n).padStart(2, "0");
 
-  const handleChange = (range: DDuDuTimeRangeType) => {
+  const handleChange = (range: TodoTimeRangeType) => {
     setCurrent({
       beginAt: `${toStr(range.beginHour)}:${toStr(range.beginMin)}`,
       endAt: `${toStr(range.endHour)}:${toStr(range.endMin)}`,
     });
-    onChangeDDuDuTime?.(range);
+    onChangeTodoTime?.(range);
   };
 
   return (
@@ -31,13 +31,13 @@ function DDuDuTimeSheetView({ onClose, onChangeDDuDuTime }: DDuDuTimeSheetViewPr
           className="px-4 py-2 bg-role-surface-muted dark:bg-role-dark-surface-muted rounded-radius10"
         >
           <SpoqaText className="text-role-text-inverse dark:text-role-dark-text-inverse">
-            Open DDuDuTimeSheet
+            Open TodoTimeSheet
           </SpoqaText>
         </Pressable>
       ) : (
-        <DDuDuTimeSheet
-          currentDDuDuTime={current}
-          onChangeDDuDuTime={handleChange}
+        <TodoTimeSheet
+          currentTodoTime={current}
+          onChangeTodoTime={handleChange}
           onClose={() => {
             onClose?.();
             setOpen(false);
@@ -48,4 +48,4 @@ function DDuDuTimeSheetView({ onClose, onChangeDDuDuTime }: DDuDuTimeSheetViewPr
   );
 }
 
-export default DDuDuTimeSheetView;
+export default TodoTimeSheetView;

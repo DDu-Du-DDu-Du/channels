@@ -6,13 +6,13 @@ import { formatDateToYYYYMMDD } from "@/utils";
 
 export interface BottomSingleCalendarViewProps {
   handleCalendarSheetToggleOff?: () => void;
-  onChangeDDuDuDate?: (selectedDate: Date) => void;
+  onChangeTodoDate?: (selectedDate: Date) => void;
   noInitialSelected?: boolean;
 }
 
 function BottomSingleCalendarView({
   handleCalendarSheetToggleOff,
-  onChangeDDuDuDate,
+  onChangeTodoDate,
   noInitialSelected = false,
 }: BottomSingleCalendarViewProps) {
   const [open, setOpen] = useState(false);
@@ -36,8 +36,8 @@ function BottomSingleCalendarView({
           currentDate={currentDate}
           selectedDate={selected}
           setSelected={setSelected}
-          onChangeDDuDuDate={(date) => {
-            onChangeDDuDuDate?.(date);
+          onChangeTodoDate={(date) => {
+            onChangeTodoDate?.(date);
           }}
           handleCalendarSheetToggleOff={() => {
             handleCalendarSheetToggleOff?.();

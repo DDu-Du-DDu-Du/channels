@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import GoalDDuDuListItemView from "./components/goal-ddudu-list-item-view/goal-ddudu-list-item-view";
+import GoalTodoListItemView from "./components/goal-todo-list-item-view/goal-todo-list-item-view";
 
 const meta = {
-  title: "components/GoalDDuDuListItem",
-  component: GoalDDuDuListItemView,
+  title: "components/GoalTodoListItem",
+  component: GoalTodoListItemView,
   argTypes: {
     title: { control: "text" },
     repeatDays: { control: "text" },
@@ -20,7 +20,7 @@ const meta = {
     endDate: "2024-05-13",
     linkTo: "?clicked=true",
   },
-} satisfies Meta<typeof GoalDDuDuListItemView>;
+} satisfies Meta<typeof GoalTodoListItemView>;
 
 export default meta;
 

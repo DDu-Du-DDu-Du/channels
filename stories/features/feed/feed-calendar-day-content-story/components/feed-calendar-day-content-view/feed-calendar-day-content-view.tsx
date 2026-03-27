@@ -2,12 +2,12 @@ import { useMemo, useState } from "react";
 import { View } from "react-native";
 
 import FeedCalendarDayContent from "@/features/feed/components/feed-calendar/components/feed-calendar-day-content/feed-calendar-day-content";
-import { MonthlyWeeklyDDuDuType } from "@/types/response/feed/feed";
+import { MonthlyWeeklyTodoType } from "@/types/response/feed/feed";
 
 export interface FeedCalendarDayContentViewProps {
   date?: string; // YYYY-MM-DD
   day?: number; // 1-31
-  dailyStats?: MonthlyWeeklyDDuDuType;
+  dailyStats?: MonthlyWeeklyTodoType;
   selectedDate?: string; // YYYY-MM-DD
   disabled?: boolean;
   onPress?: (date: string) => void;

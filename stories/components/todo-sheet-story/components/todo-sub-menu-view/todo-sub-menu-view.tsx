@@ -2,24 +2,24 @@ import React from "react";
 import { View } from "react-native";
 
 import { SpoqaText } from "@/components";
-import DDuDuSubMenu from "@/components/ddudu-sheet/components/ddudu-sub-menu/ddudu-sub-menu";
-import type { DDuDuDetailType } from "@/components/ddudu-sheet/ddudu-sheet.types";
+import TodosubMenu from "@/components/todo-sheet/components/todo-sub-menu/todo-sub-menu";
+import type { TodoDetailType } from "@/components/todo-sheet/todo-sheet.types";
 import { formatDateToYYYYMMDD } from "@/utils";
 
-export interface DDuDuSubMenuViewProps {
-  dduduDetail?: DDuDuDetailType;
+export interface TodosubMenuViewProps {
+  TodoDetail?: TodoDetailType;
   handleSelectDifferentDate?: (type: "change" | "repeat", currentDate: string) => void;
   handleAlarmSetting?: () => void;
   onRepeatCurrentDate?: () => void;
 }
 
-function DDuDuSubMenuView({
-  dduduDetail = {
+function TodosubMenuView({
+  TodoDetail = {
     id: 1,
     name: "Sample",
     status: "UNCOMPLETED",
     goalId: 1,
-    repeatDduduId: 0,
+    repeatTodoId: 0,
     scheduledOn: formatDateToYYYYMMDD(new Date()),
     beginAt: null,
     endAt: null,
@@ -27,11 +27,11 @@ function DDuDuSubMenuView({
   handleSelectDifferentDate,
   handleAlarmSetting,
   onRepeatCurrentDate,
-}: DDuDuSubMenuViewProps) {
+}: TodosubMenuViewProps) {
   return (
     <View className="flex-1 items-center justify-center p-4">
-      <DDuDuSubMenu
-        dduduDetail={dduduDetail}
+      <TodosubMenu
+        TodoDetail={TodoDetail}
         handleSelectDifferentDate={(t, d) => handleSelectDifferentDate?.(t, d)}
         handleAlarmSetting={() => handleAlarmSetting?.()}
         onRepeatCurrentDate={() => onRepeatCurrentDate?.()}
@@ -43,4 +43,4 @@ function DDuDuSubMenuView({
   );
 }
 
-export default DDuDuSubMenuView;
+export default TodosubMenuView;

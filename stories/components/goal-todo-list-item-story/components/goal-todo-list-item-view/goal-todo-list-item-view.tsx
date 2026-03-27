@@ -1,10 +1,10 @@
 import { View } from "react-native";
 
-import { GoalDDuDuListItem } from "@/components";
+import { GoalTodoListItem } from "@/components";
 
 import { Href } from "expo-router";
 
-export interface GoalDDuDuListItemViewProps {
+export interface GoalTodoListItemViewProps {
   title?: string;
   repeatDays?: string;
   startDate?: string;
@@ -13,17 +13,17 @@ export interface GoalDDuDuListItemViewProps {
   bgColor?: string;
 }
 
-function GoalDDuDuListItemView({
+function GoalTodoListItemView({
   title = "목표 제목",
   repeatDays = "월 수 금",
   startDate = "2024-05-10",
   endDate = "2024-05-13",
   linkTo = "/",
   bgColor,
-}: GoalDDuDuListItemViewProps) {
+}: GoalTodoListItemViewProps) {
   return (
     <View className="flex-1 items-center justify-center w-full p-4">
-      <GoalDDuDuListItem
+      <GoalTodoListItem
         title={title}
         repeatDays={repeatDays}
         startDate={startDate}
@@ -35,4 +35,4 @@ function GoalDDuDuListItemView({
   );
 }
 
-export default GoalDDuDuListItemView;
+export default GoalTodoListItemView;
