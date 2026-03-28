@@ -12,11 +12,16 @@ function useGoalsTodoMutation() {
   const { data: user } = useMe({ readOnly: true });
 
   const MonthlyTodos = useCallback(
-    async (yearMonth: string) =>
-      await queryClient.fetchQuery<MonthlyWeeklyTodoType[]>({
+    async (yearMonth: string) => {
+      if (!user?.id) {
+        return [];
+      }
+
+      return await queryClient.fetchQuery<MonthlyWeeklyTodoType[]>({
         queryKey: [FEED_KEY.MONTHLY_Todos, yearMonth],
         queryFn: () => getMonthlyTodos({ userId: user.id, date: yearMonth }),
-      }),
+      });
+    },
     [queryClient, user?.id],
   );
 

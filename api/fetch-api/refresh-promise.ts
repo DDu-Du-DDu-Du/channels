@@ -4,9 +4,13 @@ import { useAuthStore } from "@/stores";
 let refreshPromise: Promise<void> | null = null;
 
 export async function waitForRefresh() {
+  console.log("current refresh promise working:", refreshPromise);
+
   if (refreshPromise) {
     return refreshPromise;
   }
+
+  console.log("refreshing..");
 
   const clearSession = useAuthStore.getState().clearSession;
 
@@ -26,7 +30,7 @@ export async function waitForRefresh() {
 
       return;
     } catch (error) {
-      useAuthStore.getState().clearSession();
+      clearSession();
 
       console.log("refreshing error:", error);
 

@@ -1,4 +1,4 @@
-import { fetchRefresh } from "@/api";
+import { fetchRefresh } from "@/api/fetch-api/fetch-refresh";
 import { AUTH } from "@/constants/end-points";
 import { RefreshTokenRequest } from "@/types/request/auth/auth";
 
@@ -7,7 +7,6 @@ export async function refresh({ refreshToken }: RefreshTokenRequest) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ refreshToken }),
-    credentials: "include",
   });
 
   if (!response.ok) {

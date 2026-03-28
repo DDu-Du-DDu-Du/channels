@@ -1,4 +1,4 @@
-import { fetchRefresh } from "@/api";
+import { fetchRefresh } from "@/api/fetch-api/fetch-refresh";
 import { AUTH } from "@/constants/end-points";
 import { RefreshTokenRequest } from "@/types/request/auth/auth";
 

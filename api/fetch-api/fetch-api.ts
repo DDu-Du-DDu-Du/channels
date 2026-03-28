@@ -32,6 +32,8 @@ export const fetchApi = async (
       return response;
     }
 
+    console.log("401 happened.. waiting for refresh");
+
     await waitForRefresh();
 
     return fetchWithBearer(requestUrl, options, headers);
@@ -40,12 +42,6 @@ export const fetchApi = async (
   return fetch(requestUrl, {
     ...options,
     headers,
-  });
-};
-
-export const fetchRefresh = (url: string, options: RequestInit = {}) => {
-  return fetch(`${API_BASE_URL}${url}`, {
-    ...options,
   });
 };
 
