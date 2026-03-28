@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Pressable, Switch, View } from "react-native";
 
-import { BottomSheet, SpoqaText } from "@/components";
+import BottomSheet from "@/components/bottom-sheet/bottom-sheet";
+import SpoqaText from "@/components/spoqa-text/spoqa-text";
 import { TodoTimeRangeType, TodoTimeType } from "@/features/feed/feed.types";
 import { useBottomSheetAction } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
@@ -189,8 +190,8 @@ function TodoTimeSheet({
                   backgroundColor: isBeginTimeEnabled
                     ? enabledPickerBgColor
                     : disabledPickerBgColor,
+                  pointerEvents: isBeginTimeEnabled ? "auto" : "none",
                 }}
-                pointerEvents={isBeginTimeEnabled ? "auto" : "none"}
               >
                 <TimePicker
                   type="hour"
@@ -227,8 +228,8 @@ function TodoTimeSheet({
                     isEndTimeEnabled && isBeginTimeEnabled
                       ? enabledPickerBgColor
                       : disabledPickerBgColor,
+                  pointerEvents: isEndTimeEnabled && isBeginTimeEnabled ? "auto" : "none",
                 }}
-                pointerEvents={isEndTimeEnabled && isBeginTimeEnabled ? "auto" : "none"}
               >
                 <TimePicker
                   type="hour"

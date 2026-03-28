@@ -15,10 +15,7 @@ function ToastProvider({ children }: ToastProviderProps) {
   return (
     <>
       {children}
-      <View
-        pointerEvents="box-none"
-        style={styles.container}
-      >
+      <View style={styles.container}>
         <View style={styles.stack}>
           {toastList.map(({ id, message, deleteTime, type }) => (
             <ToastItem
@@ -43,6 +40,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: Platform.select({ ios: 16, android: 16, default: 16 }),
     alignItems: "center",
+    pointerEvents: "box-none",
   },
   stack: {
     maxWidth: 320,

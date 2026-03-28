@@ -23,8 +23,8 @@ function Header({
 }: HeaderProps) {
   return (
     <View
-      pointerEvents="box-none"
       className="absolute top-0 h-[5.2rem] w-full max-w-[60rem] items-center justify-center z-header bg-role-surface-canvas dark:bg-role-dark-surface-canvas"
+      style={{ pointerEvents: "box-none" }}
     >
       <HeaderButton
         buttonPosition="LEFT"

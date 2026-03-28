@@ -21,11 +21,7 @@ function FeedCalendarHeader({ displayMonth, onPressMonthPicker }: FeedCalendarHe
     <View
       className="w-full border-b border-role-border-subtle dark:border-role-dark-border-subtle"
       style={{
-        shadowColor: "#000000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.12,
-        shadowRadius: 3,
-        elevation: 3,
+        boxShadow: "0px 2px 3px rgba(0,0,0,0.12)",
       }}
     >
       <View className="w-full flex-row items-center justify-between px-2 pt-1 pb-6">

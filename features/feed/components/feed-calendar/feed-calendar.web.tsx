@@ -228,8 +228,16 @@ function FeedCalendar({
 
           <Animated.View style={calendarAnimatedStyle}>
             <Animated.View
-              style={[{ position: "absolute", top: 0, left: 0, right: 0 }, monthAnimatedStyle]}
-              pointerEvents={isOpen ? "auto" : "none"}
+              style={[
+                {
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  pointerEvents: isOpen ? "auto" : "none",
+                },
+                monthAnimatedStyle,
+              ]}
               onLayout={(event) => {
                 const nextMonthHeight = event.nativeEvent.layout.height;
                 if (nextMonthHeight > 0 && Math.abs(nextMonthHeight - monthHeight) > 1) {
@@ -254,8 +262,16 @@ function FeedCalendar({
             </Animated.View>
 
             <Animated.View
-              style={[{ position: "absolute", top: 0, left: 0, right: 0 }, weekAnimatedStyle]}
-              pointerEvents={isOpen ? "none" : "auto"}
+              style={[
+                {
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  pointerEvents: isOpen ? "none" : "auto",
+                },
+                weekAnimatedStyle,
+              ]}
               onLayout={(event) => {
                 const nextWeekHeight = event.nativeEvent.layout.height;
                 if (nextWeekHeight > 0 && Math.abs(nextWeekHeight - weekHeight) > 1) {

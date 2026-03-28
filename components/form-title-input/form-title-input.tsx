@@ -23,8 +23,8 @@ function FormTitleInput({
     >
       {required && !value && (
         <View
-          pointerEvents="none"
           className="absolute left-[1.2rem] top-1/2 z-10 -translate-y-1/2"
+          style={{ pointerEvents: "none" }}
         >
           <SpoqaText className="text-size15 text-role-status-error dark:text-role-dark-status-error">
             {"*"}

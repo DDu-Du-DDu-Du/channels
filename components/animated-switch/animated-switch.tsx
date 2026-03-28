@@ -139,16 +139,10 @@ function AnimatedSwitch({
             thumbStyle,
           ]}
         >
-          <Animated.View
-            pointerEvents="none"
-            style={[styles.thumbIcon, offIconStyle]}
-          >
+          <Animated.View style={[styles.thumbIcon, offIconStyle, { pointerEvents: "none" }]}>
             {offIcon}
           </Animated.View>
-          <Animated.View
-            pointerEvents="none"
-            style={[styles.thumbIcon, onIconStyle]}
-          >
+          <Animated.View style={[styles.thumbIcon, onIconStyle, { pointerEvents: "none" }]}>
             {onIcon}
           </Animated.View>
         </Animated.View>

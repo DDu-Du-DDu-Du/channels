@@ -1,7 +1,7 @@
 import React from "react";
-import { DimensionValue, Pressable, View } from "react-native";
+import { type DimensionValue, Pressable, View } from "react-native";
 
-import { SpoqaText } from "@/components";
+import SpoqaText from "@/components/spoqa-text/spoqa-text";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { remToPx } from "@/utils";
 
@@ -33,8 +33,8 @@ function SelectOption({
       <SpoqaText className="inline-block text-size13 leading-[1.3rem]">{children}</SpoqaText>
 
       <View
-        pointerEvents="none"
         style={{
+          pointerEvents: "none",
           position: "absolute",
           top: "50%",
           right: remToPx("1.1rem"),

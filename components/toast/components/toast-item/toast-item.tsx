@@ -12,6 +12,7 @@ import Animated, {
 import type { ToastType } from "@/components/toast/toast-provider.type";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { CloseIcon } from "@/icons";
+import { hexConvertForRGBA } from "@/utils";
 
 import { useToastTypeColor } from "./hooks";
 
@@ -33,6 +34,7 @@ function ToastItem({ id, message, deleteTime, type, onClose }: ToastItemProps) {
   const cardBackgroundColor = useThemeColorToken("role.surface.canvas");
   const barTrackColor = useThemeColorToken("role.surface.muted");
   const shadowColor = useThemeColorToken("role.surface.inverse");
+  const shadowColorWithAlpha = hexConvertForRGBA({ hex: shadowColor, alpha: 0.2 });
 
   useEffect(() => {
     progress.value = withTiming(0, { duration: deleteTime, easing: Easing.linear });
@@ -47,7 +49,15 @@ function ToastItem({ id, message, deleteTime, type, onClose }: ToastItemProps) {
       entering={BounceInDown.duration(200)}
       exiting={FadeOut}
     >
-      <Animated.View style={[styles.card, { backgroundColor: cardBackgroundColor, shadowColor }]}>
+      <Animated.View
+        style={[
+          styles.card,
+          {
+            backgroundColor: cardBackgroundColor,
+            boxShadow: `0px 0px 20px ${shadowColorWithAlpha}`,
+          },
+        ]}
+      >
         <Pressable
           accessibilityRole="button"
           hitSlop={8}
@@ -83,11 +93,6 @@ const styles = StyleSheet.create({
     height: toastHeight,
     borderRadius: 10,
     overflow: "hidden",
-    // simple shadow
-    shadowOpacity: 0.2,
-    shadowRadius: 20,
-    shadowOffset: { width: 0, height: 0 },
-    elevation: 4,
   },
   closeBtn: {
     position: "absolute",

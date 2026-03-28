@@ -92,10 +92,9 @@ function MotionPressable({
       >
         {children}
         <Animated.View
-          pointerEvents="none"
           style={[
             StyleSheet.absoluteFillObject,
-            { backgroundColor: resolvedHighlightColor, borderRadius: 10 },
+            { backgroundColor: resolvedHighlightColor, borderRadius: 10, pointerEvents: "none" },
             overlayAnimatedStyle,
           ]}
         />
