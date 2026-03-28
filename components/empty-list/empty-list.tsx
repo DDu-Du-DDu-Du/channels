@@ -18,7 +18,7 @@ function EmptyList({
   textClassName = "mt-[0.8rem] text-size14 text-role-text-inverse dark:text-role-dark-text-inverse",
   iconStroke,
 }: EmptyListProps) {
-  const defaultIconStroke = useThemeColorToken("role.icon.inverse");
+  const defaultIconStroke = useThemeColorToken("role.icon.default");
   const resolvedIconStroke = iconStroke ?? defaultIconStroke;
 
   return (
