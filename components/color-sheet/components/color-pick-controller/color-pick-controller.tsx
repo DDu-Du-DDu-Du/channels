@@ -1,7 +1,7 @@
 import { Controller, useFormContext } from "react-hook-form";
 import { View } from "react-native";
 
-import { ColorPickerInput } from "../index";
+import ColorPickerInput from "../color-picker-input/color-picker-input";
 
 interface ColorPickControllerProps {
   list: string[];

@@ -1,6 +1,7 @@
 import { Platform, View } from "react-native";
 
-import { SpoqaText, WheelPicker } from "@/components";
+import SpoqaText from "@/components/spoqa-text/spoqa-text";
+import WheelPicker from "@/components/wheel-picker/wheel-picker";
 
 export type TimePickerType = "day" | "hour" | "min";
 

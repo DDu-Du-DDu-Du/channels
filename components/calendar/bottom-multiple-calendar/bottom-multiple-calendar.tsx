@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
 import { MarkingTypes } from "react-native-calendars/src/types";
 
-import { SpoqaText } from "@/components";
+import SpoqaText from "@/components/spoqa-text/spoqa-text";
 import { useCalendarFirstDay } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";

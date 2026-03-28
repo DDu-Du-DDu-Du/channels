@@ -1,6 +1,6 @@
 import { Pressable, View } from "react-native";
 
-import { SpoqaText } from "@/components";
+import SpoqaText from "@/components/spoqa-text/spoqa-text";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { ArrowLeftIcon } from "@/icons";
 

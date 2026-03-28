@@ -1,6 +1,8 @@
 import { Pressable, View } from "react-native";
 
-import { Avatar, ConfirmModal, SpoqaText } from "@/components";
+import Avatar from "@/components/avatar/avatar";
+import ConfirmModal from "@/components/confirm-modal/confirm-modal";
+import SpoqaText from "@/components/spoqa-text/spoqa-text";
 import { useToggle } from "@/hooks";
 import { UserType } from "@/types/response/user/user";
 

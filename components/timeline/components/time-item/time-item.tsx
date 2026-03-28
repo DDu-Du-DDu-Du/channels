@@ -1,7 +1,8 @@
 import { View } from "react-native";
 
-import { ShakingCheckIcon, SpoqaText } from "@/components";
 import MotionPressable from "@/components/motion/motion-pressable/motion-pressable";
+import ShakingCheckIcon from "@/components/shaking-check-icon/shaking-check-icon";
+import SpoqaText from "@/components/spoqa-text/spoqa-text";
 import LineBox from "@/components/timeline/components/line-box/line-box";
 import type { MainTimeTableTodoType } from "@/types/response/feed/feed";
 import { hexConvertForRGBA } from "@/utils";

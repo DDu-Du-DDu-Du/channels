@@ -2,7 +2,7 @@ import { Controller, useFormContext } from "react-hook-form";
 import { View } from "react-native";
 
 import type { PrivacyItemType } from "../../privacy-sheet.types";
-import { SheetRadioItem } from "../index";
+import SheetRadioItem from "../sheet-radio-item/sheet-radio-item";
 
 interface PrivacyTypeControllerProps {
   name?: string;

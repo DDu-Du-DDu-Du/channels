@@ -1,6 +1,7 @@
 import { Pressable, View } from "react-native";
 
-import { Modal, SpoqaText } from "@/components";
+import Modal from "@/components/modal/modal";
+import SpoqaText from "@/components/spoqa-text/spoqa-text";
 
 import { Image } from "expo-image";
 

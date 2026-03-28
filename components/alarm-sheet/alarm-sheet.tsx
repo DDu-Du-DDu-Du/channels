@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 
-import { BottomSheet, SpoqaText } from "@/components";
+import BottomSheet from "@/components/bottom-sheet/bottom-sheet";
+import SpoqaText from "@/components/spoqa-text/spoqa-text";
 import { useToast } from "@/components/toast/hooks";
-import { TodoReminderPanel } from "@/features/todo";
+import TodoReminderPanel from "@/features/todo/components/todo-reminder-panel/todo-reminder-panel";
 import { useBottomSheetAction } from "@/hooks";
 
 export interface AlarmSheetProps {

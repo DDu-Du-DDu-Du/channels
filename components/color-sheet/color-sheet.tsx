@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { View } from "react-native";
 
-import { BottomSheet } from "@/components";
+import BottomSheet from "@/components/bottom-sheet/bottom-sheet";
 import { useBottomSheetAction } from "@/hooks";
 
 import { COLOR_LIST } from "./color-sheet.constant";

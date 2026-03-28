@@ -1,12 +1,11 @@
 import { Pressable, View } from "react-native";
 import { BounceInLeft, BounceOutLeft } from "react-native-reanimated";
 
-import { OutsidePressBackdrop, ProfileImage } from "@/components";
 import { MotionView } from "@/components/motion";
+import OutsidePressBackdrop from "@/components/outside-press-backdrop/outside-press-backdrop";
+import ProfileImage from "@/components/profile-image/profile-image";
 import { useToggle } from "@/hooks";
 import { UserType } from "@/types/response/user/user";
-
-import Avatar from "../../avatar";
 
 export type AvatarListItem = {
   id: string | number;
@@ -61,11 +60,13 @@ function AvatarList({ users }: AvatarListProps) {
               {users.map((user) => (
                 <View
                   key={user.userId}
-                  className="mr-2 overflow-hidden rounded-full"
+                  className="mr-2 h-[2.4rem] w-[2.4rem] overflow-hidden rounded-full"
                 >
-                  <Avatar
-                    size="tiny"
-                    user={user}
+                  <ProfileImage
+                    source={user.userImage}
+                    className="h-full w-full rounded-full"
+                    alt={user.userName}
+                    priority="high"
                   />
                 </View>
               ))}

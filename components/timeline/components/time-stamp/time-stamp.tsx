@@ -1,6 +1,6 @@
 import { View } from "react-native";
 
-import { SpoqaText } from "@/components";
+import SpoqaText from "@/components/spoqa-text/spoqa-text";
 
 export interface TimeStampProps {
   children: React.ReactNode;

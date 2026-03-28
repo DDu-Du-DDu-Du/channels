@@ -2,7 +2,8 @@ import { useEffect } from "react";
 import { FormProvider } from "react-hook-form";
 import { Pressable, View } from "react-native";
 
-import { BottomSheet, SpoqaText } from "@/components";
+import BottomSheet from "@/components/bottom-sheet/bottom-sheet";
+import SpoqaText from "@/components/spoqa-text/spoqa-text";
 import { useBottomSheetAction } from "@/hooks";
 import { FollowerIcon, PrivacyIcon, PublicIcon } from "@/icons";
 import { GoalPrivacyType } from "@/types/response/goal/goal";

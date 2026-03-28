@@ -1,8 +1,9 @@
 import { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 
-import { Avatar, SpoqaText } from "@/components";
+import Avatar from "@/components/avatar/avatar";
 import MotionPressable from "@/components/motion/motion-pressable/motion-pressable";
+import SpoqaText from "@/components/spoqa-text/spoqa-text";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { UserType } from "@/types/response/user/user";
 import getRelativeTime from "@/utils/get-relative-time/get-relative-time";

@@ -1,6 +1,7 @@
 import { Switch, View } from "react-native";
 
-import { SpoqaText, TimePicker } from "@/components";
+import SpoqaText from "@/components/spoqa-text/spoqa-text";
+import TimePicker from "@/components/time-picker/time-picker";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 
 export interface TodoReminderPanelProps {

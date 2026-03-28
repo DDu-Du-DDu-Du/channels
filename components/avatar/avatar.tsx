@@ -1,10 +1,11 @@
 import { Pressable, View } from "react-native";
 
-import { ProfileImage } from "@/components";
+import ProfileImage from "@/components/profile-image/profile-image";
 import { UserType } from "@/types/response/user/user";
 
 import { AVATAR_SIZE } from "./avatar.constant";
-import { AvatarEdit, AvatarList } from "./components";
+import AvatarEdit from "./components/avatar-edit/avatar-edit";
+import AvatarList from "./components/avatar-list/avatar-list";
 import { useChangeImage, useClickAvatar } from "./hooks";
 
 import { ImagePickerAsset } from "expo-image-picker";

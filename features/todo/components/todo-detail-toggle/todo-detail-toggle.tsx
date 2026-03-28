@@ -1,7 +1,7 @@
 import { Pressable } from "react-native";
 import Animated, { useAnimatedStyle, withTiming } from "react-native-reanimated";
 
-import { SpoqaText } from "@/components";
+import SpoqaText from "@/components/spoqa-text/spoqa-text";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { ChevronRightIcon } from "@/icons";
 

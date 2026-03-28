@@ -1,6 +1,10 @@
 import { Pressable, TextInput as RNTextInput, View } from "react-native";
 
-import { Button, FormSection, FormTitleInput, SpoqaText, TimeSet } from "@/components";
+import Button from "@/components/button/Button";
+import FormSection from "@/components/form-section/form-section";
+import FormTitleInput from "@/components/form-title-input/form-title-input";
+import SpoqaText from "@/components/spoqa-text/spoqa-text";
+import TimeSet from "@/components/time-set/time-set";
 import { ChevronRightIcon } from "@/icons";
 
 import type { TodoEditorStateType } from "../../todo.types";

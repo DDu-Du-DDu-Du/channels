@@ -2,7 +2,8 @@ import { useEffect, useMemo } from "react";
 import { Pressable, View } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
 
-import { BottomSheet, SpoqaText } from "@/components";
+import BottomSheet from "@/components/bottom-sheet/bottom-sheet";
+import SpoqaText from "@/components/spoqa-text/spoqa-text";
 import { useBottomSheetAction, useCalendarFirstDay } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { ArrowLeftIcon, ChevronLeftIcon, ChevronRightIcon } from "@/icons";

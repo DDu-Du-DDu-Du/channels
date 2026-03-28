@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { View } from "react-native";
 
-import { BottomSheet } from "@/components";
+import BottomSheet from "@/components/bottom-sheet/bottom-sheet";
 import { FEED_KEY } from "@/constants/query-key/query-key";
 import { useBottomSheetAction } from "@/hooks";
 import { getTodoDetail } from "@/service/feed/feed";

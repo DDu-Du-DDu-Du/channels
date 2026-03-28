@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
-import { SpoqaText } from "@/components";
+import SpoqaText from "@/components/spoqa-text/spoqa-text";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { remToPx } from "@/utils";
 

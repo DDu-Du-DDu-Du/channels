@@ -1,6 +1,6 @@
 import { Pressable, View } from "react-native";
 
-import { SpoqaText } from "@/components";
+import SpoqaText from "@/components/spoqa-text/spoqa-text";
 
 export interface ButtonProps {
   label: string;

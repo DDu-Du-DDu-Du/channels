@@ -1,7 +1,7 @@
 import { Pressable, View } from "react-native";
 
-import { SpoqaText } from "@/components";
 import BottomSingleCalendar from "@/components/calendar/bottom-single-calendar/bottom-single-calendar";
+import SpoqaText from "@/components/spoqa-text/spoqa-text";
 
 import useDateChange from "../../hooks/use-date-change/use-date-change";
 

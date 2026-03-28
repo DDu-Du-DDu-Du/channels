@@ -1,6 +1,6 @@
 import { Pressable, View } from "react-native";
 
-import { SpoqaText } from "@/components";
+import SpoqaText from "@/components/spoqa-text/spoqa-text";
 import { formatDateRange } from "@/utils";
 
 import { Href, useRouter } from "expo-router";
