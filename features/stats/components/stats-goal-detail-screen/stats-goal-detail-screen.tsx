@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 
 import { SpoqaText, YearMonthPickerSheet } from "@/components";
@@ -7,7 +7,6 @@ import { RepeatTodoItemType, mapRepeatTodoResponseToItem } from "@/features/repe
 import {
   CalendarStatsSection,
   DayOfWeekStatsSection,
-  GoalDetailHeader,
   GoalOverallStatsSection,
   MonthOverviewSection,
   MonthSelectionSection,
@@ -21,7 +20,7 @@ import type { RepeatTodosType } from "@/types/response/repeat-todo/repeat-todo";
 import { StatsGoalDetailSummaryResponseType } from "@/types/response/stats/stats";
 import { useQuery } from "@tanstack/react-query";
 
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 
 const toSingleParam = (value: string | string[] | undefined) => {
   if (Array.isArray(value)) {
@@ -46,8 +45,11 @@ const formatDateTimeToKoreanDate = (value?: string) => {
   return `${parsed.getFullYear()}. ${parsed.getMonth() + 1}. ${parsed.getDate()}`;
 };
 
-function StatsGoalDetailScreen() {
-  const router = useRouter();
+export interface StatsGoalDetailScreenProps {
+  onGoalNameChange?: (goalName: string) => void;
+}
+
+function StatsGoalDetailScreen({ onGoalNameChange }: StatsGoalDetailScreenProps) {
   const params = useLocalSearchParams<{ id?: string | string[]; yearMonth?: string | string[] }>();
   const goalId = Number(toSingleParam(params.id) ?? "0");
   const initialYearMonth = toSingleParam(params.yearMonth);
@@ -105,20 +107,9 @@ function StatsGoalDetailScreen() {
       : `#${goalColorRaw}`
     : FALLBACK_GOAL_COLOR;
 
-  const handlePressBack = () => {
-    router.back();
-  };
-
-  const handlePressEdit = () => {
-    if (!goalId) {
-      return;
-    }
-
-    router.push({
-      pathname: "/goal/editor",
-      params: { goalId },
-    });
-  };
+  useEffect(() => {
+    onGoalNameChange?.(goalName);
+  }, [goalName, onGoalNameChange]);
 
   return (
     <View className="flex-1 px-[2.4rem] pt-[1.2rem]">
@@ -127,12 +118,6 @@ function StatsGoalDetailScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 24 }}
       >
-        <GoalDetailHeader
-          goalName={goalName}
-          handlePressBack={handlePressBack}
-          onPressEdit={handlePressEdit}
-        />
-
         <GoalOverallStatsSection
           createdAt={formatDateTimeToKoreanDate(goalSummaryQuery.data?.createdAt)}
           createdTodoCount={goalSummaryQuery.data?.totalCount ?? 0}

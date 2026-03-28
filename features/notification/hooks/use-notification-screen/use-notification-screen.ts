@@ -13,7 +13,7 @@ import { useNotificationInboxQuery } from "../../queries";
 
 import { Href, useRouter } from "expo-router";
 
-export type NotificationContextTab = "Todo" | "ANNOUNCEMENT";
+export type NotificationContextTab = "TODO" | "ANNOUNCEMENT";
 
 export type TodoNotificationListEntry =
   | {
@@ -44,7 +44,7 @@ const DATE_PAD_WIDTH = 2;
 const normalizeContext = (context: NotificationContextType): NotificationContextTab | null => {
   const normalized = String(context).toUpperCase();
 
-  if (normalized === "Todo" || normalized === "ANNOUNCEMENT") {
+  if (normalized === "TODO" || normalized === "ANNOUNCEMENT") {
     return normalized;
   }
 
@@ -80,7 +80,7 @@ const resolveAnnouncementDateText = (createdAt: string) => {
 function useNotificationScreen() {
   const router = useRouter();
   const { createToast } = useToast();
-  const [selectedContext, setSelectedContext] = useState<NotificationContextTab>("Todo");
+  const [selectedContext, setSelectedContext] = useState<NotificationContextTab>("TODO");
   const [loadingNotificationId, setLoadingNotificationId] = useState<number | null>(null);
   const [optimisticReadIds, setOptimisticReadIds] = useState<Set<number>>(new Set());
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
@@ -91,7 +91,7 @@ function useNotificationScreen() {
   }, [data?.pages]);
 
   const TodoItems = useMemo(
-    () => sourceItems.filter((item) => normalizeContext(item.context) === "Todo"),
+    () => sourceItems.filter((item) => normalizeContext(item.context) === "TODO"),
     [sourceItems],
   );
   const announcementItems = useMemo(

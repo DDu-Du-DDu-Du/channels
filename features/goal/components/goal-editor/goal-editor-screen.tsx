@@ -1,7 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { View } from "react-native";
 
-import { ColorSheet, ConfirmModal, FormHeader, SpoqaText } from "@/components";
+import { ColorSheet, ConfirmModal, SpoqaText } from "@/components";
 import { useColorSheet } from "@/features/goal/components/goal-editor-form/hooks";
 import {
   RepeatTodoItemType,
@@ -11,19 +11,18 @@ import {
   useRepeatTodoListController,
   useRepeatTodoMutation,
 } from "@/features/repeat-todo";
-import { usePressBack } from "@/hooks";
 
 import { GoalEditFormView } from "./components";
 import { useGoalDetailQuery, useGoalEditMutation } from "./hooks";
 
 export interface GoalEditorScreenProps {
   goalId: number;
+  onEditorViewModeChange?: (viewMode: EditorViewMode) => void;
 }
 
-type EditorViewMode = "form" | "repeatList";
+export type EditorViewMode = "form" | "repeatList";
 
-function GoalEditorScreen({ goalId }: GoalEditorScreenProps) {
-  const { handlePressBack } = usePressBack();
+function GoalEditorScreen({ goalId, onEditorViewModeChange }: GoalEditorScreenProps) {
   const [viewMode, setViewMode] = useState<EditorViewMode>("form");
   const [isCreateRepeatMode, setIsCreateRepeatMode] = useState(true);
   const [isGoalDeleteConfirmOpen, setIsGoalDeleteConfirmOpen] = useState(false);
@@ -112,6 +111,10 @@ function GoalEditorScreen({ goalId }: GoalEditorScreenProps) {
     handleDeleteGoal();
   };
 
+  useEffect(() => {
+    onEditorViewModeChange?.(viewMode);
+  }, [onEditorViewModeChange, viewMode]);
+
   if (isPending) {
     return (
       <View className="flex-1 items-center justify-center">
@@ -135,24 +138,17 @@ function GoalEditorScreen({ goalId }: GoalEditorScreenProps) {
   return (
     <>
       {viewMode === "form" ? (
-        <>
-          <FormHeader
-            title={"목표수정"}
-            onPressBack={handlePressBack}
-          />
-
-          <GoalEditFormView
-            goalId={goalId}
-            defaultTitle={goalDetail.name}
-            pickedColor={pickedColor}
-            privacyType={goalDetail.privacyType}
-            repeatTodoCount={repeatTodos.length}
-            onPressOpenColorSheet={handlePressOpenColorSheet}
-            onPressOpenRepeatManagement={handleOpenRepeatList}
-            onPressTerminateGoal={handleTerminateGoal}
-            onPressDeleteGoal={handlePressDeleteGoal}
-          />
-        </>
+        <GoalEditFormView
+          goalId={goalId}
+          defaultTitle={goalDetail.name}
+          pickedColor={pickedColor}
+          privacyType={goalDetail.privacyType}
+          repeatTodoCount={repeatTodos.length}
+          onPressOpenColorSheet={handlePressOpenColorSheet}
+          onPressOpenRepeatManagement={handleOpenRepeatList}
+          onPressTerminateGoal={handleTerminateGoal}
+          onPressDeleteGoal={handlePressDeleteGoal}
+        />
       ) : (
         <RepeatTodoListView
           repeatTodos={repeatTodos}

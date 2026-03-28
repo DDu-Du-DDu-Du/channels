@@ -1,10 +1,9 @@
 import { useRef } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { ScrollView, View } from "react-native";
 
-import { ConfirmModal, SpoqaText } from "@/components";
+import { ConfirmModal } from "@/components";
 import { useToggle } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
-import { ArrowLeftIcon } from "@/icons";
 import { logout } from "@/service/auth/auth";
 import { useAuthStore } from "@/stores";
 
@@ -16,7 +15,6 @@ import { useRouter } from "expo-router";
 
 function SettingsScreen() {
   const router = useRouter();
-  const iconStroke = useThemeColorToken("role.icon.default");
   const dangerTextColor = useThemeColorToken("role.status.error");
   const bugReportSheetRef = useRef<BugReportSheetHandle | null>(null);
   const clearSession = useAuthStore((state) => state.clearSession);
@@ -26,10 +24,6 @@ function SettingsScreen() {
     handleToggleOff: handleCloseLogoutConfirm,
   } = useToggle();
   const appVersion = Constants.expoConfig?.version ?? "-";
-
-  const handlePressBack = () => {
-    router.back();
-  };
 
   const handlePressDisplay = () => {
     router.push("/settings/display");
@@ -71,26 +65,7 @@ function SettingsScreen() {
   };
 
   return (
-    <View className="flex-1 px-[2.4rem] pb-[2.8rem] pt-[2.4rem]">
-      <View className="relative items-center justify-center pb-[2.8rem]">
-        <Pressable
-          onPress={handlePressBack}
-          className="absolute left-0 top-0 size-[2.4rem] items-start justify-center"
-          hitSlop={8}
-        >
-          <ArrowLeftIcon
-            size={16}
-            stroke={iconStroke}
-          />
-        </Pressable>
-        <SpoqaText
-          weight="bold"
-          className="text-size18 text-role-text-primary dark:text-role-dark-text-primary"
-        >
-          설정
-        </SpoqaText>
-      </View>
-
+    <View className="flex-1 px-[2.4rem] pb-[2.8rem]">
       <ScrollView
         className="flex-1"
         showsVerticalScrollIndicator={false}

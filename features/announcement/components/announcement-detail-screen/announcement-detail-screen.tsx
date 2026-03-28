@@ -1,43 +1,15 @@
-import { ActivityIndicator, Pressable, ScrollView, View } from "react-native";
+import { ActivityIndicator, ScrollView, View } from "react-native";
 
 import { EmptyList, SpoqaText } from "@/components";
 import { useAnnouncementDetailScreen } from "@/features/announcement/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
-import { ArrowLeftIcon } from "@/icons";
-
-import { useRouter } from "expo-router";
 
 function AnnouncementDetailScreen() {
-  const iconStroke = useThemeColorToken("role.icon.default");
   const spinnerColor = useThemeColorToken("role.text.tertiary");
-  const router = useRouter();
   const { detail, isLoading, isError } = useAnnouncementDetailScreen();
 
-  const handlePressBack = () => {
-    router.back();
-  };
-
   return (
-    <View className="flex-1 bg-role-surface-panel dark:bg-role-dark-surface-panel px-[1.6rem] pt-[2.4rem]">
-      <View className="relative items-center justify-center pb-[2.8rem]">
-        <Pressable
-          onPress={handlePressBack}
-          className="absolute left-0 top-0 size-[2.4rem] items-start justify-center"
-          hitSlop={8}
-        >
-          <ArrowLeftIcon
-            size={16}
-            stroke={iconStroke}
-          />
-        </Pressable>
-        <SpoqaText
-          weight="bold"
-          className="text-size18 text-role-text-primary dark:text-role-dark-text-primary"
-        >
-          공지사항
-        </SpoqaText>
-      </View>
-
+    <View className="flex-1 bg-role-surface-panel dark:bg-role-dark-surface-panel px-[1.6rem]">
       {isLoading ? (
         <View className="py-[3.2rem]">
           <ActivityIndicator

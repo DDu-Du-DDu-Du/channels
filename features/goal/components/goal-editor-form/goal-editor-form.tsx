@@ -1,20 +1,17 @@
-import { ColorSheet, FormHeader } from "@/components";
+import { ColorSheet } from "@/components";
 import { RepeatTodosheet, useRepeatSheet, useRepeatTodostate } from "@/features/repeat-todo";
-import { usePressBack } from "@/hooks";
 import { GoalType } from "@/types/response/goal/goal";
 
 import { GoalEditorFormBody } from "./components";
 import { useColorSheet } from "./hooks";
 
 export interface GoalEditorFormProps {
-  pageTitle: string;
   submitLabel: string;
   goal?: GoalType;
   defaultTitle?: string;
 }
 
-function GoalEditorForm({ pageTitle, submitLabel, goal, defaultTitle = "" }: GoalEditorFormProps) {
-  const { handlePressBack } = usePressBack();
+function GoalEditorForm({ submitLabel, goal, defaultTitle = "" }: GoalEditorFormProps) {
   const initialTitle = goal?.name ?? defaultTitle;
   const {
     pickedColor,
@@ -57,11 +54,6 @@ function GoalEditorForm({ pageTitle, submitLabel, goal, defaultTitle = "" }: Goa
 
   return (
     <>
-      <FormHeader
-        title={pageTitle}
-        onPressBack={handlePressBack}
-      />
-
       <GoalEditorFormBody
         submitLabel={submitLabel}
         defaultTitle={initialTitle}

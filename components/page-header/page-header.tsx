@@ -1,13 +1,15 @@
 import type { ReactNode } from "react";
 import { Pressable, View } from "react-native";
 
-import { SpoqaText } from "@/components";
+import SpoqaText from "@/components/spoqa-text/spoqa-text";
+import { usePageHeaderBackRoute } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { ArrowLeftIcon } from "@/icons";
 
 export interface PageHeaderProps {
   title: string;
   onPressBack?: () => void;
+  showBackButton?: boolean;
   titleClassName?: string;
   className?: string;
   iconStroke?: string;
@@ -17,20 +19,22 @@ export interface PageHeaderProps {
 function PageHeader({
   title,
   onPressBack,
+  showBackButton = true,
   titleClassName = "text-size15 text-role-text-primary dark:text-role-dark-text-primary",
   className = "px-[2.4rem] pb-[1.6rem] pt-[2.4rem]",
   iconStroke,
   rightContent,
 }: PageHeaderProps) {
+  const { handlePressBack } = usePageHeaderBackRoute();
   const defaultIconStroke = useThemeColorToken("ui.icon.default");
   const resolvedIconStroke = iconStroke ?? defaultIconStroke;
 
   return (
     <View className={className}>
       <View className="relative items-center justify-center">
-        {onPressBack ? (
+        {showBackButton ? (
           <Pressable
-            onPress={onPressBack}
+            onPress={onPressBack ?? handlePressBack}
             className="absolute left-0 top-0 size-[2.4rem] items-start justify-center"
             hitSlop={8}
           >

@@ -1,11 +1,10 @@
 import { useMemo } from "react";
-import { FlatList, Pressable, View } from "react-native";
+import { FlatList, View } from "react-native";
 
 import { EmptyList, SpoqaText } from "@/components";
 import MotionPressable from "@/components/motion/motion-pressable/motion-pressable";
 import { GOAL_KEY } from "@/constants/query-key/query-key";
 import { useMe } from "@/features/user";
-import { ArrowLeftIcon } from "@/icons";
 import { getGoalList } from "@/service/goal/goal";
 import { useAuthStore } from "@/stores";
 import { GoalType } from "@/types/response/goal/goal";
@@ -42,10 +41,6 @@ function StatsGoalSelectScreen() {
     enabled: !!isSessionReady && !!user?.id,
   });
 
-  const handlePressBack = () => {
-    router.back();
-  };
-
   const handlePressGoal = (goalId: number) => {
     router.push({
       pathname: "/stats/[id]",
@@ -55,27 +50,6 @@ function StatsGoalSelectScreen() {
 
   return (
     <View className="flex-1">
-      <View className="px-[2.4rem] pb-[1.6rem] pt-[2.4rem]">
-        <View className="relative items-center justify-center">
-          <Pressable
-            onPress={handlePressBack}
-            className="absolute left-0 top-0 size-[2.4rem] items-start justify-center"
-            hitSlop={8}
-          >
-            <ArrowLeftIcon
-              size={16}
-              stroke="#FFFFFF"
-            />
-          </Pressable>
-          <SpoqaText
-            weight="bold"
-            className="text-size15 text-role-text-inverse dark:text-role-dark-text-inverse"
-          >
-            목표 상세통계
-          </SpoqaText>
-        </View>
-      </View>
-
       <FlatList
         data={goalList}
         keyExtractor={(item) => item.id.toString()}

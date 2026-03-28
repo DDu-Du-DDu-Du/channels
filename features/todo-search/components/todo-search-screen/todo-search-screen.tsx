@@ -1,11 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, FlatList, View } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withDelay,
-  withTiming,
-} from "react-native-reanimated";
+import { useSharedValue, withTiming } from "react-native-reanimated";
 
 import {
   AlarmSheet,
@@ -21,18 +16,13 @@ import type { TodoSearchItemType } from "@/types/response/todo/todo";
 import { formatDateToYYYYMMDD } from "@/utils";
 
 import TodoSearchBar from "../todo-search-bar/todo-search-bar";
-import TodoSearchHeader from "../todo-search-header/todo-search-header";
 import TodoSearchItem from "../todo-search-item/todo-search-item";
 
-import { useRouter } from "expo-router";
-
 function TodoSearchScreen() {
-  const router = useRouter();
   const spinnerColor = useThemeColorToken("role.text.inverse");
   const [searchText, setSearchText] = useState("");
   const [debouncedSearchText, setDebouncedSearchText] = useState("");
   const searchBarProgress = useSharedValue(0);
-  const headerOpacity = useSharedValue(0);
 
   const { editorSheetState, handleOpenEditEditor, handleCloseEditor } = useTodoEditorSheet();
   const today = useMemo(() => formatDateToYYYYMMDD(new Date()), []);
@@ -49,13 +39,7 @@ function TodoSearchScreen() {
     searchBarProgress.value = withTiming(1, {
       duration: 320,
     });
-    headerOpacity.value = withDelay(
-      260,
-      withTiming(1, {
-        duration: 220,
-      }),
-    );
-  }, [headerOpacity, searchBarProgress]);
+  }, [searchBarProgress]);
 
   const { data, isLoading, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage, refetch } =
     useTodoSearchQuery({
@@ -100,14 +84,6 @@ function TodoSearchScreen() {
     [data?.pages],
   );
 
-  const animatedHeaderStyle = useAnimatedStyle(() => ({
-    opacity: headerOpacity.value,
-  }));
-
-  const handleBackPress = () => {
-    router.back();
-  };
-
   const handleEditTodo = (id: number) => {
     handleTodoSheetToggleOff();
     handleOpenEditEditor(id);
@@ -132,11 +108,7 @@ function TodoSearchScreen() {
   };
 
   return (
-    <View className="flex-1 pt-[1.2rem]">
-      <Animated.View style={animatedHeaderStyle}>
-        <TodoSearchHeader onBackPress={handleBackPress} />
-      </Animated.View>
-
+    <View className="flex-1">
       <View className="mt-[1.5rem]">
         <TodoSearchBar
           value={searchText}

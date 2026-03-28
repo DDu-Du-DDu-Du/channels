@@ -7,13 +7,8 @@ import {
   useNotificationScreen,
 } from "@/features/notification/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
-import { ArrowLeftIcon } from "@/icons";
-
-import { useRouter } from "expo-router";
 
 function NotificationScreen() {
-  const router = useRouter();
-  const iconStroke = useThemeColorToken("role.icon.default");
   const spinnerColor = useThemeColorToken("role.text.tertiary");
   const spinnerEmphasisColor = useThemeColorToken("role.text.secondary");
   const selectedChipBg = useThemeColorToken("role.surface.subtle");
@@ -33,10 +28,6 @@ function NotificationScreen() {
     handlePressTodoNotification,
     handlePressAnnouncement,
   } = useNotificationScreen();
-
-  const handlePressBack = () => {
-    router.back();
-  };
 
   const renderEmpty = () => {
     if (isLoading) {
@@ -61,30 +52,11 @@ function NotificationScreen() {
 
   const listHeader = (
     <View>
-      <View className="relative items-center justify-center pb-[2.6rem]">
-        <Pressable
-          onPress={handlePressBack}
-          className="absolute left-0 top-0 size-[2.4rem] items-start justify-center"
-          hitSlop={8}
-        >
-          <ArrowLeftIcon
-            size={16}
-            stroke={iconStroke}
-          />
-        </Pressable>
-        <SpoqaText
-          weight="bold"
-          className="text-size18 text-role-text-primary dark:text-role-dark-text-primary"
-        >
-          알림
-        </SpoqaText>
-      </View>
-
       <View className="mb-[1.6rem] flex-row gap-[1.2rem]">
         <SelectChip
           label="투두"
-          selected={selectedContext === "Todo"}
-          onPress={() => setSelectedContext("Todo")}
+          selected={selectedContext === "TODO"}
+          onPress={() => setSelectedContext("TODO")}
           selectedBackgroundColor={selectedChipBg}
           unselectedBackgroundColor={unselectedChipBg}
           selectedTextClassName="text-role-text-primary dark:text-role-dark-text-primary"
@@ -110,7 +82,7 @@ function NotificationScreen() {
     </View>
   );
 
-  if (selectedContext === "Todo") {
+  if (selectedContext === "TODO") {
     return (
       <View className="flex-1 bg-role-surface-panel dark:bg-role-dark-surface-panel">
         <FlatList<TodoNotificationListEntry>
