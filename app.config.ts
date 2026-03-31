@@ -7,6 +7,14 @@ const getEnv = () => ({
   kakaoNativeKey: process.env.EXPO_PUBLIC_KAKAO_NATIVE_KEY ?? "",
   kakaoJSKey: process.env.EXPO_PUBLIC_KAKAO_JS_KEY ?? "",
   kakaoRestKey: process.env.EXPO_PUBLIC_KAKAO_REST_KEY ?? "",
+  fcmApiKey: process.env.EXPO_PUBLIC_FCM_API_KEY ?? "",
+  fcmAuthDomain: process.env.EXPO_PUBLIC_FCM_AUTH_DOMAIN ?? "",
+  fcmProjectId: process.env.EXPO_PUBLIC_FCM_PROJECT_ID ?? "",
+  fcmStorageBucket: process.env.EXPO_PUBLIC_FCM_STORAGE_BUCKET ?? "",
+  fcmMessagingSenderId: process.env.EXPO_PUBLIC_FCM_MESSAGING_SENDER_ID ?? "",
+  fcmAppId: process.env.EXPO_PUBLIC_FCM_APP_ID ?? "",
+  fcmMeasurementId: process.env.EXPO_PUBLIC_FCM_MEASUREMENT_ID ?? "",
+  fcmVapId: process.env.EXPO_PUBLIC_FCM_VAP_ID ?? "",
 });
 
 const defineConfig = ({ config }: ConfigContext): ExpoConfig => {

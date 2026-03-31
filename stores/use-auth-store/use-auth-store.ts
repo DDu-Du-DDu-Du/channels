@@ -12,12 +12,15 @@ type AuthState = {
   accessToken: string | null;
   refreshToken: string | null;
   isRefreshing: boolean;
+  hasRegisteredDeviceToken: boolean;
 
   // actions
   authenticate: (accessToken: string, refreshToken: string) => void;
   clearSession: () => void;
   login: () => void;
   setRefreshing: (isRefreshing: boolean) => void;
+  markDeviceTokenRegistered: () => void;
+  resetDeviceTokenRegistration: () => void;
 };
 
 const useAuthStore = create<AuthState>()(
@@ -30,6 +33,7 @@ const useAuthStore = create<AuthState>()(
       accessToken: null,
       refreshToken: null,
       isRefreshing: false,
+      hasRegisteredDeviceToken: false,
 
       authenticate: (accessToken, refreshToken) =>
         set({
@@ -42,10 +46,13 @@ const useAuthStore = create<AuthState>()(
           accessToken: null,
           refreshToken: null,
           isLoggedIn: false,
+          hasRegisteredDeviceToken: false,
         }),
 
       login: () => set({ isLoggedIn: true }),
       setRefreshing: (isRefreshing) => set({ isRefreshing }),
+      markDeviceTokenRegistered: () => set({ hasRegisteredDeviceToken: true }),
+      resetDeviceTokenRegistration: () => set({ hasRegisteredDeviceToken: false }),
     }),
     {
       name: "auth",
