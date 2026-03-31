@@ -18,6 +18,7 @@ import {
   useTodoDate,
   useTodoDateMutation,
   useTodoMutation,
+  useTodoReminderMutation,
   useTodoTime,
   useTodoTimeMutation,
 } from "./hooks";
@@ -109,6 +110,11 @@ function MainFeedItems({
     handleTodoTimeSheetToggleOff,
   });
 
+  const { handleChangeTodoReminder } = useTodoReminderMutation({
+    currentTodoId,
+    selectedTodoDate,
+  });
+
   const handleTodosheetOpen = (id: number) => {
     setCurrentTodoId(id);
     handleTodosheetToggleOn();
@@ -190,6 +196,7 @@ function MainFeedItems({
       {isAlarmSheetToggle && (
         <AlarmSheet
           onClose={handleAlarmSheetToggleOff}
+          onConfirm={handleChangeTodoReminder}
           hasBeginTime={hasAlarmBeginAt}
         />
       )}

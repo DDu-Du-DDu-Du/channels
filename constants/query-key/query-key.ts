@@ -12,6 +12,7 @@ export const FEED_KEY = {
   Todo_CHANGE_DATE: "TodoChangeDate",
   Todo_REPEAT_DATE: "TodoRepeatDate",
   Todo_CHANGE_TIME: "TodoChangeTime",
+  Todo_CHANGE_REMINDER: "TodoChangeReminder",
   Todo_DETAIL: "TodoDetail",
   WEEKLY_Todos: "weeklyTodos",
   MONTHLY_Todos: "monthlyTodos",

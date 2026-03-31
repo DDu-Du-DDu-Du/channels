@@ -6,7 +6,9 @@ import { useToggle } from "@/hooks";
 import {
   fetchCompleteToggleTodo,
   fetchDeleteTodo,
+  fetchTodoCancelReminder,
   fetchTodoChangeDate,
+  fetchTodoChangeReminder,
   fetchTodoChangeTime,
   fetchTodoRepeatDate,
 } from "@/service/feed/feed";
@@ -103,6 +105,24 @@ function useTodosearchActions({ onRefetchSearch }: UseTodosearchActionsProps) {
       handleRefetchLinkedQueries();
       setCurrentTodoTime({ beginAt: null, endAt: null });
       handleTodoTimeSheetToggleOff();
+    },
+  });
+
+  const TodoChangeReminderMutation = useMutation({
+    mutationKey: [FEED_KEY.Todo_CHANGE_REMINDER],
+    mutationFn: fetchTodoChangeReminder,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [FEED_KEY.Todo_DETAIL] });
+      handleRefetchLinkedQueries();
+    },
+  });
+
+  const TodoCancelReminderMutation = useMutation({
+    mutationKey: [FEED_KEY.Todo_CHANGE_REMINDER],
+    mutationFn: fetchTodoCancelReminder,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [FEED_KEY.Todo_DETAIL] });
+      handleRefetchLinkedQueries();
     },
   });
 
@@ -213,6 +233,32 @@ function useTodosearchActions({ onRefetchSearch }: UseTodosearchActionsProps) {
     handleTodosheetToggleOff();
   };
 
+  const handleChangeTodoReminder = ({
+    enabled,
+    day,
+    hour,
+    minute,
+  }: {
+    enabled: boolean;
+    day: number;
+    hour: number;
+    minute: number;
+  }) => {
+    if (!enabled) {
+      TodoCancelReminderMutation.mutate({ id: currentTodoId });
+      return;
+    }
+
+    TodoChangeReminderMutation.mutate({
+      id: currentTodoId,
+      reminder: {
+        days: day,
+        hours: hour,
+        minutes: minute,
+      },
+    });
+  };
+
   return {
     currentTodoId,
     currentTodoTime,
@@ -234,6 +280,7 @@ function useTodosearchActions({ onRefetchSearch }: UseTodosearchActionsProps) {
     handleRepeatCurrentDate,
     handleChangeCurrentDate,
     handleAlarmSetting,
+    handleChangeTodoReminder,
     handleTodoTimeSetting,
     handleChangeTodoTime,
     handleTodosheetToggleOff,

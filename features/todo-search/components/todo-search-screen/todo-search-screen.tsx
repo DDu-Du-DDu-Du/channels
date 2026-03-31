@@ -69,6 +69,7 @@ function TodoSearchScreen() {
     handleRepeatCurrentDate,
     handleChangeCurrentDate,
     handleAlarmSetting,
+    handleChangeTodoReminder,
     handleTodoTimeSetting,
     handleChangeTodoTime,
     handleTodoSheetToggleOff,
@@ -176,6 +177,7 @@ function TodoSearchScreen() {
       {isAlarmSheetToggle && (
         <AlarmSheet
           onClose={handleAlarmSheetToggleOff}
+          onConfirm={handleChangeTodoReminder}
           hasBeginTime={hasAlarmBeginAt}
         />
       )}

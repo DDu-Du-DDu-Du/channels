@@ -19,3 +19,9 @@ export interface RequestTodo {
 export interface RequestTodoChangeDate {
   newDate: string;
 }
+
+export interface RequestTodoReminder {
+  days: number;
+  hours: number;
+  minutes: number;
+}
