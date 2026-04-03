@@ -10,7 +10,7 @@ export async function registerDeviceToken({
   const response = await fetchApi(
     DEVICE_TOKEN.REGISTER,
     {
-      method: "POST",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
