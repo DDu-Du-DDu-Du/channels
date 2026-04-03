@@ -14,7 +14,7 @@ export interface TodosheetViewProps {
   onDeleteTodo?: (id: number) => void;
   handleTodosheetToggleOff?: () => void;
   handleSelectDifferentDate?: (type: "change" | "repeat", currentDate: string) => void;
-  handleAlarmSetting?: (hasBeginAt: boolean) => void;
+  handleAlarmSetting?: () => void;
   handleTodoTimeSetting?: (beginAt?: string, endAt?: string) => void;
   onRepeatCurrentDate?: () => void;
   onChangeCurrentDate?: () => void;
@@ -72,7 +72,7 @@ function TodosheetView({
               setOpen(false);
             }}
             handleSelectDifferentDate={(t, d) => handleSelectDifferentDate?.(t, d)}
-            handleAlarmSetting={(hasBeginAt) => handleAlarmSetting?.(hasBeginAt)}
+            handleAlarmSetting={() => handleAlarmSetting?.()}
             handleTodoTimeSetting={(b?, e?) => handleTodoTimeSetting?.(b, e)}
             onRepeatCurrentDate={() => onRepeatCurrentDate?.()}
             onChangeCurrentDate={() => onChangeCurrentDate?.()}

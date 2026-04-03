@@ -57,9 +57,10 @@ const useTodoEditorMutation = ({
       payload.isBeginTimeEnabled && payload.isEndTimeEnabled && payload.endAt
         ? payload.endAt
         : undefined,
-    remindDays: payload.reminder.enabled ? payload.reminder.day : undefined,
-    remindHours: payload.reminder.enabled ? payload.reminder.hour : undefined,
-    remindMinutes: payload.reminder.enabled ? payload.reminder.minute : undefined,
+    reminders: payload.reminders.map((reminder) => ({
+      id: reminder.id,
+      remindsAt: reminder.remindsAt,
+    })),
   });
 
   const handleSubmit = async (payload: TodoEditorSubmitPayloadType) => {

@@ -14,6 +14,7 @@ import { hexConvertForRGBA } from "@/utils";
 export interface ShakingCheckIconProps {
   isChecked: boolean;
   color: string;
+  uncheckedColor?: string;
   size?: number;
   borderStrokeAlpha?: number;
   onPress: () => void;
@@ -23,14 +24,21 @@ export interface ShakingCheckIconProps {
 function ShakingCheckIcon({
   isChecked,
   color,
+  uncheckedColor,
   size = 24,
   borderStrokeAlpha = 0.45,
   onPress,
   accessibilityRole = "checkbox",
 }: ShakingCheckIconProps) {
   const checkRotate = useSharedValue(0);
-  const uncheckedFillColor = useThemeColorToken("role.icon.muted");
-  const borderStrokeColor = hexConvertForRGBA({ hex: color, alpha: borderStrokeAlpha });
+  const mutedUncheckedFillColor = useThemeColorToken("role.icon.muted");
+  const unresolvedUncheckedColor = uncheckedColor ?? mutedUncheckedFillColor;
+  const resolvedCheckedColor = color.startsWith("#") ? color.slice(1) : color;
+  const resolvedUncheckedColor = unresolvedUncheckedColor.startsWith("#")
+    ? unresolvedUncheckedColor.slice(1)
+    : unresolvedUncheckedColor;
+  const activeColor = isChecked ? resolvedCheckedColor : resolvedUncheckedColor;
+  const borderStrokeColor = hexConvertForRGBA({ hex: activeColor, alpha: borderStrokeAlpha });
 
   const checkboxIconStyle = useAnimatedStyle(() => ({
     transform: [{ rotate: `${checkRotate.value}deg` }],
@@ -57,7 +65,7 @@ function ShakingCheckIcon({
       <Animated.View style={checkboxIconStyle}>
         <CheckIcon
           size={size}
-          fill={isChecked ? `#${color}` : uncheckedFillColor}
+          fill={`#${activeColor}`}
           stroke={borderStrokeColor}
           strokeWidth={1.25}
         />

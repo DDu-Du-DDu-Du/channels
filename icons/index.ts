@@ -9,6 +9,7 @@ export { default as ArrowLeftIcon } from "./arrow-left-icon/arrow-left-icon";
 export { default as ArrowRightIcon } from "./arrow-right-icon/arrow-right-icon";
 export { default as CheckIcon } from "./check-icon/check-icon";
 export { default as ClockIcon } from "./clock-icon/clock-icon";
+export { default as CalendarIcon } from "./calendar-icon/calendar-icon";
 export { default as CloseIcon } from "./close-icon/close-icon";
 export { default as CreateIcon } from "./create-icon/create-icon";
 export { default as DailyIcon } from "./daily-icon/daily-icon";

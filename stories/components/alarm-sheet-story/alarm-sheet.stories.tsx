@@ -6,11 +6,10 @@ const meta = {
   title: "components/AlarmSheet",
   component: AlarmSheetView,
   parameters: {
-    notes: `\n## AlarmSheet (opens on mount)\n\n- Uses RN Switch and custom 3-column wheel pickers.\n- Confirm triggers onConfirm then closes the sheet.\n    `,
+    notes: `\n## AlarmSheet (opens on mount)\n\n- Reminder list and reminder time sheet based flow.\n    `,
   },
   argTypes: {
     onClose: { action: "onClose" },
-    onConfirm: { action: "onConfirm" },
   },
 } satisfies Meta<typeof AlarmSheetView>;
 

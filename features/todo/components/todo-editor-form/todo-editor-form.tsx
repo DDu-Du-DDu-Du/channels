@@ -9,22 +9,27 @@ import { ChevronRightIcon } from "@/icons";
 
 import type { TodoEditorStateType } from "../../todo.types";
 import TodoDetailToggle from "../todo-detail-toggle/todo-detail-toggle";
-import TodoReminderPanel from "../todo-reminder-panel/todo-reminder-panel";
+import TodoReminderListBox from "../todo-reminder-list-box/todo-reminder-list-box";
 
 export interface TodoEditorFormProps {
   mode: "create" | "edit";
   state: TodoEditorStateType;
   titleWarning: string;
-  reminderWarning: string;
   isPending: boolean;
   onPressOpenCalendar: () => void;
   onPressOpenTimeSheet: () => void;
   onChangeTitle: (title: string) => void;
   onToggleDetail: () => void;
-  onToggleReminder: (enabled: boolean) => void;
-  onChangeReminderDay: (value: number) => void;
-  onChangeReminderHour: (value: number) => void;
-  onChangeReminderMinute: (value: number) => void;
+  onCreateReminder: (remindsAt: string) => Promise<void> | void;
+  onUpdateReminder: (
+    index: number,
+    reminder: { id?: number; remindsAt: string; remindedAt?: string | null },
+    remindsAt: string,
+  ) => Promise<void> | void;
+  onDeleteReminder: (
+    index: number,
+    reminder: { id?: number; remindsAt: string; remindedAt?: string | null },
+  ) => Promise<void> | void;
   onChangeMemo: (memo: string) => void;
   onSubmit: () => void;
 }
@@ -33,16 +38,14 @@ function TodoEditorForm({
   mode,
   state,
   titleWarning,
-  reminderWarning,
   isPending,
   onPressOpenCalendar,
   onPressOpenTimeSheet,
   onChangeTitle,
   onToggleDetail,
-  onToggleReminder,
-  onChangeReminderDay,
-  onChangeReminderHour,
-  onChangeReminderMinute,
+  onCreateReminder,
+  onUpdateReminder,
+  onDeleteReminder,
   onChangeMemo,
   onSubmit,
 }: TodoEditorFormProps) {
@@ -99,16 +102,14 @@ function TodoEditorForm({
             endLabel="종료시간"
           />
 
-          <TodoReminderPanel
-            enabled={state.reminder.enabled}
-            day={state.reminder.day}
-            hour={state.reminder.hour}
-            minute={state.reminder.minute}
-            warningMessage={reminderWarning}
-            onToggle={onToggleReminder}
-            onChangeDay={onChangeReminderDay}
-            onChangeHour={onChangeReminderHour}
-            onChangeMinute={onChangeReminderMinute}
+          <TodoReminderListBox
+            reminders={state.reminders}
+            scheduledOn={state.scheduledOn}
+            beginAt={state.beginAt}
+            showTitle
+            onCreateReminder={onCreateReminder}
+            onUpdateReminder={onUpdateReminder}
+            onDeleteReminder={onDeleteReminder}
           />
 
           <View className="rounded-radius15 bg-role-surface-canvas dark:bg-role-dark-surface-canvas p-[1.2rem]">

@@ -6,10 +6,10 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 export interface AlarmSheetViewProps {
   onClose?: () => void;
-  onConfirm?: (payload: { enabled: boolean; day: number; hour: number; minute: number }) => void;
+  todoId?: number;
 }
 
-function AlarmSheetView({ onClose, onConfirm }: AlarmSheetViewProps) {
+function AlarmSheetView({ onClose, todoId = 1 }: AlarmSheetViewProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -26,11 +26,11 @@ function AlarmSheetView({ onClose, onConfirm }: AlarmSheetViewProps) {
           </Pressable>
         ) : (
           <AlarmSheet
+            todoId={todoId}
             onClose={() => {
               onClose?.();
               setOpen(false);
             }}
-            onConfirm={(p) => onConfirm?.(p)}
           />
         )}
       </View>

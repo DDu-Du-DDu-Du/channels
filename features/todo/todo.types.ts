@@ -1,8 +1,7 @@
 export interface TodoEditorReminderType {
-  enabled: boolean;
-  day: number;
-  hour: number;
-  minute: number;
+  id?: number;
+  remindsAt: string;
+  remindedAt?: string | null;
 }
 
 export interface TodoEditorStateType {
@@ -13,7 +12,7 @@ export interface TodoEditorStateType {
   endAt: string;
   isBeginTimeEnabled: boolean;
   isEndTimeEnabled: boolean;
-  reminder: TodoEditorReminderType;
+  reminders: TodoEditorReminderType[];
   memo: string;
 }
 
@@ -24,6 +23,6 @@ export interface TodoEditorSubmitPayloadType {
   endAt: string;
   isBeginTimeEnabled: boolean;
   isEndTimeEnabled: boolean;
-  reminder: TodoEditorReminderType;
+  reminders: TodoEditorReminderType[];
   memo: string;
 }

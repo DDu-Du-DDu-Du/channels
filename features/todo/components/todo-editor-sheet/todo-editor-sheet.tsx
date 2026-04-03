@@ -1,11 +1,10 @@
 import { useEffect, useMemo } from "react";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 
 import BottomSheet from "@/components/bottom-sheet/bottom-sheet";
 import BottomSingleCalendar from "@/components/calendar/bottom-single-calendar/bottom-single-calendar";
 import FormHeader from "@/components/form-header/form-header";
 import SpoqaText from "@/components/spoqa-text/spoqa-text";
-import { useToast } from "@/components/toast/hooks";
 import type { TodoDetailType } from "@/components/todo-sheet/todo-sheet.types";
 import TodoTimeSheet from "@/components/todo-time-sheet/todo-time-sheet";
 import { FEED_KEY } from "@/constants/query-key/query-key";
@@ -13,7 +12,8 @@ import type { TodoTimeRangeType } from "@/features/feed/feed.types";
 import { useBottomSheetAction, useToggle } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { getTodoDetail } from "@/service/feed/feed";
-import { formatDateToYYYYMMDD } from "@/utils";
+import { formatDateToYYYYMMDD, parseUtc } from "@/utils";
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { useQuery } from "@tanstack/react-query";
 
 import { useTodoEditorMutation, useTodoEditorState } from "../../hooks";
@@ -38,7 +38,6 @@ function TodoEditorSheet({
 }: TodoEditorSheetProps) {
   const iconStroke = useThemeColorToken("ui.icon.default");
   const { ref, openSheet, closeSheet } = useBottomSheetAction();
-  const { createToast } = useToast();
 
   const {
     isToggle: isCalendarOpen,
@@ -61,17 +60,17 @@ function TodoEditorSheet({
   const {
     state,
     titleWarning,
-    reminderWarning,
     handleChangeTitle,
     handleChangeDate,
     handleToggleDetail,
     handleChangeTime,
     handleChangeBeginTimeEnabled,
     handleChangeEndTimeEnabled,
-    handleToggleReminder,
-    handleChangeReminderValue,
+    handleAppendReminder,
+    handleUpdateReminder,
+    handleRemoveReminder,
+    handleSetReminders,
     handleChangeMemo,
-    handleSetReminderWarning,
     getSubmitPayload,
   } = useTodoEditorState({
     mode,
@@ -117,16 +116,23 @@ function TodoEditorSheet({
     await handleSubmit(payload);
   };
 
-  const handleToggleReminderWithValidation = (enabled: boolean) => {
-    if (enabled && (!state.isBeginTimeEnabled || !state.beginAt)) {
-      const warning = "시작시간이 필요해요";
-      handleSetReminderWarning(warning);
-      createToast(warning, { type: "warning" });
-      return;
-    }
+  const handleCreateReminder = async (remindsAt: string) => {
+    handleAppendReminder({ remindsAt });
+  };
 
-    handleSetReminderWarning("");
-    handleToggleReminder(enabled);
+  const handleUpdateReminderItem = async (
+    index: number,
+    reminder: { id?: number; remindsAt: string; remindedAt?: string | null },
+    remindsAt: string,
+  ) => {
+    handleUpdateReminder(index, { ...reminder, remindsAt });
+  };
+
+  const handleDeleteReminderItem = async (
+    index: number,
+    _reminder: { id?: number; remindsAt: string; remindedAt?: string | null },
+  ) => {
+    handleRemoveReminder(index);
   };
 
   const handleUpdateTodoTime = ({
@@ -139,6 +145,9 @@ function TodoEditorSheet({
   }: TodoTimeRangeType) => {
     if (!isBeginTimeEnabled) {
       handleChangeTime("", "");
+      if (state.reminders.length > 0) {
+        handleSetReminders([]);
+      }
       return;
     }
 
@@ -150,6 +159,28 @@ function TodoEditorSheet({
       : "";
 
     handleChangeTime(beginAt, endAt);
+
+    const isBeginChanged = state.beginAt !== beginAt || !state.isBeginTimeEnabled;
+    if (!isBeginChanged) {
+      return;
+    }
+
+    const nextStartAt = new Date(`${state.scheduledOn}T${beginAt}`);
+    if (Number.isNaN(nextStartAt.getTime())) {
+      return;
+    }
+
+    const filteredReminders = state.reminders.filter((reminder) => {
+      try {
+        return parseUtc(reminder.remindsAt).getTime() < nextStartAt.getTime();
+      } catch {
+        return true;
+      }
+    });
+
+    if (filteredReminders.length !== state.reminders.length) {
+      handleSetReminders(filteredReminders);
+    }
   };
 
   return (
@@ -157,11 +188,11 @@ function TodoEditorSheet({
       <BottomSheet
         ref={ref}
         onClose={onClose}
-        fitContent={!state.detailOpen}
-        defaultHeight={state.detailOpen ? "90%" : "35%"}
-        maxHeight="90%"
+        fitContent={false}
+        defaultHeight={state.detailOpen ? "90%" : "42%"}
+        maxHeight="96%"
       >
-        <View className="w-full bg-role-surface-panel dark:bg-role-dark-surface-panel">
+        <View className="h-full min-h-0 w-full bg-role-surface-panel dark:bg-role-dark-surface-panel">
           <FormHeader
             title={mode === "create" ? "투두 생성" : "투두 수정"}
             onPressBack={handleClose}
@@ -177,29 +208,27 @@ function TodoEditorSheet({
               </SpoqaText>
             </View>
           ) : (
-            <ScrollView
-              className="max-h-[68rem]"
-              contentContainerStyle={{ paddingBottom: 12 }}
+            <BottomSheetScrollView
+              className="flex-1"
+              contentContainerStyle={{ flexGrow: 1, paddingBottom: 10 }}
               showsVerticalScrollIndicator={false}
             >
               <TodoEditorForm
                 mode={mode}
                 state={state}
                 titleWarning={titleWarning}
-                reminderWarning={reminderWarning}
                 isPending={isPending}
                 onPressOpenCalendar={handleCalendarOpen}
                 onPressOpenTimeSheet={handleTimeSheetOpen}
                 onChangeTitle={handleChangeTitle}
                 onToggleDetail={handleToggleDetail}
-                onToggleReminder={handleToggleReminderWithValidation}
-                onChangeReminderDay={(value) => handleChangeReminderValue("day", value)}
-                onChangeReminderHour={(value) => handleChangeReminderValue("hour", value)}
-                onChangeReminderMinute={(value) => handleChangeReminderValue("minute", value)}
+                onCreateReminder={handleCreateReminder}
+                onUpdateReminder={handleUpdateReminderItem}
+                onDeleteReminder={handleDeleteReminderItem}
                 onChangeMemo={handleChangeMemo}
                 onSubmit={handleSubmitEditor}
               />
-            </ScrollView>
+            </BottomSheetScrollView>
           )}
         </View>
       </BottomSheet>
@@ -229,6 +258,8 @@ function TodoEditorSheet({
           onChangeTodoTime={handleUpdateTodoTime}
           onClose={handleTimeSheetClose}
           title="시간 설정"
+          scheduledOn={state.scheduledOn}
+          reminders={state.reminders}
           showBackArrow
           defaultBeginTimeEnabled={state.isBeginTimeEnabled}
           defaultEndTimeEnabled={state.isEndTimeEnabled}

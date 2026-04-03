@@ -2,7 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 
 import type { TodoDetailType } from "@/components/todo-sheet/todo-sheet.types";
 
-import type { TodoEditorStateType, TodoEditorSubmitPayloadType } from "../../todo.types";
+import type {
+  TodoEditorReminderType,
+  TodoEditorStateType,
+  TodoEditorSubmitPayloadType,
+} from "../../todo.types";
 
 interface UseTodoEditorStateProps {
   mode: "create" | "edit";
@@ -28,20 +32,9 @@ const buildInitialState = ({
 
   const beginAt = formatApiTime(TodoDetail?.beginAt);
   const endAt = formatApiTime(TodoDetail?.endAt);
-  const reminder = { enabled: false, day: 0, hour: 0, minute: 0 };
-
-  if (TodoDetail?.remindAt && beginAt) {
-    const beginDateTime = new Date(`${TodoDetail.scheduledOn}T${beginAt}`);
-    const remindDateTime = new Date(TodoDetail.remindAt);
-    const diffMinutes = Math.floor((beginDateTime.getTime() - remindDateTime.getTime()) / 60000);
-
-    if (!Number.isNaN(diffMinutes) && diffMinutes > 0) {
-      reminder.enabled = true;
-      reminder.day = Math.floor(diffMinutes / (24 * 60));
-      reminder.hour = Math.floor((diffMinutes % (24 * 60)) / 60);
-      reminder.minute = diffMinutes % 60;
-    }
-  }
+  const reminders = [...(TodoDetail?.reminders ?? [])].sort(
+    (a, b) => new Date(a.remindsAt).getTime() - new Date(b.remindsAt).getTime(),
+  );
 
   return {
     title: TodoDetail?.name ?? "",
@@ -51,7 +44,7 @@ const buildInitialState = ({
     endAt,
     isBeginTimeEnabled: Boolean(beginAt),
     isEndTimeEnabled: Boolean(endAt),
-    reminder,
+    reminders,
     memo: TodoDetail?.memo ?? "",
   };
 };
@@ -64,12 +57,13 @@ const useTodoEditorState = ({ mode, selectedDate, TodoDetail }: UseTodoEditorSta
 
   const [state, setState] = useState<TodoEditorStateType>(initialState);
   const [titleWarning, setTitleWarning] = useState("");
-  const [reminderWarning, setReminderWarning] = useState("");
 
   useEffect(() => {
-    setState(initialState);
+    setState((prev) => ({
+      ...initialState,
+      detailOpen: prev.detailOpen,
+    }));
     setTitleWarning("");
-    setReminderWarning("");
   }, [initialState, mode]);
 
   const handleChangeTitle = (title: string) => {
@@ -104,15 +98,7 @@ const useTodoEditorState = ({ mode, selectedDate, TodoDetail }: UseTodoEditorSta
       isEndTimeEnabled: enabled ? prev.isEndTimeEnabled : false,
       beginAt: enabled ? prev.beginAt : "",
       endAt: enabled ? prev.endAt : "",
-      reminder: {
-        ...prev.reminder,
-        enabled: enabled ? prev.reminder.enabled : false,
-      },
     }));
-
-    if (!enabled) {
-      setReminderWarning("");
-    }
   };
 
   const handleChangeEndTimeEnabled = (enabled: boolean) => {
@@ -123,36 +109,43 @@ const useTodoEditorState = ({ mode, selectedDate, TodoDetail }: UseTodoEditorSta
     }));
   };
 
-  const handleToggleReminder = (enabled: boolean) => {
+  const sortReminders = (reminders: TodoEditorReminderType[]) =>
+    [...reminders].sort(
+      (a, b) => new Date(a.remindsAt).getTime() - new Date(b.remindsAt).getTime(),
+    );
+
+  const handleAppendReminder = (reminder: TodoEditorReminderType) => {
     setState((prev) => ({
       ...prev,
-      reminder: {
-        ...prev.reminder,
-        enabled,
-      },
+      reminders: sortReminders([...prev.reminders, reminder]),
     }));
-
-    if (!enabled) {
-      setReminderWarning("");
-    }
   };
 
-  const handleChangeReminderValue = (field: "day" | "hour" | "minute", value: number) => {
+  const handleUpdateReminder = (index: number, reminder: TodoEditorReminderType) => {
     setState((prev) => ({
       ...prev,
-      reminder: {
-        ...prev.reminder,
-        [field]: value,
-      },
+      reminders: sortReminders(
+        prev.reminders.map((item, itemIndex) => (itemIndex === index ? reminder : item)),
+      ),
+    }));
+  };
+
+  const handleRemoveReminder = (index: number) => {
+    setState((prev) => ({
+      ...prev,
+      reminders: prev.reminders.filter((_, itemIndex) => itemIndex !== index),
+    }));
+  };
+
+  const handleSetReminders = (reminders: TodoEditorReminderType[]) => {
+    setState((prev) => ({
+      ...prev,
+      reminders: sortReminders(reminders),
     }));
   };
 
   const handleChangeMemo = (memo: string) => {
     setState((prev) => ({ ...prev, memo }));
-  };
-
-  const handleSetReminderWarning = (message: string) => {
-    setReminderWarning(message);
   };
 
   const getSubmitPayload = (): TodoEditorSubmitPayloadType | null => {
@@ -168,7 +161,7 @@ const useTodoEditorState = ({ mode, selectedDate, TodoDetail }: UseTodoEditorSta
       endAt: state.endAt,
       isBeginTimeEnabled: state.isBeginTimeEnabled,
       isEndTimeEnabled: state.isEndTimeEnabled,
-      reminder: state.reminder,
+      reminders: state.reminders,
       memo: state.memo,
     };
   };
@@ -176,17 +169,17 @@ const useTodoEditorState = ({ mode, selectedDate, TodoDetail }: UseTodoEditorSta
   return {
     state,
     titleWarning,
-    reminderWarning,
     handleChangeTitle,
     handleChangeDate,
     handleToggleDetail,
     handleChangeTime,
     handleChangeBeginTimeEnabled,
     handleChangeEndTimeEnabled,
-    handleToggleReminder,
-    handleChangeReminderValue,
+    handleAppendReminder,
+    handleUpdateReminder,
+    handleRemoveReminder,
+    handleSetReminders,
     handleChangeMemo,
-    handleSetReminderWarning,
     getSubmitPayload,
   };
 };

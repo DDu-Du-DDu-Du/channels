@@ -34,6 +34,7 @@ type RolePalette = {
     secondary: string;
     tertiary: string;
     inverse: string;
+    invalid: string;
   };
   border: {
     default: string;
@@ -44,6 +45,8 @@ type RolePalette = {
     default: string;
     muted: string;
     inverse: string;
+    checkboxCheck: string;
+    checkboxUncheck: string;
   };
   status: {
     success: string;
@@ -100,6 +103,7 @@ const ROLE_PALETTE_BY_THEME: Record<ThemeName, Record<ThemeMode, RolePalette>> =
         secondary: FOUNDATION.neutral[700],
         tertiary: FOUNDATION.neutral[600],
         inverse: FOUNDATION.neutral[0],
+        invalid: "#ED4044",
       },
       border: {
         default: FOUNDATION.neutral[300],
@@ -110,6 +114,8 @@ const ROLE_PALETTE_BY_THEME: Record<ThemeName, Record<ThemeMode, RolePalette>> =
         default: FOUNDATION.neutral[900],
         muted: FOUNDATION.neutral[500],
         inverse: FOUNDATION.neutral[0],
+        checkboxCheck: "#000000",
+        checkboxUncheck: "#8A8A8A",
       },
       status: {
         success: "#35CB72",
@@ -134,6 +140,7 @@ const ROLE_PALETTE_BY_THEME: Record<ThemeName, Record<ThemeMode, RolePalette>> =
         secondary: FOUNDATION.neutral[200],
         tertiary: FOUNDATION.neutral[300],
         inverse: FOUNDATION.neutral[900],
+        invalid: "#F87171",
       },
       border: {
         default: FOUNDATION.neutral[500],
@@ -144,6 +151,8 @@ const ROLE_PALETTE_BY_THEME: Record<ThemeName, Record<ThemeMode, RolePalette>> =
         default: FOUNDATION.neutral[100],
         muted: FOUNDATION.neutral[300],
         inverse: FOUNDATION.neutral[900],
+        checkboxCheck: "#000000",
+        checkboxUncheck: "#8A8A8A",
       },
       status: {
         success: "#4ADE80",
@@ -193,6 +202,10 @@ const UI_ALIAS_ROLE_PATHS = {
     default: "icon.default",
     muted: "icon.muted",
     inverse: "icon.inverse",
+  },
+  checkbox: {
+    check: "icon.checkboxCheck",
+    uncheck: "icon.checkboxUncheck",
   },
   input: {
     default: {
@@ -297,6 +310,10 @@ export type ThemeColorMap = {
       default: string;
       muted: string;
       inverse: string;
+    };
+    checkbox: {
+      check: string;
+      uncheck: string;
     };
     input: {
       default: {
