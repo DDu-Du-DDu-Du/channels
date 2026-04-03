@@ -1,61 +1,94 @@
-import { useEffect, useState } from "react";
-import { Pressable, View } from "react-native";
+import { useEffect } from "react";
+import { View } from "react-native";
 
 import BottomSheet from "@/components/bottom-sheet/bottom-sheet";
-import SpoqaText from "@/components/spoqa-text/spoqa-text";
-import { useToast } from "@/components/toast/hooks";
-import TodoReminderPanel from "@/features/todo/components/todo-reminder-panel/todo-reminder-panel";
+import FormHeader from "@/components/form-header/form-header";
+import { FEED_KEY } from "@/constants/query-key/query-key";
+import TodoReminderListBox from "@/features/todo/components/todo-reminder-list-box/todo-reminder-list-box";
 import { useBottomSheetAction } from "@/hooks";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
+import { getTodoDetail } from "@/service/feed/feed";
+import {
+  createReminder,
+  deleteReminder,
+  getReminderList,
+  updateReminder,
+} from "@/service/reminder/reminder";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export interface AlarmSheetProps {
+  todoId: number;
   onClose: () => void;
-  onConfirm?: (payload: { enabled: boolean; day: number; hour: number; minute: number }) => void;
-  hasBeginTime?: boolean;
 }
 
-function AlarmSheet({ onClose, onConfirm, hasBeginTime = true }: AlarmSheetProps) {
+function AlarmSheet({ todoId, onClose }: AlarmSheetProps) {
+  const queryClient = useQueryClient();
+  const iconStroke = useThemeColorToken("ui.icon.default");
   const { ref, openSheet, closeSheet } = useBottomSheetAction();
-  const { createToast } = useToast();
-  const [enabled, setEnabled] = useState(false);
-  const [dayBefore, setDayBefore] = useState(0);
-  const [hourBefore, setHourBefore] = useState(0);
-  const [minuteBefore, setMinuteBefore] = useState(0);
-  const [warningMessage, setWarningMessage] = useState("");
 
   useEffect(() => {
     openSheet();
   }, [openSheet]);
 
-  const handleToggleReminder = (nextEnabled: boolean) => {
-    if (nextEnabled && !hasBeginTime) {
-      const warning = "시작시간이 있어야 미리알림을 설정할 수 있어요.";
-      setWarningMessage(warning);
-      createToast(warning, { type: "warning" });
-      return;
-    }
+  const { data: todoDetail } = useQuery({
+    queryKey: [FEED_KEY.Todo_DETAIL, todoId],
+    queryFn: () => getTodoDetail({ id: todoId }),
+    enabled: todoId > 0,
+  });
 
-    if (!nextEnabled) {
-      setWarningMessage("");
-    }
+  const { data: reminders = [] } = useQuery({
+    queryKey: [FEED_KEY.Todo_REMINDER_LIST, todoId],
+    queryFn: () => getReminderList({ todoId, includeSent: true }),
+    enabled: todoId > 0,
+  });
 
-    setEnabled(nextEnabled);
+  const handleRefetchReminderLinkedQueries = async () => {
+    await Promise.all([
+      queryClient.refetchQueries({ queryKey: [FEED_KEY.Todo_DETAIL, todoId] }),
+      queryClient.refetchQueries({ queryKey: [FEED_KEY.Todo_REMINDER_LIST, todoId] }),
+      queryClient.invalidateQueries({ queryKey: [FEED_KEY.DAILY_LIST] }),
+      queryClient.invalidateQueries({ queryKey: [FEED_KEY.DAILY_TIMETABLE] }),
+      queryClient.invalidateQueries({ queryKey: [FEED_KEY.MONTHLY_Todos] }),
+      queryClient.invalidateQueries({ queryKey: [FEED_KEY.WEEKLY_Todos] }),
+    ]);
   };
 
-  const handleConfirm = () => {
-    if (enabled && !hasBeginTime) {
-      const warning = "시작시간을 먼저 설정해 주세요.";
-      setWarningMessage(warning);
-      createToast(warning, { type: "warning" });
+  const handleCreateReminder = async (remindsAt: string) => {
+    await createReminder({
+      requestReminder: { todoId, remindsAt },
+    });
+    await handleRefetchReminderLinkedQueries();
+  };
+
+  const handleUpdateReminder = async (
+    _: number,
+    reminder: { id?: number; remindsAt: string; remindedAt?: string | null },
+    remindsAt: string,
+  ) => {
+    if (!reminder.id) {
       return;
     }
 
-    const payload = {
-      enabled,
-      day: dayBefore,
-      hour: hourBefore,
-      minute: minuteBefore,
-    };
-    onConfirm?.(payload);
+    await updateReminder({
+      id: reminder.id,
+      requestReminder: { remindsAt },
+    });
+    await handleRefetchReminderLinkedQueries();
+  };
+
+  const handleDeleteReminder = async (
+    _: number,
+    reminder: { id?: number; remindsAt: string; remindedAt?: string | null },
+  ) => {
+    if (!reminder.id) {
+      return;
+    }
+
+    await deleteReminder(reminder.id);
+    await handleRefetchReminderLinkedQueries();
+  };
+
+  const handleClose = () => {
     closeSheet();
     onClose();
   };
@@ -66,35 +99,22 @@ function AlarmSheet({ onClose, onConfirm, hasBeginTime = true }: AlarmSheetProps
       onClose={onClose}
       fitContent
     >
-      <View className="w-full max-w-[50rem] bg-role-surface-panel p-[1rem] dark:bg-role-dark-surface-panel">
-        <View className="mb-[0.6rem] px-[0.5rem] gap-[0.8rem]">
-          <SpoqaText className="my-[0.6rem] font-spoqa-medium text-size15 text-role-text-primary dark:text-role-dark-text-primary">
-            미리알림 설정
-          </SpoqaText>
-          <TodoReminderPanel
-            enabled={enabled}
-            day={dayBefore}
-            hour={hourBefore}
-            minute={minuteBefore}
-            warningMessage={warningMessage}
-            onToggle={handleToggleReminder}
-            onChangeDay={setDayBefore}
-            onChangeHour={setHourBefore}
-            onChangeMinute={setMinuteBefore}
-          />
-        </View>
-        <Pressable
-          accessibilityRole="button"
-          onPress={handleConfirm}
-          className="z-1 mt-[1rem] h-[5rem] w-full items-center justify-center rounded-radius15 bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg"
-        >
-          <SpoqaText
-            weight="semiBold"
-            className="text-role-text-inverse dark:text-role-dark-text-inverse"
-          >
-            확인
-          </SpoqaText>
-        </Pressable>
+      <View className="w-full bg-role-surface-panel px-[1.6rem] pb-[1.6rem] dark:bg-role-dark-surface-panel">
+        <FormHeader
+          title="미리알림 설정"
+          onPressBack={handleClose}
+          titleClassName="text-size15 text-role-text-primary dark:text-role-dark-text-primary"
+          iconStroke={iconStroke}
+          className="px-[0.6rem] pb-[1.2rem] pt-[1.2rem]"
+        />
+        <TodoReminderListBox
+          reminders={reminders}
+          scheduledOn={todoDetail?.scheduledOn ?? ""}
+          beginAt={todoDetail?.beginAt ?? undefined}
+          onCreateReminder={handleCreateReminder}
+          onUpdateReminder={handleUpdateReminder}
+          onDeleteReminder={handleDeleteReminder}
+        />
       </View>
     </BottomSheet>
   );

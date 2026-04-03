@@ -19,8 +19,13 @@ export interface TodosheetProps {
   handleTodosheetToggleOff?: () => void;
   handleTodoSheetToggleOff?: () => void;
   handleSelectDifferentDate: (type: "change" | "repeat", currentDate: string) => void;
-  handleAlarmSetting: (hasBeginAt: boolean) => void;
-  handleTodoTimeSetting: (beginAt?: string, endAt?: string) => void;
+  handleAlarmSetting: () => void;
+  handleTodoTimeSetting: (
+    beginAt?: string,
+    endAt?: string,
+    scheduledOn?: string,
+    reminders?: TodoDetailType["reminders"],
+  ) => void;
   onRepeatCurrentDate: () => void;
   onChangeCurrentDate: () => void;
 }
@@ -89,7 +94,12 @@ function Todosheet({
     };
 
     const handleOpenTimeSetting = () => {
-      handleTodoTimeSetting(beginAt ?? undefined, endAt ?? undefined);
+      handleTodoTimeSetting(
+        beginAt ?? undefined,
+        endAt ?? undefined,
+        scheduledOn,
+        detail.reminders,
+      );
     };
 
     if (isPast && status === "UNCOMPLETED") {
@@ -157,7 +167,7 @@ function Todosheet({
         {
           key: "alarm-setting",
           title: "미리알림",
-          onPress: () => handleAlarmSetting(Boolean(beginAt)),
+          onPress: handleAlarmSetting,
         },
       ];
     }

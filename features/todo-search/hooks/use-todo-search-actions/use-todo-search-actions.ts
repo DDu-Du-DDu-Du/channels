@@ -6,12 +6,11 @@ import { useToggle } from "@/hooks";
 import {
   fetchCompleteToggleTodo,
   fetchDeleteTodo,
-  fetchTodoCancelReminder,
   fetchTodoChangeDate,
-  fetchTodoChangeReminder,
   fetchTodoChangeTime,
   fetchTodoRepeatDate,
 } from "@/service/feed/feed";
+import { deleteReminder } from "@/service/reminder/reminder";
 import { formatDateToYYYYMMDD } from "@/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -22,13 +21,19 @@ interface UseTodosearchActionsProps {
 function useTodosearchActions({ onRefetchSearch }: UseTodosearchActionsProps) {
   const queryClient = useQueryClient();
   const [currentTodoId, setCurrentTodoId] = useState(-1);
-  const [hasAlarmBeginAt, setHasAlarmBeginAt] = useState(true);
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [currentDate, setCurrentDate] = useState("");
   const [currentCalendarType, setCurrentCalendarType] = useState<"repeat" | "change">("change");
   const [currentTodoTime, setCurrentTodoTime] = useState<TodoTimeType>({
     beginAt: null,
     endAt: null,
+  });
+  const [currentTodoSchedule, setCurrentTodoSchedule] = useState<{
+    scheduledOn: string;
+    reminders: { id?: number; remindsAt: string; remindedAt?: string | null }[];
+  }>({
+    scheduledOn: "",
+    reminders: [],
   });
 
   const {
@@ -99,30 +104,27 @@ function useTodosearchActions({ onRefetchSearch }: UseTodosearchActionsProps) {
 
   const TodoChangeTimeMutation = useMutation({
     mutationKey: [FEED_KEY.Todo_CHANGE_TIME],
-    mutationFn: fetchTodoChangeTime,
-    onSuccess: () => {
+    mutationFn: async ({
+      id,
+      time,
+      candidateReminderIds,
+    }: {
+      id: number;
+      time: TodoTimeType;
+      candidateReminderIds?: number[];
+    }) => {
+      await fetchTodoChangeTime({ id, time });
+
+      return { candidateReminderIds: candidateReminderIds ?? [] };
+    },
+    onSuccess: async ({ candidateReminderIds }) => {
+      if (candidateReminderIds.length > 0) {
+        await Promise.all(candidateReminderIds.map((reminderId) => deleteReminder(reminderId)));
+      }
       queryClient.invalidateQueries({ queryKey: [FEED_KEY.Todo_DETAIL] });
       handleRefetchLinkedQueries();
       setCurrentTodoTime({ beginAt: null, endAt: null });
       handleTodoTimeSheetToggleOff();
-    },
-  });
-
-  const TodoChangeReminderMutation = useMutation({
-    mutationKey: [FEED_KEY.Todo_CHANGE_REMINDER],
-    mutationFn: fetchTodoChangeReminder,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [FEED_KEY.Todo_DETAIL] });
-      handleRefetchLinkedQueries();
-    },
-  });
-
-  const TodoCancelReminderMutation = useMutation({
-    mutationKey: [FEED_KEY.Todo_CHANGE_REMINDER],
-    mutationFn: fetchTodoCancelReminder,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [FEED_KEY.Todo_DETAIL] });
-      handleRefetchLinkedQueries();
     },
   });
 
@@ -185,8 +187,17 @@ function useTodosearchActions({ onRefetchSearch }: UseTodosearchActionsProps) {
     );
   };
 
-  const handleTodoTimeSetting = (beginAt: string | null = null, endAt: string | null = null) => {
+  const handleTodoTimeSetting = (
+    beginAt: string | null = null,
+    endAt: string | null = null,
+    scheduledOn: string = "",
+    reminders: { id?: number; remindsAt: string; remindedAt?: string | null }[] = [],
+  ) => {
     setCurrentTodoTime({ beginAt, endAt });
+    setCurrentTodoSchedule({
+      scheduledOn,
+      reminders,
+    });
     handleTodoTimeSheetToggleOn();
     handleTodosheetToggleOff();
   };
@@ -204,6 +215,7 @@ function useTodosearchActions({ onRefetchSearch }: UseTodosearchActionsProps) {
       TodoChangeTimeMutation.mutate({
         time: { beginAt: null, endAt: null },
         id: currentTodoId,
+        candidateReminderIds: selectedTime.candidateReminderIds,
       });
       return;
     }
@@ -224,45 +236,19 @@ function useTodosearchActions({ onRefetchSearch }: UseTodosearchActionsProps) {
     TodoChangeTimeMutation.mutate({
       time: { beginAt, endAt },
       id: currentTodoId,
+      candidateReminderIds: selectedTime.candidateReminderIds,
     });
   };
 
-  const handleAlarmSetting = (hasBeginAt: boolean) => {
-    setHasAlarmBeginAt(hasBeginAt);
+  const handleAlarmSetting = () => {
     handleAlarmSheetToggleOn();
     handleTodosheetToggleOff();
-  };
-
-  const handleChangeTodoReminder = ({
-    enabled,
-    day,
-    hour,
-    minute,
-  }: {
-    enabled: boolean;
-    day: number;
-    hour: number;
-    minute: number;
-  }) => {
-    if (!enabled) {
-      TodoCancelReminderMutation.mutate({ id: currentTodoId });
-      return;
-    }
-
-    TodoChangeReminderMutation.mutate({
-      id: currentTodoId,
-      reminder: {
-        days: day,
-        hours: hour,
-        minutes: minute,
-      },
-    });
   };
 
   return {
     currentTodoId,
     currentTodoTime,
-    hasAlarmBeginAt,
+    currentTodoSchedule,
     selectedDate,
     currentDate,
     isTodosheetToggle,
@@ -280,7 +266,6 @@ function useTodosearchActions({ onRefetchSearch }: UseTodosearchActionsProps) {
     handleRepeatCurrentDate,
     handleChangeCurrentDate,
     handleAlarmSetting,
-    handleChangeTodoReminder,
     handleTodoTimeSetting,
     handleChangeTodoTime,
     handleTodosheetToggleOff,

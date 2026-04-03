@@ -10,4 +10,5 @@ export interface TodoTimeRangeType {
   endMin: number;
   isBeginTimeEnabled: boolean;
   isEndTimeEnabled: boolean;
+  candidateReminderIds?: number[];
 }

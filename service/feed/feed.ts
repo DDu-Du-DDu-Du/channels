@@ -5,7 +5,6 @@ import {
   RequestPeriodGoalMemo,
   RequestTodo,
   RequestTodoChangeDate,
-  RequestTodoReminder,
 } from "@/types/request/feed/feed";
 
 interface GetDailyListProps {
@@ -288,38 +287,6 @@ export const fetchTodoChangeTime = async ({ time, id }: FetchTodoChangeTimeProps
     },
     true,
   );
-
-  if (response.status !== 204) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  return response.status;
-};
-
-interface FetchTodoChangeReminderProps {
-  id: number;
-  reminder: RequestTodoReminder;
-}
-
-export const fetchTodoChangeReminder = async ({ id, reminder }: FetchTodoChangeReminderProps) => {
-  const response = await fetchApi(
-    `${FEED.TODO}/${id}/reminder`,
-    {
-      method: "PATCH",
-      body: JSON.stringify(reminder),
-    },
-    true,
-  );
-
-  if (response.status !== 204) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  return response.status;
-};
-
-export const fetchTodoCancelReminder = async ({ id }: FetchUpdateTodoProps) => {
-  const response = await fetchApi(`${FEED.TODO}/${id}/reminder`, { method: "DELETE" }, true);
 
   if (response.status !== 204) {
     throw new Error(`HTTP error! status: ${response.status}`);

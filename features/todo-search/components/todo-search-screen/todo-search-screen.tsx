@@ -53,7 +53,7 @@ function TodoSearchScreen() {
   const {
     currentTodoId,
     currentTodoTime,
-    hasAlarmBeginAt,
+    currentTodoSchedule,
     selectedDate,
     currentDate,
     isTodoSheetToggle,
@@ -69,7 +69,6 @@ function TodoSearchScreen() {
     handleRepeatCurrentDate,
     handleChangeCurrentDate,
     handleAlarmSetting,
-    handleChangeTodoReminder,
     handleTodoTimeSetting,
     handleChangeTodoTime,
     handleTodoSheetToggleOff,
@@ -176,9 +175,8 @@ function TodoSearchScreen() {
 
       {isAlarmSheetToggle && (
         <AlarmSheet
+          todoId={currentTodoId}
           onClose={handleAlarmSheetToggleOff}
-          onConfirm={handleChangeTodoReminder}
-          hasBeginTime={hasAlarmBeginAt}
         />
       )}
 
@@ -197,6 +195,8 @@ function TodoSearchScreen() {
           currentTodoTime={currentTodoTime}
           onChangeTodoTime={handleChangeTodoTime}
           onClose={handleTodoTimeSheetToggleOff}
+          scheduledOn={currentTodoSchedule.scheduledOn}
+          reminders={currentTodoSchedule.reminders}
         />
       )}
     </View>

@@ -1,6 +1,7 @@
 import { FEED_KEY } from "@/constants/query-key/query-key";
 import type { TodoTimeRangeType, TodoTimeType } from "@/features/feed/feed.types";
 import { fetchTodoChangeTime } from "@/service/feed/feed";
+import { deleteReminder } from "@/service/reminder/reminder";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface UseTodoTimeMutationProps {
@@ -22,8 +23,23 @@ const useTodoTimeMutation = ({
 
   const TodoChangeTimeMutation = useMutation({
     mutationKey: [FEED_KEY.Todo_CHANGE_TIME],
-    mutationFn: fetchTodoChangeTime,
-    onSuccess: () => {
+    mutationFn: async ({
+      id,
+      time,
+      candidateReminderIds,
+    }: {
+      id: number;
+      time: TodoTimeType;
+      candidateReminderIds?: number[];
+    }) => {
+      await fetchTodoChangeTime({ id, time });
+
+      return { candidateReminderIds: candidateReminderIds ?? [] };
+    },
+    onSuccess: async ({ candidateReminderIds }) => {
+      if (candidateReminderIds.length > 0) {
+        await Promise.all(candidateReminderIds.map((reminderId) => deleteReminder(reminderId)));
+      }
       queryClient.invalidateQueries({ queryKey: [FEED_KEY.Todo_DETAIL] });
       queryClient.refetchQueries({ queryKey: [FEED_KEY.Todo_DETAIL] });
       queryClient.refetchQueries({ queryKey: [FEED_KEY.DAILY_TIMETABLE] });
@@ -49,6 +65,7 @@ const useTodoTimeMutation = ({
           endAt: null,
         },
         id: currentTodoId,
+        candidateReminderIds: selectedTime.candidateReminderIds,
       });
       return;
     }
@@ -75,6 +92,7 @@ const useTodoTimeMutation = ({
     TodoChangeTimeMutation.mutate({
       time,
       id: currentTodoId,
+      candidateReminderIds: selectedTime.candidateReminderIds,
     });
   };
 

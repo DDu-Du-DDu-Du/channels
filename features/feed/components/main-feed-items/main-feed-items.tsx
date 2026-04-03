@@ -18,7 +18,6 @@ import {
   useTodoDate,
   useTodoDateMutation,
   useTodoMutation,
-  useTodoReminderMutation,
   useTodoTime,
   useTodoTimeMutation,
 } from "./hooks";
@@ -41,7 +40,6 @@ function MainFeedItems({
   isCalendarOpen = true,
 }: MainFeedItemsProps) {
   const [currentTodoId, setCurrentTodoId] = useState(-1);
-  const [hasAlarmBeginAt, setHasAlarmBeginAt] = useState(true);
 
   const { editorSheetState, handleOpenCreateEditor, handleOpenEditEditor, handleCloseEditor } =
     useTodoEditorSheet();
@@ -84,10 +82,11 @@ function MainFeedItems({
     handleSelectDifferentDate,
   } = useTodoDate({ handleCalendarSheetToggleOn, handleTodosheetToggleOff });
 
-  const { currentTodoTime, handleTodoTimeSetting, handleUpdateTodoTime } = useTodoTime({
-    handleTodoTimeSheetToggleOn,
-    handleTodosheetToggleOff,
-  });
+  const { currentTodoTime, currentTodoSchedule, handleTodoTimeSetting, handleUpdateTodoTime } =
+    useTodoTime({
+      handleTodoTimeSheetToggleOn,
+      handleTodosheetToggleOff,
+    });
 
   const { onTodoCompleteToggle, onDeleteTodo } = useTodoMutation({
     selectedTodoDate,
@@ -110,18 +109,12 @@ function MainFeedItems({
     handleTodoTimeSheetToggleOff,
   });
 
-  const { handleChangeTodoReminder } = useTodoReminderMutation({
-    currentTodoId,
-    selectedTodoDate,
-  });
-
   const handleTodosheetOpen = (id: number) => {
     setCurrentTodoId(id);
     handleTodosheetToggleOn();
   };
 
-  const handleAlarmSetting = (hasBeginAt: boolean) => {
-    setHasAlarmBeginAt(hasBeginAt);
+  const handleAlarmSetting = () => {
     handleAlarmSheetToggleOn();
     handleTodosheetToggleOff();
   };
@@ -195,9 +188,8 @@ function MainFeedItems({
 
       {isAlarmSheetToggle && (
         <AlarmSheet
+          todoId={currentTodoId}
           onClose={handleAlarmSheetToggleOff}
-          onConfirm={handleChangeTodoReminder}
-          hasBeginTime={hasAlarmBeginAt}
         />
       )}
 
@@ -216,6 +208,8 @@ function MainFeedItems({
           currentTodoTime={currentTodoTime}
           onChangeTodoTime={onChangeTodoTime}
           onClose={handleTodoTimeSheetToggleOff}
+          scheduledOn={currentTodoSchedule.scheduledOn}
+          reminders={currentTodoSchedule.reminders}
         />
       )}
     </View>

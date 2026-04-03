@@ -8,5 +8,9 @@ export interface TodoDetailType {
   scheduledOn: string;
   beginAt: string | null;
   endAt: string | null;
-  remindAt?: string | null;
+  reminders?: {
+    id: number;
+    remindsAt: string;
+    remindedAt?: string | null;
+  }[];
 }

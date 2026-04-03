@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import type { TodoDetailType } from "@/components/todo-sheet/todo-sheet.types";
 import type { TodoTimeType } from "@/features/feed/feed.types";
 
 interface UseTodoTimeProps {
@@ -15,9 +16,25 @@ const useTodoTime = ({
     beginAt: null,
     endAt: null,
   });
+  const [currentTodoSchedule, setCurrentTodoSchedule] = useState<{
+    scheduledOn: string;
+    reminders: NonNullable<TodoDetailType["reminders"]>;
+  }>({
+    scheduledOn: "",
+    reminders: [],
+  });
 
-  const handleTodoTimeSetting = (beginAt: string | null = null, endAt: string | null = null) => {
+  const handleTodoTimeSetting = (
+    beginAt: string | null = null,
+    endAt: string | null = null,
+    scheduledOn: string = "",
+    reminders: TodoDetailType["reminders"] = [],
+  ) => {
     setCurrentTodoTime({ beginAt, endAt });
+    setCurrentTodoSchedule({
+      scheduledOn,
+      reminders: reminders ?? [],
+    });
     handleTodoTimeSheetToggleOn();
     handleTodosheetToggleOff();
   };
@@ -26,7 +43,7 @@ const useTodoTime = ({
     setCurrentTodoTime(updateTime);
   };
 
-  return { currentTodoTime, handleTodoTimeSetting, handleUpdateTodoTime };
+  return { currentTodoTime, currentTodoSchedule, handleTodoTimeSetting, handleUpdateTodoTime };
 };
 
 export default useTodoTime;

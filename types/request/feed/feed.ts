@@ -11,17 +11,12 @@ export interface RequestTodo {
   scheduledOn: string;
   beginAt?: string;
   endAt?: string;
-  remindDays?: number;
-  remindHours?: number;
-  remindMinutes?: number;
+  reminders?: {
+    id?: number;
+    remindsAt: string;
+  }[];
 }
 
 export interface RequestTodoChangeDate {
   newDate: string;
-}
-
-export interface RequestTodoReminder {
-  days: number;
-  hours: number;
-  minutes: number;
 }
