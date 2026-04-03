@@ -1,5 +1,6 @@
-import { Switch, View } from "react-native";
+import { View } from "react-native";
 
+import AnimatedSwitch from "@/components/animated-switch/animated-switch";
 import SpoqaText from "@/components/spoqa-text/spoqa-text";
 import TimePicker from "@/components/time-picker/time-picker";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
@@ -37,10 +38,11 @@ function TodoReminderPanel({
         <SpoqaText className="text-size14 text-role-text-primary dark:text-role-dark-text-primary">
           미리 알림 받기
         </SpoqaText>
-        <Switch
+        <AnimatedSwitch
           value={enabled}
           onValueChange={onToggle}
-          trackColor={{ false: switchOffTrackColor, true: switchOnTrackColor }}
+          offBackgroundColor={switchOffTrackColor}
+          onBackgroundColor={switchOnTrackColor}
           thumbColor={switchThumbColor}
         />
       </View>

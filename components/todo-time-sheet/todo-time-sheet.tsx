@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { Pressable, Switch, View } from "react-native";
+import { Pressable, View } from "react-native";
 
+import AnimatedSwitch from "@/components/animated-switch/animated-switch";
 import BottomSheet from "@/components/bottom-sheet/bottom-sheet";
 import ConfirmModal from "@/components/confirm-modal/confirm-modal";
 import SpoqaText from "@/components/spoqa-text/spoqa-text";
@@ -342,15 +343,16 @@ function TodoTimeSheet({
                 <SpoqaText className="text-size13 text-role-text-primary dark:text-role-dark-text-primary">
                   시작시간
                 </SpoqaText>
-                <Switch
+                <AnimatedSwitch
                   value={isBeginTimeEnabled}
                   onValueChange={handleToggleBeginTime}
-                  trackColor={{ false: switchOffTrackColor, true: switchOnTrackColor }}
+                  offBackgroundColor={switchOffTrackColor}
+                  onBackgroundColor={switchOnTrackColor}
                   thumbColor={switchThumbColor}
                 />
               </View>
               <View
-                className="flex-row items-center gap-[0.5rem] rounded-radius10 px-[0.4rem] py-[0.3rem]"
+                className="flex-row items-center gap-[0.5rem] rounded-radius10 px-[0.4rem] py-[1rem]"
                 style={{
                   backgroundColor: isBeginTimeEnabled
                     ? enabledPickerBgColor
@@ -378,16 +380,17 @@ function TodoTimeSheet({
                 <SpoqaText className="text-size13 text-role-text-primary dark:text-role-dark-text-primary">
                   종료시간
                 </SpoqaText>
-                <Switch
+                <AnimatedSwitch
                   value={isEndTimeEnabled}
                   onValueChange={handleToggleEndTime}
-                  trackColor={{ false: switchOffTrackColor, true: switchOnTrackColor }}
+                  offBackgroundColor={switchOffTrackColor}
+                  onBackgroundColor={switchOnTrackColor}
                   thumbColor={switchThumbColor}
                   disabled={!isBeginTimeEnabled}
                 />
               </View>
               <View
-                className="flex-row item-center gap-[0.5rem] rounded-radius10 px-[0.4rem] py-[0.3rem]"
+                className="flex-row item-center gap-[0.5rem] rounded-radius10 px-[0.4rem] py-[1rem]"
                 style={{
                   backgroundColor:
                     isEndTimeEnabled && isBeginTimeEnabled
