@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 
-import { TodoTimeRangeType, TodoTimeType } from "@/features/feed/feed.types";
+import { TodoTimeType } from "@/features/feed/feed.types";
 
 interface UseTimeUpdateProps {
   currentTodoTime: TodoTimeType;
-  onChangeTodoTime: (selectedTime: TodoTimeRangeType) => void;
 }
 
-const useTimeUpdate = ({ currentTodoTime, onChangeTodoTime }: UseTimeUpdateProps) => {
+const useTimeUpdate = ({ currentTodoTime }: UseTimeUpdateProps) => {
   const { beginAt, endAt } = currentTodoTime;
 
   const [isErrorMessage, setIsErrorMessage] = useState(false);
@@ -50,14 +49,6 @@ const useTimeUpdate = ({ currentTodoTime, onChangeTodoTime }: UseTimeUpdateProps
     }
 
     setIsErrorMessage(false);
-    onChangeTodoTime({
-      beginHour,
-      beginMin,
-      endHour,
-      endMin,
-      isBeginTimeEnabled: true,
-      isEndTimeEnabled: true,
-    });
     return true;
   };
 

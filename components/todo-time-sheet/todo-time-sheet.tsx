@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Pressable, Switch, View } from "react-native";
 
 import BottomSheet from "@/components/bottom-sheet/bottom-sheet";
+import ConfirmModal from "@/components/confirm-modal/confirm-modal";
 import SpoqaText from "@/components/spoqa-text/spoqa-text";
 import { TodoTimeRangeType, TodoTimeType } from "@/features/feed/feed.types";
 import { useBottomSheetAction } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { ArrowLeftIcon } from "@/icons";
+import { parseUtc } from "@/utils";
 
 import TimePicker from "../time-picker/time-picker";
 import { useTimeUpdate } from "./hooks";
@@ -24,6 +26,16 @@ export interface TodoTimeSheetProps {
   defaultEndTimeEnabled?: boolean;
   onChangeBeginTimeEnabled?: (enabled: boolean) => void;
   onChangeEndTimeEnabled?: (enabled: boolean) => void;
+  reminders?: {
+    id?: number;
+    remindsAt: string;
+    remindedAt?: string | null;
+  }[];
+  scheduledOn?: string;
+  onRequestConfirm?: (
+    nextTime: TodoTimeRangeType,
+    context: { message: string; candidateReminderIds: number[] },
+  ) => Promise<boolean> | boolean;
 }
 
 function TodoTimeSheet({
@@ -38,6 +50,9 @@ function TodoTimeSheet({
   defaultEndTimeEnabled,
   onChangeBeginTimeEnabled,
   onChangeEndTimeEnabled,
+  reminders = [],
+  scheduledOn,
+  onRequestConfirm,
 }: TodoTimeSheetProps) {
   const iconStrokeColor = useThemeColorToken("role.icon.default");
   const switchOffTrackColor = useThemeColorToken("role.border.default");
@@ -54,12 +69,12 @@ function TodoTimeSheet({
     endMin,
     isErrorMessage,
     handleTodoTimeChange,
-    handleChangeBeginHour,
-    handleChangeBeginMin,
+    handleChangeBeginHour: handleSetBeginHour,
+    handleChangeBeginMin: handleSetBeginMin,
     handleChangeEndHour,
     handleChangeEndMin,
     handleClearErrorMessage,
-  } = useTimeUpdate({ currentTodoTime, onChangeTodoTime });
+  } = useTimeUpdate({ currentTodoTime });
 
   const [isBeginTimeEnabled, setIsBeginTimeEnabled] = useState(
     defaultBeginTimeEnabled ?? Boolean(currentTodoTime.beginAt),
@@ -67,10 +82,92 @@ function TodoTimeSheet({
   const [isEndTimeEnabled, setIsEndTimeEnabled] = useState(
     defaultEndTimeEnabled ?? Boolean(currentTodoTime.endAt),
   );
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState("");
+  const [confirmInProgress, setConfirmInProgress] = useState(false);
+  const [candidateReminderIds, setCandidateReminderIds] = useState<number[]>([]);
+  const initialBeginAtRef = useRef(currentTodoTime.beginAt);
+  const initialRemindersRef = useRef(reminders);
+  const confirmResolverRef = useRef<((isComplete: boolean) => void) | null>(null);
+
+  const getCandidateReminderInfo = (
+    nextBeginAt: string | null,
+    targetReminders: { id?: number; remindsAt: string; remindedAt?: string | null }[] = reminders,
+  ) => {
+    if (!scheduledOn || targetReminders.length === 0) {
+      return { candidateReminderIds: [], candidateCount: 0 };
+    }
+
+    if (!nextBeginAt) {
+      return {
+        candidateReminderIds: targetReminders
+          .map((reminder) => reminder.id)
+          .filter((id): id is number => typeof id === "number"),
+        candidateCount: targetReminders.length,
+      };
+    }
+
+    const startAt = new Date(`${scheduledOn}T${nextBeginAt}`);
+    if (Number.isNaN(startAt.getTime())) {
+      return { candidateReminderIds: [], candidateCount: 0 };
+    }
+
+    const matched = targetReminders.filter((reminder) => {
+      try {
+        return parseUtc(reminder.remindsAt).getTime() >= startAt.getTime();
+      } catch {
+        return false;
+      }
+    });
+
+    return {
+      candidateReminderIds: matched
+        .map((reminder) => reminder.id)
+        .filter((id): id is number => typeof id === "number"),
+      candidateCount: matched.length,
+    };
+  };
+
+  const buildBeginAt = (hour: number, min: number) =>
+    `${hour.toString().padStart(2, "0")}:${min.toString().padStart(2, "0")}:00`;
+
+  const toMinute = (hour: number, min: number) => hour * 60 + min;
+
+  const openLocalConfirmModal = (message: string) =>
+    new Promise<boolean>((resolve) => {
+      confirmResolverRef.current = resolve;
+      setConfirmMessage(message);
+      setIsConfirmModalOpen(true);
+    });
+
+  const requestDeleteConfirm = async (
+    nextTime: TodoTimeRangeType,
+    message: string,
+    candidateIds: number[],
+  ) => {
+    if (candidateIds.length === 0) {
+      return true;
+    }
+
+    if (onRequestConfirm) {
+      return onRequestConfirm(nextTime, {
+        message,
+        candidateReminderIds: candidateIds,
+      });
+    }
+
+    return openLocalConfirmModal(message);
+  };
 
   useEffect(() => {
     openSheet();
   }, [openSheet]);
+
+  useEffect(() => {
+    initialBeginAtRef.current = currentTodoTime.beginAt;
+    initialRemindersRef.current = reminders;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handlePressBack = () => {
     onPressBack?.();
@@ -78,15 +175,52 @@ function TodoTimeSheet({
     onClose();
   };
 
-  const handleToggleBeginTime = (enabled: boolean) => {
-    setIsBeginTimeEnabled(enabled);
-    onChangeBeginTimeEnabled?.(enabled);
+  const handleToggleBeginTime = async (enabled: boolean) => {
+    if (confirmInProgress) {
+      return;
+    }
 
     if (!enabled) {
+      const nextTime: TodoTimeRangeType = {
+        beginHour,
+        beginMin,
+        endHour,
+        endMin,
+        isBeginTimeEnabled: false,
+        isEndTimeEnabled: false,
+      };
+      const candidateInfo =
+        initialBeginAtRef.current === null
+          ? { candidateReminderIds: [], candidateCount: 0 }
+          : getCandidateReminderInfo(null, initialRemindersRef.current);
+
+      if (candidateInfo.candidateCount > 0) {
+        setConfirmInProgress(true);
+        const canProceed = await requestDeleteConfirm(
+          nextTime,
+          "시작시간이 없으면 미리알림이 모두 삭제돼요. 계속 진행할까요?",
+          candidateInfo.candidateReminderIds,
+        );
+        setConfirmInProgress(false);
+
+        if (!canProceed) {
+          return;
+        }
+      }
+
+      setCandidateReminderIds(candidateInfo.candidateReminderIds);
+      setIsBeginTimeEnabled(false);
       setIsEndTimeEnabled(false);
-      onChangeEndTimeEnabled?.(false);
       handleClearErrorMessage();
+      return;
     }
+
+    const restoredCandidateInfo = getCandidateReminderInfo(
+      buildBeginAt(beginHour, beginMin),
+      initialRemindersRef.current,
+    );
+    setCandidateReminderIds(restoredCandidateInfo.candidateReminderIds);
+    setIsBeginTimeEnabled(true);
   };
 
   const handleToggleEndTime = (enabled: boolean) => {
@@ -95,48 +229,79 @@ function TodoTimeSheet({
     }
 
     setIsEndTimeEnabled(enabled);
-    onChangeEndTimeEnabled?.(enabled);
 
     if (!enabled) {
       handleClearErrorMessage();
     }
   };
 
-  const handleConfirm = () => {
-    if (!isBeginTimeEnabled) {
-      onChangeTodoTime({
-        beginHour,
-        beginMin,
-        endHour,
-        endMin,
-        isBeginTimeEnabled: false,
-        isEndTimeEnabled: false,
-      });
-      closeSheet();
-      onClose();
+  const handleChangeBeginTimeWithValidation = async (nextHour: number, nextMin: number) => {
+    if (confirmInProgress || !isBeginTimeEnabled) {
       return;
     }
 
-    if (!isEndTimeEnabled) {
-      onChangeTodoTime({
-        beginHour,
-        beginMin,
+    const previousMinute = toMinute(beginHour, beginMin);
+    const nextMinute = toMinute(nextHour, nextMin);
+    const nextBeginAt = buildBeginAt(nextHour, nextMin);
+    const candidateInfo = getCandidateReminderInfo(nextBeginAt, initialRemindersRef.current);
+
+    if (nextMinute < previousMinute && candidateInfo.candidateCount > 0) {
+      const nextTime: TodoTimeRangeType = {
+        beginHour: nextHour,
+        beginMin: nextMin,
         endHour,
         endMin,
         isBeginTimeEnabled: true,
-        isEndTimeEnabled: false,
-      });
-      closeSheet();
-      onClose();
-      return;
+        isEndTimeEnabled,
+      };
+
+      setConfirmInProgress(true);
+      const canProceed = await requestDeleteConfirm(
+        nextTime,
+        "변경된 시간보다 늦은 미리알림은 삭제돼요. 계속 진행할까요?",
+        candidateInfo.candidateReminderIds,
+      );
+      setConfirmInProgress(false);
+
+      if (!canProceed) {
+        return;
+      }
     }
 
-    const isValid = handleTodoTimeChange();
+    handleSetBeginHour(nextHour);
+    handleSetBeginMin(nextMin);
+    setCandidateReminderIds(candidateInfo.candidateReminderIds);
+  };
 
-    if (!isValid) {
-      return;
+  const handleChangeBeginHour = (nextHour: number) => {
+    void handleChangeBeginTimeWithValidation(nextHour, beginMin);
+  };
+
+  const handleChangeBeginMin = (nextMin: number) => {
+    void handleChangeBeginTimeWithValidation(beginHour, nextMin);
+  };
+
+  const handleConfirm = () => {
+    if (isBeginTimeEnabled && isEndTimeEnabled) {
+      const isValid = handleTodoTimeChange();
+      if (!isValid) {
+        return;
+      }
     }
 
+    const payload: TodoTimeRangeType = {
+      beginHour,
+      beginMin,
+      endHour,
+      endMin,
+      isBeginTimeEnabled,
+      isEndTimeEnabled: isBeginTimeEnabled ? isEndTimeEnabled : false,
+      candidateReminderIds,
+    };
+
+    onChangeBeginTimeEnabled?.(payload.isBeginTimeEnabled);
+    onChangeEndTimeEnabled?.(payload.isEndTimeEnabled);
+    onChangeTodoTime(payload);
     closeSheet();
     onClose();
   };
@@ -267,6 +432,23 @@ function TodoTimeSheet({
           </SpoqaText>
         </Pressable>
       </View>
+      <ConfirmModal
+        isToggle={isConfirmModalOpen}
+        title="확인"
+        message={confirmMessage}
+        completeText="계속"
+        incompleteText="취소"
+        handleToggleOff={() => {
+          setIsConfirmModalOpen(false);
+          confirmResolverRef.current?.(false);
+          confirmResolverRef.current = null;
+        }}
+        onCompleteCheck={(isComplete) => {
+          setIsConfirmModalOpen(false);
+          confirmResolverRef.current?.(isComplete);
+          confirmResolverRef.current = null;
+        }}
+      />
     </BottomSheet>
   );
 }
