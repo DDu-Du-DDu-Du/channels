@@ -131,7 +131,8 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
   const params = useLocalSearchParams<{ view?: string | string[]; date?: string | string[] }>();
   const view = resolveFeedView(toSingleParam(params.view));
   const paramDate = toSingleParam(params.date);
-  const hasTokens = useAuthStore((state) => state.accessToken && state.refreshToken);
+  const hasTokens = useAuthStore((state) => Boolean(state.accessToken && state.refreshToken));
+  const isGuestSession = useAuthStore((state) => state.sessionType === "guest");
   const { data: user } = useMe({ readOnly: true });
   const today = useMemo(() => formatDateToYYYYMMDD(new Date()), []);
   const resolvedParamDate = useMemo(() => resolveFeedDate(paramDate, today), [paramDate, today]);
@@ -140,7 +141,7 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
   const [calendarHeightRange, setCalendarHeightRange] = useState(240);
   const dateKey = useMemo(() => selectedDate.slice(0, 7), [selectedDate]);
   const [handleToggleCalendar, setHandleToggleCalendar] = useState<(() => void) | null>(null);
-  const isSessionReady = !!hasTokens && !!user;
+  const isSessionReady = isGuestSession || (!!hasTokens && !!user);
   const calendarOpenProgress = useSharedValue(1);
   const dragStartProgress = useSharedValue(1);
   const handleSelectDate = (date: string) => {
@@ -156,7 +157,7 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
     queryKey: [FEED_KEY.MONTHLY_Todos, dateKey],
     queryFn: async () =>
       getPeriodTodos({
-        userId: user.id,
+        userId: user?.id ?? 0,
         date: dateKey,
         type: "MONTH",
       }),
@@ -167,7 +168,7 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
     queryKey: [FEED_KEY.DAILY_LIST, selectedDate],
     queryFn: () =>
       getDailyList({
-        userId: user?.id,
+        userId: user?.id ?? 0,
         date: selectedDate,
       }),
     select: sortByGoalStatus,
@@ -179,7 +180,7 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
       queryKey: [FEED_KEY.DAILY_TIMETABLE, selectedDate],
       queryFn: () =>
         getDailyTimeTable({
-          userId: user?.id,
+          userId: user?.id ?? 0,
           date: selectedDate,
         }),
       enabled: isSessionReady && view === "timeline",

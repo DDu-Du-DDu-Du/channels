@@ -2,9 +2,14 @@ import { ANNOUNCEMENT_KEY } from "@/constants/query-key/query-key";
 import { getAnnouncements } from "@/service/announcement/announcement";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-function useAnnouncementListQuery() {
+interface UseAnnouncementListQueryProps {
+  enabled?: boolean;
+}
+
+function useAnnouncementListQuery({ enabled = true }: UseAnnouncementListQueryProps = {}) {
   return useInfiniteQuery({
     queryKey: [ANNOUNCEMENT_KEY.LIST],
+    enabled,
     initialPageParam: null as string | null,
     queryFn: ({ pageParam }) =>
       getAnnouncements({

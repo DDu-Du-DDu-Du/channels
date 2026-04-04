@@ -4,25 +4,27 @@ import { DateData } from "react-native-calendars";
 import { FEED_KEY } from "@/constants/query-key/query-key";
 import { useMe } from "@/features/user";
 import { getMonthlyTodos } from "@/service/feed/feed";
+import { useAuthStore } from "@/stores";
 import type { MonthlyWeeklyTodoType } from "@/types/response/feed/feed";
 import { useQueryClient } from "@tanstack/react-query";
 
 function useGoalsTodoMutation() {
   const queryClient = useQueryClient();
+  const isGuestSession = useAuthStore((state) => state.sessionType === "guest");
   const { data: user } = useMe({ readOnly: true });
 
   const MonthlyTodos = useCallback(
     async (yearMonth: string) => {
-      if (!user?.id) {
+      if (!isGuestSession && !user?.id) {
         return [];
       }
 
       return await queryClient.fetchQuery<MonthlyWeeklyTodoType[]>({
         queryKey: [FEED_KEY.MONTHLY_Todos, yearMonth],
-        queryFn: () => getMonthlyTodos({ userId: user.id, date: yearMonth }),
+        queryFn: () => getMonthlyTodos({ userId: user?.id ?? 0, date: yearMonth }),
       });
     },
-    [queryClient, user?.id],
+    [isGuestSession, queryClient, user?.id],
   );
 
   const handleMonthChange = useCallback(

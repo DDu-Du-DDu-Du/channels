@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { View } from "react-native";
 
 import BottomSheet from "@/components/bottom-sheet/bottom-sheet";
+import EmptyList from "@/components/empty-list/empty-list";
 import FormHeader from "@/components/form-header/form-header";
 import { FEED_KEY } from "@/constants/query-key/query-key";
 import TodoReminderListBox from "@/features/todo/components/todo-reminder-list-box/todo-reminder-list-box";
@@ -14,6 +15,7 @@ import {
   getReminderList,
   updateReminder,
 } from "@/service/reminder/reminder";
+import { useAuthStore } from "@/stores";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export interface AlarmSheetProps {
@@ -24,6 +26,7 @@ export interface AlarmSheetProps {
 function AlarmSheet({ todoId, onClose }: AlarmSheetProps) {
   const queryClient = useQueryClient();
   const iconStroke = useThemeColorToken("ui.icon.default");
+  const isGuestSession = useAuthStore((state) => state.sessionType === "guest");
   const { ref, openSheet, closeSheet } = useBottomSheetAction();
 
   useEffect(() => {
@@ -33,13 +36,13 @@ function AlarmSheet({ todoId, onClose }: AlarmSheetProps) {
   const { data: todoDetail } = useQuery({
     queryKey: [FEED_KEY.Todo_DETAIL, todoId],
     queryFn: () => getTodoDetail({ id: todoId }),
-    enabled: todoId > 0,
+    enabled: todoId > 0 && !isGuestSession,
   });
 
   const { data: reminders = [] } = useQuery({
     queryKey: [FEED_KEY.Todo_REMINDER_LIST, todoId],
     queryFn: () => getReminderList({ todoId, includeSent: true }),
-    enabled: todoId > 0,
+    enabled: todoId > 0 && !isGuestSession,
   });
 
   const handleRefetchReminderLinkedQueries = async () => {
@@ -107,14 +110,18 @@ function AlarmSheet({ todoId, onClose }: AlarmSheetProps) {
           iconStroke={iconStroke}
           className="px-[0.6rem] pb-[1.2rem] pt-[1.2rem]"
         />
-        <TodoReminderListBox
-          reminders={reminders}
-          scheduledOn={todoDetail?.scheduledOn ?? ""}
-          beginAt={todoDetail?.beginAt ?? undefined}
-          onCreateReminder={handleCreateReminder}
-          onUpdateReminder={handleUpdateReminder}
-          onDeleteReminder={handleDeleteReminder}
-        />
+        {isGuestSession ? (
+          <EmptyList text="회원 전용입니다. 로그인 후 더 많은 서비스를 경험하세요!" />
+        ) : (
+          <TodoReminderListBox
+            reminders={reminders}
+            scheduledOn={todoDetail?.scheduledOn ?? ""}
+            beginAt={todoDetail?.beginAt ?? undefined}
+            onCreateReminder={handleCreateReminder}
+            onUpdateReminder={handleUpdateReminder}
+            onDeleteReminder={handleDeleteReminder}
+          />
+        )}
       </View>
     </BottomSheet>
   );

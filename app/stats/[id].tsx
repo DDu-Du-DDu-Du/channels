@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { Pressable, View } from "react-native";
 
-import { PageHeader } from "@/components";
+import { EmptyList, PageHeader } from "@/components";
 import { StatsGoalDetailScreen } from "@/features/stats/components";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { EditIcon } from "@/icons";
+import { useAuthStore } from "@/stores";
 
 import { useLocalSearchParams, useRouter } from "expo-router";
 
 export default function Id() {
   const router = useRouter();
+  const isGuestSession = useAuthStore((state) => state.sessionType === "guest");
   const params = useLocalSearchParams<{ id?: string | string[] }>();
   const goalId = Number(Array.isArray(params.id) ? params.id[0] : (params.id ?? 0));
   const [goalName, setGoalName] = useState("Goal");
@@ -43,7 +45,14 @@ export default function Id() {
           </Pressable>
         }
       />
-      <StatsGoalDetailScreen onGoalNameChange={setGoalName} />
+      {isGuestSession ? (
+        <EmptyList
+          text="회원 전용입니다. 로그인 후 더 많은 서비스를 경험하세요!"
+          className="flex-1 items-center justify-center px-[2.4rem]"
+        />
+      ) : (
+        <StatsGoalDetailScreen onGoalNameChange={setGoalName} />
+      )}
     </View>
   );
 }

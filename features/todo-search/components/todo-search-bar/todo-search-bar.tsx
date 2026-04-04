@@ -15,7 +15,8 @@ export interface TodosearchBarProps {
 function TodosearchBar({ value, onChangeText, progress }: TodosearchBarProps) {
   const [containerWidth, setContainerWidth] = useState(0);
   const iconColor = useThemeColorToken("role.icon.inverse");
-  const placeholderColor = useThemeColorToken("role.text.inverse");
+  const placeholderColor = useThemeColorToken("ui.input.default.placeholder");
+  const inputColor = useThemeColorToken("ui.input.default.text");
   const translucentBorderColor = useMemo(
     () => hexConvertForRGBA({ hex: iconColor, alpha: 0.25 }),
     [iconColor],
@@ -60,7 +61,8 @@ function TodosearchBar({ value, onChangeText, progress }: TodosearchBarProps) {
               onChangeText={onChangeText}
               placeholder="투두를 검색하세요"
               placeholderTextColor={placeholderColor}
-              className="h-full text-size15 text-role-text-inverse dark:text-role-dark-text-inverse"
+              className="h-full text-size15"
+              style={{ color: inputColor }}
               autoFocus
               returnKeyType="search"
             />

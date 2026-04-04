@@ -19,7 +19,7 @@ const storybookEnabled = process.env.EXPO_PUBLIC_STORYBOOK_ENABLED === "true";
 const loginDisabled = process.env.EXPO_PUBLIC_LOGIN_DISABLED === "true";
 
 export const unstable_settings = {
-  initialRouteName: storybookEnabled ? "(storybook)/index" : "(landing)/index",
+  initialRouteName: storybookEnabled ? "storybook/index" : "auth",
 };
 
 SplashScreen.preventAutoHideAsync();

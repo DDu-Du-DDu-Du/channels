@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Pressable, TextInput, View } from "react-native";
+import { Pressable, View } from "react-native";
 
+import { TextInput } from "@/components";
 import { OptionIcon } from "@/icons";
 import type { MainTodosType } from "@/types/response/feed/feed";
 
@@ -54,7 +55,6 @@ function MainTodoInput({
     Promise.resolve(handleSubmitForm()).finally(() => {
       isSubmittingRef.current = false;
     });
-    console.log("blur?");
   };
 
   return (
@@ -72,15 +72,20 @@ function MainTodoInput({
             <TextInput
               value={value}
               onChangeText={onChange}
-              onBlur={() => {
-                onBlur();
-                handleSubmitOnce();
-              }}
+              onBlur={onBlur}
               placeholder="Add a Todo"
               autoFocus
               className="w-full py-[0.5rem] px-[0.5rem] border-b"
-              style={{ borderColor: `#${color}` }}
+              style={{
+                borderWidth: 0,
+                borderBottomWidth: 1,
+                borderColor: `#${color}`,
+                borderRadius: 0,
+                backgroundColor: "transparent",
+                height: 36,
+              }}
               returnKeyType="done"
+              onSubmitEditing={handleSubmitOnce}
             />
           )}
         />

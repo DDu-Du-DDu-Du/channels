@@ -14,20 +14,24 @@ import { useRouter } from "expo-router";
 
 function GoalList() {
   const router = useRouter();
-  const hasTokens = useAuthStore((state) => state.accessToken && state.refreshToken);
+  const hasTokens = useAuthStore((state) => Boolean(state.accessToken && state.refreshToken));
+  const isGuestSession = useAuthStore((state) => state.sessionType === "guest");
   const { data: user } = useMe({ readOnly: true });
-  const isSessionReady = useMemo(() => !!hasTokens && !!user, [hasTokens, user]);
+  const isSessionReady = useMemo(
+    () => isGuestSession || (!!hasTokens && !!user),
+    [hasTokens, isGuestSession, user],
+  );
 
   const { data: goalList = [] } = useQuery<GoalType[]>({
     queryKey: [GOAL_KEY.GOAL_LIST, user?.id],
     queryFn: () => {
-      if (!user?.id) {
+      if (!isGuestSession && !user?.id) {
         return Promise.resolve([]);
       }
 
-      return getGoalList({ userId: user.id });
+      return getGoalList({ userId: user?.id ?? 0 });
     },
-    enabled: !!isSessionReady && !!user?.id,
+    enabled: !!isSessionReady,
   });
   const sortedGoalList = useMemo(
     () =>

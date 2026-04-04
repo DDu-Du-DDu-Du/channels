@@ -4,7 +4,7 @@ import { formatDateToYYYYMMDD, parseUtc } from "@/utils";
 
 import { useAnnouncementListQuery } from "../../queries";
 
-import { Href, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 
 export interface AnnouncementListViewItem {
   key: string;
@@ -21,10 +21,14 @@ const parseDateText = (createdAt: string) => {
   }
 };
 
-function useAnnouncementScreen() {
+interface UseAnnouncementScreenProps {
+  enabled?: boolean;
+}
+
+function useAnnouncementScreen({ enabled = true }: UseAnnouncementScreenProps = {}) {
   const router = useRouter();
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage, isError } =
-    useAnnouncementListQuery();
+    useAnnouncementListQuery({ enabled });
 
   const announcementViewItems = useMemo<AnnouncementListViewItem[]>(() => {
     const sourceItems = data?.pages.flatMap((page) => page.contents) ?? [];
@@ -39,7 +43,7 @@ function useAnnouncementScreen() {
 
   const handlePressAnnouncement = (id: string) => {
     router.push({
-      pathname: "/announcement/[id]" as Href,
+      pathname: "/announcement/[id]",
       params: { id },
     });
   };

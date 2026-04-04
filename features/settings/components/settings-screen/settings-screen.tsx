@@ -5,7 +5,10 @@ import { ConfirmModal } from "@/components";
 import { useToggle } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { logout } from "@/service/auth/auth";
+import { clearGuestLocalData } from "@/service/guest-storage/guest-storage";
 import { useAuthStore } from "@/stores";
+import useSettingsStore from "@/stores/use-settings-store/use-settings-store";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { BugReportSheet, BugReportSheetHandle } from "../bug-report-sheet";
 import { SettingsRow } from "../settings-row";
@@ -15,9 +18,12 @@ import { useRouter } from "expo-router";
 
 function SettingsScreen() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const dangerTextColor = useThemeColorToken("role.status.error");
   const bugReportSheetRef = useRef<BugReportSheetHandle | null>(null);
+  const sessionType = useAuthStore((state) => state.sessionType);
   const clearSession = useAuthStore((state) => state.clearSession);
+  const handleResetSettings = useSettingsStore((state) => state.handleResetSettings);
   const {
     isToggle: isLogoutConfirmOpen,
     handleToggleOn: handleOpenLogoutConfirm,
@@ -54,13 +60,19 @@ function SettingsScreen() {
       return;
     }
 
-    try {
-      await logout();
-    } catch {
-      // Ignore logout API failure and continue local sign-out.
+    if (sessionType === "member") {
+      try {
+        await logout();
+      } catch {
+        // Ignore logout API failure and continue local sign-out.
+      }
+    } else if (sessionType === "guest") {
+      await clearGuestLocalData();
     }
 
     clearSession();
+    handleResetSettings();
+    queryClient.clear();
     router.replace("/");
   };
 
