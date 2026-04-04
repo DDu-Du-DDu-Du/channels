@@ -1,9 +1,9 @@
 import { type ComponentProps, useMemo } from "react";
-import { View } from "react-native";
 import { useFormContext } from "react-hook-form";
+import { View } from "react-native";
 
-import TextInput from "../text-input/text-input";
 import SpoqaText from "../spoqa-text/spoqa-text";
+import TextInput from "../text-input/text-input";
 
 interface FormTitleInputBaseProps {
   placeholder?: string;
@@ -37,11 +37,7 @@ interface FormTitleInputControlledModeProps extends FormTitleInputBaseProps {
 
 export type FormTitleInputProps = FormTitleInputFormModeProps | FormTitleInputControlledModeProps;
 
-function FormTitleInput({
-  required = false,
-  className,
-  ...inputProps
-}: FormTitleInputProps) {
+function FormTitleInput({ required = false, className, ...inputProps }: FormTitleInputProps) {
   const formContext = useFormContext();
   const fieldName = "name" in inputProps ? inputProps.name : undefined;
   const watchedValue = fieldName && formContext ? formContext.watch(fieldName) : undefined;
@@ -68,50 +64,48 @@ function FormTitleInput({
           </SpoqaText>
         </View>
       )}
-      {"name" in inputProps ? (
-        (() => {
-          const formProps = inputProps as FormTitleInputFormModeProps;
+      {"name" in inputProps
+        ? (() => {
+            const formProps = inputProps as FormTitleInputFormModeProps;
 
-          return (
-            <TextInput
-              name={formProps.name}
-              options={formProps.options}
-              placeholder={formProps.placeholder}
-              disabled={formProps.disabled}
-              maxLength={formProps.maxLength}
-              multiline={formProps.multiline}
-              textAlignVertical={formProps.textAlignVertical}
-              autoFocus={formProps.autoFocus}
-              returnKeyType={formProps.returnKeyType}
-              onSubmitEditing={formProps.onSubmitEditing}
-              style={formProps.style}
-              className={`h-[5.6rem] ${required ? "pl-[1.2rem]" : ""}`}
-            />
-          );
-        })()
-      ) : (
-        (() => {
-          const controlledProps = inputProps as FormTitleInputControlledModeProps;
+            return (
+              <TextInput
+                name={formProps.name}
+                options={formProps.options}
+                placeholder={formProps.placeholder}
+                disabled={formProps.disabled}
+                maxLength={formProps.maxLength}
+                multiline={formProps.multiline}
+                textAlignVertical={formProps.textAlignVertical}
+                autoFocus={formProps.autoFocus}
+                returnKeyType={formProps.returnKeyType}
+                onSubmitEditing={formProps.onSubmitEditing}
+                style={formProps.style}
+                className={`h-[5.6rem] ${required ? "pl-[1.2rem]" : ""}`}
+              />
+            );
+          })()
+        : (() => {
+            const controlledProps = inputProps as FormTitleInputControlledModeProps;
 
-          return (
-            <TextInput
-              value={controlledProps.value}
-              onChangeText={controlledProps.onChangeText}
-              onBlur={controlledProps.onBlur}
-              placeholder={controlledProps.placeholder}
-              disabled={controlledProps.disabled}
-              maxLength={controlledProps.maxLength}
-              multiline={controlledProps.multiline}
-              textAlignVertical={controlledProps.textAlignVertical}
-              autoFocus={controlledProps.autoFocus}
-              returnKeyType={controlledProps.returnKeyType}
-              onSubmitEditing={controlledProps.onSubmitEditing}
-              style={controlledProps.style}
-              className={`h-[5.6rem] ${required ? "pl-[1.2rem]" : ""}`}
-            />
-          );
-        })()
-      )}
+            return (
+              <TextInput
+                value={controlledProps.value}
+                onChangeText={controlledProps.onChangeText}
+                onBlur={controlledProps.onBlur}
+                placeholder={controlledProps.placeholder}
+                disabled={controlledProps.disabled}
+                maxLength={controlledProps.maxLength}
+                multiline={controlledProps.multiline}
+                textAlignVertical={controlledProps.textAlignVertical}
+                autoFocus={controlledProps.autoFocus}
+                returnKeyType={controlledProps.returnKeyType}
+                onSubmitEditing={controlledProps.onSubmitEditing}
+                style={controlledProps.style}
+                className={`h-[5.6rem] ${required ? "pl-[1.2rem]" : ""}`}
+              />
+            );
+          })()}
     </View>
   );
 }

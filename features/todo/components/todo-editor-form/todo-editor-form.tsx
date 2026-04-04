@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { Pressable, View } from "react-native";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
+import { Pressable, View } from "react-native";
 
 import Button from "@/components/button/Button";
 import FormSection from "@/components/form-section/form-section";

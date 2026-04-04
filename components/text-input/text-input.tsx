@@ -1,11 +1,11 @@
 import { Controller, FieldErrors, RegisterOptions, useFormContext } from "react-hook-form";
 import {
   NativeSyntheticEvent,
-  StyleProp,
-  TextInputProps as RNTextInputProps,
-  TextStyle,
   TextInput as RNTextInput,
+  TextInputProps as RNTextInputProps,
+  StyleProp,
   TextInputSubmitEditingEventData,
+  TextStyle,
 } from "react-native";
 
 import { useThemeColorToken } from "@/hooks/use-theme-color";
@@ -116,10 +116,7 @@ function TextInput({
         autoFocus={autoFocus}
         returnKeyType={returnKeyType}
         onSubmitEditing={onSubmitEditing}
-        style={[
-          { ...baseInputStyle, borderColor: inputBorder },
-          style,
-        ]}
+        style={[{ ...baseInputStyle, borderColor: inputBorder }, style]}
         className={inputClassNames}
         selectionColor={inputFocusBorder}
       />
@@ -145,10 +142,7 @@ function TextInput({
           autoFocus={autoFocus}
           returnKeyType={returnKeyType}
           onSubmitEditing={onSubmitEditing}
-          style={[
-            { ...baseInputStyle, borderColor: hasError ? errorBorder : inputBorder },
-            style,
-          ]}
+          style={[{ ...baseInputStyle, borderColor: hasError ? errorBorder : inputBorder }, style]}
           className={inputClassNames}
           selectionColor={inputFocusBorder}
         />
