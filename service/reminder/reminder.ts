@@ -1,5 +1,12 @@
 import { fetchApi } from "@/api";
 import { REMINDER } from "@/constants/end-points";
+import { isGuestSession } from "@/service/guest-storage/guest-session";
+import {
+  createGuestReminder,
+  deleteGuestReminder,
+  getGuestReminderList,
+  updateGuestReminder,
+} from "@/service/guest-storage/guest-storage";
 import type {
   CreateReminderRequestType,
   UpdateReminderRequestType,
@@ -18,6 +25,10 @@ export const getReminderList = async ({
   todoId,
   includeSent = false,
 }: GetReminderListProps): Promise<RetrieveReminderResponseType[]> => {
+  if (isGuestSession()) {
+    return getGuestReminderList({ todoId, includeSent });
+  }
+
   const response = await fetchApi(`${REMINDER.REMINDER}?todoId=${todoId}`, { method: "GET" }, true);
 
   if (!response.ok) {
@@ -39,6 +50,13 @@ interface CreateReminderProps {
 export const createReminder = async ({
   requestReminder,
 }: CreateReminderProps): Promise<ReminderIdResponseType> => {
+  if (isGuestSession()) {
+    return createGuestReminder({
+      todoId: requestReminder.todoId,
+      remindsAt: requestReminder.remindsAt,
+    });
+  }
+
   const response = await fetchApi(
     REMINDER.REMINDER,
     {
@@ -61,6 +79,10 @@ interface UpdateReminderProps {
 }
 
 export const updateReminder = async ({ id, requestReminder }: UpdateReminderProps) => {
+  if (isGuestSession()) {
+    return updateGuestReminder({ id, remindsAt: requestReminder.remindsAt });
+  }
+
   const response = await fetchApi(
     `${REMINDER.REMINDER}/${id}`,
     {
@@ -78,6 +100,10 @@ export const updateReminder = async ({ id, requestReminder }: UpdateReminderProp
 };
 
 export const deleteReminder = async (id: number) => {
+  if (isGuestSession()) {
+    return deleteGuestReminder({ id });
+  }
+
   const response = await fetchApi(`${REMINDER.REMINDER}/${id}`, { method: "DELETE" }, true);
 
   if (response.status !== 204) {

@@ -8,10 +8,10 @@ interface SettingsProviderProps {
 }
 
 function SettingsProvider({ children }: SettingsProviderProps) {
-  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const isMemberSession = useAuthStore((state) => state.sessionType === "member");
 
-  useSettingsBootstrap({ enabled: isLoggedIn });
-  useSettingsSync({ enabled: isLoggedIn });
+  useSettingsBootstrap({ enabled: isMemberSession });
+  useSettingsSync({ enabled: isMemberSession });
 
   return <>{children}</>;
 }

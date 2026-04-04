@@ -1,5 +1,7 @@
 import { fetchApi } from "@/api";
 import { TODO } from "@/constants/end-points";
+import { isGuestSession } from "@/service/guest-storage/guest-session";
+import { searchGuestTodos } from "@/service/guest-storage/guest-storage";
 import type { TodosearchResponseType } from "@/types/response/todo/todo";
 
 interface GetTodosearchProps {
@@ -13,6 +15,10 @@ export const getTodosearch = async ({
   size = 20,
   cursor = null,
 }: GetTodosearchProps): Promise<TodosearchResponseType> => {
+  if (isGuestSession()) {
+    return searchGuestTodos({ query, size, cursor });
+  }
+
   const queryParams = [`query=${encodeURIComponent(query)}`, `size=${size}`];
 
   if (cursor) {

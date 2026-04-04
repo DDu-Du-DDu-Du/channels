@@ -1,5 +1,11 @@
 import { fetchApi } from "@/api";
 import { REPEAT_TODO } from "@/constants/end-points";
+import { isGuestSession } from "@/service/guest-storage/guest-session";
+import {
+  createGuestRepeatTodo,
+  deleteGuestRepeatTodo,
+  editGuestRepeatTodo,
+} from "@/service/guest-storage/guest-storage";
 import type {
   RepeatTodoCreateRequestType,
   RepeatTodoRequestType,
@@ -36,6 +42,10 @@ const parseErrorMessage = async (response: Response) => {
 };
 
 export const createRepeatTodo = async ({ requestRepeatTodo }: CreateRepeatTodoProps) => {
+  if (isGuestSession()) {
+    return createGuestRepeatTodo({ requestRepeatTodo });
+  }
+
   const response = await fetchApi(
     `${REPEAT_TODO.CREATE}`,
     {
@@ -57,6 +67,10 @@ export const createRepeatTodo = async ({ requestRepeatTodo }: CreateRepeatTodoPr
 };
 
 export const editRepeatTodo = async ({ repeatTodoId, requestRepeatTodo }: EditRepeatTodoProps) => {
+  if (isGuestSession()) {
+    return editGuestRepeatTodo({ repeatTodoId, requestRepeatTodo });
+  }
+
   const response = await fetchApi(
     `${REPEAT_TODO.EDIT}/${repeatTodoId}`,
     {
@@ -78,6 +92,10 @@ export const editRepeatTodo = async ({ repeatTodoId, requestRepeatTodo }: EditRe
 };
 
 export const deleteRepeatTodo = async ({ repeatTodoId }: DeleteRepeatTodoProps) => {
+  if (isGuestSession()) {
+    return deleteGuestRepeatTodo({ repeatTodoId });
+  }
+
   const response = await fetchApi(
     `${REPEAT_TODO.DELETE}/${repeatTodoId}`,
     { method: "DELETE" },

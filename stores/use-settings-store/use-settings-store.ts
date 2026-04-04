@@ -41,6 +41,7 @@ interface SettingsRuntimeState {
 
 interface SettingsAction {
   handleHydrateSettings: (payload: SettingsPayload) => void;
+  handleApplyGuestDefaults: () => void;
   handleSetWeekStartDay: (day: WeekStartDay) => void;
   handleSetDarkMode: (next: boolean) => void;
   handleSetMenuActivation: (key: MenuActivationKey, next: boolean) => void;
@@ -102,6 +103,17 @@ const useSettingsStore = create<SettingsState>()(
           dirty: false,
           syncError: null,
         }),
+
+      handleApplyGuestDefaults: () =>
+        set((state) => ({
+          menuActivation: {
+            ...state.menuActivation,
+            stats: {
+              ...state.menuActivation.stats,
+              isActivated: false,
+            },
+          },
+        })),
 
       handleSetWeekStartDay: (day) =>
         set((state) => ({

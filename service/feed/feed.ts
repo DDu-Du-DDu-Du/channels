@@ -1,6 +1,20 @@
 import { fetchApi } from "@/api";
 import { FEED } from "@/constants/end-points";
 import { TodoTimeType } from "@/features/feed/feed.types";
+import { isGuestSession } from "@/service/guest-storage/guest-session";
+import {
+  changeGuestTodoDate,
+  changeGuestTodoTime,
+  createGuestTodo,
+  deleteGuestTodo,
+  editGuestTodo,
+  getGuestDailyList,
+  getGuestDailyTimeTable,
+  getGuestPeriodTodos,
+  getGuestTodoDetail,
+  repeatGuestTodoDate,
+  toggleGuestTodoCompletion,
+} from "@/service/guest-storage/guest-storage";
 import {
   RequestPeriodGoalMemo,
   RequestTodo,
@@ -13,6 +27,10 @@ interface GetDailyListProps {
 }
 
 export const getDailyList = async ({ userId, date }: GetDailyListProps) => {
+  if (isGuestSession()) {
+    return getGuestDailyList({ date });
+  }
+
   const selectedDate = `&date=${date}`;
 
   const response = await fetchApi(
@@ -34,6 +52,10 @@ export const getDailyList = async ({ userId, date }: GetDailyListProps) => {
 };
 
 export const getDailyTimeTable = async ({ userId, date }: GetDailyListProps) => {
+  if (isGuestSession()) {
+    return getGuestDailyTimeTable({ date });
+  }
+
   const response = await fetchApi(
     `${FEED.DAILY_TIMETABLE}?userId=${userId}&date=${date}`,
     {
@@ -134,6 +156,10 @@ interface GetPeriodTodosProps extends GetDailyListProps {
 }
 
 export const getPeriodTodos = async ({ userId, date, type }: GetPeriodTodosProps) => {
+  if (isGuestSession()) {
+    return getGuestPeriodTodos({ date, type });
+  }
+
   const selectedDate = `&date=${date}`;
   const endpoint = type === "WEEK" ? FEED.WEEKLY_TODOS : FEED.MONTHLY_TODOS;
 
@@ -156,6 +182,10 @@ export const getPeriodTodos = async ({ userId, date, type }: GetPeriodTodosProps
 };
 
 export const getTodoDetail = async ({ id }: FetchUpdateTodoProps) => {
+  if (isGuestSession()) {
+    return getGuestTodoDetail({ id });
+  }
+
   const response = await fetchApi(`${FEED.TODO}/${id}`, { method: "GET" }, true);
 
   if (!response.ok) {
@@ -170,6 +200,10 @@ interface FetchCreateTodoProps {
 }
 
 export const fetchCreateTodo = async ({ requestTodo }: FetchCreateTodoProps) => {
+  if (isGuestSession()) {
+    return createGuestTodo({ requestTodo });
+  }
+
   const response = await fetchApi(
     `${FEED.TODO}`,
     {
@@ -192,6 +226,10 @@ interface FetchEditTodoProps {
 }
 
 export const fetchEditTodo = async ({ id, requestTodo }: FetchEditTodoProps) => {
+  if (isGuestSession()) {
+    return editGuestTodo({ id, requestTodo });
+  }
+
   const response = await fetchApi(
     `${FEED.TODO}/${id}`,
     {
@@ -213,6 +251,10 @@ interface FetchUpdateTodoProps {
 }
 
 export const fetchDeleteTodo = async ({ id }: FetchUpdateTodoProps) => {
+  if (isGuestSession()) {
+    return deleteGuestTodo({ id });
+  }
+
   const response = await fetchApi(`${FEED.TODO}/${id}`, { method: "DELETE" }, true);
 
   if (response.status === 204) {
@@ -225,6 +267,11 @@ export const fetchDeleteTodo = async ({ id }: FetchUpdateTodoProps) => {
 };
 
 export const fetchCompleteToggleTodo = async ({ id }: FetchUpdateTodoProps) => {
+  if (isGuestSession()) {
+    await toggleGuestTodoCompletion({ id });
+    return;
+  }
+
   const response = await fetchApi(`${FEED.TODO}/${id}/status`, { method: "PATCH" }, true);
 
   if (response.status !== 204) {
@@ -238,6 +285,10 @@ interface fetchTodoDateProps {
 }
 
 export const fetchTodoChangeDate = async ({ id, date }: fetchTodoDateProps) => {
+  if (isGuestSession()) {
+    return changeGuestTodoDate({ id, date });
+  }
+
   const changedDate: RequestTodoChangeDate = { newDate: date };
 
   const response = await fetchApi(
@@ -257,6 +308,10 @@ export const fetchTodoChangeDate = async ({ id, date }: fetchTodoDateProps) => {
 };
 
 export const fetchTodoRepeatDate = async ({ id, date }: fetchTodoDateProps) => {
+  if (isGuestSession()) {
+    return repeatGuestTodoDate({ id, date });
+  }
+
   const response = await fetchApi(
     `${FEED.TODO}/${id}/repeat`,
     {
@@ -279,6 +334,10 @@ interface FetchTodoChangeTimeProps {
 }
 
 export const fetchTodoChangeTime = async ({ time, id }: FetchTodoChangeTimeProps) => {
+  if (isGuestSession()) {
+    return changeGuestTodoTime({ id, time });
+  }
+
   const response = await fetchApi(
     `${FEED.TODO}/${id}/period`,
     {
