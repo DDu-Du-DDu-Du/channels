@@ -53,7 +53,16 @@ const defineConfig = ({ config }: ConfigContext): ExpoConfig => {
       output: env.storybookEnabled ? "single" : "static",
     },
     plugins: [
-      "expo-router",
+      [
+        "expo-router",
+        {
+          headers: {
+            "Cross-Origin-Embedder-Policy": "credentialless",
+            "Cross-Origin-Opener-Policy": "same-origin",
+          },
+        },
+      ],
+      "expo-sqlite",
       [
         "expo-build-properties",
         {
