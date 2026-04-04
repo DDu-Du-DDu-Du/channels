@@ -1,11 +1,16 @@
 import { Controller, FieldErrors, RegisterOptions, useFormContext } from "react-hook-form";
-import { TextInput as RNTextInput } from "react-native";
+import {
+  NativeSyntheticEvent,
+  StyleProp,
+  TextInputProps as RNTextInputProps,
+  TextStyle,
+  TextInput as RNTextInput,
+  TextInputSubmitEditingEventData,
+} from "react-native";
 
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 
-export interface TextInputProps {
-  name: string;
-  options?: RegisterOptions;
+interface BaseTextInputProps {
   placeholder?: string;
   disabled?: boolean;
   className?: string;
@@ -13,11 +18,33 @@ export interface TextInputProps {
   maxLength?: number;
   multiline?: boolean;
   textAlignVertical?: "auto" | "top" | "center" | "bottom";
+  autoFocus?: boolean;
+  returnKeyType?: "default" | "done" | "go" | "next" | "search" | "send";
+  onSubmitEditing?: (e: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => void;
+  style?: StyleProp<TextStyle>;
 }
+
+interface FormTextInputProps extends BaseTextInputProps {
+  name: string;
+  options?: RegisterOptions;
+  value?: never;
+  onChangeText?: never;
+  onBlur?: never;
+}
+
+interface ControlledTextInputProps extends BaseTextInputProps {
+  name?: never;
+  options?: never;
+  value: string;
+  onChangeText: (value: string) => void;
+  onBlur?: RNTextInputProps["onBlur"];
+}
+
+export type TextInputProps = FormTextInputProps | ControlledTextInputProps;
 
 function TextInput({
   name,
-  options = {},
+  options,
   placeholder,
   disabled,
   className,
@@ -25,9 +52,20 @@ function TextInput({
   maxLength,
   multiline,
   textAlignVertical,
+  value,
+  onChangeText,
+  onBlur,
+  autoFocus,
+  returnKeyType,
+  onSubmitEditing,
+  style,
 }: TextInputProps) {
-  const { control, formState } = useFormContext();
-  const hasError = Boolean((formState.errors as FieldErrors)?.[name]);
+  const isFormMode = typeof name === "string";
+  const formContext = useFormContext();
+  const hasError =
+    isFormMode && formContext
+      ? Boolean((formContext.formState.errors as FieldErrors)?.[name])
+      : false;
   const inputBg = useThemeColorToken("ui.input.default.bg");
   const inputText = useThemeColorToken("ui.input.default.text");
   const placeholderText = useThemeColorToken("ui.input.default.placeholder");
@@ -39,16 +77,64 @@ function TextInput({
     ? "w-full rounded-radius15 px-[1.2rem] text-size15"
     : "w-full h-[5.6rem] rounded-radius15 px-[1.2rem] text-size15";
   const disabledCls = disabled ? " opacity-40" : "";
+  const inputClassNames = `${baseCls} ${disabledCls} ${className ?? ""} ${inputClassName ?? ""}`;
+
+  if (isFormMode && !formContext) {
+    if (__DEV__) {
+      throw new Error("[TextInput] Form mode requires FormProvider/useFormContext.");
+    }
+
+    return null;
+  }
+
+  if (!isFormMode && (value === undefined || !onChangeText)) {
+    if (__DEV__) {
+      throw new Error("[TextInput] Controlled mode requires value and onChangeText.");
+    }
+
+    return null;
+  }
+
+  const baseInputStyle = {
+    backgroundColor: inputBg,
+    color: inputText,
+    borderWidth: 1,
+  };
+
+  if (!isFormMode) {
+    return (
+      <RNTextInput
+        value={value ?? ""}
+        onChangeText={onChangeText}
+        onBlur={onBlur}
+        editable={!disabled}
+        placeholder={placeholder}
+        placeholderTextColor={placeholderText}
+        maxLength={maxLength}
+        multiline={multiline}
+        textAlignVertical={textAlignVertical}
+        autoFocus={autoFocus}
+        returnKeyType={returnKeyType}
+        onSubmitEditing={onSubmitEditing}
+        style={[
+          { ...baseInputStyle, borderColor: inputBorder },
+          style,
+        ]}
+        className={inputClassNames}
+        selectionColor={inputFocusBorder}
+      />
+    );
+  }
 
   return (
     <Controller
-      control={control}
+      control={formContext.control}
       name={name}
-      rules={options}
+      rules={options ?? {}}
       render={({ field: { value, onChange, onBlur } }) => (
         <RNTextInput
-          value={value}
-          onChangeText={onChange}
+          value={typeof value === "string" ? value : ""}
+          onChangeText={(nextValue) => onChange(nextValue)}
           onBlur={onBlur}
           editable={!disabled}
           placeholder={placeholder}
@@ -56,13 +142,14 @@ function TextInput({
           maxLength={maxLength}
           multiline={multiline}
           textAlignVertical={textAlignVertical}
-          style={{
-            backgroundColor: inputBg,
-            color: inputText,
-            borderColor: hasError ? errorBorder : inputBorder,
-            borderWidth: 1,
-          }}
-          className={`${baseCls} ${disabledCls} ${className ?? ""} ${inputClassName ?? ""}`}
+          autoFocus={autoFocus}
+          returnKeyType={returnKeyType}
+          onSubmitEditing={onSubmitEditing}
+          style={[
+            { ...baseInputStyle, borderColor: hasError ? errorBorder : inputBorder },
+            style,
+          ]}
+          className={inputClassNames}
           selectionColor={inputFocusBorder}
         />
       )}

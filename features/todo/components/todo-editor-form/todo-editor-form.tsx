@@ -1,9 +1,12 @@
-import { Pressable, TextInput as RNTextInput, View } from "react-native";
+import { useEffect } from "react";
+import { Pressable, View } from "react-native";
+import { FormProvider, useForm, useWatch } from "react-hook-form";
 
 import Button from "@/components/button/Button";
 import FormSection from "@/components/form-section/form-section";
 import FormTitleInput from "@/components/form-title-input/form-title-input";
 import SpoqaText from "@/components/spoqa-text/spoqa-text";
+import TextInput from "@/components/text-input/text-input";
 import TimeSet from "@/components/time-set/time-set";
 import { ChevronRightIcon } from "@/icons";
 
@@ -49,14 +52,36 @@ function TodoEditorForm({
   onChangeMemo,
   onSubmit,
 }: TodoEditorFormProps) {
+  const titleMethods = useForm<{ title: string }>({
+    defaultValues: { title: state.title },
+  });
+  const { control, getValues, setValue } = titleMethods;
+  const watchedTitle = useWatch({
+    control,
+    name: "title",
+  });
+
+  useEffect(() => {
+    if (watchedTitle !== state.title) {
+      onChangeTitle(watchedTitle ?? "");
+    }
+  }, [onChangeTitle, state.title, watchedTitle]);
+
+  useEffect(() => {
+    if (getValues("title") !== state.title) {
+      setValue("title", state.title, { shouldDirty: false, shouldTouch: false });
+    }
+  }, [getValues, setValue, state.title]);
+
   return (
     <View className="w-full gap-[1rem] px-[2.4rem] pb-[2.4rem]">
-      <FormTitleInput
-        required
-        value={state.title}
-        onChangeText={onChangeTitle}
-        placeholder="투두 제목"
-      />
+      <FormProvider {...titleMethods}>
+        <FormTitleInput
+          required
+          name="title"
+          placeholder="투두 제목"
+        />
+      </FormProvider>
       {titleWarning ? (
         <SpoqaText className="text-size13 text-role-status-error dark:text-role-dark-status-error">
           {titleWarning}
@@ -116,13 +141,13 @@ function TodoEditorForm({
             <SpoqaText className="mb-[0.8rem] text-size14 text-role-text-primary dark:text-role-dark-text-primary">
               메모 입력
             </SpoqaText>
-            <RNTextInput
+            <TextInput
               value={state.memo}
               onChangeText={onChangeMemo}
               placeholder="메모를 입력해주세요"
               multiline
               textAlignVertical="top"
-              className="h-[10rem] rounded-radius15 bg-role-surface-panel dark:bg-role-dark-surface-panel px-[1.2rem] py-[1rem] text-size14"
+              className="h-[10rem] px-[1.2rem] py-[1rem] text-size14"
             />
           </View>
         </View>
