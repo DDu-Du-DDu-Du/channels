@@ -1,0 +1,156 @@
+{
+  "generatedAt": "2026-04-04",
+  "sources": {
+    "theme": "constants/theme/colors.ts",
+    "tailwind": "tailwind.config.ts",
+    "runtime": "hooks/use-theme-color/use-theme-color.ts"
+  },
+  "namespaces": [
+    "neutral",
+    "role",
+    "ui",
+    "domain",
+    "social",
+    "palette"
+  ],
+  "screenInventory": {
+    "feed": {
+      "status": "mostly-tokenized",
+      "notes": [
+        "role/ui token usage is broad",
+        "domain.feed token usage is limited"
+      ]
+    },
+    "goal": {
+      "status": "mostly-tokenized-with-gaps",
+      "notes": [
+        "repeat-related action colors include hardcoded values"
+      ]
+    },
+    "stats": {
+      "status": "mixed",
+      "notes": [
+        "report badges and calendar dots have hardcoded semantic colors"
+      ]
+    },
+    "settings_notification_announcement": {
+      "status": "mostly-tokenized",
+      "notes": [
+        "primary buttons and surfaces are tokenized"
+      ]
+    }
+  },
+  "componentInventory": {
+    "wellTokenized": [
+      "components/text-input/text-input.tsx",
+      "components/button/Button.tsx",
+      "components/select-chip/select-chip.tsx",
+      "components/page-header/page-header.tsx",
+      "components/toast/components/toast-item/toast-item.tsx"
+    ],
+    "mixedOrHardcoded": [
+      "features/repeat-todo/components/swipeable-repeat-todo-card/swipeable-repeat-todo-card.tsx",
+      "features/todo/components/todo-reminder-list-box/todo-reminder-list-box.tsx",
+      "features/stats/components/stats-report-card/stats-report-card.tsx",
+      "components/privacy-sheet/components/sheet-radio-item/sheet-radio-item.tsx",
+      "features/auth/components/kakao-login-button/kakao-login-button.tsx"
+    ]
+  },
+  "hardcodedColors": [
+    {
+      "priority": "P1",
+      "file": "features/stats/components/stats-report-card/stats-report-card.tsx",
+      "colors": ["#E7F3EB", "#F6E8E8", "#ECECEC", "#2F6B45", "#8A5555", "#7A7A7A"]
+    },
+    {
+      "priority": "P1",
+      "file": "features/stats/components/stats-goal-detail-screen/components/calendar-stats-section/calendar-stats-section.tsx",
+      "colors": ["#00C73C", "#ED4044"]
+    },
+    {
+      "priority": "P1",
+      "file": "components/privacy-sheet/components/sheet-radio-item/sheet-radio-item.tsx",
+      "colors": ["#1363de", "#ccc"]
+    },
+    {
+      "priority": "P1",
+      "file": "features/repeat-todo/components/swipeable-repeat-todo-card/swipeable-repeat-todo-card.tsx",
+      "colors": ["#FFD9D9", "#D54646", "#B5B5B5"]
+    },
+    {
+      "priority": "P2",
+      "file": "features/todo/components/todo-reminder-list-box/todo-reminder-list-box.tsx",
+      "colors": ["#FFD9D9", "#D54646", "#303030", "#8A8A8A"]
+    },
+    {
+      "priority": "P2",
+      "file": "features/auth/components/kakao-login-button/kakao-login-button.tsx",
+      "colors": ["#FEE500", "#000000D9"]
+    },
+    {
+      "priority": "P2",
+      "file": "components/todo-sheet/components/todo-action-grid/todo-action-grid.tsx",
+      "colors": ["#FDB541"]
+    },
+    {
+      "priority": "P3",
+      "file": "components/toast/components/toast-item/hooks/use-toast-type-color/use-toast-type-color.ts",
+      "colors": ["#FB923C", "#86EFAC", "#F59E0B", "#EF4444"]
+    },
+    {
+      "priority": "P3",
+      "file": "components/timeline/components/line-box/line-box.tsx",
+      "colors": ["#D9D9D9"]
+    }
+  ],
+  "proposedTokens": {
+    "role.brand": [
+      "role.brand.primary",
+      "role.brand.primaryHover",
+      "role.brand.primarySubtle",
+      "role.brand.onPrimary"
+    ],
+    "role.action": [
+      "role.action.danger.bg",
+      "role.action.danger.text",
+      "role.action.warning.bg",
+      "role.action.warning.text"
+    ],
+    "role.chart": [
+      "role.chart.positive.bg",
+      "role.chart.positive.text",
+      "role.chart.negative.bg",
+      "role.chart.negative.text",
+      "role.chart.neutral.bg",
+      "role.chart.neutral.text"
+    ],
+    "role.calendar": [
+      "role.calendar.achievedDot",
+      "role.calendar.postponedDot"
+    ],
+    "ui.interactive": [
+      "ui.interactive.selected.border",
+      "ui.interactive.selected.fill"
+    ],
+    "domain.auth": [
+      "domain.auth.kakao.bg",
+      "domain.auth.kakao.text"
+    ]
+  },
+  "migrationMap": {
+    "#FFD9D9": "role.action.danger.bg",
+    "#D54646": "role.action.danger.text",
+    "#00C73C": "role.calendar.achievedDot",
+    "#ED4044": "role.calendar.postponedDot",
+    "#E7F3EB": "role.chart.positive.bg",
+    "#2F6B45": "role.chart.positive.text",
+    "#F6E8E8": "role.chart.negative.bg",
+    "#8A5555": "role.chart.negative.text",
+    "#ECECEC": "role.chart.neutral.bg",
+    "#7A7A7A": "role.chart.neutral.text",
+    "#1363de": "ui.interactive.selected.fill",
+    "#ccc": "role.border.default",
+    "#FEE500": "domain.auth.kakao.bg",
+    "#000000D9": "domain.auth.kakao.text"
+  }
+}
