@@ -2,6 +2,23 @@
 
 - The application will be served on Native and Web using Expo and Expo Web.
 - Routing is done by Expo-Router.
+- MS Edge is the primary browser for QA.
+- Mobile Native App and Mobile Web App are the primary objective platforms.
+- For starting Expo Web server on Windows, `bun serve`, equivalent to `bun expo export --platform web && bun expo serve`, to start the static server.
+
+## Team routing rules
+
+Treat requests addressed to the "team" as coordinated multi-agent work.
+
+The default leading coordinator is `organizing-instructor`.
+
+Interpret user instructions flexibly in either Korean or English.
+A request does not need to use exact agent names if the intent is clear.
+
+When a team request is detected:
+
+1. `organizing-instructor` coordinates the work.
+2. Relevant subagents may be spawned to work as needed.
 
 ## Conventions
 
