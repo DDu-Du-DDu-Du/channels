@@ -11,7 +11,7 @@ import { createURL } from "expo-linking";
 
 function useOauth2Login({ code }: UseOauth2LoginParams) {
   const socialTokenIssued = useRef(false);
-  const redirectUri = createURL("auth");
+  const redirectUri = createURL("");
   const authenticate = useAuthStore((state) => state.authenticate);
   const [authLoading, setAuthLoading] = useState(!!code);
 
