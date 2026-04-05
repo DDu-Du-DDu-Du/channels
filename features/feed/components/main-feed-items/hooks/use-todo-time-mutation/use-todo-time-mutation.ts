@@ -1,7 +1,8 @@
 import { FEED_KEY } from "@/constants/query-key/query-key";
 import type { TodoTimeRangeType, TodoTimeType } from "@/features/feed/feed.types";
+import { useReminderMutations } from "@/features/reminder";
 import { fetchTodoChangeTime } from "@/service/feed/feed";
-import { deleteReminder } from "@/service/reminder/reminder";
+import handleInvalidateTodoLinkedQueries from "@/utils/invalidate-todo-linked-queries/invalidate-todo-linked-queries";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface UseTodoTimeMutationProps {
@@ -20,6 +21,10 @@ const useTodoTimeMutation = ({
   handleTodoTimeSheetToggleOff,
 }: UseTodoTimeMutationProps) => {
   const queryClient = useQueryClient();
+  const { handleDeleteReminderBatch } = useReminderMutations({
+    selectedTodoDate,
+    shouldInvalidateOnSuccess: false,
+  });
 
   const TodoChangeTimeMutation = useMutation({
     mutationKey: [FEED_KEY.Todo_CHANGE_TIME],
@@ -38,12 +43,11 @@ const useTodoTimeMutation = ({
     },
     onSuccess: async ({ candidateReminderIds }) => {
       if (candidateReminderIds.length > 0) {
-        await Promise.all(candidateReminderIds.map((reminderId) => deleteReminder(reminderId)));
+        await handleDeleteReminderBatch(candidateReminderIds);
       }
-      queryClient.invalidateQueries({ queryKey: [FEED_KEY.Todo_DETAIL] });
-      queryClient.refetchQueries({ queryKey: [FEED_KEY.Todo_DETAIL] });
-      queryClient.refetchQueries({ queryKey: [FEED_KEY.DAILY_TIMETABLE] });
-      queryClient.refetchQueries({ queryKey: [FEED_KEY.DAILY_TIMETABLE, selectedTodoDate] });
+      await handleInvalidateTodoLinkedQueries(queryClient, {
+        selectedTodoDate,
+      });
       handleUpdateTodoTime({ beginAt: null, endAt: null });
       handleTodoTimeSheetToggleOff();
     },

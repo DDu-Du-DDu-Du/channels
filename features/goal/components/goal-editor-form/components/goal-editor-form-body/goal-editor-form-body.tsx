@@ -13,6 +13,7 @@ export interface GoalEditorFormBodyProps {
   defaultTitle: string;
   pickedColor: string;
   repeatTodos: RepeatTodoItemType[];
+  onSubmitSuccess?: () => void;
   onPressOpenColorSheet: () => void;
   onPressOpenRepeatSheet: () => void;
   onPressRepeatTodoCard: (index: number) => void;
@@ -24,6 +25,7 @@ function GoalEditorFormBody({
   defaultTitle,
   pickedColor,
   repeatTodos,
+  onSubmitSuccess,
   onPressOpenColorSheet,
   onPressOpenRepeatSheet,
   onPressRepeatTodoCard,
@@ -33,6 +35,7 @@ function GoalEditorFormBody({
     defaultTitle,
     pickedColor,
     repeatTodos,
+    onSubmitSuccess,
   });
 
   useEffect(() => {

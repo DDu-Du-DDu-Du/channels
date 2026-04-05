@@ -4,6 +4,7 @@ import { Platform } from "react-native";
 import { NOTIFICATION_KEY } from "@/constants/query-key/query-key";
 import { useMe } from "@/features/user";
 import { registerDeviceToken } from "@/service/device-token/device-token";
+import { clearGuestLocalData, hasGuestTodo } from "@/service/guest-storage/guest-storage";
 import { getNotificationInboxStatus } from "@/service/notification/notification";
 import { getTokenAsync } from "@/service/push/get-token/get-token";
 import { useAuthStore } from "@/stores";
@@ -28,18 +29,26 @@ function AuthProvider({ children }: AuthProviderProps) {
       return;
     }
 
-    login();
-    void queryClient.prefetchQuery({
-      queryKey: [NOTIFICATION_KEY.INBOX_STATUS],
-      queryFn: getNotificationInboxStatus,
-    });
+    const handleLoginSuccess = async () => {
+      const hasGuestTodos = await hasGuestTodo();
 
-    // TODO: native getTokenAsync 구현 완료 후 플랫폼 분기 제거하고 공통 경로로 전환
-    if (Platform.OS !== "web" || hasRegisteredDeviceToken) {
-      return;
-    }
+      if (hasGuestTodos) {
+        await clearGuestLocalData();
+      }
 
-    const handleRegisterWebDeviceToken = async () => {
+      queryClient.clear();
+
+      login();
+      await queryClient.prefetchQuery({
+        queryKey: [NOTIFICATION_KEY.INBOX_STATUS],
+        queryFn: getNotificationInboxStatus,
+      });
+
+      // TODO: native getTokenAsync 구현 완료 후 플랫폼 분기 제거하고 공통 경로로 전환
+      if (Platform.OS !== "web" || hasRegisteredDeviceToken) {
+        return;
+      }
+
       const token = await getTokenAsync();
 
       if (!token) {
@@ -54,8 +63,8 @@ function AuthProvider({ children }: AuthProviderProps) {
       markDeviceTokenRegistered();
     };
 
-    handleRegisterWebDeviceToken().catch((error) => {
-      console.error("[push] failed to register device token:", error);
+    handleLoginSuccess().catch((error) => {
+      console.error("[auth] failed to process login success flow:", error);
     });
   }, [
     hasRegisteredDeviceToken,

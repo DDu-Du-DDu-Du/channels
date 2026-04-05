@@ -43,12 +43,18 @@ function useColorSheet({ color, onPick }: UseColorSheetProps) {
     onPick?.(color);
   };
 
+  const handleResetColor = () => {
+    const normalizedColor = normalizeColor(color);
+    setPickedColor(normalizedColor ?? getRandomColor());
+  };
+
   return {
     pickedColor,
     isColorSheetOpen,
     handlePressOpenColorSheet,
     handleCloseColorSheet,
     handlePickColor,
+    handleResetColor,
   };
 }
 

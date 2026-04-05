@@ -3,12 +3,12 @@ import { SubmitHandler, useForm } from "react-hook-form";
 
 import { useToast } from "@/components/toast/hooks";
 import { HEX_COLOR_WITH_OPTIONAL_HASH_REGEX, normalizeDayOfWeekToKr } from "@/constants";
-import { GOAL_KEY } from "@/constants/query-key/query-key";
+import { FEED_KEY, GOAL_KEY } from "@/constants/query-key/query-key";
 import type { RepeatTodoItemType } from "@/features/repeat-todo";
 import { createGoal } from "@/service/goal/goal";
 import type { GoalRequestType } from "@/types/request/goal/goal";
-import type { GoalPrivacyType } from "@/types/response/goal/goal";
-import { useMutation } from "@tanstack/react-query";
+import type { GoalPrivacyType, GoalType } from "@/types/response/goal/goal";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { useRouter } from "expo-router";
 
@@ -23,12 +23,19 @@ interface UseGoalMutationProps {
   defaultTitle: string;
   pickedColor: string;
   repeatTodos: RepeatTodoItemType[];
+  onSubmitSuccess?: () => void;
 }
 
 const normalizeColorToHex6 = (color: string) => color.replace(/^#/, "").toUpperCase();
 
-function useGoalMutation({ defaultTitle, pickedColor, repeatTodos }: UseGoalMutationProps) {
+function useGoalMutation({
+  defaultTitle,
+  pickedColor,
+  repeatTodos,
+  onSubmitSuccess,
+}: UseGoalMutationProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { createToast } = useToast();
   const methods = useForm<GoalEditorFormValues>({
     defaultValues: {
@@ -41,7 +48,50 @@ function useGoalMutation({ defaultTitle, pickedColor, repeatTodos }: UseGoalMuta
   const createGoalMutation = useMutation({
     mutationKey: [GOAL_KEY.GOAL_CREATE],
     mutationFn: createGoal,
-    onSuccess: () => {
+    onSuccess: async (data, variables) => {
+      const createdId =
+        typeof data === "object" &&
+        data !== null &&
+        "id" in data &&
+        typeof (data as { id?: unknown }).id === "number"
+          ? (data as { id: number }).id
+          : null;
+
+      queryClient.setQueriesData<GoalType[]>({ queryKey: [GOAL_KEY.GOAL_LIST] }, (previous) => {
+        if (!previous || !createdId) {
+          return previous;
+        }
+
+        const hasCreatedGoal = previous.some((goal) => goal.id === createdId);
+        if (hasCreatedGoal) {
+          return previous;
+        }
+
+        const maxPriority = previous.reduce((max, goal) => Math.max(max, goal.priority), 0);
+        const createdGoal: GoalType = {
+          id: createdId,
+          name: variables.requestGoal.name,
+          color: variables.requestGoal.color,
+          status: "IN_PROGRESS",
+          priority: maxPriority + 1,
+        };
+
+        return [...previous, createdGoal];
+      });
+
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: [GOAL_KEY.GOAL_LIST] }),
+        queryClient.invalidateQueries({ queryKey: [FEED_KEY.DAILY_LIST] }),
+        queryClient.invalidateQueries({ queryKey: [FEED_KEY.DAILY_TIMETABLE] }),
+        queryClient.invalidateQueries({ queryKey: [FEED_KEY.MONTHLY_Todos] }),
+        queryClient.invalidateQueries({ queryKey: [FEED_KEY.WEEKLY_Todos] }),
+      ]);
+      methods.reset({
+        title: defaultTitle,
+        color: pickedColor,
+        privacyType: "PUBLIC",
+      });
+      onSubmitSuccess?.();
       router.replace("/goal");
     },
     onError: (error) => {

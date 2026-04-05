@@ -19,6 +19,7 @@ function GoalEditorForm({ submitLabel, goal, defaultTitle = "" }: GoalEditorForm
     handlePressOpenColorSheet,
     handleCloseColorSheet,
     handlePickColor,
+    handleResetColor,
   } = useColorSheet({
     color: goal?.color,
   });
@@ -31,6 +32,7 @@ function GoalEditorForm({ submitLabel, goal, defaultTitle = "" }: GoalEditorForm
     handleClearSelectedRepeatTodo,
     handleSaveRepeatTodo,
     handleDeleteRepeatTodo,
+    handleResetRepeatTodos,
   } = useRepeatTodostate();
 
   const handleOpenCreateRepeatSheet = () => {
@@ -52,6 +54,12 @@ function GoalEditorForm({ submitLabel, goal, defaultTitle = "" }: GoalEditorForm
     handleClearSelectedRepeatTodo();
   };
 
+  const handleSubmitSuccess = () => {
+    handleResetRepeatTodos();
+    handleResetColor();
+    handleCloseColorSheet();
+  };
+
   return (
     <>
       <GoalEditorFormBody
@@ -59,6 +67,7 @@ function GoalEditorForm({ submitLabel, goal, defaultTitle = "" }: GoalEditorForm
         defaultTitle={initialTitle}
         pickedColor={pickedColor}
         repeatTodos={repeatTodos}
+        onSubmitSuccess={handleSubmitSuccess}
         onPressOpenColorSheet={handlePressOpenColorSheet}
         onPressOpenRepeatSheet={handleOpenCreateRepeatSheet}
         onPressRepeatTodoCard={handlePressRepeatTodoCard}

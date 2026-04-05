@@ -588,6 +588,7 @@ export const clearGuestLocalData = async () => {
       await database.closeAsync();
     } catch {
       // noop
+      console.error("[guest] failed to close local db");
     }
   }
 
@@ -597,7 +598,18 @@ export const clearGuestLocalData = async () => {
     await SQLite.deleteDatabaseAsync(GUEST_DATABASE_NAME);
   } catch {
     // noop
+    console.error("[guest] failed to close local db");
   }
+};
+
+export const hasGuestTodo = async (): Promise<boolean> => {
+  const database = await handleGetGuestDatabase();
+  const countRow = await database.getFirstAsync<{ count: number }>(
+    "SELECT COUNT(*) AS count FROM todos WHERE user_id = ?",
+    GUEST_USER_ID,
+  );
+
+  return (countRow?.count ?? 0) > 0;
 };
 
 export const getGuestGoalList = async (): Promise<GoalType[]> => {

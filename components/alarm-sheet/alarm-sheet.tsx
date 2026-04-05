@@ -5,18 +5,13 @@ import BottomSheet from "@/components/bottom-sheet/bottom-sheet";
 import FormHeader from "@/components/form-header/form-header";
 import MemberGuide from "@/components/member-guide/member-guide";
 import { FEED_KEY } from "@/constants/query-key/query-key";
+import { useReminderListQuery, useReminderMutations } from "@/features/reminder";
 import TodoReminderListBox from "@/features/todo/components/todo-reminder-list-box/todo-reminder-list-box";
 import { useBottomSheetAction } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { getTodoDetail } from "@/service/feed/feed";
-import {
-  createReminder,
-  deleteReminder,
-  getReminderList,
-  updateReminder,
-} from "@/service/reminder/reminder";
 import { useAuthStore } from "@/stores";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 export interface AlarmSheetProps {
   todoId: number;
@@ -24,7 +19,6 @@ export interface AlarmSheetProps {
 }
 
 function AlarmSheet({ todoId, onClose }: AlarmSheetProps) {
-  const queryClient = useQueryClient();
   const iconStroke = useThemeColorToken("ui.icon.default");
   const isGuestSession = useAuthStore((state) => state.sessionType === "guest");
   const { ref, openSheet, closeSheet } = useBottomSheetAction();
@@ -39,28 +33,23 @@ function AlarmSheet({ todoId, onClose }: AlarmSheetProps) {
     enabled: todoId > 0 && !isGuestSession,
   });
 
-  const { data: reminders = [] } = useQuery({
-    queryKey: [FEED_KEY.Todo_REMINDER_LIST, todoId],
-    queryFn: () => getReminderList({ todoId, includeSent: true }),
+  const { data: reminders = [] } = useReminderListQuery({
+    todoId,
+    includeSent: true,
     enabled: todoId > 0 && !isGuestSession,
   });
 
-  const handleRefetchReminderLinkedQueries = async () => {
-    await Promise.all([
-      queryClient.refetchQueries({ queryKey: [FEED_KEY.Todo_DETAIL, todoId] }),
-      queryClient.refetchQueries({ queryKey: [FEED_KEY.Todo_REMINDER_LIST, todoId] }),
-      queryClient.invalidateQueries({ queryKey: [FEED_KEY.DAILY_LIST] }),
-      queryClient.invalidateQueries({ queryKey: [FEED_KEY.DAILY_TIMETABLE] }),
-      queryClient.invalidateQueries({ queryKey: [FEED_KEY.MONTHLY_Todos] }),
-      queryClient.invalidateQueries({ queryKey: [FEED_KEY.WEEKLY_Todos] }),
-    ]);
-  };
+  const { createReminderMutation, updateReminderMutation, deleteReminderMutation } =
+    useReminderMutations({
+      todoId,
+      selectedTodoDate: todoDetail?.scheduledOn,
+    });
 
   const handleCreateReminder = async (remindsAt: string) => {
-    await createReminder({
-      requestReminder: { todoId, remindsAt },
+    await createReminderMutation.mutateAsync({
+      todoId,
+      remindsAt,
     });
-    await handleRefetchReminderLinkedQueries();
   };
 
   const handleUpdateReminder = async (
@@ -72,11 +61,10 @@ function AlarmSheet({ todoId, onClose }: AlarmSheetProps) {
       return;
     }
 
-    await updateReminder({
+    await updateReminderMutation.mutateAsync({
       id: reminder.id,
-      requestReminder: { remindsAt },
+      remindsAt,
     });
-    await handleRefetchReminderLinkedQueries();
   };
 
   const handleDeleteReminder = async (
@@ -87,8 +75,7 @@ function AlarmSheet({ todoId, onClose }: AlarmSheetProps) {
       return;
     }
 
-    await deleteReminder(reminder.id);
-    await handleRefetchReminderLinkedQueries();
+    await deleteReminderMutation.mutateAsync({ id: reminder.id });
   };
 
   const handleClose = () => {

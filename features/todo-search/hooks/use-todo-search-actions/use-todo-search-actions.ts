@@ -1,7 +1,8 @@
 import { useState } from "react";
 
-import { FEED_KEY, Todo_KEY } from "@/constants/query-key/query-key";
+import { FEED_KEY } from "@/constants/query-key/query-key";
 import type { TodoTimeRangeType, TodoTimeType } from "@/features/feed/feed.types";
+import { useReminderMutations } from "@/features/reminder";
 import { useToggle } from "@/hooks";
 import {
   fetchCompleteToggleTodo,
@@ -10,8 +11,8 @@ import {
   fetchTodoChangeTime,
   fetchTodoRepeatDate,
 } from "@/service/feed/feed";
-import { deleteReminder } from "@/service/reminder/reminder";
 import { formatDateToYYYYMMDD } from "@/utils";
+import handleInvalidateTodoLinkedQueries from "@/utils/invalidate-todo-linked-queries/invalidate-todo-linked-queries";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface UseTodosearchActionsProps {
@@ -20,6 +21,10 @@ interface UseTodosearchActionsProps {
 
 function useTodosearchActions({ onRefetchSearch }: UseTodosearchActionsProps) {
   const queryClient = useQueryClient();
+  const { handleDeleteReminderBatch } = useReminderMutations({
+    includeSearch: true,
+    shouldInvalidateOnSuccess: false,
+  });
   const [currentTodoId, setCurrentTodoId] = useState(-1);
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [currentDate, setCurrentDate] = useState("");
@@ -57,26 +62,26 @@ function useTodosearchActions({ onRefetchSearch }: UseTodosearchActionsProps) {
     handleToggleOff: handleTodoTimeSheetToggleOff,
   } = useToggle();
 
-  const handleRefetchLinkedQueries = () => {
-    queryClient.invalidateQueries({ queryKey: [Todo_KEY.SEARCH] });
-    queryClient.invalidateQueries({ queryKey: [FEED_KEY.MONTHLY_Todos] });
-    queryClient.invalidateQueries({ queryKey: [FEED_KEY.WEEKLY_Todos] });
-    queryClient.invalidateQueries({ queryKey: [FEED_KEY.DAILY_LIST] });
-    queryClient.invalidateQueries({ queryKey: [FEED_KEY.DAILY_TIMETABLE] });
+  const handleRefetchLinkedQueries = async () => {
+    await handleInvalidateTodoLinkedQueries(queryClient, {
+      includeSearch: true,
+    });
     onRefetchSearch();
   };
 
   const completeToggleTodoMutation = useMutation({
     mutationKey: [FEED_KEY.COMPLETE_TOGGLE],
     mutationFn: fetchCompleteToggleTodo,
-    onSuccess: handleRefetchLinkedQueries,
+    onSuccess: async () => {
+      await handleRefetchLinkedQueries();
+    },
   });
 
   const deleteTodoMutation = useMutation({
     mutationKey: [FEED_KEY.DELETE_Todo],
     mutationFn: fetchDeleteTodo,
-    onSuccess: () => {
-      handleRefetchLinkedQueries();
+    onSuccess: async () => {
+      await handleRefetchLinkedQueries();
       handleTodosheetToggleOff();
     },
   });
@@ -84,8 +89,8 @@ function useTodosearchActions({ onRefetchSearch }: UseTodosearchActionsProps) {
   const TodoChangeDateMutation = useMutation({
     mutationKey: [FEED_KEY.Todo_CHANGE_DATE],
     mutationFn: fetchTodoChangeDate,
-    onSuccess: () => {
-      handleRefetchLinkedQueries();
+    onSuccess: async () => {
+      await handleRefetchLinkedQueries();
       setSelectedDate(undefined);
       handleCalendarSheetToggleOff();
     },
@@ -94,8 +99,8 @@ function useTodosearchActions({ onRefetchSearch }: UseTodosearchActionsProps) {
   const TodoRepeatDateMutation = useMutation({
     mutationKey: [FEED_KEY.Todo_REPEAT_DATE],
     mutationFn: fetchTodoRepeatDate,
-    onSuccess: () => {
-      handleRefetchLinkedQueries();
+    onSuccess: async () => {
+      await handleRefetchLinkedQueries();
       setSelectedDate(undefined);
       handleCalendarSheetToggleOff();
       handleTodosheetToggleOff();
@@ -119,10 +124,9 @@ function useTodosearchActions({ onRefetchSearch }: UseTodosearchActionsProps) {
     },
     onSuccess: async ({ candidateReminderIds }) => {
       if (candidateReminderIds.length > 0) {
-        await Promise.all(candidateReminderIds.map((reminderId) => deleteReminder(reminderId)));
+        await handleDeleteReminderBatch(candidateReminderIds);
       }
-      queryClient.invalidateQueries({ queryKey: [FEED_KEY.Todo_DETAIL] });
-      handleRefetchLinkedQueries();
+      await handleRefetchLinkedQueries();
       setCurrentTodoTime({ beginAt: null, endAt: null });
       handleTodoTimeSheetToggleOff();
     },
@@ -197,8 +201,8 @@ function useTodosearchActions({ onRefetchSearch }: UseTodosearchActionsProps) {
         date: formatDateToYYYYMMDD(new Date()),
       },
       {
-        onSuccess: () => {
-          handleRefetchLinkedQueries();
+        onSuccess: async () => {
+          await handleRefetchLinkedQueries();
           setSelectedDate(undefined);
           handleCalendarSheetToggleOff();
           handleTodosheetToggleOff();
