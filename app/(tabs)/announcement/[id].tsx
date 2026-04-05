@@ -1,6 +1,6 @@
 import { View } from "react-native";
 
-import { PageHeader } from "@/components";
+import { HeaderRightActions, PageHeader } from "@/components";
 import { AnnouncementDetailScreen } from "@/features/announcement";
 
 export default function Id() {
@@ -9,7 +9,8 @@ export default function Id() {
       <PageHeader
         title="공지사항"
         titleClassName="text-size18 text-role-text-primary dark:text-role-dark-text-primary"
-        className="px-[1.6rem] pb-[2.8rem] pt-[2.4rem]"
+        className="px-[1.6rem] pb-[2.8rem] pt-[2rem]"
+        rightContent={<HeaderRightActions />}
       />
       <AnnouncementDetailScreen />
     </View>

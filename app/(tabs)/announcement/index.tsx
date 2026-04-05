@@ -1,16 +1,11 @@
 import { ActivityIndicator, FlatList, Pressable, View } from "react-native";
 
-import { EmptyList, SpoqaText } from "@/components";
+import { EmptyList, HeaderRightActions, PageHeader, SpoqaText } from "@/components";
 import { AnnouncementListViewItem, useAnnouncementScreen } from "@/features/announcement";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
-import { ArrowLeftIcon } from "@/icons";
-
-import { useRouter } from "expo-router";
 
 function Announcement() {
-  const iconStroke = useThemeColorToken("role.icon.default");
   const spinnerColor = useThemeColorToken("role.text.tertiary");
-  const router = useRouter();
   const {
     announcementViewItems,
     isLoading,
@@ -19,10 +14,6 @@ function Announcement() {
     handlePressAnnouncement,
     handleLoadMore,
   } = useAnnouncementScreen();
-
-  const handlePressBack = () => {
-    router.back();
-  };
 
   const renderEmpty = () => {
     if (isLoading) {
@@ -38,34 +29,19 @@ function Announcement() {
 
   return (
     <View className="flex-1 bg-role-surface-panel dark:bg-role-dark-surface-panel">
+      <PageHeader
+        title="공지사항"
+        titleClassName="text-size18 text-role-text-primary dark:text-role-dark-text-primary"
+        className="px-[2.4rem] pb-[2.8rem] pt-[2rem]"
+        rightContent={<HeaderRightActions />}
+      />
       <FlatList<AnnouncementListViewItem>
         data={announcementViewItems}
         keyExtractor={(item) => item.key}
         contentContainerStyle={{
           paddingHorizontal: 24,
-          paddingTop: 24,
           paddingBottom: 28,
         }}
-        ListHeaderComponent={
-          <View className="relative items-center justify-center pb-[2.8rem]">
-            <Pressable
-              onPress={handlePressBack}
-              className="absolute left-0 top-0 size-[2.4rem] items-start justify-center"
-              hitSlop={8}
-            >
-              <ArrowLeftIcon
-                size={16}
-                stroke={iconStroke}
-              />
-            </Pressable>
-            <SpoqaText
-              weight="bold"
-              className="text-size18 text-role-text-primary dark:text-role-dark-text-primary"
-            >
-              공지사항
-            </SpoqaText>
-          </View>
-        }
         renderItem={({ item }) => (
           <Pressable
             onPress={() => handlePressAnnouncement(item.id)}

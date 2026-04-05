@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { View } from "react-native";
 
-import { PageHeader } from "@/components";
+import { HeaderRightActions, PageHeader } from "@/components";
 import { GoalEditorScreen } from "@/features/goal";
 
 import { useLocalSearchParams } from "expo-router";
@@ -17,9 +17,10 @@ function Editor() {
         <PageHeader
           title="목표수정"
           titleClassName="text-size15 text-role-text-inverse dark:text-role-dark-text-inverse"
+          className="px-[2.4rem] pb-[1.6rem] pt-[2rem]"
+          rightContent={<HeaderRightActions />}
         />
       ) : null}
-
       <GoalEditorScreen
         goalId={goalId}
         onEditorViewModeChange={setViewMode}

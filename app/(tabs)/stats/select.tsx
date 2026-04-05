@@ -1,6 +1,6 @@
 import { View } from "react-native";
 
-import { MemberGuide, PageHeader } from "@/components";
+import { HeaderRightActions, MemberGuide, PageHeader } from "@/components";
 import { StatsGoalSelectScreen } from "@/features/stats/components";
 import { useAuthStore } from "@/stores";
 
@@ -12,6 +12,8 @@ export default function Select() {
       <PageHeader
         title="목표 상세통계"
         titleClassName="text-size15 text-role-text-inverse dark:text-role-dark-text-inverse"
+        className="px-[2.4rem] pb-[1.6rem] pt-[2rem]"
+        rightContent={<HeaderRightActions />}
       />
       {isGuestSession ? <MemberGuide /> : <StatsGoalSelectScreen />}
     </View>

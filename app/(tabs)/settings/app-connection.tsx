@@ -1,6 +1,6 @@
 import { View } from "react-native";
 
-import { PageHeader } from "@/components";
+import { HeaderRightActions, PageHeader } from "@/components";
 import { AppConnectionSettingsScreen } from "@/features/settings";
 
 function AppConnection() {
@@ -9,7 +9,8 @@ function AppConnection() {
       <PageHeader
         title="앱 연결"
         titleClassName="text-size18 text-role-text-primary dark:text-role-dark-text-primary"
-        className="px-[2.4rem] pb-[2.8rem] pt-[2.4rem]"
+        className="px-[2.4rem] pb-[2.8rem] pt-[2rem]"
+        rightContent={<HeaderRightActions />}
       />
       <AppConnectionSettingsScreen />
     </View>

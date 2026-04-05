@@ -1,6 +1,6 @@
 import { View } from "react-native";
 
-import { MemberGuide, PageHeader } from "@/components";
+import { HeaderRightActions, MemberGuide, PageHeader } from "@/components";
 import { NotificationScreen } from "@/features/notification";
 import { useAuthStore } from "@/stores";
 
@@ -12,7 +12,8 @@ function Notification() {
       <PageHeader
         title="알림"
         titleClassName="text-size18 text-role-text-primary dark:text-role-dark-text-primary"
-        className="px-[2.4rem] pb-[2.6rem] pt-[2.4rem]"
+        className="px-[2.4rem] pb-[2.6rem] pt-[2rem]"
+        rightContent={<HeaderRightActions />}
       />
       {isGuestSession ? <MemberGuide /> : <NotificationScreen />}
     </View>

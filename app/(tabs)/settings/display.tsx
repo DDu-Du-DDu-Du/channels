@@ -1,6 +1,6 @@
 import { View } from "react-native";
 
-import { PageHeader } from "@/components";
+import { HeaderRightActions, PageHeader } from "@/components";
 import { DisplaySettingsScreen } from "@/features/settings";
 
 function Display() {
@@ -9,7 +9,8 @@ function Display() {
       <PageHeader
         title="화면표시"
         titleClassName="text-size18 text-role-text-primary dark:text-role-dark-text-primary"
-        className="px-[2.4rem] pb-[2.8rem] pt-[2.4rem]"
+        className="px-[2.4rem] pb-[2.8rem] pt-[2rem]"
+        rightContent={<HeaderRightActions />}
       />
       <DisplaySettingsScreen />
     </View>
