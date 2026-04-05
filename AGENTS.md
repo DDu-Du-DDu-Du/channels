@@ -100,3 +100,8 @@ function useComponentState() {
 - API endpoints will be given for every instruction if needed, and should be placed under `constants/end-points/<domain>`.
 - Query Key should be manged in the `constants/query-key/query-key.ts`.
 - Tanstack Query and mutation can be happened in the component or page where the tanstack query is necessary.
+
+## Input
+
+- React Native Text Input cannot be used directly as it has a problem with Korean.
+- `components/text-input/text-input.tsx` should be used for TextInput whenever if necessary.
