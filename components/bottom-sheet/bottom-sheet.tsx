@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { Platform, StyleProp, ViewStyle, useWindowDimensions } from "react-native";
 
 import { useThemeColorToken } from "@/hooks/use-theme-color";
-import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetScrollView, BottomSheetView } from "@gorhom/bottom-sheet";
 
 import { useBottomSheetBackdrop } from "./hooks";
 
@@ -14,6 +14,7 @@ export interface BottomSheetProps {
   defaultHeight?: string | number;
   maxHeight?: string | number;
   fitContent?: boolean;
+  enableScroll?: boolean;
   maxWidth?: number; // responsive max width (e.g., 768)
   enablePanDownToClose?: boolean;
   backdropPressBehavior?: "none" | "close" | "collapse" | number;
@@ -32,6 +33,7 @@ function BottomSheet({
   defaultHeight = "35%",
   maxHeight = "80%",
   fitContent = false,
+  enableScroll = false,
   maxWidth = 700,
   enablePanDownToClose = true,
   backdropPressBehavior = "close",
@@ -52,9 +54,27 @@ function BottomSheet({
     onPress: onBackdropPress,
     opacity: backdropOpacity,
   });
-  const { width: screenWidth } = useWindowDimensions();
+  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
   const isWide = screenWidth > maxWidth || Platform.OS === "web";
   const sideMargin = isWide ? Math.max(0, (screenWidth - maxWidth) / 2) : 0;
+  const resolvedMaxDynamicContentSize = useMemo(() => {
+    if (!fitContent) {
+      return undefined;
+    }
+
+    if (typeof maxHeight === "number") {
+      return maxHeight;
+    }
+
+    if (typeof maxHeight === "string" && maxHeight.endsWith("%")) {
+      const ratio = Number.parseFloat(maxHeight.replace("%", ""));
+      if (!Number.isNaN(ratio)) {
+        return (screenHeight * ratio) / 100;
+      }
+    }
+
+    return screenHeight * 0.8;
+  }, [fitContent, maxHeight, screenHeight]);
 
   return (
     <BottomSheetModal
@@ -62,6 +82,7 @@ function BottomSheet({
       snapPoints={snapPoint}
       enableOverDrag={false}
       enableDynamicSizing={fitContent}
+      maxDynamicContentSize={resolvedMaxDynamicContentSize}
       enablePanDownToClose={enablePanDownToClose}
       detached={isWide}
       style={[isWide ? { marginHorizontal: sideMargin } : undefined, containerStyle]}
@@ -71,7 +92,13 @@ function BottomSheet({
       backdropComponent={bottomSheetBackdrop}
       onDismiss={onClose}
     >
-      <BottomSheetView>{children}</BottomSheetView>
+      {enableScroll ? (
+        <BottomSheetScrollView showsVerticalScrollIndicator={false}>
+          {children}
+        </BottomSheetScrollView>
+      ) : (
+        <BottomSheetView>{children}</BottomSheetView>
+      )}
     </BottomSheetModal>
   );
 }

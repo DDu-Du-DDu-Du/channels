@@ -116,6 +116,9 @@ function useGoalEditMutation({
     handleSubmitGoalEdit,
     handleTerminateGoal,
     handleDeleteGoal,
+    isEditPending: editGoalMutation.isPending,
+    isTerminatePending: terminateGoalMutation.isPending,
+    isDeletePending: deleteGoalMutation.isPending,
   };
 }
 

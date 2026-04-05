@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { type SharedValue, useSharedValue, withTiming } from "react-native-reanimated";
 
+import SpoqaText from "@/components/spoqa-text/spoqa-text";
 import { FEED_KEY } from "@/constants/query-key/query-key";
 import FeedCalendar from "@/features/feed/components/feed-calendar/feed-calendar";
 import MainFeedItems from "@/features/feed/components/main-feed-items/main-feed-items";
@@ -263,6 +264,15 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
     <View className="w-full flex-1">
       <GestureDetector gesture={calendarPanGesture}>{feedCalendar}</GestureDetector>
       <GestureDetector gesture={feedPanGesture}>{feedItems}</GestureDetector>
+
+      <Pressable
+        onPress={() => handleSelectDate(today)}
+        className="absolute bottom-[7.2rem] right-[1.6rem] h-[4.4rem] rounded-full bg-ui-button-primary-bg px-[1.4rem] items-center justify-center dark:bg-ui-dark-button-primary-bg"
+      >
+        <SpoqaText className="text-size13 text-role-text-inverse dark:text-role-dark-text-inverse">
+          오늘
+        </SpoqaText>
+      </Pressable>
     </View>
   );
 }

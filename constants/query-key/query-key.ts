@@ -60,6 +60,7 @@ export const STATS_KEY = {
 
 export const NOTIFICATION_KEY = {
   INBOX: "notificationInbox",
+  INBOX_STATUS: "notificationInboxStatus",
   READ: "notificationRead",
 };
 

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { View } from "react-native";
 
 import BottomSheet from "@/components/bottom-sheet/bottom-sheet";
@@ -6,18 +6,20 @@ import BottomSingleCalendar from "@/components/calendar/bottom-single-calendar/b
 import FormHeader from "@/components/form-header/form-header";
 import SpoqaText from "@/components/spoqa-text/spoqa-text";
 import type { TodoDetailType } from "@/components/todo-sheet/todo-sheet.types";
-import TodoTimeSheet from "@/components/todo-time-sheet/todo-time-sheet";
-import { FEED_KEY } from "@/constants/query-key/query-key";
-import type { TodoTimeRangeType } from "@/features/feed/feed.types";
+import { FEED_KEY, GOAL_KEY } from "@/constants/query-key/query-key";
+import { useMe } from "@/features/user";
 import { useBottomSheetAction, useToggle } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { getTodoDetail } from "@/service/feed/feed";
-import { formatDateToYYYYMMDD, parseUtc } from "@/utils";
-import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { getGoalList } from "@/service/goal/goal";
+import { useAuthStore } from "@/stores";
+import type { GoalType } from "@/types/response/goal/goal";
+import { formatDateToYYYYMMDD } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
 
-import { useTodoEditorMutation, useTodoEditorState } from "../../hooks";
+import { useTodoEditorMutation } from "../../hooks";
 import TodoEditorForm from "../todo-editor-form/todo-editor-form";
+import TodoGoalSelectSheet from "../todo-goal-select-sheet/todo-goal-select-sheet";
 
 export interface TodoEditorSheetProps {
   mode: "create" | "edit";
@@ -36,19 +38,28 @@ function TodoEditorSheet({
   onClose,
   onSuccess,
 }: TodoEditorSheetProps) {
+  const closeReasonRef = useRef<"final-close" | "navigate-to-child-sheet">("final-close");
   const iconStroke = useThemeColorToken("ui.icon.default");
   const { ref, openSheet, closeSheet } = useBottomSheetAction();
+  const hasTokens = useAuthStore((state) => Boolean(state.accessToken && state.refreshToken));
+  const isGuestSession = useAuthStore((state) => state.sessionType === "guest");
+
+  const [selectedDateFromSheet, setSelectedDateFromSheet] = useState<string>();
+  const [selectedGoalIdFromSheet, setSelectedGoalIdFromSheet] = useState<number>();
+  const [calendarCurrentDate, setCalendarCurrentDate] = useState(selectedDate);
+  const [calendarSelectedDate, setCalendarSelectedDate] = useState<Date | undefined>(
+    new Date(selectedDate),
+  );
 
   const {
     isToggle: isCalendarOpen,
     handleToggleOn: handleCalendarOpen,
     handleToggleOff: handleCalendarClose,
   } = useToggle();
-
   const {
-    isToggle: isTimeSheetOpen,
-    handleToggleOn: handleTimeSheetOpen,
-    handleToggleOff: handleTimeSheetClose,
+    isToggle: isGoalSheetOpen,
+    handleToggleOn: handleGoalSheetOpen,
+    handleToggleOff: handleGoalSheetClose,
   } = useToggle();
 
   const { data: TodoDetail, isLoading } = useQuery<TodoDetailType>({
@@ -57,36 +68,37 @@ function TodoEditorSheet({
     enabled: mode === "edit" && Boolean(TodoId),
   });
 
-  const {
-    state,
-    titleWarning,
-    handleChangeTitle,
-    handleChangeDate,
-    handleToggleDetail,
-    handleChangeTime,
-    handleChangeBeginTimeEnabled,
-    handleChangeEndTimeEnabled,
-    handleAppendReminder,
-    handleUpdateReminder,
-    handleRemoveReminder,
-    handleSetReminders,
-    handleChangeMemo,
-    getSubmitPayload,
-  } = useTodoEditorState({
-    mode,
-    selectedDate,
-    TodoDetail,
+  useEffect(() => {
+    const nextDate = TodoDetail?.scheduledOn ?? selectedDate;
+    setCalendarCurrentDate(nextDate);
+    setCalendarSelectedDate(new Date(nextDate));
+    setSelectedDateFromSheet(nextDate);
+    setSelectedGoalIdFromSheet(undefined);
+  }, [TodoDetail?.goalId, TodoDetail?.scheduledOn, mode, selectedDate]);
+
+  const { data: user } = useMe({ readOnly: true });
+  const isSessionReady = isGuestSession || (!!hasTokens && !!user);
+
+  const { data: goalList = [] } = useQuery<GoalType[]>({
+    queryKey: [GOAL_KEY.GOAL_LIST, user?.id],
+    queryFn: () => {
+      if (!isGuestSession && !user?.id) {
+        return Promise.resolve([]);
+      }
+
+      return getGoalList({ userId: user?.id ?? 0 });
+    },
+    enabled: !!isSessionReady,
   });
 
   const { isPending, handleSubmit } = useTodoEditorMutation({
     mode,
-    goalId: goalId ?? TodoDetail?.goalId,
     TodoId,
     selectedTodoDate: selectedDate,
     onSuccess: () => {
+      closeReasonRef.current = "final-close";
       closeSheet();
       onSuccess?.();
-      onClose();
     },
   });
 
@@ -94,105 +106,58 @@ function TodoEditorSheet({
     openSheet();
   }, [openSheet]);
 
-  const currentTodoTime = useMemo(
-    () => ({
-      beginAt: state.beginAt || null,
-      endAt: state.endAt || null,
-    }),
-    [state.beginAt, state.endAt],
-  );
-
   const handleClose = () => {
+    closeReasonRef.current = "final-close";
     closeSheet();
+  };
+
+  const handleSheetDismiss = () => {
+    if (closeReasonRef.current === "navigate-to-child-sheet") {
+      closeReasonRef.current = "final-close";
+      return;
+    }
+
     onClose();
   };
 
-  const handleSubmitEditor = async () => {
-    const payload = getSubmitPayload();
-    if (!payload) {
-      return;
-    }
-
-    await handleSubmit(payload);
+  const handleRequestOpenCalendar = () => {
+    closeReasonRef.current = "navigate-to-child-sheet";
+    handleCalendarOpen();
   };
 
-  const handleCreateReminder = async (remindsAt: string) => {
-    handleAppendReminder({ remindsAt });
+  const handleRequestOpenGoalSheet = () => {
+    closeReasonRef.current = "navigate-to-child-sheet";
+    handleGoalSheetOpen();
   };
 
-  const handleUpdateReminderItem = async (
-    index: number,
-    reminder: { id?: number; remindsAt: string; remindedAt?: string | null },
-    remindsAt: string,
-  ) => {
-    handleUpdateReminder(index, { ...reminder, remindsAt });
+  const handleCloseCalendarSheet = () => {
+    handleCalendarClose();
+    closeReasonRef.current = "final-close";
+    openSheet();
   };
 
-  const handleDeleteReminderItem = async (
-    index: number,
-    _reminder: { id?: number; remindsAt: string; remindedAt?: string | null },
-  ) => {
-    handleRemoveReminder(index);
+  const handleCloseGoalSheet = () => {
+    handleGoalSheetClose();
+    closeReasonRef.current = "final-close";
+    openSheet();
   };
 
-  const handleUpdateTodoTime = ({
-    beginHour,
-    beginMin,
-    endHour,
-    endMin,
-    isBeginTimeEnabled,
-    isEndTimeEnabled,
-  }: TodoTimeRangeType) => {
-    if (!isBeginTimeEnabled) {
-      handleChangeTime("", "");
-      if (state.reminders.length > 0) {
-        handleSetReminders([]);
-      }
-      return;
-    }
-
-    const beginAt = `${beginHour.toString().padStart(2, "0")}:${beginMin
-      .toString()
-      .padStart(2, "0")}:00`;
-    const endAt = isEndTimeEnabled
-      ? `${endHour.toString().padStart(2, "0")}:${endMin.toString().padStart(2, "0")}:00`
-      : "";
-
-    handleChangeTime(beginAt, endAt);
-
-    const isBeginChanged = state.beginAt !== beginAt || !state.isBeginTimeEnabled;
-    if (!isBeginChanged) {
-      return;
-    }
-
-    const nextStartAt = new Date(`${state.scheduledOn}T${beginAt}`);
-    if (Number.isNaN(nextStartAt.getTime())) {
-      return;
-    }
-
-    const filteredReminders = state.reminders.filter((reminder) => {
-      try {
-        return parseUtc(reminder.remindsAt).getTime() < nextStartAt.getTime();
-      } catch {
-        return true;
-      }
-    });
-
-    if (filteredReminders.length !== state.reminders.length) {
-      handleSetReminders(filteredReminders);
-    }
-  };
+  const selectedDateForCalendar = useMemo(
+    () => calendarSelectedDate ?? new Date(calendarCurrentDate),
+    [calendarCurrentDate, calendarSelectedDate],
+  );
 
   return (
     <>
       <BottomSheet
         ref={ref}
-        onClose={onClose}
+        onClose={handleSheetDismiss}
         fitContent={false}
-        defaultHeight={state.detailOpen ? "90%" : "42%"}
-        maxHeight="96%"
+        enableScroll
+        defaultHeight="90%"
+        maxHeight="90%"
       >
-        <View className="h-full min-h-0 w-full bg-role-surface-panel dark:bg-role-dark-surface-panel">
+        <View className="w-full bg-role-surface-panel dark:bg-role-dark-surface-panel">
           <FormHeader
             title={mode === "create" ? "투두 생성" : "투두 수정"}
             onPressBack={handleClose}
@@ -208,63 +173,45 @@ function TodoEditorSheet({
               </SpoqaText>
             </View>
           ) : (
-            <BottomSheetScrollView
-              className="flex-1"
-              contentContainerStyle={{ flexGrow: 1, paddingBottom: 10 }}
-              showsVerticalScrollIndicator={false}
-            >
-              <TodoEditorForm
-                mode={mode}
-                state={state}
-                titleWarning={titleWarning}
-                isPending={isPending}
-                onPressOpenCalendar={handleCalendarOpen}
-                onPressOpenTimeSheet={handleTimeSheetOpen}
-                onChangeTitle={handleChangeTitle}
-                onToggleDetail={handleToggleDetail}
-                onCreateReminder={handleCreateReminder}
-                onUpdateReminder={handleUpdateReminderItem}
-                onDeleteReminder={handleDeleteReminderItem}
-                onChangeMemo={handleChangeMemo}
-                onSubmit={handleSubmitEditor}
-              />
-            </BottomSheetScrollView>
+            <TodoEditorForm
+              mode={mode}
+              isGuestSession={isGuestSession}
+              isPending={isPending}
+              goalList={goalList}
+              selectedDate={selectedDate}
+              TodoDetail={TodoDetail}
+              initialGoalId={goalId}
+              selectedDateFromSheet={selectedDateFromSheet}
+              selectedGoalIdFromSheet={selectedGoalIdFromSheet}
+              onRequestOpenCalendar={handleRequestOpenCalendar}
+              onRequestOpenGoalSheet={handleRequestOpenGoalSheet}
+              onSubmitPayload={handleSubmit}
+            />
           )}
         </View>
       </BottomSheet>
 
       {isCalendarOpen && (
         <BottomSingleCalendar
-          currentDate={state.scheduledOn}
-          selectedDate={new Date(state.scheduledOn)}
-          setSelected={(nextDate) => {
-            if (!nextDate) {
-              return;
-            }
-
-            handleChangeDate(formatDateToYYYYMMDD(nextDate));
-          }}
+          currentDate={calendarCurrentDate}
+          selectedDate={selectedDateForCalendar}
+          setSelected={setCalendarSelectedDate}
           onChangeTodoDate={(nextDate) => {
-            handleChangeDate(formatDateToYYYYMMDD(nextDate));
-            handleCalendarClose();
+            const nextDateString = formatDateToYYYYMMDD(nextDate);
+            setCalendarCurrentDate(nextDateString);
+            setSelectedDateFromSheet(nextDateString);
+            handleCloseCalendarSheet();
           }}
-          handleCalendarSheetToggleOff={handleCalendarClose}
+          handleCalendarSheetToggleOff={handleCloseCalendarSheet}
         />
       )}
 
-      {isTimeSheetOpen && (
-        <TodoTimeSheet
-          currentTodoTime={currentTodoTime}
-          onChangeTodoTime={handleUpdateTodoTime}
-          onClose={handleTimeSheetClose}
-          title="시간 설정"
-          scheduledOn={state.scheduledOn}
-          reminders={state.reminders}
-          showBackArrow
-          defaultBeginTimeEnabled={state.isBeginTimeEnabled}
-          defaultEndTimeEnabled={state.isEndTimeEnabled}
-          onChangeBeginTimeEnabled={handleChangeBeginTimeEnabled}
-          onChangeEndTimeEnabled={handleChangeEndTimeEnabled}
+      {isGoalSheetOpen && (
+        <TodoGoalSelectSheet
+          onClose={handleCloseGoalSheet}
+          onSelectGoal={(goal) => {
+            setSelectedGoalIdFromSheet(goal.id);
+          }}
         />
       )}
     </>

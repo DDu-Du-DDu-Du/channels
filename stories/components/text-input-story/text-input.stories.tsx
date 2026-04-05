@@ -6,7 +6,7 @@ const meta = {
   title: "components/TextInput",
   component: TextInputView,
   parameters: {
-    notes: `\n## TextInput (Controller)\n\n- RHF Controller-bound RN TextInput.\n- Shows error and disabled states via classes.\n    `,
+    notes: `\n## TextInput + FormTextInput\n\n- TextInput is a pure RN TextInput wrapper.\n- FormTextInput binds TextInput with RHF Controller.\n    `,
   },
   argTypes: {
     placeholder: { control: "text" },

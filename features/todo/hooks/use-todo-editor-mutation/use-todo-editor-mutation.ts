@@ -9,7 +9,6 @@ import type { TodoEditorSubmitPayloadType } from "../../todo.types";
 
 interface UseTodoEditorMutationProps {
   mode: "create" | "edit";
-  goalId?: number;
   TodoId?: number;
   selectedTodoDate: string;
   onSuccess: () => void;
@@ -17,7 +16,6 @@ interface UseTodoEditorMutationProps {
 
 const useTodoEditorMutation = ({
   mode,
-  goalId,
   TodoId,
   selectedTodoDate,
   onSuccess,
@@ -44,11 +42,8 @@ const useTodoEditorMutation = ({
     ]);
   };
 
-  const buildTodoRequest = (
-    todoGoalId: number,
-    payload: TodoEditorSubmitPayloadType,
-  ): RequestTodo => ({
-    goalId: todoGoalId,
+  const buildTodoRequest = (payload: TodoEditorSubmitPayloadType): RequestTodo => ({
+    goalId: payload.goalId,
     name: payload.title,
     memo: payload.memo || undefined,
     scheduledOn: payload.scheduledOn,
@@ -66,13 +61,13 @@ const useTodoEditorMutation = ({
   const handleSubmit = async (payload: TodoEditorSubmitPayloadType) => {
     try {
       if (mode === "create") {
-        if (!goalId) {
+        if (!payload.goalId) {
           createToast("목표 정보가 없어 투두를 생성할 수 없어요.", { type: "danger" });
           return false;
         }
 
         const response = (await createTodoMutation.mutateAsync({
-          requestTodo: buildTodoRequest(goalId, payload),
+          requestTodo: buildTodoRequest(payload),
         })) as CreateTodoResponseType;
 
         if (!response?.id) {
@@ -86,14 +81,14 @@ const useTodoEditorMutation = ({
           return false;
         }
 
-        if (!goalId) {
+        if (!payload.goalId) {
           createToast("목표 정보가 없어 투두를 수정할 수 없어요.", { type: "danger" });
           return false;
         }
 
         await editTodoMutation.mutateAsync({
           id: TodoId,
-          requestTodo: buildTodoRequest(goalId, payload),
+          requestTodo: buildTodoRequest(payload),
         });
       }
 

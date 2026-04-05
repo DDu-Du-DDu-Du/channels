@@ -48,6 +48,10 @@ const useUpdateTodoMutation = ({
   });
 
   const onValid: SubmitHandler<TodoInputType> = ({ Todo }) => {
+    if (createTodoMutation.isPending || editTodoMutation.isPending) {
+      return;
+    }
+
     if (type === "create") {
       createTodoMutation.mutate({
         requestTodo: {
@@ -68,7 +72,10 @@ const useUpdateTodoMutation = ({
     }
   };
 
-  return { onValid };
+  return {
+    onValid,
+    isPending: createTodoMutation.isPending || editTodoMutation.isPending,
+  };
 };
 
 export default useUpdateTodoMutation;

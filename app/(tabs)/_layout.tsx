@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { MainHeader } from "@/components";
+import { MainHeader, MainTabBar } from "@/components";
 import { useMenuActivationTabRouting } from "@/hooks";
 
 import { Tabs, usePathname, useRouter } from "expo-router";
@@ -30,7 +30,9 @@ export default function TabsLayout() {
       screenOptions={{
         headerShown: true,
         header: () => <MainHeader />,
+        tabBarShowLabel: false,
       }}
+      tabBar={() => <MainTabBar sortedActiveMenuKeys={sortedActiveMenuKeys} />}
     >
       <Tabs.Screen
         name="index"

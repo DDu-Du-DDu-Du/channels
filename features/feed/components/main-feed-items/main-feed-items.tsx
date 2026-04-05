@@ -88,12 +88,19 @@ function MainFeedItems({
       handleTodosheetToggleOff,
     });
 
-  const { onTodoCompleteToggle, onDeleteTodo } = useTodoMutation({
-    selectedTodoDate,
-    handleTodosheetToggleOff,
-  });
+  const { onTodoCompleteToggle, onDeleteTodo, isDeletePending, isCompleteTogglePending } =
+    useTodoMutation({
+      selectedTodoDate,
+      handleTodosheetToggleOff,
+    });
 
-  const { onChangeTodoDate, onRepeatCurrentDate, onChangeCurrentDate } = useTodoDateMutation({
+  const {
+    onChangeTodoDate,
+    onRepeatCurrentDate,
+    onChangeCurrentDate,
+    isChangeDatePending,
+    isRepeatDatePending,
+  } = useTodoDateMutation({
     currentTodoId,
     currentCalendarType,
     handleSelectedDate,
@@ -101,7 +108,7 @@ function MainFeedItems({
     handleTodosheetToggleOff,
   });
 
-  const { onChangeTodoTime } = useTodoTimeMutation({
+  const { onChangeTodoTime, isChangeTimePending } = useTodoTimeMutation({
     currentTodoTime,
     currentTodoId,
     selectedTodoDate,
@@ -173,6 +180,11 @@ function MainFeedItems({
           handleTodoTimeSetting={handleTodoTimeSetting}
           onRepeatCurrentDate={onRepeatCurrentDate}
           onChangeCurrentDate={onChangeCurrentDate}
+          isDeletePending={isDeletePending}
+          isChangeDatePending={isChangeDatePending}
+          isRepeatDatePending={isRepeatDatePending}
+          isChangeTimePending={isChangeTimePending}
+          isCompleteTogglePending={isCompleteTogglePending}
         />
       )}
 

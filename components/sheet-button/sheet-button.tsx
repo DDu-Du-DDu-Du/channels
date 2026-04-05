@@ -1,8 +1,9 @@
 import React from "react";
-import { StyleProp, View, ViewStyle } from "react-native";
+import { ActivityIndicator, StyleProp, View, ViewStyle } from "react-native";
 
 import { MotionPressable } from "@/components/motion";
 import SpoqaText from "@/components/spoqa-text/spoqa-text";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 
 import { useSheetButtonStyle } from "./hooks";
 
@@ -14,6 +15,7 @@ export interface SheetButtonProps {
   style?: StyleProp<ViewStyle>;
   onPress?: () => void;
   disabled?: boolean;
+  isLoading?: boolean;
 }
 
 function SheetButton({
@@ -24,24 +26,33 @@ function SheetButton({
   style,
   onPress,
   disabled = false,
+  isLoading = false,
 }: SheetButtonProps) {
   const { containerStyle, innerStyle, contentStyle, titleStyle } = useSheetButtonStyle({
     buttonType,
   });
+  const loadingColor = useThemeColorToken("role.text.primary");
+  const isDisabled = disabled || isLoading;
 
   return (
     <MotionPressable
       accessibilityRole="button"
-      whileTap={disabled ? undefined : { scale: 0.95, opacity: 0.7 }}
-      whileHover={disabled ? undefined : { opacity: 0.9 }}
+      whileTap={isDisabled ? undefined : { scale: 0.95, opacity: 0.7 }}
+      whileHover={isDisabled ? undefined : { opacity: 0.9 }}
       style={[containerStyle, style]}
       onPress={onPress}
-      disabled={disabled}
+      disabled={isDisabled}
     >
       <View style={innerStyle}>
         <View style={contentStyle}>
-          {Icon}
-          <SpoqaText style={titleStyle}>{title}</SpoqaText>
+          {isLoading ? (
+            <ActivityIndicator color={loadingColor} />
+          ) : (
+            <>
+              {Icon}
+              <SpoqaText style={titleStyle}>{title}</SpoqaText>
+            </>
+          )}
         </View>
         {buttonType === "sub" && rightPlace && (
           <View style={{ marginLeft: "auto" }}>{rightPlace}</View>

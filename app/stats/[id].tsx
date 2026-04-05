@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Pressable, View } from "react-native";
 
-import { EmptyList, PageHeader } from "@/components";
+import { MemberGuide, PageHeader } from "@/components";
 import { StatsGoalDetailScreen } from "@/features/stats/components";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { EditIcon } from "@/icons";
@@ -45,14 +45,7 @@ export default function Id() {
           </Pressable>
         }
       />
-      {isGuestSession ? (
-        <EmptyList
-          text="회원 전용입니다. 로그인 후 더 많은 서비스를 경험하세요!"
-          className="flex-1 items-center justify-center px-[2.4rem]"
-        />
-      ) : (
-        <StatsGoalDetailScreen onGoalNameChange={setGoalName} />
-      )}
+      {isGuestSession ? <MemberGuide /> : <StatsGoalDetailScreen onGoalNameChange={setGoalName} />}
     </View>
   );
 }

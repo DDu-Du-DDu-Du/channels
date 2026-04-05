@@ -68,6 +68,7 @@ export default function RootLayout() {
   });
   const hasHydrated = useAuthStore((state) => state.hasHydrated);
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const sessionType = useAuthStore((state) => state.sessionType);
   const isDarkMode = useSettingsStore((state) => state.display.isDarkMode);
 
   useEffect(() => {
@@ -105,7 +106,7 @@ export default function RootLayout() {
                     <Stack.Protected guard={storybookEnabled}>
                       <Stack.Screen name="storybook/index" />
                     </Stack.Protected>
-                    <Stack.Protected guard={!isLoggedIn}>
+                    <Stack.Protected guard={!isLoggedIn || sessionType === "guest"}>
                       <Stack.Screen name="auth" />
                     </Stack.Protected>
                     <Stack.Protected guard={isLoggedIn || loginDisabled}>

@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { View } from "react-native";
 
 import BottomSheet from "@/components/bottom-sheet/bottom-sheet";
-import EmptyList from "@/components/empty-list/empty-list";
 import FormHeader from "@/components/form-header/form-header";
+import MemberGuide from "@/components/member-guide/member-guide";
 import { FEED_KEY } from "@/constants/query-key/query-key";
 import TodoReminderListBox from "@/features/todo/components/todo-reminder-list-box/todo-reminder-list-box";
 import { useBottomSheetAction } from "@/hooks";
@@ -111,7 +111,7 @@ function AlarmSheet({ todoId, onClose }: AlarmSheetProps) {
           className="px-[0.6rem] pb-[1.2rem] pt-[1.2rem]"
         />
         {isGuestSession ? (
-          <EmptyList text="회원 전용입니다. 로그인 후 더 많은 서비스를 경험하세요!" />
+          <MemberGuide className="w-full items-center px-[1.2rem] py-[0.8rem]" />
         ) : (
           <TodoReminderListBox
             reminders={reminders}

@@ -1,7 +1,7 @@
 import { FormProvider, useForm } from "react-hook-form";
 import { Pressable, View } from "react-native";
 
-import { SpoqaText, TextInput } from "@/components";
+import { FormTextInput, SpoqaText } from "@/components";
 
 export interface TextInputViewProps {
   placeholder?: string;
@@ -22,11 +22,11 @@ function TextInputView({
   return (
     <FormProvider {...methods}>
       <View className="flex-1 items-center justify-center p-4 gap-[1.2rem] w-full max-w-[40rem]">
-        <TextInput
+        <FormTextInput
           name="title"
-          options={showError ? { required: true } : {}}
+          rules={showError ? { required: true } : {}}
           placeholder={placeholder}
-          disabled={disabled}
+          editable={!disabled}
         />
         <Pressable
           accessibilityRole="button"

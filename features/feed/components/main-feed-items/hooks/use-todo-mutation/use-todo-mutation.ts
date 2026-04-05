@@ -33,16 +33,26 @@ const useTodoMutation = ({ selectedTodoDate, handleTodosheetToggleOff }: UseTodo
   });
 
   const onTodoCompleteToggle = (id: number) => {
+    if (completeToggleTodoMutation.isPending || deleteTodoMutation.isPending) {
+      return;
+    }
+
     completeToggleTodoMutation.mutate({ id });
   };
 
   const onDeleteTodo = (id: number) => {
+    if (deleteTodoMutation.isPending) {
+      return;
+    }
+
     deleteTodoMutation.mutate({ id });
   };
 
   return {
     onTodoCompleteToggle,
     onDeleteTodo,
+    isDeletePending: deleteTodoMutation.isPending,
+    isCompleteTogglePending: completeToggleTodoMutation.isPending,
   };
 };
 

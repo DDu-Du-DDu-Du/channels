@@ -75,6 +75,11 @@ function TodoSearchScreen() {
     handleAlarmSheetToggleOff,
     handleCalendarSheetToggleOff,
     handleTodoTimeSheetToggleOff,
+    isDeletePending,
+    isChangeDatePending,
+    isRepeatDatePending,
+    isChangeTimePending,
+    isCompleteTogglePending,
   } = useTodoSearchActions({
     onRefetchSearch: handleRefetchSearch,
   });
@@ -160,6 +165,11 @@ function TodoSearchScreen() {
           handleTodoTimeSetting={handleTodoTimeSetting}
           onRepeatCurrentDate={handleRepeatCurrentDate}
           onChangeCurrentDate={handleChangeCurrentDate}
+          isDeletePending={isDeletePending}
+          isChangeDatePending={isChangeDatePending}
+          isRepeatDatePending={isRepeatDatePending}
+          isChangeTimePending={isChangeTimePending}
+          isCompleteTogglePending={isCompleteTogglePending}
         />
       )}
 

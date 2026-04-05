@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 import { View } from "react-native";
 
 import {
@@ -7,8 +8,7 @@ import {
   Button,
   DateInputSet,
   FormHeader,
-  FormTitleInput,
-  SpoqaText,
+  FormTextInput,
 } from "@/components";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import type { RepeatTodoRequestType } from "@/types/request/repeat-todo/repeat-todo";
@@ -37,9 +37,14 @@ function RepeatTodosheet({
   submitLabel = "반복 생성",
   onSubmit,
 }: RepeatTodosheetProps) {
+  const closeReasonRef = useRef<"final-close" | "navigate-to-child-sheet">("final-close");
   const iconStroke = useThemeColorToken("ui.icon.default");
+  const methods = useForm<{ title: string }>({
+    defaultValues: {
+      title: repeatTodo?.name ?? "",
+    },
+  });
   const {
-    title,
     repeatType,
     startDate,
     endDate,
@@ -48,7 +53,6 @@ function RepeatTodosheet({
     selectedWeekDays,
     selectedMonthDays,
     isLastDaySelected,
-    setTitle,
     setRepeatType,
     setStartDate,
     setEndDate,
@@ -71,12 +75,10 @@ function RepeatTodosheet({
     handleResetCalendar,
   } = useRepeatTodoCalendar();
 
-  const [isTitleError, setIsTitleError] = useState(false);
-
   useEffect(() => {
     handleFillForm(repeatTodo);
-    setIsTitleError(false);
-  }, [handleFillForm, repeatTodo]);
+    methods.reset({ title: repeatTodo?.name ?? "" });
+  }, [handleFillForm, methods, repeatTodo]);
 
   useEffect(() => {
     if (startDate > endDate) {
@@ -84,36 +86,32 @@ function RepeatTodosheet({
     }
   }, [endDate, setEndDate, startDate]);
 
-  const handleDismissSheet = () => {
+  const handleResetSheetState = () => {
     handleResetForm();
     handleResetCalendar();
-    setIsTitleError(false);
+    methods.reset({ title: "" });
+  };
+
+  const handleDismissSheet = () => {
+    if (closeReasonRef.current === "navigate-to-child-sheet") {
+      closeReasonRef.current = "final-close";
+      return;
+    }
+
+    handleResetSheetState();
     onDismiss?.();
   };
 
   const handleRequestCloseSheet = () => {
-    handleResetForm();
-    handleResetCalendar();
-    setIsTitleError(false);
+    closeReasonRef.current = "final-close";
+    handleResetSheetState();
     onClose();
   };
 
-  const handleChangeTitle = (text: string) => {
-    setTitle(text);
-
-    if (text.trim().length > 0) {
-      setIsTitleError(false);
-    }
-  };
-
-  const handleConfirm = () => {
-    if (!title.trim()) {
-      setIsTitleError(true);
-      return;
-    }
-
+  const handleConfirm = methods.handleSubmit(({ title }) => {
+    const trimmedTitle = title.trim();
     const repeatTodoRequest: RepeatTodoRequestType = {
-      name: title,
+      name: trimmedTitle,
       repeatType,
       startDate: formatDateToYYYYMMDD(startDate),
       endDate: formatDateToYYYYMMDD(endDate),
@@ -129,6 +127,28 @@ function RepeatTodosheet({
 
     onSubmit?.(repeatTodoRequest);
     handleRequestCloseSheet();
+  });
+
+  const handleOpenStartCalendarWithReason = () => {
+    closeReasonRef.current = "navigate-to-child-sheet";
+    handleOpenStartCalendar();
+  };
+
+  const handleOpenEndCalendarWithReason = () => {
+    closeReasonRef.current = "navigate-to-child-sheet";
+    handleOpenEndCalendar();
+  };
+
+  const handleCloseStartCalendarWithReopen = () => {
+    handleCloseStartCalendar();
+    closeReasonRef.current = "final-close";
+    bottomSheetRef.current?.present();
+  };
+
+  const handleCloseEndCalendarWithReopen = () => {
+    handleCloseEndCalendar();
+    closeReasonRef.current = "final-close";
+    bottomSheetRef.current?.present();
   };
 
   return (
@@ -148,55 +168,55 @@ function RepeatTodosheet({
             className="px-[2rem] pb-[0.8rem] pt-[1.6rem]"
           />
 
-          <View className="gap-[1.2rem] px-[2rem] pb-[2rem]">
-            <View>
-              <FormTitleInput
-                value={title}
-                onChangeText={handleChangeTitle}
+          <FormProvider {...methods}>
+            <View className="gap-[1.2rem] px-[2rem] pb-[2rem]">
+              <FormTextInput
+                control={methods.control}
+                name="title"
                 placeholder={"투두 제목"}
                 className="mt-[0.8rem]"
+                required="제목을 입력해주세요"
+                rules={{
+                  validate: (value) =>
+                    String(value ?? "").trim().length > 0 || "제목을 입력해주세요",
+                }}
               />
-              {isTitleError && (
-                <SpoqaText className="mt-[0.6rem] text-size12 text-role-status-error dark:text-role-dark-status-error">
-                  {"제목을 입력해주세요"}
-                </SpoqaText>
-              )}
+
+              <RepeatTypeSelect
+                repeatType={repeatType}
+                onChangeRepeatType={setRepeatType}
+                selectedWeekDays={selectedWeekDays}
+                onToggleWeekDay={handleToggleWeekDay}
+                selectedMonthDays={selectedMonthDays}
+                onToggleMonthDay={handleToggleMonthDay}
+                isLastDaySelected={isLastDaySelected}
+                onToggleLastDay={handleToggleLastDay}
+              />
+
+              <DateInputSet
+                startDate={formatDateToYYYYMMDD(startDate)}
+                endDate={formatDateToYYYYMMDD(endDate)}
+                startLabel={"시작일"}
+                endLabel={"종료일"}
+                onPressStart={handleOpenStartCalendarWithReason}
+                onPressEnd={handleOpenEndCalendarWithReason}
+              />
+
+              <RepeatTimeSelect
+                beginAt={beginAt}
+                endAt={endAt}
+                onChangeBeginAt={setBeginAt}
+                onChangeEndAt={setEndAt}
+              />
+
+              <Button
+                label={submitLabel}
+                bodyClassName="bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg"
+                labelClassName="text-role-text-inverse dark:text-role-dark-text-inverse"
+                onPress={handleConfirm}
+              />
             </View>
-
-            <RepeatTypeSelect
-              repeatType={repeatType}
-              onChangeRepeatType={setRepeatType}
-              selectedWeekDays={selectedWeekDays}
-              onToggleWeekDay={handleToggleWeekDay}
-              selectedMonthDays={selectedMonthDays}
-              onToggleMonthDay={handleToggleMonthDay}
-              isLastDaySelected={isLastDaySelected}
-              onToggleLastDay={handleToggleLastDay}
-            />
-
-            <DateInputSet
-              startDate={formatDateToYYYYMMDD(startDate)}
-              endDate={formatDateToYYYYMMDD(endDate)}
-              startLabel={"시작일"}
-              endLabel={"종료일"}
-              onPressStart={handleOpenStartCalendar}
-              onPressEnd={handleOpenEndCalendar}
-            />
-
-            <RepeatTimeSelect
-              beginAt={beginAt}
-              endAt={endAt}
-              onChangeBeginAt={setBeginAt}
-              onChangeEndAt={setEndAt}
-            />
-
-            <Button
-              label={submitLabel}
-              bodyClassName="bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg"
-              labelClassName="text-role-text-inverse dark:text-role-dark-text-inverse"
-              onPress={handleConfirm}
-            />
-          </View>
+          </FormProvider>
         </View>
       </BottomSheet>
 
@@ -214,10 +234,10 @@ function RepeatTodosheet({
             if (endDate < nextDate) {
               setEndDate(nextDate);
             }
-            handleCloseStartCalendar();
+            handleCloseStartCalendarWithReopen();
           }}
           showBackArrow
-          handleCalendarSheetToggleOff={handleCloseStartCalendar}
+          handleCalendarSheetToggleOff={handleCloseStartCalendarWithReopen}
         />
       )}
 
@@ -232,11 +252,11 @@ function RepeatTodosheet({
           }}
           onChangeTodoDate={(nextDate) => {
             setEndDate(nextDate);
-            handleCloseEndCalendar();
+            handleCloseEndCalendarWithReopen();
           }}
           minDate={formatDateToYYYYMMDD(startDate)}
           showBackArrow
-          handleCalendarSheetToggleOff={handleCloseEndCalendar}
+          handleCalendarSheetToggleOff={handleCloseEndCalendarWithReopen}
         />
       )}
     </>

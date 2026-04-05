@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { Controller, FormProvider } from "react-hook-form";
+import { FormProvider } from "react-hook-form";
 import { Pressable, View } from "react-native";
 
-import { Button, FormSection, FormTitleInput, SpoqaText } from "@/components";
+import { Button, FormSection, FormTextInput } from "@/components";
 import { RepeatTodoCards, type RepeatTodoItemType } from "@/features/repeat-todo";
 import { ArrowRightIcon } from "@/icons";
 
@@ -29,7 +29,7 @@ function GoalEditorFormBody({
   onPressRepeatTodoCard,
   onPressDeleteRepeatTodoCard,
 }: GoalEditorFormBodyProps) {
-  const { methods, handleUpdateColor, handleSubmitGoal } = useGoalMutation({
+  const { methods, handleUpdateColor, handleSubmitGoal, isPending } = useGoalMutation({
     defaultTitle,
     pickedColor,
     repeatTodos,
@@ -77,28 +77,14 @@ function GoalEditorFormBody({
     <FormProvider {...methods}>
       <View className="flex-1 px-[2.4rem] pb-[2.4rem] pt-[0.8rem]">
         <View className="gap-[1.2rem]">
-          <Controller
+          <FormTextInput
             control={methods.control}
             name="title"
+            placeholder={"목표 제목을 입력하세요"}
+            required="제목을 입력해주세요."
             rules={{
-              validate: (value) => value.trim().length > 0 || "제목을 입력해주세요.",
+              validate: (value) => String(value ?? "").trim().length > 0 || "제목을 입력해주세요.",
             }}
-            render={({ field: { value, onChange, onBlur }, fieldState: { error } }) => (
-              <View>
-                <FormTitleInput
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  placeholder={"목표 제목을 입력하세요"}
-                  required
-                />
-                {error?.message && (
-                  <SpoqaText className="mt-[0.6rem] text-size12 text-role-status-error dark:text-role-dark-status-error">
-                    {error.message}
-                  </SpoqaText>
-                )}
-              </View>
-            )}
           />
 
           <FormSection
@@ -130,6 +116,8 @@ function GoalEditorFormBody({
           <Button
             label={submitLabel}
             onPress={methods.handleSubmit(handleSubmitGoal)}
+            isLoading={isPending}
+            disabled={isPending}
           />
         </View>
       </View>

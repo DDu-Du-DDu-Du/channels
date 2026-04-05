@@ -134,10 +134,18 @@ function useTodosearchActions({ onRefetchSearch }: UseTodosearchActionsProps) {
   };
 
   const handleTodoCompleteToggle = (id: number) => {
+    if (completeToggleTodoMutation.isPending || deleteTodoMutation.isPending) {
+      return;
+    }
+
     completeToggleTodoMutation.mutate({ id });
   };
 
   const handleDeleteTodo = (id: number) => {
+    if (deleteTodoMutation.isPending) {
+      return;
+    }
+
     deleteTodoMutation.mutate({ id });
   };
 
@@ -153,6 +161,10 @@ function useTodosearchActions({ onRefetchSearch }: UseTodosearchActionsProps) {
   };
 
   const handleChangeTodoDate = (nextDate: Date) => {
+    if (TodoChangeDateMutation.isPending || TodoRepeatDateMutation.isPending) {
+      return;
+    }
+
     const date = formatDateToYYYYMMDD(nextDate);
 
     if (currentCalendarType === "change") {
@@ -164,6 +176,10 @@ function useTodosearchActions({ onRefetchSearch }: UseTodosearchActionsProps) {
   };
 
   const handleRepeatCurrentDate = () => {
+    if (TodoRepeatDateMutation.isPending || TodoChangeDateMutation.isPending) {
+      return;
+    }
+
     TodoRepeatDateMutation.mutate({
       id: currentTodoId,
       date: formatDateToYYYYMMDD(new Date()),
@@ -171,6 +187,10 @@ function useTodosearchActions({ onRefetchSearch }: UseTodosearchActionsProps) {
   };
 
   const handleChangeCurrentDate = () => {
+    if (TodoChangeDateMutation.isPending || TodoRepeatDateMutation.isPending) {
+      return;
+    }
+
     TodoChangeDateMutation.mutate(
       {
         id: currentTodoId,
@@ -203,6 +223,10 @@ function useTodosearchActions({ onRefetchSearch }: UseTodosearchActionsProps) {
   };
 
   const handleChangeTodoTime = (selectedTime: TodoTimeRangeType) => {
+    if (TodoChangeTimeMutation.isPending) {
+      return;
+    }
+
     const { beginHour, beginMin, endHour, endMin, isBeginTimeEnabled, isEndTimeEnabled } =
       selectedTime;
 
@@ -273,6 +297,11 @@ function useTodosearchActions({ onRefetchSearch }: UseTodosearchActionsProps) {
     handleAlarmSheetToggleOff,
     handleCalendarSheetToggleOff,
     handleTodoTimeSheetToggleOff,
+    isDeletePending: deleteTodoMutation.isPending,
+    isChangeDatePending: TodoChangeDateMutation.isPending,
+    isRepeatDatePending: TodoRepeatDateMutation.isPending,
+    isChangeTimePending: TodoChangeTimeMutation.isPending,
+    isCompleteTogglePending: completeToggleTodoMutation.isPending,
   };
 }
 

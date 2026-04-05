@@ -51,6 +51,10 @@ const useTodoDateMutation = ({
   });
 
   const onChangeTodoDate = (selectedDate: Date) => {
+    if (TodoChangeDateMutation.isPending || TodoRepeatDateMutation.isPending) {
+      return;
+    }
+
     const date = formatDateToYYYYMMDD(selectedDate);
 
     if (currentCalendarType === "change") {
@@ -67,6 +71,10 @@ const useTodoDateMutation = ({
   };
 
   const onRepeatCurrentDate = () => {
+    if (TodoRepeatDateMutation.isPending || TodoChangeDateMutation.isPending) {
+      return;
+    }
+
     TodoRepeatDateMutation.mutate({
       id: currentTodoId,
       date: formatDateToYYYYMMDD(new Date()),
@@ -74,6 +82,10 @@ const useTodoDateMutation = ({
   };
 
   const onChangeCurrentDate = () => {
+    if (TodoChangeDateMutation.isPending || TodoRepeatDateMutation.isPending) {
+      return;
+    }
+
     TodoChangeDateMutation.mutate(
       {
         id: currentTodoId,
@@ -92,6 +104,8 @@ const useTodoDateMutation = ({
     onChangeTodoDate,
     onRepeatCurrentDate,
     onChangeCurrentDate,
+    isChangeDatePending: TodoChangeDateMutation.isPending,
+    isRepeatDatePending: TodoRepeatDateMutation.isPending,
   };
 };
 

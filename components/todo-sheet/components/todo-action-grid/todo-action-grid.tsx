@@ -11,6 +11,9 @@ interface TodoActionItemType {
 
 export interface TodoActionGridProps {
   actions: TodoActionItemType[];
+  isChangeDatePending?: boolean;
+  isRepeatDatePending?: boolean;
+  isChangeTimePending?: boolean;
 }
 
 const buildRows = (actions: TodoActionItemType[]) => {
@@ -45,7 +48,12 @@ const getActionIcon = (key: string) => {
   return <AnotherDayIcon />;
 };
 
-function TodoActionGrid({ actions }: TodoActionGridProps) {
+function TodoActionGrid({
+  actions,
+  isChangeDatePending = false,
+  isRepeatDatePending = false,
+  isChangeTimePending = false,
+}: TodoActionGridProps) {
   const rows = buildRows(actions);
 
   return (
@@ -62,6 +70,16 @@ function TodoActionGrid({ actions }: TodoActionGridProps) {
               title={action.title}
               onPress={action.onPress}
               style={{ flex: 1, flexGrow: 1 }}
+              disabled={
+                (action.key.includes("change") && isChangeDatePending) ||
+                (action.key.includes("repeat") && isRepeatDatePending) ||
+                (action.key === "time-setting" && isChangeTimePending)
+              }
+              isLoading={
+                (action.key.includes("change") && isChangeDatePending) ||
+                (action.key.includes("repeat") && isRepeatDatePending) ||
+                (action.key === "time-setting" && isChangeTimePending)
+              }
             />
           ))}
         </View>

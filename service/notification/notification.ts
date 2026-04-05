@@ -2,6 +2,7 @@ import { fetchApi } from "@/api";
 import { NOTIFICATION } from "@/constants/end-points";
 import type {
   NotificationInboxResponseType,
+  NotificationInboxStatusType,
   NotificationReadResponseType,
 } from "@/types/response/notification/notification";
 
@@ -36,6 +37,14 @@ export const getNotificationInbox = async ({
   }
 
   return response.json();
+};
+
+export const getNotificationInboxStatus = async (): Promise<NotificationInboxStatusType> => {
+  const inbox = await getNotificationInbox({ size: 20 });
+
+  return {
+    hasNew: inbox.contents.some((item) => !item.isRead),
+  };
 };
 
 interface PatchNotificationReadProps {

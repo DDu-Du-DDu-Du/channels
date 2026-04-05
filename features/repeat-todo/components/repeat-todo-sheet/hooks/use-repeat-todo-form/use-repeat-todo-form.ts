@@ -9,7 +9,6 @@ function getToday() {
 }
 
 function useRepeatTodoForm() {
-  const [title, setTitle] = useState("");
   const [repeatType, setRepeatType] = useState<RepeatTodoRequestType["repeatType"]>("DAILY");
   const [startDate, setStartDate] = useState<Date>(getToday());
   const [endDate, setEndDate] = useState<Date>(getToday());
@@ -36,7 +35,6 @@ function useRepeatTodoForm() {
   };
 
   const handleResetForm = useCallback(() => {
-    setTitle("");
     setRepeatType("DAILY");
     setStartDate(getToday());
     setEndDate(getToday());
@@ -54,7 +52,6 @@ function useRepeatTodoForm() {
         return;
       }
 
-      setTitle(repeatTodo.name);
       setRepeatType(repeatTodo.repeatType);
       setStartDate(new Date(repeatTodo.startDate));
       setEndDate(new Date(repeatTodo.endDate));
@@ -68,7 +65,6 @@ function useRepeatTodoForm() {
   );
 
   return {
-    title,
     repeatType,
     startDate,
     endDate,
@@ -77,7 +73,6 @@ function useRepeatTodoForm() {
     selectedWeekDays,
     selectedMonthDays,
     isLastDaySelected,
-    setTitle,
     setRepeatType,
     setStartDate,
     setEndDate,

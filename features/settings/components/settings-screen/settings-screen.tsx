@@ -11,6 +11,7 @@ import useSettingsStore from "@/stores/use-settings-store/use-settings-store";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { BugReportSheet, BugReportSheetHandle } from "../bug-report-sheet";
+import { SettingsLoginContainer } from "../settings-login-container";
 import { SettingsRow } from "../settings-row";
 
 import Constants from "expo-constants";
@@ -106,11 +107,15 @@ function SettingsScreen() {
           label="앱 버전 정보"
           value={`v${appVersion}`}
         />
-        <SettingsRow
-          label="로그아웃"
-          onPress={handlePressLogout}
-          textColor={dangerTextColor}
-        />
+        {sessionType === "member" ? (
+          <SettingsRow
+            label="로그아웃"
+            onPress={handlePressLogout}
+            textColor={dangerTextColor}
+          />
+        ) : sessionType === "guest" ? (
+          <SettingsLoginContainer />
+        ) : null}
       </ScrollView>
 
       <BugReportSheet ref={bugReportSheetRef} />

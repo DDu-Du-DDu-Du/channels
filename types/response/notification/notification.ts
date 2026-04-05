@@ -19,6 +19,10 @@ export interface NotificationInboxResponseType {
   hasNext: boolean;
 }
 
+export interface NotificationInboxStatusType {
+  hasNew: boolean;
+}
+
 export interface NotificationReadResponseType {
   context: string;
   contextId: number;

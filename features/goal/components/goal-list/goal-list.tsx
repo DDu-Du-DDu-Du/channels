@@ -12,7 +12,12 @@ import { useQuery } from "@tanstack/react-query";
 
 import { useRouter } from "expo-router";
 
-function GoalList() {
+export interface GoalListProps {
+  onPressGoal?: (goal: GoalType) => void;
+  onlyInProgress?: boolean;
+}
+
+function GoalList({ onPressGoal, onlyInProgress = false }: GoalListProps) {
   const router = useRouter();
   const hasTokens = useAuthStore((state) => Boolean(state.accessToken && state.refreshToken));
   const isGuestSession = useAuthStore((state) => state.sessionType === "guest");
@@ -35,20 +40,27 @@ function GoalList() {
   });
   const sortedGoalList = useMemo(
     () =>
-      [...goalList].sort((a, b) => {
-        if (a.priority !== b.priority) {
-          return a.priority - b.priority;
-        }
+      [...goalList]
+        .filter((goal) => (onlyInProgress ? goal.status === "IN_PROGRESS" : true))
+        .sort((a, b) => {
+          if (a.priority !== b.priority) {
+            return a.priority - b.priority;
+          }
 
-        return a.id - b.id;
-      }),
-    [goalList],
+          return a.id - b.id;
+        }),
+    [goalList, onlyInProgress],
   );
 
-  const handlePressGoal = (goalId: number) => {
+  const handlePressGoal = (goal: GoalType) => {
+    if (onPressGoal) {
+      onPressGoal(goal);
+      return;
+    }
+
     router.push({
       pathname: "/goal/editor",
-      params: { goalId },
+      params: { goalId: goal.id },
     });
   };
 
@@ -68,7 +80,7 @@ function GoalList() {
           highlightColor={`#${item.color}`}
           highlightHoverOpacity={0.1}
           highlightTapOpacity={0.2}
-          onPress={() => handlePressGoal(item.id)}
+          onPress={() => handlePressGoal(item)}
           style={{ borderRadius: 15 }}
         >
           <View className="w-full rounded-radius15 bg-role-surface-canvas dark:bg-role-dark-surface-canvas px-[1.8rem] py-[1.6rem]">

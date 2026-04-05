@@ -5,6 +5,7 @@ export interface TodoEditorReminderType {
 }
 
 export interface TodoEditorStateType {
+  goalId: number;
   title: string;
   scheduledOn: string;
   detailOpen: boolean;
@@ -17,6 +18,7 @@ export interface TodoEditorStateType {
 }
 
 export interface TodoEditorSubmitPayloadType {
+  goalId: number;
   title: string;
   scheduledOn: string;
   beginAt: string;

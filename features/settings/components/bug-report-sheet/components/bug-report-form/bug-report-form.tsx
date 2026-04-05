@@ -2,7 +2,7 @@ import { forwardRef, useImperativeHandle } from "react";
 import { Controller, FormProvider, useForm, useWatch } from "react-hook-form";
 import { ScrollView, View } from "react-native";
 
-import { SpoqaText, TextInput } from "@/components";
+import { FormTextInput, SpoqaText } from "@/components";
 
 import { BugReportFormValues, BugReportImageItem } from "../../bug-report-sheet.types";
 import { ImageUpload } from "../image-upload";
@@ -75,7 +75,7 @@ const BugReportForm = forwardRef<BugReportFormHandle, BugReportFormProps>(functi
               {title.length}/{TITLE_MAX_LENGTH}
             </SpoqaText>
           </View>
-          <TextInput
+          <FormTextInput
             name="title"
             maxLength={TITLE_MAX_LENGTH}
             placeholder="제목을 입력해 주세요."
@@ -91,7 +91,7 @@ const BugReportForm = forwardRef<BugReportFormHandle, BugReportFormProps>(functi
               {content.length}/{CONTENT_MAX_LENGTH}
             </SpoqaText>
           </View>
-          <TextInput
+          <FormTextInput
             name="content"
             maxLength={CONTENT_MAX_LENGTH}
             multiline

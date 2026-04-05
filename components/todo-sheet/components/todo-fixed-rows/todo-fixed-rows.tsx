@@ -10,6 +10,8 @@ export interface TodoFixedRowsProps {
   handleEditTodo: (id: number) => void;
   onDeleteTodo: (id: number) => void;
   handleTodosheetToggleOff: () => void;
+  isDeletePending?: boolean;
+  isEditDisabled?: boolean;
 }
 
 function TodoFixedRows({
@@ -18,6 +20,8 @@ function TodoFixedRows({
   handleEditTodo,
   onDeleteTodo,
   handleTodosheetToggleOff,
+  isDeletePending = false,
+  isEditDisabled = false,
 }: TodoFixedRowsProps) {
   const handleCurrentTodoEdit = () => {
     if (type === "Todo") {
@@ -38,6 +42,7 @@ function TodoFixedRows({
         buttonType="sub"
         style={{ paddingHorizontal: remToPx(1) }}
         onPress={handleCurrentTodoEdit}
+        disabled={isEditDisabled || isDeletePending}
       />
       <SheetButton
         Icon={<DeleteIcon size={24} />}
@@ -45,6 +50,8 @@ function TodoFixedRows({
         buttonType="sub"
         style={{ paddingHorizontal: remToPx(1) }}
         onPress={handleCurrentTodoDelete}
+        disabled={isDeletePending}
+        isLoading={isDeletePending}
       />
     </View>
   );

@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 
 import { useToast } from "@/components/toast/hooks";
+import { NOTIFICATION_KEY } from "@/constants/query-key/query-key";
 import { getTodoDetail } from "@/service/feed/feed";
 import { patchNotificationRead } from "@/service/notification/notification";
 import type {
@@ -8,6 +9,7 @@ import type {
   NotificationInboxItemType,
 } from "@/types/response/notification/notification";
 import { parseUtc } from "@/utils";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { useNotificationInboxQuery } from "../../queries";
 
@@ -79,6 +81,7 @@ const resolveAnnouncementDateText = (createdAt: string) => {
 
 function useNotificationScreen() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { createToast } = useToast();
   const [selectedContext, setSelectedContext] = useState<NotificationContextTab>("TODO");
   const [loadingNotificationId, setLoadingNotificationId] = useState<number | null>(null);
@@ -194,6 +197,7 @@ function useNotificationScreen() {
       }
       createToast("공지사항 읽음 처리에 실패했어요.", { type: "danger" });
     } finally {
+      queryClient.invalidateQueries({ queryKey: [NOTIFICATION_KEY.INBOX_STATUS] });
       setLoadingNotificationId(null);
     }
   };

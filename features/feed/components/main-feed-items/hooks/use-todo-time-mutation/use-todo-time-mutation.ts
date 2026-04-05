@@ -50,6 +50,10 @@ const useTodoTimeMutation = ({
   });
 
   const onChangeTodoTime = (selectedTime: TodoTimeRangeType) => {
+    if (TodoChangeTimeMutation.isPending) {
+      return;
+    }
+
     const { beginHour, beginMin, endHour, endMin, isBeginTimeEnabled, isEndTimeEnabled } =
       selectedTime;
 
@@ -98,6 +102,7 @@ const useTodoTimeMutation = ({
 
   return {
     onChangeTodoTime,
+    isChangeTimePending: TodoChangeTimeMutation.isPending,
   };
 };
 

@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { Pressable, View } from "react-native";
+import { useForm } from "react-hook-form";
+import { ActivityIndicator, Pressable, View } from "react-native";
 
-import { TextInput } from "@/components";
+import { FormTextInput } from "@/components";
 import { OptionIcon } from "@/icons";
 import type { MainTodosType } from "@/types/response/feed/feed";
 
@@ -34,7 +34,7 @@ function MainTodoInput({
     reset({ Todo: TodoItem?.name ?? "" });
   }, [TodoItem?.name, reset]);
 
-  const { onValid } = useUpdateTodoMutation({
+  const { onValid, isPending } = useUpdateTodoMutation({
     type,
     goalId,
     TodoItem,
@@ -64,38 +64,35 @@ function MainTodoInput({
         style={{ borderColor: `#${color}` }}
       />
       <View className="flex-1">
-        <Controller
+        <FormTextInput<TodoInputType>
           control={control}
           name="Todo"
+          required
           rules={{ required: true }}
-          render={({ field: { value, onChange, onBlur } }) => (
-            <TextInput
-              value={value}
-              onChangeText={onChange}
-              onBlur={onBlur}
-              placeholder="Add a Todo"
-              autoFocus
-              className="w-full py-[0.5rem] px-[0.5rem] border-b"
-              style={{
-                borderWidth: 0,
-                borderBottomWidth: 1,
-                borderColor: `#${color}`,
-                borderRadius: 0,
-                backgroundColor: "transparent",
-                height: 36,
-              }}
-              returnKeyType="done"
-              onSubmitEditing={handleSubmitOnce}
-            />
-          )}
+          placeholder="Add a Todo"
+          autoFocus
+          className="w-full py-[0.5rem] px-[0.5rem] border-b"
+          style={{
+            borderWidth: 0,
+            borderBottomWidth: 1,
+            borderColor: `#${color}`,
+            borderRadius: 0,
+            backgroundColor: "transparent",
+            height: 36,
+          }}
+          returnKeyType="done"
+          onSubmitEditing={handleSubmitOnce}
+          editable={!isPending}
+          showErrorMessage={false}
         />
       </View>
       <Pressable
         accessibilityRole="button"
         className="ml-[0.5rem] p-[0.5rem] pr-[0]"
         onPress={handleSubmitOnce}
+        disabled={isPending}
       >
-        <OptionIcon />
+        {isPending ? <ActivityIndicator /> : <OptionIcon />}
       </Pressable>
     </View>
   );

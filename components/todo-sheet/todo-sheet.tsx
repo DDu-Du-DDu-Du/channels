@@ -28,6 +28,11 @@ export interface TodosheetProps {
   ) => void;
   onRepeatCurrentDate: () => void;
   onChangeCurrentDate: () => void;
+  isDeletePending?: boolean;
+  isChangeDatePending?: boolean;
+  isRepeatDatePending?: boolean;
+  isChangeTimePending?: boolean;
+  isCompleteTogglePending?: boolean;
 }
 
 function Todosheet({
@@ -42,6 +47,11 @@ function Todosheet({
   handleTodoTimeSetting,
   onRepeatCurrentDate,
   onChangeCurrentDate,
+  isDeletePending = false,
+  isChangeDatePending = false,
+  isRepeatDatePending = false,
+  isChangeTimePending = false,
+  isCompleteTogglePending = false,
 }: TodosheetProps) {
   const { ref, openSheet, closeSheet } = useBottomSheetAction();
 
@@ -195,13 +205,26 @@ function Todosheet({
     >
       {TodoDetail && (
         <View className="w-full flex flex-col items-center gap-[1.4rem] bg-role-surface-panel px-[3rem] py-[1rem] dark:bg-role-dark-surface-panel">
-          <TodoActionGrid actions={buildTopActions(TodoDetail)} />
+          <TodoActionGrid
+            actions={buildTopActions(TodoDetail)}
+            isChangeDatePending={isChangeDatePending}
+            isRepeatDatePending={isRepeatDatePending}
+            isChangeTimePending={isChangeTimePending}
+          />
           <TodoFixedRows
             type={type}
             TodoId={TodoId}
             handleEditTodo={handleEditTodo}
             onDeleteTodo={onDeleteTodo}
             handleTodosheetToggleOff={handleClose}
+            isDeletePending={isDeletePending}
+            isEditDisabled={
+              isDeletePending ||
+              isChangeDatePending ||
+              isRepeatDatePending ||
+              isChangeTimePending ||
+              isCompleteTogglePending
+            }
           />
         </View>
       )}

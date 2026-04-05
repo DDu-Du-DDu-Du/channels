@@ -87,6 +87,7 @@ function useGoalMutation({ defaultTitle, pickedColor, repeatTodos }: UseGoalMuta
     methods,
     handleUpdateColor,
     handleSubmitGoal,
+    isPending: createGoalMutation.isPending,
   };
 }
 
