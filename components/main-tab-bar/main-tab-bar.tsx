@@ -3,7 +3,8 @@ import { Pressable, View } from "react-native";
 
 import SpoqaText from "@/components/spoqa-text/spoqa-text";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
-import { AddListIcon, CalendarIcon, ListIcon, MainFeedIcon, TimelineIcon } from "@/icons";
+import { AddListIcon, MenuIcon, TabCalendarIcon, TabDashboardIcon, TabStatsIcon } from "@/icons";
+import { useSettingsStore } from "@/stores";
 import type { MenuActivationKey } from "@/stores/use-settings-store/use-settings-store";
 
 import { Href, usePathname, useRouter } from "expo-router";
@@ -44,7 +45,9 @@ function MainTabBar({ sortedActiveMenuKeys }: MainTabBarProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [isMoreExpanded, setIsMoreExpanded] = useState(false);
-  const activeColor = useThemeColorToken("ui.button.primary.bg");
+  const activeDarkColor = useThemeColorToken("ui.button.primary.bg");
+  const isDarkMode = useSettingsStore((state) => state.display.isDarkMode);
+  const activeColor = isDarkMode ? activeDarkColor : "rgb(0, 0, 0)";
   const inactiveColor = useThemeColorToken("ui.icon.muted");
 
   const tabItems: TabItem[] = sortedActiveMenuKeys.map((key) => ({
@@ -83,7 +86,7 @@ function MainTabBar({ sortedActiveMenuKeys }: MainTabBarProps) {
     if (item.key === "calendar") {
       return (
         <View style={{ opacity }}>
-          <CalendarIcon
+          <TabCalendarIcon
             size={20}
             stroke={color}
             strokeWidth={2}
@@ -95,9 +98,9 @@ function MainTabBar({ sortedActiveMenuKeys }: MainTabBarProps) {
     if (item.key === "dashboard") {
       return (
         <View style={{ opacity }}>
-          <MainFeedIcon
-            size={18}
-            fill={color}
+          <TabDashboardIcon
+            size={20}
+            stroke={color}
           />
         </View>
       );
@@ -105,9 +108,9 @@ function MainTabBar({ sortedActiveMenuKeys }: MainTabBarProps) {
 
     return (
       <View style={{ opacity }}>
-        <TimelineIcon
-          size={20}
-          stroke={color}
+        <TabStatsIcon
+          size={18}
+          fill={color}
         />
       </View>
     );
@@ -131,9 +134,9 @@ function MainTabBar({ sortedActiveMenuKeys }: MainTabBarProps) {
                     fill={inactiveColor}
                   />
                 ) : (
-                  <ListIcon
-                    size={18}
-                    fill={inactiveColor}
+                  <MenuIcon
+                    size={20}
+                    stroke={inactiveColor}
                   />
                 )}
                 <SpoqaText className="mt-[0.3rem] text-size11 text-role-text-tertiary dark:text-role-dark-text-tertiary">
@@ -145,7 +148,7 @@ function MainTabBar({ sortedActiveMenuKeys }: MainTabBarProps) {
 
           const isFocused = pathname.startsWith(item.href);
           const textColorClassName = isFocused
-            ? "text-ui-button-primary-bg dark:text-ui-dark-button-primary-bg"
+            ? ""
             : "text-role-text-tertiary dark:text-role-dark-text-tertiary";
 
           return (
@@ -156,7 +159,10 @@ function MainTabBar({ sortedActiveMenuKeys }: MainTabBarProps) {
               style={{ flex: 1 }}
             >
               {renderTabIcon(item, isFocused)}
-              <SpoqaText className={`mt-[0.3rem] text-size11 ${textColorClassName}`}>
+              <SpoqaText
+                className={`mt-[0.3rem] text-size11 ${textColorClassName}`}
+                style={isFocused ? { color: activeColor } : undefined}
+              >
                 {item.label}
               </SpoqaText>
             </Pressable>
@@ -169,7 +175,7 @@ function MainTabBar({ sortedActiveMenuKeys }: MainTabBarProps) {
           {extendedItems.map((item) => {
             const isFocused = pathname.startsWith(item.href);
             const textColorClassName = isFocused
-              ? "text-ui-button-primary-bg dark:text-ui-dark-button-primary-bg"
+              ? ""
               : "text-role-text-tertiary dark:text-role-dark-text-tertiary";
 
             return (
@@ -180,7 +186,10 @@ function MainTabBar({ sortedActiveMenuKeys }: MainTabBarProps) {
                 style={{ flex: 1 }}
               >
                 {renderTabIcon(item, isFocused)}
-                <SpoqaText className={`mt-[0.3rem] text-size11 ${textColorClassName}`}>
+                <SpoqaText
+                  className={`mt-[0.3rem] text-size11 ${textColorClassName}`}
+                  style={isFocused ? { color: activeColor } : undefined}
+                >
                   {item.label}
                 </SpoqaText>
               </Pressable>
@@ -192,9 +201,9 @@ function MainTabBar({ sortedActiveMenuKeys }: MainTabBarProps) {
             className="items-center justify-center"
             style={{ flex: 1 }}
           >
-            <ListIcon
-              size={18}
-              fill={inactiveColor}
+            <MenuIcon
+              size={20}
+              stroke={inactiveColor}
             />
             <SpoqaText className="mt-[0.3rem] text-size11 text-role-text-tertiary dark:text-role-dark-text-tertiary">
               메뉴 보기

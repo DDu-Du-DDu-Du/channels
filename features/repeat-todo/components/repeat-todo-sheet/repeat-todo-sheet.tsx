@@ -237,6 +237,7 @@ function RepeatTodosheet({
             handleCloseStartCalendarWithReopen();
           }}
           showBackArrow
+          onPressBack={handleCloseStartCalendarWithReopen}
           handleCalendarSheetToggleOff={handleCloseStartCalendarWithReopen}
         />
       )}
@@ -256,6 +257,7 @@ function RepeatTodosheet({
           }}
           minDate={formatDateToYYYYMMDD(startDate)}
           showBackArrow
+          onPressBack={handleCloseEndCalendarWithReopen}
           handleCalendarSheetToggleOff={handleCloseEndCalendarWithReopen}
         />
       )}

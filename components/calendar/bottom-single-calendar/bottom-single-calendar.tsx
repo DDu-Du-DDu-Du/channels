@@ -3,10 +3,11 @@ import { Pressable, View } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
 
 import BottomSheet from "@/components/bottom-sheet/bottom-sheet";
+import FormHeader from "@/components/form-header/form-header";
 import SpoqaText from "@/components/spoqa-text/spoqa-text";
 import { useBottomSheetAction, useCalendarFirstDay } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
-import { ArrowLeftIcon, ChevronLeftIcon, ChevronRightIcon } from "@/icons";
+import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
 import { useSettingsStore } from "@/stores";
 import { formatDateToYYYYMMDD, getCalendarTheme } from "@/utils";
 
@@ -94,20 +95,15 @@ function BottomSingleCalendar({
       onClose={handleCalendarSheetToggleOff}
       fitContent
     >
-      {showBackArrow && (
-        <View className="w-full px-[2.4rem] pt-[1.2rem]">
-          <Pressable
-            onPress={handlePressBack}
-            className="size-[2.4rem] items-start justify-center"
-            hitSlop={8}
-          >
-            <ArrowLeftIcon
-              size={16}
-              stroke={backIconStroke}
-            />
-          </Pressable>
-        </View>
-      )}
+      {showBackArrow && onPressBack ? (
+        <FormHeader
+          title=""
+          onPressBack={handlePressBack}
+          iconStroke={backIconStroke}
+          titleClassName="text-size15 text-role-text-primary dark:text-role-dark-text-primary"
+          className="px-[2.4rem] pb-[0.2rem] pt-[1.2rem]"
+        />
+      ) : null}
       <View className="w-full px-[2.4rem] pb-[1.5rem]">
         <Calendar
           key={calendarKey}

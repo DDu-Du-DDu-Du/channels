@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
 import { MarkingTypes } from "react-native-calendars/src/types";
 
+import FormHeader from "@/components/form-header/form-header";
 import SpoqaText from "@/components/spoqa-text/spoqa-text";
 import { useCalendarFirstDay } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
@@ -19,6 +20,7 @@ export interface BottomMultipleCalendarProps {
   markingType?: MarkingTypes;
   showArrow?: boolean;
   hideArrow?: boolean;
+  onPressBack?: () => void;
 }
 
 function BottomMultipleCalendar({
@@ -30,6 +32,7 @@ function BottomMultipleCalendar({
   markingType,
   showArrow = true,
   hideArrow = false,
+  onPressBack,
 }: BottomMultipleCalendarProps) {
   const firstDay = useCalendarFirstDay();
   const isDarkMode = useSettingsStore((state) => state.display.isDarkMode);
@@ -94,6 +97,15 @@ function BottomMultipleCalendar({
 
   return (
     <View className="w-full">
+      {onPressBack ? (
+        <FormHeader
+          title=""
+          onPressBack={onPressBack}
+          iconStroke={arrowIconFill}
+          titleClassName="text-size15 text-role-text-primary dark:text-role-dark-text-primary"
+          className="px-[0.4rem] pb-[0.2rem] pt-[0.2rem]"
+        />
+      ) : null}
       <Calendar
         key={calendarKey}
         markedDates={resolvedMarkedDates}

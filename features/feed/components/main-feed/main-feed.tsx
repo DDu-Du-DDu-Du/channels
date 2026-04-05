@@ -267,7 +267,7 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
 
       <Pressable
         onPress={() => handleSelectDate(today)}
-        className="absolute bottom-[7.2rem] right-[1.6rem] h-[4.4rem] rounded-full bg-ui-button-primary-bg px-[1.4rem] items-center justify-center dark:bg-ui-dark-button-primary-bg"
+        className="absolute bottom-[7.2rem] left-[1.6rem] h-[4.4rem] rounded-full bg-ui-button-primary-bg px-[1.4rem] items-center justify-center dark:bg-ui-dark-button-primary-bg"
       >
         <SpoqaText className="text-size13 text-role-text-inverse dark:text-role-dark-text-inverse">
           오늘
