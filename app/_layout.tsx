@@ -19,7 +19,7 @@ const storybookEnabled = process.env.EXPO_PUBLIC_STORYBOOK_ENABLED === "true";
 const loginDisabled = process.env.EXPO_PUBLIC_LOGIN_DISABLED === "true";
 
 export const unstable_settings = {
-  initialRouteName: storybookEnabled ? "storybook/index" : "auth",
+  initialRouteName: storybookEnabled ? "storybook/index" : "index",
 };
 
 SplashScreen.preventAutoHideAsync();
@@ -107,23 +107,10 @@ export default function RootLayout() {
                       <Stack.Screen name="storybook/index" />
                     </Stack.Protected>
                     <Stack.Protected guard={!isLoggedIn || sessionType === "guest"}>
-                      <Stack.Screen name="auth" />
+                      <Stack.Screen name="index" />
                     </Stack.Protected>
                     <Stack.Protected guard={isLoggedIn || loginDisabled}>
                       <Stack.Screen name="(tabs)" />
-                      <Stack.Screen name="announcement/index" />
-                      <Stack.Screen name="announcement/[id]" />
-                      <Stack.Screen name="todo" />
-                      <Stack.Screen name="goal/index" />
-                      <Stack.Screen name="goal/create" />
-                      <Stack.Screen name="goal/editor" />
-                      <Stack.Screen name="notification/index" />
-                      <Stack.Screen name="settings/index" />
-                      <Stack.Screen name="settings/display" />
-                      <Stack.Screen name="settings/menu-activation" />
-                      <Stack.Screen name="settings/app-connection" />
-                      <Stack.Screen name="stats/select" />
-                      <Stack.Screen name="stats/[id]" />
                     </Stack.Protected>
                   </Stack>
                 </BottomSheetModalProvider>

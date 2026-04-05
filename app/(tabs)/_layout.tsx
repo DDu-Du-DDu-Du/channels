@@ -26,7 +26,7 @@ export default function TabsLayout() {
 
   return (
     <Tabs
-      initialRouteName="index"
+      initialRouteName="landing"
       screenOptions={{
         headerShown: true,
         header: () => <MainHeader />,
@@ -35,7 +35,59 @@ export default function TabsLayout() {
       tabBar={() => <MainTabBar sortedActiveMenuKeys={sortedActiveMenuKeys} />}
     >
       <Tabs.Screen
-        name="index"
+        name="landing"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="announcement/index"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="announcement/[id]"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="todo"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="goal/index"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="goal/create"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="goal/editor"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="notification/index"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="settings/index"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="settings/display"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="settings/menu-activation"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="settings/app-connection"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="stats/select"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="stats/[id]"
         options={{ href: null }}
       />
 
