@@ -11,7 +11,6 @@ import { useAuthStore, useSettingsStore } from "@/stores";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { initializeKakaoSDK } from "@react-native-kakao/core";
 
-import Constants from "expo-constants";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 
@@ -72,10 +71,10 @@ export default function RootLayout() {
   const isDarkMode = useSettingsStore((state) => state.display.isDarkMode);
 
   useEffect(() => {
-    initializeKakaoSDK(Constants.expoConfig?.extra?.env.kakaoNativeKey, {
+    initializeKakaoSDK(process.env.EXPO_PUBLIC_KAKAO_NATIVE_KEY ?? "", {
       web: {
-        javascriptKey: Constants.expoConfig?.extra?.env.kakaoJSKey,
-        restApiKey: Constants.expoConfig?.extra?.env.kakaoRestKey,
+        javascriptKey: process.env.EXPO_PUBLIC_KAKAO_JS_KEY ?? "",
+        restApiKey: process.env.EXPO_PUBLIC_KAKAO_REST_KEY ?? "",
       },
     }).catch((err) => console.error("Kakao initialization failed:", err));
 

@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView, View } from "react-native";
-import { Calendar } from "react-native-calendars";
 
 import BottomSheet from "@/components/bottom-sheet/bottom-sheet";
+import CustomCalendar from "@/components/calendar/custom-calendar/custom-calendar";
 import FormHeader from "@/components/form-header/form-header";
 import SpoqaText from "@/components/spoqa-text/spoqa-text";
 import TimePicker from "@/components/time-picker/time-picker";
@@ -161,7 +161,8 @@ function ReminderTimeSheet({
                 </View>
                 {isCalendarOpen && (
                   <View>
-                    <Calendar
+                    <CustomCalendar
+                      current={selectedDate || undefined}
                       markedDates={markedDates}
                       onDayPress={(day) => {
                         setSelectedDate(day.dateString);
