@@ -11,11 +11,12 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { BottomSingleCalendar, WeekCalendar } from "@/components";
+import { WeekCalendar, YearMonthPickerSheet } from "@/components";
+import type { YearMonthValue } from "@/components/year-month-picker/year-month-picker";
 import { useCalendarFirstDay } from "@/hooks";
 import { useSettingsStore } from "@/stores";
 import type { MonthlyWeeklyTodoType } from "@/types/response/feed/feed";
-import { formatDateToYYYYMMDD, getCalendarTheme } from "@/utils";
+import { getCalendarTheme } from "@/utils";
 
 import { FeedCalendarDayContent, FeedCalendarHeader } from "./components";
 import { useFeedCalendarNavigation, useGoalsTodoMutation } from "./hooks";
@@ -51,8 +52,7 @@ function FeedCalendar({
   const [monthHeight, setMonthHeight] = useState(0);
   const [weekHeight, setWeekHeight] = useState(0);
   const lastHandledMonthRef = useRef("");
-  const [isMonthPickerOpen, setIsMonthPickerOpen] = useState(false);
-  const [monthPickerSelectedDate, setMonthPickerSelectedDate] = useState<Date>();
+  const [isYearMonthSheetOpen, setIsYearMonthSheetOpen] = useState(false);
   const internalOpenProgress = useSharedValue(1);
   const openProgress = externalOpenProgress ?? internalOpenProgress;
   const { handleMonthChange } = useGoalsTodoMutation();
@@ -91,14 +91,30 @@ function FeedCalendar({
     onCalendarToggled?.(isOpen);
   }, [isOpen, onCalendarToggled]);
 
-  const handleOpenMonthPicker = () => {
-    setMonthPickerSelectedDate(new Date(`${visibleDate}T00:00:00.000Z`));
-    setIsMonthPickerOpen(true);
+  const handleOpenYearMonthSheet = () => {
+    setYearMonthDraft(yearMonthValue);
+    setIsYearMonthSheetOpen(true);
   };
 
-  const handleCloseMonthPicker = () => {
-    setIsMonthPickerOpen(false);
+  const handleCloseYearMonthSheet = () => {
+    setIsYearMonthSheetOpen(false);
   };
+
+  const handleConfirmYearMonthSheet = () => {
+    const { year, month } = yearMonthDraft;
+    const nextDate = `${year}-${String(month).padStart(2, "0")}-01`;
+    handleSelectCalendarDate(nextDate);
+    setIsYearMonthSheetOpen(false);
+  };
+
+  const yearMonthValue = useMemo(() => {
+    const [yearStr, monthStr] = visibleDate.split("-");
+    return {
+      year: Number(yearStr) || new Date().getFullYear(),
+      month: Number(monthStr) || new Date().getMonth() + 1,
+    };
+  }, [visibleDate]);
+  const [yearMonthDraft, setYearMonthDraft] = useState<YearMonthValue>(yearMonthValue);
 
   useEffect(() => {
     if (externalOpenProgress) {
@@ -213,7 +229,7 @@ function FeedCalendar({
   );
 
   return (
-    <View className="items-center py-2 w-full">
+    <View className="items-center w-full">
       <View
         className={calendarContainerClassName}
         onLayout={(event) => {
@@ -223,7 +239,7 @@ function FeedCalendar({
         <View>
           <FeedCalendarHeader
             displayMonth={handleDisplayMonth}
-            onPressMonthPicker={handleOpenMonthPicker}
+            onPressMonthPicker={handleOpenYearMonthSheet}
           />
 
           <Animated.View style={calendarAnimatedStyle}>
@@ -247,7 +263,7 @@ function FeedCalendar({
             >
               <Calendar
                 key={monthCalendarKey}
-                initialDate={visibleDate}
+                current={visibleDate}
                 firstDay={firstDay}
                 hideExtraDays={false}
                 hideArrows
@@ -308,21 +324,18 @@ function FeedCalendar({
         </View>
       </View>
 
-      {isMonthPickerOpen && (
-        <BottomSingleCalendar
-          currentDate={visibleDate}
-          selectedDate={monthPickerSelectedDate}
-          setSelected={setMonthPickerSelectedDate}
-          onChangeTodoDate={(selectedDate) => {
-            handleSelectCalendarDate(formatDateToYYYYMMDD(selectedDate));
-            handleCloseMonthPicker();
-          }}
-          handleCalendarSheetToggleOff={handleCloseMonthPicker}
-          hideExtraDays={false}
-          showSixWeeks={true}
-          confirmButtonLabel="이동하기"
-        />
-      )}
+      <YearMonthPickerSheet
+        open={isYearMonthSheetOpen}
+        isRangeEnabled={false}
+        singleValue={yearMonthDraft}
+        fromValue={yearMonthDraft}
+        toValue={yearMonthDraft}
+        onChangeSingle={setYearMonthDraft}
+        onChangeFrom={setYearMonthDraft}
+        onChangeTo={setYearMonthDraft}
+        onConfirm={handleConfirmYearMonthSheet}
+        onClose={handleCloseYearMonthSheet}
+      />
     </View>
   );
 }

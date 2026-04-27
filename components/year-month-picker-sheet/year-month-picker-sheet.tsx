@@ -17,6 +17,7 @@ interface YearMonthPickerSheetProps {
   onChangeSingle: (next: YearMonthValue) => void;
   onChangeFrom: (next: YearMonthValue) => void;
   onChangeTo: (next: YearMonthValue) => void;
+  onConfirm?: () => void;
   onClose: () => void;
 }
 
@@ -31,6 +32,7 @@ function YearMonthPickerSheet({
   onChangeSingle,
   onChangeFrom,
   onChangeTo,
+  onConfirm,
   onClose,
 }: YearMonthPickerSheetProps) {
   const { ref, openSheet, closeSheet } = useBottomSheetAction();
@@ -54,6 +56,7 @@ function YearMonthPickerSheet({
   }, [fromValue, isRangeEnabled, toValue]);
 
   const handlePressConfirm = () => {
+    onConfirm?.();
     closeSheet();
     onClose();
   };

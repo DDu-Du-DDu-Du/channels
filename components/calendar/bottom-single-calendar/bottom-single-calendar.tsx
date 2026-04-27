@@ -1,15 +1,14 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { Pressable, View } from "react-native";
-import { Calendar, DateData } from "react-native-calendars";
+import { DateData } from "react-native-calendars";
 
 import BottomSheet from "@/components/bottom-sheet/bottom-sheet";
+import CustomCalendar from "@/components/calendar/custom-calendar/custom-calendar";
 import FormHeader from "@/components/form-header/form-header";
 import SpoqaText from "@/components/spoqa-text/spoqa-text";
-import { useBottomSheetAction, useCalendarFirstDay } from "@/hooks";
+import { useBottomSheetAction } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
-import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
-import { useSettingsStore } from "@/stores";
-import { formatDateToYYYYMMDD, getCalendarTheme } from "@/utils";
+import { formatDateToYYYYMMDD } from "@/utils";
 
 export interface BottomSingleCalendarProps {
   currentDate: string;
@@ -41,24 +40,7 @@ function BottomSingleCalendar({
   confirmButtonLabel,
 }: BottomSingleCalendarProps) {
   const { ref, openSheet, closeSheet } = useBottomSheetAction();
-  const firstDay = useCalendarFirstDay();
-  const isDarkMode = useSettingsStore((state) => state.display.isDarkMode);
   const backIconStroke = useThemeColorToken("ui.icon.default");
-  const arrowBg = useThemeColorToken("ui.arrow.bg");
-  const arrowIconFill = useThemeColorToken("ui.arrow.icon");
-  const calendarTheme = useMemo(
-    () =>
-      getCalendarTheme({
-        themeName: "wireframe",
-        mode: isDarkMode ? "dark" : "light",
-        firstDay,
-      }),
-    [firstDay, isDarkMode],
-  );
-  const calendarKey = useMemo(
-    () => `bottom-single-${firstDay}-${isDarkMode ? "dark" : "light"}`,
-    [firstDay, isDarkMode],
-  );
 
   useEffect(() => {
     openSheet();
@@ -105,44 +87,14 @@ function BottomSingleCalendar({
         />
       ) : null}
       <View className="w-full px-[2.4rem] pb-[1.5rem]">
-        <Calendar
-          key={calendarKey}
+        <CustomCalendar
           current={selectedString || currentDate}
           markedDates={markedDates}
           onDayPress={handleDayPress}
           minDate={minDate}
           maxDate={maxDate}
-          monthFormat="yyyy년 MM월"
-          renderArrow={(direction) =>
-            direction === "left" ? (
-              <View
-                className="h-[2.8rem] w-[2.8rem] items-center justify-center rounded-full"
-                style={{ backgroundColor: arrowBg }}
-              >
-                <ChevronLeftIcon
-                  size={14}
-                  fill={arrowIconFill}
-                />
-              </View>
-            ) : (
-              <View
-                className="h-[2.8rem] w-[2.8rem] items-center justify-center rounded-full"
-                style={{ backgroundColor: arrowBg }}
-              >
-                <ChevronRightIcon
-                  size={14}
-                  fill={arrowIconFill}
-                />
-              </View>
-            )
-          }
-          renderHeader={(date) => (
-            <SpoqaText className="text-size15 text-role-text-primary dark:text-role-dark-text-primary">{`${date.getFullYear()}년 ${date.getMonth() + 1}월`}</SpoqaText>
-          )}
           hideExtraDays={hideExtraDays}
           showSixWeeks={showSixWeeks}
-          theme={calendarTheme}
-          firstDay={firstDay}
         />
       </View>
       <View className="px-[2.4rem]">
