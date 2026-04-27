@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { ScrollView, View } from "react-native";
 
 import { ConfirmModal } from "@/components";
+import { handleIsDesignTokenLabEnabled } from "@/constants";
 import { useToggle } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { logout } from "@/service/auth/auth";
@@ -15,9 +16,10 @@ import { SettingsLoginContainer } from "../settings-login-container";
 import { SettingsRow } from "../settings-row";
 
 import Constants from "expo-constants";
-import { useRouter } from "expo-router";
+import { Href, useRouter } from "expo-router";
 
 function SettingsScreen() {
+  const isDesignTokenLabEnabled = handleIsDesignTokenLabEnabled();
   const router = useRouter();
   const queryClient = useQueryClient();
   const dangerTextColor = useThemeColorToken("role.status.error");
@@ -42,6 +44,10 @@ function SettingsScreen() {
 
   const handlePressAppConnection = () => {
     router.push("/settings/app-connection");
+  };
+
+  const handlePressDesignSystem = () => {
+    router.push("/settings/design-system" as Href);
   };
 
   const handlePressBugReport = () => {
@@ -95,6 +101,12 @@ function SettingsScreen() {
           label="앱 연결"
           onPress={handlePressAppConnection}
         />
+        {isDesignTokenLabEnabled ? (
+          <SettingsRow
+            label="디자인 시스템"
+            onPress={handlePressDesignSystem}
+          />
+        ) : null}
         <SettingsRow
           label="버그 리포트"
           onPress={handlePressBugReport}

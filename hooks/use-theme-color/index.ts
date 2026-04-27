@@ -1,4 +1,5 @@
 export {
+  DesignTokenPreviewProvider,
   getThemeColor,
   getThemeColorToken,
   useThemeColor,

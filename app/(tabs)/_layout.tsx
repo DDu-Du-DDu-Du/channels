@@ -1,11 +1,15 @@
 import { useEffect } from "react";
 
 import { MainTabBar } from "@/components";
+import { handleIsDesignTokenLabEnabled } from "@/constants";
 import { useMenuActivationTabRouting } from "@/hooks";
 
+import Constants from "expo-constants";
 import { Tabs, usePathname, useRouter } from "expo-router";
 
 export default function TabsLayout() {
+  const isDesignTokenLabEnabled = handleIsDesignTokenLabEnabled();
+  console.log("app variant?", Constants.expoConfig?.extra?.appVariant, isDesignTokenLabEnabled);
   const router = useRouter();
   const pathname = usePathname();
   const { menuActivation, sortedActiveMenuKeys, handleGetRedirectHref } =
@@ -81,6 +85,12 @@ export default function TabsLayout() {
         name="settings/app-connection"
         options={{ href: null }}
       />
+      <Tabs.Protected guard={isDesignTokenLabEnabled}>
+        <Tabs.Screen
+          name="settings/design-system"
+          options={{ href: null }}
+        />
+      </Tabs.Protected>
       <Tabs.Screen
         name="stats/select"
         options={{ href: null }}

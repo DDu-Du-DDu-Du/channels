@@ -348,8 +348,141 @@ export type ThemeColorMap = {
 };
 
 export type ThemeColorTokenKey = DotNestedKeys<ThemeColorMap>;
+export type DesignSystemTokenKey = Extract<ThemeColorTokenKey, `role.${string}` | `ui.${string}`>;
+export type ThemeColorTokenOverrideMap = Partial<Record<ThemeColorTokenKey, string>>;
+
+export interface ThemeDesignTokenEntry {
+  key: DesignSystemTokenKey;
+  value: string;
+  scope: "role" | "ui";
+}
 
 const themeColorMapCache = new Map<string, ThemeColorMap>();
+
+const resolveTokenValueByPath = (colorMap: ThemeColorMap, key: ThemeColorTokenKey): string => {
+  const value = key.split(".").reduce<unknown>((current, segment) => {
+    if (!current || typeof current !== "object") {
+      return undefined;
+    }
+
+    return (current as Record<string, unknown>)[segment];
+  }, colorMap);
+
+  if (typeof value !== "string") {
+    throw new Error(`[theme] invalid token key: ${key}`);
+  }
+
+  return value;
+};
+
+const setTokenValueByPath = (
+  tree: Record<string, unknown>,
+  pathWithoutRoot: string,
+  value: string,
+): boolean => {
+  const segments = pathWithoutRoot.split(".");
+  const last = segments.at(-1);
+
+  if (!last) {
+    return false;
+  }
+
+  let current: Record<string, unknown> = tree;
+
+  for (let index = 0; index < segments.length - 1; index += 1) {
+    const segment = segments[index];
+    const next = current[segment];
+
+    if (!next || typeof next !== "object") {
+      return false;
+    }
+
+    current = next as Record<string, unknown>;
+  }
+
+  if (!(last in current)) {
+    return false;
+  }
+
+  current[last] = value;
+
+  return true;
+};
+
+const cloneRolePalette = (role: RolePalette): RolePalette => {
+  return {
+    surface: { ...role.surface },
+    text: { ...role.text },
+    border: { ...role.border },
+    icon: { ...role.icon },
+    status: { ...role.status },
+  };
+};
+
+const applyThemeOverrides = (
+  colorMap: ThemeColorMap,
+  overrides: ThemeColorTokenOverrideMap | undefined,
+): ThemeColorMap => {
+  if (!overrides || Object.keys(overrides).length === 0) {
+    return colorMap;
+  }
+
+  const role = cloneRolePalette(colorMap.role);
+
+  Object.entries(overrides).forEach(([key, value]) => {
+    if (typeof value !== "string" || !key.startsWith("role.")) {
+      return;
+    }
+
+    setTokenValueByPath(role as unknown as Record<string, unknown>, key.slice(5), value);
+  });
+
+  const ui = resolveAliasTree(role, UI_ALIAS_ROLE_PATHS) as ThemeColorMap["ui"];
+
+  Object.entries(overrides).forEach(([key, value]) => {
+    if (typeof value !== "string" || !key.startsWith("ui.")) {
+      return;
+    }
+
+    setTokenValueByPath(ui as unknown as Record<string, unknown>, key.slice(3), value);
+  });
+
+  return {
+    ...colorMap,
+    role,
+    ui,
+    domain: resolveAliasTree(role, DOMAIN_ALIAS_ROLE_PATHS) as ThemeColorMap["domain"],
+  };
+};
+
+const flattenStringTokens = (value: unknown, prefix: string): ThemeDesignTokenEntry[] => {
+  if (!value || typeof value !== "object") {
+    return [];
+  }
+
+  const entries: ThemeDesignTokenEntry[] = [];
+
+  Object.entries(value as Record<string, unknown>).forEach(([key, child]) => {
+    const path = `${prefix}.${key}`;
+
+    if (typeof child === "string") {
+      if (path.startsWith("role.") || path.startsWith("ui.")) {
+        const scope = path.startsWith("role.") ? "role" : "ui";
+        entries.push({
+          key: path as DesignSystemTokenKey,
+          value: child,
+          scope,
+        });
+      }
+
+      return;
+    }
+
+    entries.push(...flattenStringTokens(child, path));
+  });
+
+  return entries;
+};
 
 export const getThemeColorMap = (context?: Partial<ThemeTokenContext>): ThemeColorMap => {
   const themeName = context?.themeName ?? "wireframe";
@@ -379,29 +512,33 @@ export const getThemeColorMap = (context?: Partial<ThemeTokenContext>): ThemeCol
   return colorMap;
 };
 
-const resolveTokenValueByPath = (colorMap: ThemeColorMap, key: ThemeColorTokenKey): string => {
-  const value = key.split(".").reduce<unknown>((current, segment) => {
-    if (!current || typeof current !== "object") {
-      return undefined;
-    }
-
-    return (current as Record<string, unknown>)[segment];
-  }, colorMap);
-
-  if (typeof value !== "string") {
-    throw new Error(`[theme] invalid token key: ${key}`);
-  }
-
-  return value;
+export const getThemeColorMapWithOverrides = (
+  context?: Partial<ThemeTokenContext>,
+  overrides?: ThemeColorTokenOverrideMap,
+): ThemeColorMap => {
+  return applyThemeOverrides(getThemeColorMap(context), overrides);
 };
 
 export const getThemeColorToken = (
   key: ThemeColorTokenKey,
   context?: Partial<ThemeTokenContext>,
+  overrides?: ThemeColorTokenOverrideMap,
 ): string => {
-  const colorMap = getThemeColorMap(context);
+  const colorMap = getThemeColorMapWithOverrides(context, overrides);
 
   return resolveTokenValueByPath(colorMap, key);
+};
+
+export const getThemeDesignTokenEntries = (
+  context?: Partial<ThemeTokenContext>,
+  overrides?: ThemeColorTokenOverrideMap,
+): ThemeDesignTokenEntry[] => {
+  const colorMap = getThemeColorMapWithOverrides(context, overrides);
+
+  return [
+    ...flattenStringTokens(colorMap.role, "role"),
+    ...flattenStringTokens(colorMap.ui, "ui"),
+  ].sort((a, b) => a.key.localeCompare(b.key));
 };
 
 export const createTailwindColorTokens = (context?: Partial<ThemeTokenContext>): ThemeColorMap => {

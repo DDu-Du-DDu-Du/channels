@@ -1,5 +1,6 @@
-import { useMemo } from "react";
+import { type ReactNode, createContext, createElement, useContext, useMemo } from "react";
 
+import { handleIsDesignTokenLabEnabled } from "@/constants/app-variant";
 import {
   type ThemeColorMap,
   type ThemeColorTokenKey,
@@ -7,11 +8,24 @@ import {
   type ThemeName,
   type ThemeTokenContext,
   getThemeColorMap,
+  getThemeColorMapWithOverrides,
   getThemeColorToken as resolveThemeColorToken,
 } from "@/constants/theme";
-import { useSettingsStore } from "@/stores";
+import { useDesignTokenStore, useSettingsStore } from "@/stores";
 
 type ThemeContextInput = Partial<ThemeTokenContext>;
+
+const DesignTokenPreviewContext = createContext<ThemeColorMap | null>(null);
+
+export const DesignTokenPreviewProvider = ({
+  children,
+  colorMap,
+}: {
+  children: ReactNode;
+  colorMap: ThemeColorMap;
+}) => {
+  return createElement(DesignTokenPreviewContext.Provider, { value: colorMap }, children);
+};
 
 const resolveContext = (
   context: ThemeContextInput | undefined,
@@ -23,16 +37,39 @@ const resolveContext = (
   };
 };
 
+const resolveThemeColorMap = (
+  context: Pick<ThemeTokenContext, "themeName" | "mode">,
+  overridesByTheme: ReturnType<typeof useDesignTokenStore.getState>["overridesByTheme"],
+): ThemeColorMap => {
+  if (!handleIsDesignTokenLabEnabled()) {
+    return getThemeColorMap(context);
+  }
+
+  const overrides = overridesByTheme[context.themeName]?.[context.mode];
+
+  if (!overrides || Object.keys(overrides).length === 0) {
+    return getThemeColorMap(context);
+  }
+
+  return getThemeColorMapWithOverrides(context, overrides);
+};
+
 export const useThemeColorMap = (context?: ThemeContextInput): ThemeColorMap => {
+  const previewColorMap = useContext(DesignTokenPreviewContext);
   const isDarkMode = useSettingsStore((state) => state.display.isDarkMode);
+  const overridesByTheme = useDesignTokenStore((state) => state.overridesByTheme);
   const contextThemeName = context?.themeName;
   const contextMode = context?.mode;
 
   return useMemo(() => {
+    if (previewColorMap) {
+      return previewColorMap;
+    }
+
     const resolved = resolveContext({ themeName: contextThemeName, mode: contextMode }, isDarkMode);
 
-    return getThemeColorMap(resolved);
-  }, [contextMode, contextThemeName, isDarkMode]);
+    return resolveThemeColorMap(resolved, overridesByTheme);
+  }, [contextMode, contextThemeName, isDarkMode, overridesByTheme, previewColorMap]);
 };
 
 /** @deprecated Use getThemeColorToken instead. */
@@ -49,15 +86,23 @@ export const useThemeColorToken = (
   key: ThemeColorTokenKey,
   context?: ThemeContextInput,
 ): string => {
-  const isDarkMode = useSettingsStore((state) => state.display.isDarkMode);
-  const contextThemeName = context?.themeName;
-  const contextMode = context?.mode;
+  const colorMap = useThemeColorMap(context);
 
   return useMemo(() => {
-    const resolved = resolveContext({ themeName: contextThemeName, mode: contextMode }, isDarkMode);
+    const value = key.split(".").reduce<unknown>((current, segment) => {
+      if (!current || typeof current !== "object") {
+        return undefined;
+      }
 
-    return resolveThemeColorToken(key, resolved);
-  }, [contextMode, contextThemeName, isDarkMode, key]);
+      return (current as Record<string, unknown>)[segment];
+    }, colorMap);
+
+    if (typeof value !== "string") {
+      throw new Error(`[theme] invalid token key: ${key}`);
+    }
+
+    return value;
+  }, [colorMap, key]);
 };
 
 export const useThemeColorTokenGetter = (context?: ThemeContextInput) => {

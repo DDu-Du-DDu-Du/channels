@@ -9,5 +9,10 @@ export { default as getRelativeTime } from "./get-relative-time/get-relative-tim
 export { default as getWeekendHeaderTheme } from "./get-weekend-header-theme/get-weekend-header-theme";
 export { default as hexConvertForRGBA } from "./hex-convert-for-rgba/hex-convert-for-rgba";
 export { default as handleInvalidateTodoLinkedQueries } from "./invalidate-todo-linked-queries/invalidate-todo-linked-queries";
+export {
+  handleCreateDesignSystemSnapshotFileName,
+  handleSaveDesignSystemSnapshot,
+  type SaveDesignSystemSnapshotResult,
+} from "./design-system";
 export { default as parseUtc } from "./parse-utc/parse-utc";
 export { default as remToPx } from "./rem-to-px/rem-to-px";
