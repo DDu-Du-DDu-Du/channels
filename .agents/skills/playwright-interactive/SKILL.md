@@ -633,10 +633,20 @@ Augment the numeric check with `getBoundingClientRect()` checks for the required
 
 For local web debugging, keep the app running in a persistent TTY session. Do not rely on one-shot background commands from a short-lived shell.
 
-Use the project's normal start command, for example:
+Use the project's normal start command to refresh Metro cache and serve dist, for example:
+
+for local api server if http://localhost:8080 is alive,
 
 ```bash
+bun start:web
 bun serve
+```
+
+for dev api server if http://localhost:8080 is not alive,
+
+```bash
+bun start:web:dev
+bun serve:dev
 ```
 
 Before `page.goto(...)`, verify the chosen port is listening and the app responds.
