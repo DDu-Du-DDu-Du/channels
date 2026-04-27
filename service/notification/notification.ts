@@ -40,11 +40,22 @@ export const getNotificationInbox = async ({
 };
 
 export const getNotificationInboxStatus = async (): Promise<NotificationInboxStatusType> => {
-  const inbox = await getNotificationInbox({ size: 20 });
+  const response = await fetchApi(
+    `${NOTIFICATION.STATUS}`,
+    {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+      },
+    },
+    true,
+  );
 
-  return {
-    hasNew: inbox.contents.some((item) => !item.isRead),
-  };
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return response.json();
 };
 
 interface PatchNotificationReadProps {
