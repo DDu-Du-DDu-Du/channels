@@ -42,11 +42,7 @@ export default function TabsLayout() {
         options={{ href: null }}
       />
       <Tabs.Screen
-        name="announcement/index"
-        options={{ href: null }}
-      />
-      <Tabs.Screen
-        name="announcement/[id]"
+        name="announcement"
         options={{ href: null }}
       />
       <Tabs.Screen
@@ -54,49 +50,15 @@ export default function TabsLayout() {
         options={{ href: null }}
       />
       <Tabs.Screen
-        name="goal/index"
+        name="goal"
         options={{ href: null }}
       />
       <Tabs.Screen
-        name="goal/create"
+        name="notification"
         options={{ href: null }}
       />
       <Tabs.Screen
-        name="goal/editor"
-        options={{ href: null }}
-      />
-      <Tabs.Screen
-        name="notification/index"
-        options={{ href: null }}
-      />
-      <Tabs.Screen
-        name="settings/index"
-        options={{ href: null }}
-      />
-      <Tabs.Screen
-        name="settings/display"
-        options={{ href: null }}
-      />
-      <Tabs.Screen
-        name="settings/menu-activation"
-        options={{ href: null }}
-      />
-      <Tabs.Screen
-        name="settings/app-connection"
-        options={{ href: null }}
-      />
-      <Tabs.Protected guard={isDesignTokenLabEnabled}>
-        <Tabs.Screen
-          name="settings/design-system"
-          options={{ href: null }}
-        />
-      </Tabs.Protected>
-      <Tabs.Screen
-        name="stats/select"
-        options={{ href: null }}
-      />
-      <Tabs.Screen
-        name="stats/[id]"
+        name="settings"
         options={{ href: null }}
       />
 
@@ -136,7 +98,7 @@ export default function TabsLayout() {
             guard={menuActivation.stats.isActivated}
           >
             <Tabs.Screen
-              name="stats/index"
+              name="stats"
               options={{ title: "Stats" }}
             />
           </Tabs.Protected>

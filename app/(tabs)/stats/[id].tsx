@@ -7,13 +7,23 @@ import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { EditIcon } from "@/icons";
 import { useAuthStore } from "@/stores";
 
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, usePathname, useRouter } from "expo-router";
+
+const getStringParam = (param?: string | string[]) => {
+  if (Array.isArray(param)) {
+    return param[0];
+  }
+
+  return param;
+};
 
 export default function Id() {
   const router = useRouter();
+  const pathname = usePathname();
   const isGuestSession = useAuthStore((state) => state.sessionType === "guest");
-  const params = useLocalSearchParams<{ id?: string | string[] }>();
-  const goalId = Number(Array.isArray(params.id) ? params.id[0] : (params.id ?? 0));
+  const params = useLocalSearchParams<{ id?: string | string[]; yearMonth?: string | string[] }>();
+  const yearMonth = getStringParam(params.yearMonth);
+  const goalId = Number(getStringParam(params.id) ?? 0);
   const [goalName, setGoalName] = useState("Goal");
   const iconFill = useThemeColorToken("ui.icon.default");
 
@@ -24,7 +34,10 @@ export default function Id() {
 
     router.push({
       pathname: "/goal/editor",
-      params: { goalId },
+      params: {
+        goalId,
+        backHref: yearMonth ? `${pathname}?yearMonth=${encodeURIComponent(yearMonth)}` : pathname,
+      },
     });
   };
 
@@ -33,7 +46,6 @@ export default function Id() {
       <PageHeader
         title={goalName}
         rightContent={<HeaderRightActions />}
-        className="px-[2.4rem] pb-[1.6rem] pt-[2rem]"
       />
       <View className="items-end px-[2.4rem] py-[0.8rem]">
         <Pressable
