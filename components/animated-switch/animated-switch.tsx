@@ -69,16 +69,22 @@ function AnimatedSwitch({
   const resolvedTrackPadding = trackPadding ?? sizePreset.trackPadding;
   const resolvedThumbSize = thumbSize ?? sizePreset.thumbSize;
 
-  const progress = useSharedValue(value ? 1 : 0);
-
   const travelDistance = useMemo(
     () => resolvedTrackWidth - resolvedTrackPadding * 2 - resolvedThumbSize,
     [resolvedThumbSize, resolvedTrackPadding, resolvedTrackWidth],
   );
 
+  const progress = useSharedValue(value ? 1 : 0);
+  const thumbTranslateX = useSharedValue(value ? travelDistance : 0);
+  const offIconOpacity = useSharedValue(value ? 0 : 1);
+  const onIconOpacity = useSharedValue(value ? 1 : 0);
+
   useEffect(() => {
     progress.value = withTiming(value ? 1 : 0, { duration: 100 });
-  }, [progress, value]);
+    thumbTranslateX.value = withTiming(value ? travelDistance : 0, { duration: 150 });
+    offIconOpacity.value = withTiming(value ? 0 : 1, { duration: 120 });
+    onIconOpacity.value = withTiming(value ? 1 : 0, { duration: 120 });
+  }, [offIconOpacity, onIconOpacity, progress, thumbTranslateX, travelDistance, value]);
 
   const trackStyle = useAnimatedStyle(() => ({
     backgroundColor: interpolateColor(progress.value, [0, 1], [offBackground, onBackground]),
@@ -88,15 +94,15 @@ function AnimatedSwitch({
     backgroundColor: thumbColor
       ? thumbColor
       : interpolateColor(progress.value, [0, 1], [offThumb, onThumb]),
-    transform: [{ translateX: withTiming(progress.value * travelDistance, { duration: 150 }) }],
+    transform: [{ translateX: thumbTranslateX.value }],
   }));
 
   const offIconStyle = useAnimatedStyle(() => ({
-    opacity: withTiming(1 - progress.value, { duration: 120 }),
+    opacity: offIconOpacity.value,
   }));
 
   const onIconStyle = useAnimatedStyle(() => ({
-    opacity: withTiming(progress.value, { duration: 120 }),
+    opacity: onIconOpacity.value,
   }));
 
   const handlePress = () => {
