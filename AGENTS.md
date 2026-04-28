@@ -4,7 +4,6 @@
 - Routing is done by Expo-Router.
 - MS Edge is the primary browser for QA.
 - Mobile Native App and Mobile Web App are the primary objective platforms.
-- For starting Expo Web server on Windows, `bun serve`, equivalent to `bun expo export --platform web && bun expo serve`, to start the static server.
 
 ## Team routing rules
 
@@ -105,3 +104,13 @@ function useComponentState() {
 
 - React Native Text Input cannot be used directly as it has a problem with Korean.
 - `components/text-input/text-input.tsx` should be used for TextInput whenever if necessary.
+
+## Debugging or QA for Expo Web
+
+- To debug or QA with actual brower, first check if the local server(http://localhost:8080) is alive.
+- if local server is alive, run `bun start:web`. if not, run `bun start:web:dev` to refresh Metro cache.
+- After refreshing Metro cache, run static resources by the script `bun serve`(local server alive) or `bun serve:dev` for faster QA.
+- URL is `http://localhost:8081`.
+- choose "게스트 로그인" to avoid actual login for UI/UX QA.
+- When new implementation or code change is applied, serve again to start the latest web app.
+- preferred browser is MS Edge.
