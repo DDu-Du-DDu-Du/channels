@@ -4,18 +4,27 @@ import { useNotificationInboxStatusQuery } from "@/features/notification/queries
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { NotificationIcon, SettingsIcon } from "@/icons";
 
-import { Href, useRouter } from "expo-router";
+import { Href, usePathname, useRouter } from "expo-router";
 
 function HeaderRightActions() {
   const router = useRouter();
+  const pathname = usePathname();
   const iconStroke = useThemeColorToken("ui.icon.default");
   const { data: notificationStatus } = useNotificationInboxStatusQuery();
 
   const handlePressNotification = () => {
+    if (pathname.startsWith("/notification")) {
+      return;
+    }
+
     router.push("/notification" as Href);
   };
 
   const handlePressSettings = () => {
+    if (pathname.startsWith("/settings")) {
+      return;
+    }
+
     router.push("/settings" as Href);
   };
 
