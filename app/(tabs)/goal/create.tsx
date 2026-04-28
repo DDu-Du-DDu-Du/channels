@@ -8,8 +8,7 @@ function Create() {
     <View className="flex-1 bg-role-surface-panel dark:bg-role-dark-surface-panel">
       <PageHeader
         title="목표등록"
-        titleClassName="text-size15 text-role-text-inverse dark:text-role-dark-text-inverse"
-        className="px-[2.4rem] pb-[1.6rem] pt-[2rem]"
+        titleClassName="text-role-text-inverse dark:text-role-dark-text-inverse"
         rightContent={<HeaderRightActions />}
       />
       <GoalEditorForm submitLabel="목표 등록" />

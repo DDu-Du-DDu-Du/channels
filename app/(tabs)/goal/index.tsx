@@ -21,7 +21,6 @@ function Goal() {
         title="Goals"
         onPressBack={() => router.push("/feed")}
         rightContent={<HeaderRightActions />}
-        className="px-[2.4rem] pb-[1.6rem] pt-[2rem]"
       />
       <View className="items-end px-[2.4rem] py-[0.8rem]">
         <Pressable

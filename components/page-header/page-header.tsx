@@ -6,6 +6,10 @@ import { usePageHeaderBackRoute } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { ArrowLeftIcon } from "@/icons";
 
+const DEFAULT_CLASS_NAME = "px-[2.4rem] py-[2rem]";
+const DEFAULT_TITLE_CLASS_NAME =
+  "text-size15 text-role-text-primary dark:text-role-dark-text-primary";
+
 export interface PageHeaderProps {
   title: string;
   onPressBack?: () => void;
@@ -17,42 +21,44 @@ export interface PageHeaderProps {
 }
 
 function PageHeader({
-  title,
+  title = " ",
   onPressBack,
   showBackButton = true,
-  titleClassName = "text-size15 text-role-text-primary dark:text-role-dark-text-primary",
-  className = "px-[2.4rem] pb-[1.6rem] pt-[2.4rem]",
+  titleClassName,
+  className,
   iconStroke,
   rightContent,
 }: PageHeaderProps) {
   const { handlePressBack } = usePageHeaderBackRoute();
   const defaultIconStroke = useThemeColorToken("ui.icon.default");
   const resolvedIconStroke = iconStroke ?? defaultIconStroke;
+  const resolvedClassName = `${DEFAULT_CLASS_NAME} ${className ?? ""}`;
+  const resolvedTitleClassName = `${DEFAULT_TITLE_CLASS_NAME} ${titleClassName ?? ""}`;
 
   return (
-    <View className={className}>
-      <View className="relative items-center justify-center">
-        {showBackButton ? (
-          <Pressable
-            onPress={onPressBack ?? handlePressBack}
-            className="absolute left-0 top-0 size-[2.4rem] items-start justify-center"
-            hitSlop={8}
-          >
-            <ArrowLeftIcon
-              size={16}
-              stroke={resolvedIconStroke}
-            />
-          </Pressable>
-        ) : null}
-
+    <View className={resolvedClassName}>
+      <View className="items-center justify-center">
         <SpoqaText
           weight="bold"
-          className={titleClassName}
+          className={resolvedTitleClassName}
         >
           {title}
         </SpoqaText>
-
-        {rightContent ? <View className="absolute right-0 top-0">{rightContent}</View> : null}
+        <View className="w-full flex-row-reverse justify-between absolute">
+          {rightContent}
+          {showBackButton ? (
+            <Pressable
+              onPress={onPressBack ?? handlePressBack}
+              className="size-[2.4rem] items-start justify-center"
+              hitSlop={8}
+            >
+              <ArrowLeftIcon
+                size={16}
+                stroke={resolvedIconStroke}
+              />
+            </Pressable>
+          ) : null}
+        </View>
       </View>
     </View>
   );

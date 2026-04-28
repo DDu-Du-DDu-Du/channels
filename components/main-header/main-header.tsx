@@ -11,7 +11,6 @@ function MainHeader() {
       <PageHeader
         title=""
         showBackButton={false}
-        className="px-[2.4rem] pb-[1.5rem] pt-[2rem]"
         rightContent={<HeaderRightActions />}
       />
     </View>

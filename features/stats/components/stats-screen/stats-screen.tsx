@@ -13,7 +13,7 @@ function StatsScreen() {
   return (
     <ScrollView
       className="flex-1"
-      contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 36 }}
+      contentContainerStyle={{ paddingHorizontal: 24 }}
       showsVerticalScrollIndicator={false}
     >
       <StatsHeader
