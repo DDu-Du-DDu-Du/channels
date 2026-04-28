@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { ActivityIndicator, Pressable, View } from "react-native";
 
-import { ShakingCheckIcon } from "@/components";
+import ShakingCheckIcon from "@/components/shaking-check-icon/shaking-check-icon";
 import SpoqaText from "@/components/spoqa-text/spoqa-text";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { CalendarIcon, ClockIcon, DeleteIcon, PlusIcon } from "@/icons";
