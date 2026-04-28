@@ -49,6 +49,7 @@ function MainTabBar({ sortedActiveMenuKeys }: MainTabBarProps) {
   const isDarkMode = useSettingsStore((state) => state.display.isDarkMode);
   const activeColor = isDarkMode ? activeDarkColor : "rgb(0, 0, 0)";
   const inactiveColor = useThemeColorToken("ui.icon.muted");
+  const isMenuActivationFocused = pathname.startsWith("/settings/menu-activation");
 
   const tabItems: TabItem[] = sortedActiveMenuKeys.map((key) => ({
     type: "tab",
@@ -121,6 +122,13 @@ function MainTabBar({ sortedActiveMenuKeys }: MainTabBarProps) {
       <View className="flex-row items-center justify-center">
         {slotItems.map((item) => {
           if (item.type === "action") {
+            const isFocused = item.key === "menu-view" && isMenuActivationFocused;
+            const color = isFocused ? activeColor : inactiveColor;
+            const opacity = isFocused ? 1 : 0.45;
+            const textColorClassName = isFocused
+              ? ""
+              : "text-role-text-tertiary dark:text-role-dark-text-tertiary";
+
             return (
               <Pressable
                 key={item.key}
@@ -129,17 +137,24 @@ function MainTabBar({ sortedActiveMenuKeys }: MainTabBarProps) {
                 style={{ flex: 1 }}
               >
                 {item.key === "more" ? (
-                  <AddListIcon
-                    size={20}
-                    fill={inactiveColor}
-                  />
+                  <View style={{ opacity }}>
+                    <AddListIcon
+                      size={20}
+                      fill={color}
+                    />
+                  </View>
                 ) : (
-                  <MenuIcon
-                    size={20}
-                    stroke={inactiveColor}
-                  />
+                  <View style={{ opacity }}>
+                    <MenuIcon
+                      size={20}
+                      stroke={color}
+                    />
+                  </View>
                 )}
-                <SpoqaText className="mt-[0.3rem] text-size11 text-role-text-tertiary dark:text-role-dark-text-tertiary">
+                <SpoqaText
+                  className={`mt-[0.3rem] text-size11 ${textColorClassName}`}
+                  style={isFocused ? { color: activeColor } : undefined}
+                >
                   {item.label}
                 </SpoqaText>
               </Pressable>
@@ -201,11 +216,20 @@ function MainTabBar({ sortedActiveMenuKeys }: MainTabBarProps) {
             className="items-center justify-center"
             style={{ flex: 1 }}
           >
-            <MenuIcon
-              size={20}
-              stroke={inactiveColor}
-            />
-            <SpoqaText className="mt-[0.3rem] text-size11 text-role-text-tertiary dark:text-role-dark-text-tertiary">
+            <View style={{ opacity: isMenuActivationFocused ? 1 : 0.45 }}>
+              <MenuIcon
+                size={20}
+                stroke={isMenuActivationFocused ? activeColor : inactiveColor}
+              />
+            </View>
+            <SpoqaText
+              className={`mt-[0.3rem] text-size11 ${
+                isMenuActivationFocused
+                  ? ""
+                  : "text-role-text-tertiary dark:text-role-dark-text-tertiary"
+              }`}
+              style={isMenuActivationFocused ? { color: activeColor } : undefined}
+            >
               메뉴 보기
             </SpoqaText>
           </Pressable>
