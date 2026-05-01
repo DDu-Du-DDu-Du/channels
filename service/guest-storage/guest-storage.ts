@@ -939,13 +939,18 @@ export const getGuestDailyList = async ({
 }): Promise<MainDailyListType[]> => {
   const database = await handleGetGuestDatabase();
   const goalRows = await handleGetGoalListRows();
-  const todoRows = await database.getAllAsync<Pick<TodoRow, "id" | "goalId" | "name" | "status">>(
+  const todoRows = await database.getAllAsync<
+    Pick<TodoRow, "id" | "goalId" | "name" | "status" | "beginAt" | "endAt" | "postponedAt">
+  >(
     `
       SELECT
         id,
         goal_id AS goalId,
         name,
-        status
+        status,
+        begin_at AS beginAt,
+        end_at AS endAt,
+        postponed_at AS postponedAt
       FROM todos
       WHERE user_id = ? AND scheduled_on = ?
       ORDER BY id DESC
@@ -962,6 +967,9 @@ export const getGuestDailyList = async ({
       id: todoRow.id,
       name: todoRow.name,
       status: handleMapTodoStatus(todoRow.status),
+      beginAt: todoRow.beginAt,
+      endAt: todoRow.endAt,
+      isPostponed: Boolean(todoRow.postponedAt),
     });
     todosByGoalId.set(todoRow.goalId, current);
   }

@@ -10,6 +10,9 @@ export type MainTodosType = {
   id: number;
   name: string;
   status: "COMPLETE" | "UNCOMPLETED";
+  beginAt?: string | null;
+  endAt?: string | null;
+  isPostponed?: boolean;
 };
 
 export interface MainDailyListType {
