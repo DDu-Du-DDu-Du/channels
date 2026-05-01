@@ -22,7 +22,11 @@ import type {
   RetrieveReminderResponseType,
 } from "@/types/response/reminder/reminder";
 import type { DayOfWeek, RepeatTodosType } from "@/types/response/repeat-todo/repeat-todo";
-import type { TodosearchResponseType } from "@/types/response/todo/todo";
+import type {
+  TodoDashboardItemType,
+  TodoDashboardResponseType,
+  TodosearchResponseType,
+} from "@/types/response/todo/todo";
 
 import * as SQLite from "expo-sqlite";
 
@@ -1388,6 +1392,47 @@ export const searchGuestTodos = async ({
     })),
     hasNext,
     nextCursor,
+  };
+};
+
+export const getGuestTodoDashboard = async (): Promise<TodoDashboardResponseType> => {
+  const database = await handleGetGuestDatabase();
+  const rows = await database.getAllAsync<TodoDashboardItemType>(
+    `
+      SELECT
+        id,
+        name,
+        scheduled_on AS scheduledOn,
+        begin_at AS beginAt,
+        end_at AS endAt,
+        status,
+        postponed_at AS postponedAt
+      FROM todos
+      WHERE user_id = ?
+      ORDER BY scheduled_on ASC, id DESC
+    `,
+    GUEST_USER_ID,
+  );
+
+  const contentsMap = new Map<string, TodoDashboardItemType[]>();
+
+  for (const row of rows) {
+    const current = contentsMap.get(row.scheduledOn) ?? [];
+    current.push(row);
+    contentsMap.set(row.scheduledOn, current);
+  }
+
+  const contents = [...contentsMap.entries()].map(([date, todos]) => ({
+    date,
+    todos,
+  }));
+  const today = handleGetTodayDate();
+  const todayIndex = contents.findIndex((content) => content.date === today);
+
+  return {
+    isEmpty: rows.length === 0,
+    contents,
+    todayIndex,
   };
 };
 

@@ -1,8 +1,8 @@
 import { fetchApi } from "@/api";
 import { TODO } from "@/constants/end-points";
 import { isGuestSession } from "@/service/guest-storage/guest-session";
-import { searchGuestTodos } from "@/service/guest-storage/guest-storage";
-import type { TodosearchResponseType } from "@/types/response/todo/todo";
+import { getGuestTodoDashboard, searchGuestTodos } from "@/service/guest-storage/guest-storage";
+import type { TodoDashboardResponseType, TodosearchResponseType } from "@/types/response/todo/todo";
 
 interface GetTodosearchProps {
   query: string;
@@ -44,3 +44,26 @@ export const getTodosearch = async ({
 };
 
 export const getTodoSearch = getTodosearch;
+
+export const getTodoDashboard = async (): Promise<TodoDashboardResponseType> => {
+  if (isGuestSession()) {
+    return getGuestTodoDashboard();
+  }
+
+  const response = await fetchApi(
+    TODO.DASHBOARD,
+    {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+      },
+    },
+    true,
+  );
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return response.json();
+};

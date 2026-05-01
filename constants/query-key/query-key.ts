@@ -21,6 +21,7 @@ export const FEED_KEY = {
 
 export const Todo_KEY = {
   SEARCH: "TodoSearch",
+  DASHBOARD: "TodoDashboard",
 };
 
 export const QUERY_KEY = {

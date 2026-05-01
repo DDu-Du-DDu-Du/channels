@@ -5,11 +5,17 @@ interface InvalidateTodoLinkedQueriesOptions {
   todoId?: number;
   selectedTodoDate?: string;
   includeSearch?: boolean;
+  includeDashboard?: boolean;
 }
 
 const handleInvalidateTodoLinkedQueries = async (
   queryClient: QueryClient,
-  { todoId, selectedTodoDate, includeSearch = false }: InvalidateTodoLinkedQueriesOptions = {},
+  {
+    todoId,
+    selectedTodoDate,
+    includeSearch = false,
+    includeDashboard = false,
+  }: InvalidateTodoLinkedQueriesOptions = {},
 ) => {
   const invalidateTasks: Promise<unknown>[] = [
     queryClient.invalidateQueries({ queryKey: [FEED_KEY.Todo_DETAIL] }),
@@ -36,6 +42,10 @@ const handleInvalidateTodoLinkedQueries = async (
 
   if (includeSearch) {
     invalidateTasks.push(queryClient.invalidateQueries({ queryKey: [Todo_KEY.SEARCH] }));
+  }
+
+  if (includeDashboard) {
+    invalidateTasks.push(queryClient.invalidateQueries({ queryKey: [Todo_KEY.DASHBOARD] }));
   }
 
   await Promise.all(invalidateTasks);
