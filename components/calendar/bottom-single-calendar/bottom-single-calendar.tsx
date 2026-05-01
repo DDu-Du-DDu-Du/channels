@@ -23,6 +23,7 @@ export interface BottomSingleCalendarProps {
   showBackArrow?: boolean;
   onPressBack?: () => void;
   confirmButtonLabel?: string;
+  shouldConfirmSameDate?: boolean;
 }
 
 function BottomSingleCalendar({
@@ -38,6 +39,7 @@ function BottomSingleCalendar({
   showBackArrow = false,
   onPressBack,
   confirmButtonLabel,
+  shouldConfirmSameDate = false,
 }: BottomSingleCalendarProps) {
   const { ref, openSheet, closeSheet } = useBottomSheetAction();
   const backIconStroke = useThemeColorToken("ui.icon.default");
@@ -56,7 +58,15 @@ function BottomSingleCalendar({
   };
 
   const handleConfirm = () => {
-    if (!selectedDate || currentDate === formatDateToYYYYMMDD(selectedDate)) {
+    if (!selectedDate) {
+      closeSheet();
+      handleCalendarSheetToggleOff();
+      return;
+    }
+
+    const nextSelectedDate = formatDateToYYYYMMDD(selectedDate);
+
+    if (!shouldConfirmSameDate && currentDate === nextSelectedDate) {
       closeSheet();
       handleCalendarSheetToggleOff();
       return;

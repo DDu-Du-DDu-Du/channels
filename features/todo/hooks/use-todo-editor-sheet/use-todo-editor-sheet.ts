@@ -15,7 +15,7 @@ const initialState: TodoEditorSheetState = {
 const useTodoEditorSheet = () => {
   const [state, setState] = useState<TodoEditorSheetState>(initialState);
 
-  const handleOpenCreateEditor = (goalId: number) => {
+  const handleOpenCreateEditor = (goalId?: number) => {
     setState({
       isOpen: true,
       mode: "create",
