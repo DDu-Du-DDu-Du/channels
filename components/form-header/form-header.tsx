@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Pressable, View } from "react-native";
 
 import SpoqaText from "@/components/spoqa-text/spoqa-text";
@@ -7,6 +8,7 @@ import { ArrowLeftIcon } from "@/icons";
 export interface FormHeaderProps {
   title: string;
   onPressBack?: () => void;
+  rightContent?: ReactNode;
   titleClassName?: string;
   iconStroke?: string;
   className?: string;
@@ -15,6 +17,7 @@ export interface FormHeaderProps {
 function FormHeader({
   title,
   onPressBack,
+  rightContent,
   titleClassName = "text-size15 text-role-text-inverse dark:text-role-dark-text-inverse",
   iconStroke,
   className = "px-[2.4rem] pb-[1.6rem] pt-[2.4rem]",
@@ -43,6 +46,7 @@ function FormHeader({
         >
           {title}
         </SpoqaText>
+        {rightContent && <View className="absolute right-0 top-0">{rightContent}</View>}
       </View>
     </View>
   );

@@ -7,6 +7,7 @@ import FormHeader from "@/components/form-header/form-header";
 import SpoqaText from "@/components/spoqa-text/spoqa-text";
 import type { TodoDetailType } from "@/components/todo-sheet/todo-sheet.types";
 import { FEED_KEY, GOAL_KEY } from "@/constants/query-key/query-key";
+import { GoalSelectSheet } from "@/features/goal";
 import { useMe } from "@/features/user";
 import { useBottomSheetAction, useToggle } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
@@ -19,7 +20,6 @@ import { useQuery } from "@tanstack/react-query";
 
 import { useTodoEditorMutation } from "../../hooks";
 import TodoEditorForm from "../todo-editor-form/todo-editor-form";
-import TodoGoalSelectSheet from "../todo-goal-select-sheet/todo-goal-select-sheet";
 
 export interface TodoEditorSheetProps {
   mode: "create" | "edit";
@@ -207,11 +207,12 @@ function TodoEditorSheet({
       )}
 
       {isGoalSheetOpen && (
-        <TodoGoalSelectSheet
+        <GoalSelectSheet
           onClose={handleCloseGoalSheet}
-          onSelectGoal={(goal) => {
+          onPressGoal={(goal) => {
             setSelectedGoalIdFromSheet(goal.id);
           }}
+          onlyInProgress
         />
       )}
     </>
