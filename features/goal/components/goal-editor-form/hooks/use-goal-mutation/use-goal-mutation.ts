@@ -24,6 +24,13 @@ interface UseGoalMutationProps {
   pickedColor: string;
   repeatTodos: RepeatTodoItemType[];
   onSubmitSuccess?: () => void;
+  successRedirect?: {
+    pathname: "/feed" | "/stats";
+    params?: {
+      openGoalSheet?: string;
+      yearMonth?: string;
+    };
+  };
 }
 
 const normalizeColorToHex6 = (color: string) => color.replace(/^#/, "").toUpperCase();
@@ -33,6 +40,7 @@ function useGoalMutation({
   pickedColor,
   repeatTodos,
   onSubmitSuccess,
+  successRedirect,
 }: UseGoalMutationProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -92,6 +100,11 @@ function useGoalMutation({
         privacyType: "PUBLIC",
       });
       onSubmitSuccess?.();
+      if (successRedirect) {
+        router.replace(successRedirect);
+        return;
+      }
+
       router.replace("/goal");
     },
     onError: (error) => {

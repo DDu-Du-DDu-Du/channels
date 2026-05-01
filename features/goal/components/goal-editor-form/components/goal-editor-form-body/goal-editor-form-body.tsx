@@ -13,6 +13,13 @@ export interface GoalEditorFormBodyProps {
   defaultTitle: string;
   pickedColor: string;
   repeatTodos: RepeatTodoItemType[];
+  successRedirect?: {
+    pathname: "/feed" | "/stats";
+    params?: {
+      openGoalSheet?: string;
+      yearMonth?: string;
+    };
+  };
   onSubmitSuccess?: () => void;
   onPressOpenColorSheet: () => void;
   onPressOpenRepeatSheet: () => void;
@@ -25,6 +32,7 @@ function GoalEditorFormBody({
   defaultTitle,
   pickedColor,
   repeatTodos,
+  successRedirect,
   onSubmitSuccess,
   onPressOpenColorSheet,
   onPressOpenRepeatSheet,
@@ -35,6 +43,7 @@ function GoalEditorFormBody({
     defaultTitle,
     pickedColor,
     repeatTodos,
+    successRedirect,
     onSubmitSuccess,
   });
 
