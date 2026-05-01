@@ -1,9 +1,12 @@
+import { useEffect, useRef } from "react";
 import { Pressable, View } from "react-native";
 
 import { SpoqaText } from "@/components";
+import { GoalSelectSheet } from "@/features/goal";
 import StatsGoalChartCard, {
   StatsGoalChartItem,
 } from "@/features/stats/components/stats-goal-chart-card/stats-goal-chart-card";
+import { useToggle } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { ArrowRightIcon } from "@/icons";
 import { StatsSummaryResponseType } from "@/types/response/stats/stats";
@@ -12,6 +15,7 @@ import { useRouter } from "expo-router";
 
 interface StatsGoalSectionProps {
   yearMonth: string;
+  openGoalSheetOnMount?: boolean;
   summary?: StatsSummaryResponseType;
   isLoading: boolean;
   isError: boolean;
@@ -49,9 +53,34 @@ const toChartItems = <T extends StatsGoalSourceItem>(
   }));
 };
 
-function StatsGoalSection({ yearMonth, summary, isLoading, isError }: StatsGoalSectionProps) {
+function StatsGoalSection({
+  yearMonth,
+  openGoalSheetOnMount = false,
+  summary,
+  isLoading,
+  isError,
+}: StatsGoalSectionProps) {
   const router = useRouter();
   const iconStroke = useThemeColorToken("ui.icon.muted");
+  const hasConsumedOpenParamRef = useRef(false);
+  const {
+    isToggle: isGoalSheetOpen,
+    handleToggleOn: handleGoalSheetOpen,
+    handleToggleOff: handleGoalSheetClose,
+  } = useToggle();
+
+  useEffect(() => {
+    if (!openGoalSheetOnMount || hasConsumedOpenParamRef.current) {
+      return;
+    }
+
+    hasConsumedOpenParamRef.current = true;
+    handleGoalSheetOpen();
+    router.replace({
+      pathname: "/stats",
+      params: { yearMonth },
+    });
+  }, [handleGoalSheetOpen, openGoalSheetOnMount, router, yearMonth]);
 
   const charts: StatsGoalChartConfig[] = [
     {
@@ -87,63 +116,88 @@ function StatsGoalSection({ yearMonth, summary, isLoading, isError }: StatsGoalS
   ];
 
   const handlePressGoalDetail = () => {
+    handleGoalSheetOpen();
+  };
+
+  const handlePressAdd = () => {
     router.push({
-      pathname: "/stats/select",
-      params: { yearMonth },
+      pathname: "/goal/create",
+      params: {
+        returnTo: "/stats",
+        openGoalSheet: "1",
+        yearMonth,
+      },
+    });
+  };
+
+  const handlePressGoal = (goalId: number) => {
+    router.push({
+      pathname: "/stats/[id]",
+      params: { id: goalId, yearMonth },
     });
   };
 
   return (
-    <View className="mt-[2.4rem] border-t border-role-border-default dark:border-role-dark-border-default pt-[2rem]">
-      <View className="mb-[2rem] flex-row items-center justify-between">
-        <View className="flex-1 pr-[1rem]">
-          <SpoqaText
-            weight="bold"
-            className="text-size20 text-role-text-primary dark:text-role-dark-text-primary"
+    <>
+      <View className="mt-[2.4rem] border-t border-role-border-default dark:border-role-dark-border-default pt-[2rem]">
+        <View className="mb-[2rem] flex-row items-center justify-between">
+          <View className="flex-1 pr-[1rem]">
+            <SpoqaText
+              weight="bold"
+              className="text-size20 text-role-text-primary dark:text-role-dark-text-primary"
+            >
+              목표 통계
+            </SpoqaText>
+            <SpoqaText className="mt-[0.6rem] text-size15 text-role-text-secondary dark:text-role-dark-text-secondary">
+              어떤 목표의 달성률이 가장 높을까요?
+            </SpoqaText>
+          </View>
+          <Pressable
+            className="flex-row items-center"
+            hitSlop={8}
+            onPress={handlePressGoalDetail}
           >
-            목표 통계
-          </SpoqaText>
-          <SpoqaText className="mt-[0.6rem] text-size15 text-role-text-secondary dark:text-role-dark-text-secondary">
-            어떤 목표의 달성률이 가장 높을까요?
-          </SpoqaText>
+            <SpoqaText className="text-size14 text-role-text-secondary dark:text-role-dark-text-secondary">
+              목표 상세통계
+            </SpoqaText>
+            <ArrowRightIcon
+              size={14}
+              stroke={iconStroke}
+            />
+          </Pressable>
         </View>
-        <Pressable
-          className="flex-row items-center"
-          hitSlop={8}
-          onPress={handlePressGoalDetail}
-        >
+
+        {isLoading && (
           <SpoqaText className="text-size14 text-role-text-secondary dark:text-role-dark-text-secondary">
-            목표 상세통계
+            불러오는 중...
           </SpoqaText>
-          <ArrowRightIcon
-            size={14}
-            stroke={iconStroke}
-          />
-        </Pressable>
+        )}
+        {isError && !isLoading && (
+          <SpoqaText className="text-size14 text-role-status-error dark:text-role-dark-status-error">
+            목표 통계를 불러오지 못했어요.
+          </SpoqaText>
+        )}
+
+        {!isLoading &&
+          !isError &&
+          charts.map((chart) => (
+            <StatsGoalChartCard
+              key={chart.key}
+              title={chart.title}
+              unit={chart.unit}
+              items={chart.items}
+            />
+          ))}
       </View>
 
-      {isLoading && (
-        <SpoqaText className="text-size14 text-role-text-secondary dark:text-role-dark-text-secondary">
-          불러오는 중...
-        </SpoqaText>
+      {isGoalSheetOpen && (
+        <GoalSelectSheet
+          onClose={handleGoalSheetClose}
+          onPressGoal={(goal) => handlePressGoal(goal.id)}
+          onPressAdd={handlePressAdd}
+        />
       )}
-      {isError && !isLoading && (
-        <SpoqaText className="text-size14 text-role-status-error dark:text-role-dark-status-error">
-          목표 통계를 불러오지 못했어요.
-        </SpoqaText>
-      )}
-
-      {!isLoading &&
-        !isError &&
-        charts.map((chart) => (
-          <StatsGoalChartCard
-            key={chart.key}
-            title={chart.title}
-            unit={chart.unit}
-            items={chart.items}
-          />
-        ))}
-    </View>
+    </>
   );
 }
 

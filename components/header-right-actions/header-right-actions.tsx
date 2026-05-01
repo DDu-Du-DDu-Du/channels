@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Pressable, View } from "react-native";
 
 import { useNotificationInboxStatusQuery } from "@/features/notification/queries";
@@ -6,7 +7,11 @@ import { NotificationIcon, SettingsIcon } from "@/icons";
 
 import { Href, usePathname, useRouter } from "expo-router";
 
-function HeaderRightActions() {
+interface HeaderRightActionsProps {
+  action?: ReactNode;
+}
+
+function HeaderRightActions({ action }: HeaderRightActionsProps) {
   const router = useRouter();
   const pathname = usePathname();
   const iconStroke = useThemeColorToken("ui.icon.default");
@@ -30,6 +35,7 @@ function HeaderRightActions() {
 
   return (
     <View className="flex-row justify-end gap-[0.8rem]">
+      {action}
       <Pressable
         onPress={handlePressNotification}
         hitSlop={8}

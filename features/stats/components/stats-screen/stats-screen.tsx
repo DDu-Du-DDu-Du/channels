@@ -6,8 +6,25 @@ import StatsGoalSection from "../stats-goal-section/stats-goal-section";
 import StatsHeader from "../stats-header/stats-header";
 import StatsReportSection from "../stats-report-section/stats-report-section";
 
+import { useLocalSearchParams } from "expo-router";
+
+const toSingleParam = (value: string | string[] | undefined) => {
+  if (Array.isArray(value)) {
+    return value[0];
+  }
+
+  return value;
+};
+
 function StatsScreen() {
-  const { yearMonth, yearMonthLabel, handlePrevMonth, handleNextMonth } = useStatsMonth();
+  const params = useLocalSearchParams<{
+    openGoalSheet?: string | string[];
+    yearMonth?: string | string[];
+  }>();
+  const initialYearMonth = toSingleParam(params.yearMonth);
+  const shouldOpenGoalSheet = toSingleParam(params.openGoalSheet) === "1";
+  const { yearMonth, yearMonthLabel, handlePrevMonth, handleNextMonth } =
+    useStatsMonth(initialYearMonth);
   const { reportQuery, summaryQuery } = useStatsQuery({ yearMonth });
 
   return (
@@ -30,6 +47,7 @@ function StatsScreen() {
 
       <StatsGoalSection
         yearMonth={yearMonth}
+        openGoalSheetOnMount={shouldOpenGoalSheet}
         summary={summaryQuery.data}
         isLoading={summaryQuery.isLoading}
         isError={summaryQuery.isError}
