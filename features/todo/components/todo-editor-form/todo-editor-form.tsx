@@ -103,6 +103,46 @@ function TodoEditorForm({
     await onSubmitPayload(payload);
   };
 
+  const renderGoalSelector = () => (
+    <Pressable
+      className="rounded-radius15 bg-role-surface-canvas dark:bg-role-dark-surface-canvas px-[1.2rem] py-[1.2rem]"
+      onPress={onRequestOpenGoalSheet}
+    >
+      <View className="flex-row items-center justify-between">
+        <SpoqaText className="text-size14 text-role-text-primary dark:text-role-dark-text-primary">
+          목표
+        </SpoqaText>
+
+        <View className="h-[4.2rem] min-w-[12rem] flex-row items-center justify-between rounded-radius10 bg-role-surface-subtle px-[1.1rem] dark:bg-role-dark-surface-subtle">
+          <View className="flex-row items-center gap-[0.7rem]">
+            {selectedGoal ? (
+              <View
+                className="size-[1rem] rounded-circle"
+                style={{ backgroundColor: `#${selectedGoal.color}` }}
+              />
+            ) : null}
+            <SpoqaText className="text-size13 text-role-text-primary dark:text-role-dark-text-primary">
+              {selectedGoal?.name ?? "목표 선택"}
+            </SpoqaText>
+          </View>
+
+          <View
+            style={{
+              width: 0,
+              height: 0,
+              borderLeftWidth: 4,
+              borderRightWidth: 4,
+              borderTopWidth: 6,
+              borderLeftColor: "transparent",
+              borderRightColor: "transparent",
+              borderTopColor: "#B5B5B5",
+            }}
+          />
+        </View>
+      </View>
+    </Pressable>
+  );
+
   return (
     <FormProvider {...methods}>
       <View className="w-full gap-[1rem] px-[2.4rem] pb-[1.6rem]">
@@ -132,44 +172,6 @@ function TodoEditorForm({
           <SpoqaText className="text-size14 text-role-text-primary dark:text-role-dark-text-primary">
             {scheduledOn}
           </SpoqaText>
-        </Pressable>
-
-        <Pressable
-          className="rounded-radius15 bg-role-surface-canvas dark:bg-role-dark-surface-canvas px-[1.2rem] py-[1.2rem]"
-          onPress={onRequestOpenGoalSheet}
-        >
-          <View className="flex-row items-center justify-between">
-            <SpoqaText className="text-size14 text-role-text-primary dark:text-role-dark-text-primary">
-              목표
-            </SpoqaText>
-
-            <View className="h-[4.2rem] min-w-[12rem] flex-row items-center justify-between rounded-radius10 bg-role-surface-subtle px-[1.1rem] dark:bg-role-dark-surface-subtle">
-              <View className="flex-row items-center gap-[0.7rem]">
-                {selectedGoal ? (
-                  <View
-                    className="size-[1rem] rounded-circle"
-                    style={{ backgroundColor: `#${selectedGoal.color}` }}
-                  />
-                ) : null}
-                <SpoqaText className="text-size13 text-role-text-primary dark:text-role-dark-text-primary">
-                  {selectedGoal?.name ?? "목표 선택"}
-                </SpoqaText>
-              </View>
-
-              <View
-                style={{
-                  width: 0,
-                  height: 0,
-                  borderLeftWidth: 4,
-                  borderRightWidth: 4,
-                  borderTopWidth: 6,
-                  borderLeftColor: "transparent",
-                  borderRightColor: "transparent",
-                  borderTopColor: "#B5B5B5",
-                }}
-              />
-            </View>
-          </View>
         </Pressable>
 
         <TodoDetailToggle
@@ -295,6 +297,8 @@ function TodoEditorForm({
                 className="h-[10rem] px-[1.2rem] py-[1rem] text-size14"
               />
             </View>
+
+            {renderGoalSelector()}
           </View>
         )}
 
