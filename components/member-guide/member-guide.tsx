@@ -4,7 +4,7 @@ import { View } from "react-native";
 import { useOauth2Login } from "@/features/auth";
 import LoginButton from "@/features/auth/components/login-button/login-button";
 
-import Button from "../button/Button";
+import Button from "../button/button";
 import ConfirmModal from "../confirm-modal/confirm-modal";
 import EmptyList from "../empty-list/empty-list";
 import Modal from "../modal/modal";

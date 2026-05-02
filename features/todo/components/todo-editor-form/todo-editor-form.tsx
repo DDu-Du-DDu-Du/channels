@@ -2,7 +2,7 @@ import { FormProvider } from "react-hook-form";
 import { Pressable, View } from "react-native";
 
 import AnimatedSwitch from "@/components/animated-switch/animated-switch";
-import Button from "@/components/button/Button";
+import Button from "@/components/button/button";
 import FormTextInput from "@/components/form-text-input/form-text-input";
 import MemberGuide from "@/components/member-guide/member-guide";
 import SpoqaText from "@/components/spoqa-text/spoqa-text";
