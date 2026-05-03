@@ -24,6 +24,7 @@ interface UseGoalMutationProps {
   pickedColor: string;
   repeatTodos: RepeatTodoItemType[];
   onSubmitSuccess?: () => void;
+  redirectOnSuccess?: boolean;
   successRedirect?: {
     pathname: "/feed" | "/stats";
     params?: {
@@ -40,6 +41,7 @@ function useGoalMutation({
   pickedColor,
   repeatTodos,
   onSubmitSuccess,
+  redirectOnSuccess = true,
   successRedirect,
 }: UseGoalMutationProps) {
   const router = useRouter();
@@ -100,6 +102,10 @@ function useGoalMutation({
         privacyType: "PUBLIC",
       });
       onSubmitSuccess?.();
+      if (!redirectOnSuccess) {
+        return;
+      }
+
       if (successRedirect) {
         router.replace(successRedirect);
         return;

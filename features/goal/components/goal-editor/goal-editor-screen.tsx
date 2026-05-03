@@ -17,12 +17,21 @@ import { useGoalDetailQuery, useGoalEditMutation } from "./hooks";
 
 export interface GoalEditorScreenProps {
   goalId: number;
+  redirectOnSuccess?: boolean;
+  invalidateFeedOnSuccess?: boolean;
+  onMutationSuccess?: () => void;
   onEditorViewModeChange?: (viewMode: EditorViewMode) => void;
 }
 
 export type EditorViewMode = "form" | "repeatList";
 
-function GoalEditorScreen({ goalId, onEditorViewModeChange }: GoalEditorScreenProps) {
+function GoalEditorScreen({
+  goalId,
+  redirectOnSuccess,
+  invalidateFeedOnSuccess,
+  onMutationSuccess,
+  onEditorViewModeChange,
+}: GoalEditorScreenProps) {
   const [viewMode, setViewMode] = useState<EditorViewMode>("form");
   const [isCreateRepeatMode, setIsCreateRepeatMode] = useState(true);
   const [isGoalDeleteConfirmOpen, setIsGoalDeleteConfirmOpen] = useState(false);
@@ -144,6 +153,9 @@ function GoalEditorScreen({ goalId, onEditorViewModeChange }: GoalEditorScreenPr
           pickedColor={pickedColor}
           privacyType={goalDetail.privacyType}
           repeatTodoCount={repeatTodos.length}
+          redirectOnSuccess={redirectOnSuccess}
+          invalidateFeedOnSuccess={invalidateFeedOnSuccess}
+          onMutationSuccess={onMutationSuccess}
           onPressOpenColorSheet={handlePressOpenColorSheet}
           onPressOpenRepeatManagement={handleOpenRepeatList}
           onPressTerminateGoal={handleTerminateGoal}

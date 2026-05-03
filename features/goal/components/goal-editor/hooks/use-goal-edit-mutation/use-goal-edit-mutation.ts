@@ -3,7 +3,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 
 import { useToast } from "@/components/toast/hooks";
 import { HEX_COLOR_WITH_OPTIONAL_HASH_REGEX } from "@/constants";
-import { GOAL_KEY } from "@/constants/query-key/query-key";
+import { FEED_KEY, GOAL_KEY } from "@/constants/query-key/query-key";
 import { deleteGoal, editGoal, terminateGoal } from "@/service/goal/goal";
 import type { GoalEditRequestType } from "@/types/request/goal/goal";
 import type { GoalPrivacyType } from "@/types/response/goal/goal";
@@ -22,6 +22,9 @@ interface UseGoalEditMutationProps {
   defaultTitle: string;
   pickedColor: string;
   privacyType: GoalPrivacyType;
+  redirectOnSuccess?: boolean;
+  invalidateFeedOnSuccess?: boolean;
+  onMutationSuccess?: () => void;
 }
 
 const normalizeColorToHex6 = (color: string) => color.replace(/^#/, "").toUpperCase();
@@ -31,6 +34,9 @@ function useGoalEditMutation({
   defaultTitle,
   pickedColor,
   privacyType,
+  redirectOnSuccess = true,
+  invalidateFeedOnSuccess = false,
+  onMutationSuccess,
 }: UseGoalEditMutationProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -49,13 +55,35 @@ function useGoalEditMutation({
     createToast(message, { type: "danger" });
   };
 
+  const invalidateFeedQueries = async () => {
+    if (!invalidateFeedOnSuccess) {
+      return;
+    }
+
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: [FEED_KEY.DAILY_LIST] }),
+      queryClient.invalidateQueries({ queryKey: [FEED_KEY.DAILY_TIMETABLE] }),
+      queryClient.invalidateQueries({ queryKey: [FEED_KEY.MONTHLY_Todos] }),
+      queryClient.invalidateQueries({ queryKey: [FEED_KEY.WEEKLY_Todos] }),
+    ]);
+  };
+
+  const handleMutationSuccess = async () => {
+    await queryClient.invalidateQueries({ queryKey: [GOAL_KEY.GOAL_LIST] });
+    await invalidateFeedQueries();
+
+    if (redirectOnSuccess) {
+      router.replace("/goal");
+      return;
+    }
+
+    onMutationSuccess?.();
+  };
+
   const editGoalMutation = useMutation({
     mutationKey: [GOAL_KEY.GOAL_EDIT, goalId],
     mutationFn: editGoal,
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: [GOAL_KEY.GOAL_LIST] });
-      router.replace("/goal");
-    },
+    onSuccess: handleMutationSuccess,
     onError: (error) => onErrorMutation(error, "목표 수정에 실패했습니다."),
   });
 
@@ -65,6 +93,7 @@ function useGoalEditMutation({
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: [GOAL_KEY.GOAL_LIST] });
       await queryClient.invalidateQueries({ queryKey: [GOAL_KEY.GOAL_DETAIL, goalId] });
+      await invalidateFeedQueries();
       createToast("목표를 종료했습니다.", { type: "safe" });
     },
     onError: (error) => onErrorMutation(error, "목표 종료에 실패했습니다."),
@@ -73,10 +102,7 @@ function useGoalEditMutation({
   const deleteGoalMutation = useMutation({
     mutationKey: [GOAL_KEY.GOAL_DELETE, goalId],
     mutationFn: deleteGoal,
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: [GOAL_KEY.GOAL_LIST] });
-      router.replace("/goal");
-    },
+    onSuccess: handleMutationSuccess,
     onError: (error) => onErrorMutation(error, "목표 삭제에 실패했습니다."),
   });
 
