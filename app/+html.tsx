@@ -7,6 +7,7 @@ export default function Root({ children }: PropsWithChildren) {
     <html lang="ko">
       <head>
         <meta charSet="utf-8" />
+        <title>모두플랜</title>
         <meta
           httpEquiv="X-UA-Compatible"
           content="IE=edge"
