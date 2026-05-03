@@ -2,14 +2,19 @@ import { ActivityIndicator, ScrollView, View } from "react-native";
 
 import { EmptyList, SpoqaText } from "@/components";
 import { useAnnouncementDetailScreen } from "@/features/announcement/hooks";
+import { useWideLayout } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 
 function AnnouncementDetailScreen() {
+  const { isWideLayout } = useWideLayout();
   const spinnerColor = useThemeColorToken("role.text.tertiary");
   const { detail, isLoading, isError } = useAnnouncementDetailScreen();
+  const containerClassName = `flex-1 bg-role-surface-panel px-[1.6rem] dark:bg-role-dark-surface-panel ${
+    isWideLayout ? "w-full max-w-[76rem] self-center" : ""
+  }`;
 
   return (
-    <View className="flex-1 bg-role-surface-panel dark:bg-role-dark-surface-panel px-[1.6rem]">
+    <View className={containerClassName}>
       {isLoading ? (
         <View className="py-[3.2rem]">
           <ActivityIndicator

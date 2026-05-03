@@ -2,9 +2,11 @@ import { ActivityIndicator, FlatList, Pressable, View } from "react-native";
 
 import { EmptyList, HeaderRightActions, PageHeader, SpoqaText } from "@/components";
 import { AnnouncementListViewItem, useAnnouncementScreen } from "@/features/announcement";
+import { useWideLayout } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 
 function Announcement() {
+  const { isWideLayout } = useWideLayout();
   const spinnerColor = useThemeColorToken("role.text.tertiary");
   const {
     announcementViewItems,
@@ -26,6 +28,7 @@ function Announcement() {
 
     return <EmptyList text="공지사항이 없어요." />;
   };
+  const listClassName = isWideLayout ? "w-full max-w-[86rem] self-center" : "";
 
   return (
     <View className="flex-1 bg-role-surface-panel dark:bg-role-dark-surface-panel">
@@ -34,6 +37,7 @@ function Announcement() {
         rightContent={<HeaderRightActions />}
       />
       <FlatList<AnnouncementListViewItem>
+        className={listClassName}
         data={announcementViewItems}
         keyExtractor={(item) => item.key}
         contentContainerStyle={{

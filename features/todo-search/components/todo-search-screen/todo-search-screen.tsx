@@ -11,6 +11,7 @@ import {
 } from "@/components";
 import { TodoEditorSheet, useTodoEditorSheet } from "@/features/todo";
 import { useTodoSearchActions, useTodoSearchQuery } from "@/features/todo-search/hooks";
+import { useWideLayout } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import type { TodoSearchItemType } from "@/types/response/todo/todo";
 import { formatDateToYYYYMMDD } from "@/utils";
@@ -19,6 +20,7 @@ import TodoSearchBar from "../todo-search-bar/todo-search-bar";
 import TodoSearchItem from "../todo-search-item/todo-search-item";
 
 function TodoSearchScreen() {
+  const { isWideLayout } = useWideLayout();
   const spinnerColor = useThemeColorToken("role.text.inverse");
   const [searchText, setSearchText] = useState("");
   const [debouncedSearchText, setDebouncedSearchText] = useState("");
@@ -88,6 +90,8 @@ function TodoSearchScreen() {
     () => data?.pages.flatMap((page) => page.contents) ?? [],
     [data?.pages],
   );
+  const screenClassName = `flex-1 ${isWideLayout ? "w-full max-w-[96rem] self-center" : ""}`;
+  const listContainerClassName = `mt-[0.8rem] flex-1 ${isWideLayout ? "px-[2.4rem]" : "px-4"}`;
 
   const handleEditTodo = (id: number) => {
     handleTodoSheetToggleOff();
@@ -113,7 +117,7 @@ function TodoSearchScreen() {
   };
 
   return (
-    <View className="flex-1">
+    <View className={screenClassName}>
       <View className="mt-[1.5rem]">
         <TodoSearchBar
           value={searchText}
@@ -122,7 +126,7 @@ function TodoSearchScreen() {
         />
       </View>
 
-      <View className="mt-[0.8rem] flex-1 px-4">
+      <View className={listContainerClassName}>
         <FlatList<TodoSearchItemType>
           data={searchItems}
           keyExtractor={(item) => item.id.toString()}
