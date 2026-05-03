@@ -31,6 +31,7 @@ function DashboardScreen() {
   const {
     dashboardQuery,
     visibleSections,
+    todayDate,
     selectedStatus,
     currentTodoId,
     selectedDate,
@@ -184,6 +185,7 @@ function DashboardScreen() {
         renderItem={({ item }) => (
           <DashboardTodoSection
             section={item}
+            isToday={item.date === todayDate}
             onCompleteToggle={handleTodoCompleteToggle}
             onOpenMenu={handleTodoSheetOpen}
           />
