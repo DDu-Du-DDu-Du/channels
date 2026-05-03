@@ -7,6 +7,10 @@ export { default as useToggle } from "./use-toggle/use-toggle";
 export { default as useMenuActivationTabRouting } from "./use-menu-activation-tab-routing/use-menu-activation-tab-routing";
 export { default as usePageHeaderBackRoute } from "./use-page-header-back-route/use-page-header-back-route";
 export {
+  WIDE_LAYOUT_BREAKPOINT,
+  default as useWideLayout,
+} from "./use-wide-layout/use-wide-layout";
+export {
   getThemeColor,
   getThemeColorToken,
   useThemeColor,

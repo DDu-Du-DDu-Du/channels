@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Pressable, View } from "react-native";
 
 import SpoqaText from "@/components/spoqa-text/spoqa-text";
+import { useWideLayout } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { AddListIcon, MenuIcon, TabCalendarIcon, TabDashboardIcon, TabStatsIcon } from "@/icons";
 import { useSettingsStore } from "@/stores";
@@ -50,6 +51,10 @@ function MainTabBar({ sortedActiveMenuKeys }: MainTabBarProps) {
   const activeColor = isDarkMode ? activeDarkColor : "rgb(0, 0, 0)";
   const inactiveColor = useThemeColorToken("ui.icon.muted");
   const isMenuActivationFocused = pathname.startsWith("/settings/menu-activation");
+  const { isWideLayout } = useWideLayout();
+  const tabBarClassName = `border-t border-role-border-subtle bg-role-surface-panel px-[1rem] pb-[0.9rem] pt-[0.6rem] dark:border-role-dark-border-subtle dark:bg-role-dark-surface-panel ${
+    isWideLayout ? "mb-[1rem] w-full max-w-[70rem] self-center rounded-radius15 border-x" : ""
+  }`;
 
   const tabItems: TabItem[] = sortedActiveMenuKeys.map((key) => ({
     type: "tab",
@@ -118,7 +123,7 @@ function MainTabBar({ sortedActiveMenuKeys }: MainTabBarProps) {
   };
 
   return (
-    <View className="border-t border-role-border-subtle bg-role-surface-panel px-[1rem] pb-[0.9rem] pt-[0.6rem] dark:border-role-dark-border-subtle dark:bg-role-dark-surface-panel">
+    <View className={tabBarClassName}>
       <View className="flex-row items-center justify-center">
         {slotItems.map((item) => {
           if (item.type === "action") {
