@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
-import { ActivityIndicator, FlatList, Pressable, View } from "react-native";
+import { ActivityIndicator, FlatList, Pressable, View, useWindowDimensions } from "react-native";
 
 import {
   AlarmSheet,
@@ -16,13 +16,16 @@ import type { TodoDashboardContentType } from "@/types/response/todo/todo";
 import { useDashboardState } from "../../hooks";
 import DashboardFilterBar from "../dashboard-filter-bar/dashboard-filter-bar";
 import DashboardTodoSection from "../dashboard-todo-section/dashboard-todo-section";
+import DashboardWideControlPanel from "../dashboard-wide-control-panel/dashboard-wide-control-panel";
 
 import { useRouter } from "expo-router";
 
 function DashboardScreen() {
   const router = useRouter();
+  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const listRef = useRef<FlatList<TodoDashboardContentType>>(null);
   const hasScrolledToInitialRef = useRef(false);
+  const isWideLayout = windowWidth > 768;
   const spinnerColor = useThemeColorToken("role.text.primary");
   const floatingButtonIconColor = useThemeColorToken("role.text.inverse");
   const { editorSheetState, handleOpenCreateEditor, handleOpenEditEditor, handleCloseEditor } =
@@ -122,6 +125,13 @@ function DashboardScreen() {
     handleOpenCreateEditor();
   };
 
+  const handleSelectWideDate = useCallback(
+    (date: string) => {
+      handleMoveToDate(new Date(`${date}T00:00:00`));
+    },
+    [handleMoveToDate],
+  );
+
   const handleEditTodo = (id: number) => {
     handleTodoSheetToggleOff();
     handleOpenEditEditor(id);
@@ -150,6 +160,13 @@ function DashboardScreen() {
     }, 120);
   };
 
+  const renderListFooter = () => (
+    <View
+      pointerEvents="none"
+      style={{ height: Math.max(windowHeight, 360) }}
+    />
+  );
+
   const renderEmptyState = () => {
     if (dashboardQuery.isLoading || dashboardQuery.isFetching) {
       return (
@@ -169,50 +186,59 @@ function DashboardScreen() {
     return <EmptyList text="표시할 투두가 없어요." />;
   };
 
-  return (
-    <View className="flex-1">
-      <DashboardFilterBar
-        selectedStatus={selectedStatus}
-        onSelectStatus={handleSelectStatus}
-        onPressMoveTo={handleOpenMoveToCalendar}
-        onPressSearch={handlePressSearch}
+  const renderDashboardSection = ({ item }: { item: TodoDashboardContentType }) => {
+    const section = (
+      <DashboardTodoSection
+        section={item}
+        isToday={item.date === todayDate}
+        onCompleteToggle={handleTodoCompleteToggle}
+        onOpenMenu={handleTodoSheetOpen}
       />
+    );
 
-      <FlatList<TodoDashboardContentType>
-        ref={listRef}
-        data={visibleSections}
-        keyExtractor={(item) => item.date}
-        renderItem={({ item }) => (
-          <DashboardTodoSection
-            section={item}
-            isToday={item.date === todayDate}
-            onCompleteToggle={handleTodoCompleteToggle}
-            onOpenMenu={handleTodoSheetOpen}
-          />
-        )}
-        ListEmptyComponent={renderEmptyState}
-        contentContainerStyle={{
-          flexGrow: 1,
-          paddingHorizontal: 16,
-          paddingTop: 28,
-          paddingBottom: 112,
-        }}
-        showsVerticalScrollIndicator={false}
-        onScrollToIndexFailed={handleScrollToIndexFailed}
-        overScrollMode="always"
+    if (!isWideLayout) {
+      return section;
+    }
+
+    return <View className="w-full max-w-[76rem] self-center">{section}</View>;
+  };
+
+  const dashboardList = (
+    <FlatList<TodoDashboardContentType>
+      ref={listRef}
+      data={visibleSections}
+      keyExtractor={(item) => item.date}
+      renderItem={renderDashboardSection}
+      ListFooterComponent={visibleSections.length > 0 ? renderListFooter : null}
+      ListEmptyComponent={renderEmptyState}
+      contentContainerStyle={{
+        flexGrow: 1,
+        paddingHorizontal: isWideLayout ? 24 : 16,
+        paddingTop: 28,
+        paddingBottom: isWideLayout ? 144 : 112,
+      }}
+      style={isWideLayout ? { flex: 1 } : undefined}
+      showsVerticalScrollIndicator={false}
+      onScrollToIndexFailed={handleScrollToIndexFailed}
+      overScrollMode="always"
+    />
+  );
+
+  const floatingCreateButton = (
+    <Pressable
+      accessibilityRole="button"
+      onPress={handlePressCreate}
+      className="absolute bottom-[2.2rem] right-[1.6rem] h-[4.8rem] w-[4.8rem] items-center justify-center rounded-[1.2rem] bg-[#5F6062] shadow-shadow_500"
+    >
+      <PlusIcon
+        size={18}
+        stroke={floatingButtonIconColor}
       />
+    </Pressable>
+  );
 
-      <Pressable
-        accessibilityRole="button"
-        onPress={handlePressCreate}
-        className="absolute bottom-[2.2rem] right-[1.6rem] h-[4.8rem] w-[4.8rem] items-center justify-center rounded-[1.2rem] bg-[#5F6062] shadow-shadow_500"
-      >
-        <PlusIcon
-          size={18}
-          stroke={floatingButtonIconColor}
-        />
-      </Pressable>
-
+  const sheetStack = (
+    <>
       {isTodoSheetToggle && (
         <TodoSheet
           TodoId={currentTodoId}
@@ -260,7 +286,7 @@ function DashboardScreen() {
         />
       )}
 
-      {isMoveToCalendarToggle && (
+      {!isWideLayout && isMoveToCalendarToggle && (
         <BottomSingleCalendar
           currentDate={selectedDashboardDate}
           selectedDate={moveToSelectedDate}
@@ -281,6 +307,51 @@ function DashboardScreen() {
           reminders={currentTodoSchedule.reminders}
         />
       )}
+    </>
+  );
+
+  if (isWideLayout) {
+    return (
+      <View className="flex-1 bg-role-surface-canvas dark:bg-role-dark-surface-canvas">
+        <View className="flex-1 items-center px-[2.4rem] pb-[2.4rem] pt-[2rem]">
+          <View className="min-h-0 w-full max-w-[144rem] flex-1 flex-row overflow-hidden rounded-[0.8rem] border border-role-border-subtle bg-role-surface-panel dark:border-role-dark-border-subtle dark:bg-role-dark-surface-panel">
+            <View
+              className="h-full border-r border-role-border-subtle dark:border-role-dark-border-subtle"
+              style={{ width: "34%", minWidth: 300, maxWidth: 430 }}
+            >
+              <DashboardWideControlPanel
+                selectedStatus={selectedStatus}
+                selectedDate={selectedDashboardDate}
+                visibleSections={visibleSections}
+                onSelectStatus={handleSelectStatus}
+                onSelectDate={handleSelectWideDate}
+                onPressSearch={handlePressSearch}
+              />
+            </View>
+            <View className="min-w-0 flex-1 bg-role-surface-canvas dark:bg-role-dark-surface-canvas">
+              {dashboardList}
+            </View>
+          </View>
+        </View>
+
+        {floatingCreateButton}
+        {sheetStack}
+      </View>
+    );
+  }
+
+  return (
+    <View className="flex-1">
+      <DashboardFilterBar
+        selectedStatus={selectedStatus}
+        onSelectStatus={handleSelectStatus}
+        onPressMoveTo={handleOpenMoveToCalendar}
+        onPressSearch={handlePressSearch}
+      />
+
+      {dashboardList}
+      {floatingCreateButton}
+      {sheetStack}
     </View>
   );
 }
