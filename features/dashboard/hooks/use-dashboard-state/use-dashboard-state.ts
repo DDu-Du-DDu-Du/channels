@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 import { FEED_KEY, Todo_KEY } from "@/constants/query-key/query-key";
 import type { TodoTimeRangeType, TodoTimeType } from "@/features/feed/feed.types";
@@ -25,6 +25,9 @@ export type DashboardStatusFilterType = "ALL" | TodoStatusType;
 
 const todayString = () => formatDateToYYYYMMDD(new Date());
 
+const toggleTodoStatus = (status: TodoStatusType): TodoStatusType =>
+  status === "COMPLETE" ? "UNCOMPLETED" : "COMPLETE";
+
 const clampIndex = (index: number, length: number) => {
   if (length <= 0) {
     return -1;
@@ -40,6 +43,10 @@ const clampIndex = (index: number, length: number) => {
 function useDashboardState() {
   const queryClient = useQueryClient();
   const [selectedStatus, setSelectedStatus] = useState<DashboardStatusFilterType>("ALL");
+  const [pendingCompleteTodoIds, setPendingCompleteTodoIds] = useState<Set<number>>(
+    () => new Set(),
+  );
+  const pendingCompleteTodoIdsRef = useRef(new Set<number>());
   const [currentTodoId, setCurrentTodoId] = useState(-1);
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [currentDate, setCurrentDate] = useState("");
@@ -96,27 +103,38 @@ function useDashboardState() {
     shouldInvalidateOnSuccess: false,
   });
 
-  const visibleSections = useMemo<TodoDashboardContentType[]>(() => {
-    const contents = dashboardQuery.data?.contents ?? [];
-
-    if (selectedStatus === "ALL") {
-      return contents.filter((section) => section.todos.length > 0);
-    }
-
-    return contents
-      .map((section) => ({
-        ...section,
-        todos: section.todos.filter((todo) => todo.status === selectedStatus),
-      }))
-      .filter((section) => section.todos.length > 0);
-  }, [dashboardQuery.data?.contents, selectedStatus]);
-
-  const initialScrollDate = useMemo(() => {
+  const todayDate = useMemo(() => {
     const contents = dashboardQuery.data?.contents ?? [];
     const clampedIndex = clampIndex(dashboardQuery.data?.todayIndex ?? 0, contents.length);
 
     return clampedIndex >= 0 ? contents[clampedIndex]?.date : todayString();
   }, [dashboardQuery.data?.contents, dashboardQuery.data?.todayIndex]);
+
+  const visibleSections = useMemo<TodoDashboardContentType[]>(() => {
+    const contents = dashboardQuery.data?.contents ?? [];
+    const filteredSections = contents
+      .map((section) => ({
+        ...section,
+        todos:
+          selectedStatus === "ALL"
+            ? section.todos
+            : section.todos.filter((todo) => todo.status === selectedStatus),
+      }))
+      .filter((section) => section.todos.length > 0 || section.date === todayDate);
+
+    if (filteredSections.some((section) => section.date === todayDate)) {
+      return filteredSections;
+    }
+
+    const todaySection = { date: todayDate, todos: [] };
+    const nextSections = [...filteredSections, todaySection];
+
+    return nextSections.sort((left, right) => left.date.localeCompare(right.date));
+  }, [dashboardQuery.data?.contents, selectedStatus, todayDate]);
+
+  const initialScrollDate = useMemo(() => {
+    return todayDate;
+  }, [todayDate]);
 
   const resolveVisibleSectionIndex = (targetDate: string) => {
     if (visibleSections.length === 0) {
@@ -144,10 +162,93 @@ function useDashboardState() {
     });
   };
 
-  const completeToggleTodoMutation = useMutation({
+  const completeToggleTodoMutation = useMutation<
+    void,
+    Error,
+    { id: number },
+    { previousStatus?: TodoStatusType }
+  >({
     mutationKey: [FEED_KEY.COMPLETE_TOGGLE],
-    mutationFn: fetchCompleteToggleTodo,
-    onSuccess: handleRefetchDashboardLinkedQueries,
+    mutationFn: ({ id }) => fetchCompleteToggleTodo({ id }),
+    onMutate: async ({ id }) => {
+      await queryClient.cancelQueries({ queryKey: [Todo_KEY.DASHBOARD] });
+
+      let previousStatus: TodoStatusType | undefined;
+
+      queryClient.setQueryData<TodoDashboardResponseType>([Todo_KEY.DASHBOARD], (current) => {
+        if (!current) {
+          return current;
+        }
+
+        let hasChanged = false;
+        const contents = current.contents.map((section) => {
+          let hasSectionChanged = false;
+          const todos = section.todos.map((todo) => {
+            if (todo.id !== id) {
+              return todo;
+            }
+
+            previousStatus = todo.status;
+            hasChanged = true;
+            hasSectionChanged = true;
+
+            return {
+              ...todo,
+              status: toggleTodoStatus(todo.status),
+            };
+          });
+
+          return hasSectionChanged ? { ...section, todos } : section;
+        });
+
+        return hasChanged ? { ...current, contents } : current;
+      });
+
+      return { previousStatus };
+    },
+    onError: (_error, { id }, context) => {
+      if (!context?.previousStatus) {
+        return;
+      }
+
+      const previousStatus = context.previousStatus;
+
+      queryClient.setQueryData<TodoDashboardResponseType>([Todo_KEY.DASHBOARD], (current) => {
+        if (!current) {
+          return current;
+        }
+
+        const contents = current.contents.map((section) => {
+          let hasSectionChanged = false;
+          const todos = section.todos.map((todo) => {
+            if (todo.id !== id) {
+              return todo;
+            }
+
+            hasSectionChanged = true;
+
+            return {
+              ...todo,
+              status: previousStatus,
+            };
+          });
+
+          return hasSectionChanged ? { ...section, todos } : section;
+        });
+
+        return { ...current, contents };
+      });
+    },
+    onSettled: async (_data, _error, { id }) => {
+      pendingCompleteTodoIdsRef.current.delete(id);
+      setPendingCompleteTodoIds((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+
+      await handleRefetchDashboardLinkedQueries();
+    },
   });
 
   const deleteTodoMutation = useMutation({
@@ -216,10 +317,16 @@ function useDashboardState() {
   };
 
   const handleTodoCompleteToggle = (id: number) => {
-    if (completeToggleTodoMutation.isPending || deleteTodoMutation.isPending) {
+    if (pendingCompleteTodoIdsRef.current.has(id) || deleteTodoMutation.isPending) {
       return;
     }
 
+    pendingCompleteTodoIdsRef.current.add(id);
+    setPendingCompleteTodoIds((prev) => {
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
     completeToggleTodoMutation.mutate({ id });
   };
 
@@ -380,6 +487,7 @@ function useDashboardState() {
   return {
     dashboardQuery,
     visibleSections,
+    todayDate,
     selectedStatus,
     currentTodoId,
     selectedDate,
@@ -399,7 +507,7 @@ function useDashboardState() {
     isChangeDatePending: todoChangeDateMutation.isPending,
     isRepeatDatePending: todoRepeatDateMutation.isPending,
     isChangeTimePending: todoChangeTimeMutation.isPending,
-    isCompleteTogglePending: completeToggleTodoMutation.isPending,
+    isCompleteTogglePending: pendingCompleteTodoIds.has(currentTodoId),
     handleSelectStatus,
     handleSelectedDate,
     handleTodoSheetOpen,

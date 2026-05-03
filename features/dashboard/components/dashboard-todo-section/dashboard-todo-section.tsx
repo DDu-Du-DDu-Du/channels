@@ -1,6 +1,6 @@
 import { View } from "react-native";
 
-import { SpoqaText } from "@/components";
+import { EmptyList, SpoqaText } from "@/components";
 import type { TodoDashboardContentType } from "@/types/response/todo/todo";
 import { formatDateToYYYYMMDD } from "@/utils";
 
@@ -8,6 +8,7 @@ import DashboardTodoItem from "../dashboard-todo-item/dashboard-todo-item";
 
 interface DashboardTodoSectionProps {
   section: TodoDashboardContentType;
+  isToday: boolean;
   onCompleteToggle: (id: number) => void;
   onOpenMenu: (id: number) => void;
 }
@@ -59,9 +60,12 @@ const formatSectionTitle = (date: string) => {
 
 function DashboardTodoSection({
   section,
+  isToday,
   onCompleteToggle,
   onOpenMenu,
 }: DashboardTodoSectionProps) {
+  const shouldShowTodayEmpty = isToday && section.todos.length === 0;
+
   return (
     <View className="mb-[2rem]">
       <SpoqaText
@@ -70,6 +74,7 @@ function DashboardTodoSection({
       >
         {formatSectionTitle(section.date)}
       </SpoqaText>
+      {shouldShowTodayEmpty && <EmptyList text="오늘 할 일이 없어요" />}
       {section.todos.map((todo) => (
         <DashboardTodoItem
           key={todo.id}

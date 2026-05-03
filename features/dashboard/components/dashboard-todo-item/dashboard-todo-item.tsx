@@ -1,6 +1,7 @@
 import { Pressable, View } from "react-native";
 
 import { ShakingCheckIcon, SpoqaText } from "@/components";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { OptionIcon } from "@/icons";
 import type { TodoDashboardItemType } from "@/types/response/todo/todo";
 
@@ -12,6 +13,8 @@ interface DashboardTodoItemProps {
 
 function DashboardTodoItem({ item, onCompleteToggle, onOpenMenu }: DashboardTodoItemProps) {
   const isComplete = item.status === "COMPLETE";
+  const checkboxCheckColor = useThemeColorToken("role.icon.checkboxCheck");
+  const checkboxUncheckColor = useThemeColorToken("role.icon.checkboxUncheck");
   const resolvedBeginAt = item.beginAt?.slice(0, 5);
   const resolvedEndAt = item.endAt?.slice(0, 5);
   const timeLabel = resolvedBeginAt
@@ -33,8 +36,8 @@ function DashboardTodoItem({ item, onCompleteToggle, onOpenMenu }: DashboardTodo
       <View className="items-center justify-center pl-[1.8rem] pr-[1.2rem]">
         <ShakingCheckIcon
           isChecked={isComplete}
-          color="8E8E93"
-          uncheckedColor="8E8E93"
+          color={checkboxCheckColor}
+          uncheckedColor={checkboxUncheckColor}
           size={26}
           borderStrokeAlpha={0.72}
           onPress={handlePressComplete}

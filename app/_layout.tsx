@@ -12,7 +12,7 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { initializeKakaoSDK } from "@react-native-kakao/core";
 
 import { useFonts } from "expo-font";
-import { SplashScreen, Stack } from "expo-router";
+import { SplashScreen, Stack, usePathname } from "expo-router";
 
 const storybookEnabled = process.env.EXPO_PUBLIC_STORYBOOK_ENABLED === "true";
 const loginDisabled = process.env.EXPO_PUBLIC_LOGIN_DISABLED === "true";
@@ -58,6 +58,7 @@ LocaleConfig.locales.ko = {
 LocaleConfig.defaultLocale = "ko";
 
 export default function RootLayout() {
+  const pathname = usePathname();
   const [loaded, error] = useFonts({
     "SpoqaHanSansNeo-Bold": require("@/assets/fonts/SpoqaHanSans/SpoqaHanSansNeo-Bold.otf"),
     "SpoqaHanSansNeo-SemiBold": require("@/assets/fonts/SpoqaHanSans/SpoqaHanSansNeo-Medium.otf"),
@@ -86,6 +87,14 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [loaded, error]);
+
+  useEffect(() => {
+    if (typeof document === "undefined") {
+      return;
+    }
+
+    document.title = "모두플랜";
+  }, [pathname]);
 
   if (!hasHydrated || (!loaded && !error)) {
     return null;
