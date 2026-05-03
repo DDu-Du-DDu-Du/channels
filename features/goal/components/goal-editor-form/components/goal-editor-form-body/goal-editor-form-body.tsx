@@ -4,6 +4,7 @@ import { Pressable, View } from "react-native";
 
 import { Button, FormSection, FormTextInput } from "@/components";
 import { RepeatTodoCards, type RepeatTodoItemType } from "@/features/repeat-todo";
+import { useWideLayout } from "@/hooks";
 import { ArrowRightIcon } from "@/icons";
 
 import { useGoalMutation } from "../../hooks";
@@ -13,6 +14,7 @@ export interface GoalEditorFormBodyProps {
   defaultTitle: string;
   pickedColor: string;
   repeatTodos: RepeatTodoItemType[];
+  redirectOnSuccess?: boolean;
   successRedirect?: {
     pathname: "/feed" | "/stats";
     params?: {
@@ -32,6 +34,7 @@ function GoalEditorFormBody({
   defaultTitle,
   pickedColor,
   repeatTodos,
+  redirectOnSuccess,
   successRedirect,
   onSubmitSuccess,
   onPressOpenColorSheet,
@@ -39,10 +42,12 @@ function GoalEditorFormBody({
   onPressRepeatTodoCard,
   onPressDeleteRepeatTodoCard,
 }: GoalEditorFormBodyProps) {
+  const { isWideLayout } = useWideLayout();
   const { methods, handleUpdateColor, handleSubmitGoal, isPending } = useGoalMutation({
     defaultTitle,
     pickedColor,
     repeatTodos,
+    redirectOnSuccess,
     successRedirect,
     onSubmitSuccess,
   });
@@ -84,10 +89,13 @@ function GoalEditorFormBody({
       stroke="#FFFFFF"
     />
   );
+  const containerClassName = `flex-1 px-[2.4rem] pb-[2.4rem] pt-[0.8rem] ${
+    isWideLayout ? "w-full max-w-[84rem] self-center" : ""
+  }`;
 
   return (
     <FormProvider {...methods}>
-      <View className="flex-1 px-[2.4rem] pb-[2.4rem] pt-[0.8rem]">
+      <View className={containerClassName}>
         <View className="gap-[1.2rem]">
           <FormTextInput
             control={methods.control}

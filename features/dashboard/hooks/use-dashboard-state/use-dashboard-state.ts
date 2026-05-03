@@ -28,16 +28,12 @@ const todayString = () => formatDateToYYYYMMDD(new Date());
 const toggleTodoStatus = (status: TodoStatusType): TodoStatusType =>
   status === "COMPLETE" ? "UNCOMPLETED" : "COMPLETE";
 
-const clampIndex = (index: number, length: number) => {
-  if (length <= 0) {
-    return -1;
+const getDateByIndex = (contents: TodoDashboardContentType[], index: number) => {
+  if (!Number.isInteger(index) || index < 0 || index >= contents.length) {
+    return todayString();
   }
 
-  if (!Number.isFinite(index)) {
-    return 0;
-  }
-
-  return Math.min(Math.max(index, 0), length - 1);
+  return contents[index]?.date ?? todayString();
 };
 
 function useDashboardState() {
@@ -105,9 +101,8 @@ function useDashboardState() {
 
   const todayDate = useMemo(() => {
     const contents = dashboardQuery.data?.contents ?? [];
-    const clampedIndex = clampIndex(dashboardQuery.data?.todayIndex ?? 0, contents.length);
 
-    return clampedIndex >= 0 ? contents[clampedIndex]?.date : todayString();
+    return getDateByIndex(contents, dashboardQuery.data?.todayIndex ?? -1);
   }, [dashboardQuery.data?.contents, dashboardQuery.data?.todayIndex]);
 
   const visibleSections = useMemo<TodoDashboardContentType[]>(() => {

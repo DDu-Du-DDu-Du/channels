@@ -3,6 +3,7 @@ import { FormProvider } from "react-hook-form";
 import { Pressable, View } from "react-native";
 
 import { Button, FormSection, FormTextInput, SpoqaText } from "@/components";
+import { useWideLayout } from "@/hooks";
 import { ArrowRightIcon } from "@/icons";
 import type { GoalPrivacyType } from "@/types/response/goal/goal";
 
@@ -14,6 +15,9 @@ export interface GoalEditFormViewProps {
   pickedColor: string;
   privacyType: GoalPrivacyType;
   repeatTodoCount: number;
+  redirectOnSuccess?: boolean;
+  invalidateFeedOnSuccess?: boolean;
+  onMutationSuccess?: () => void;
   onPressOpenColorSheet: () => void;
   onPressOpenRepeatManagement: () => void;
   onPressTerminateGoal: () => void;
@@ -26,11 +30,15 @@ function GoalEditFormView({
   pickedColor,
   privacyType,
   repeatTodoCount,
+  redirectOnSuccess,
+  invalidateFeedOnSuccess,
+  onMutationSuccess,
   onPressOpenColorSheet,
   onPressOpenRepeatManagement,
   onPressTerminateGoal,
   onPressDeleteGoal,
 }: GoalEditFormViewProps) {
+  const { isWideLayout } = useWideLayout();
   const {
     methods,
     handleUpdateColor,
@@ -43,7 +51,13 @@ function GoalEditFormView({
     defaultTitle,
     pickedColor,
     privacyType,
+    redirectOnSuccess,
+    invalidateFeedOnSuccess,
+    onMutationSuccess,
   });
+  const containerClassName = `flex-1 px-[2.4rem] pb-[2.4rem] pt-[0.8rem] ${
+    isWideLayout ? "w-full max-w-[84rem] self-center" : ""
+  }`;
 
   useEffect(() => {
     handleUpdateColor(pickedColor);
@@ -78,7 +92,7 @@ function GoalEditFormView({
 
   return (
     <FormProvider {...methods}>
-      <View className="flex-1 px-[2.4rem] pb-[2.4rem] pt-[0.8rem]">
+      <View className={containerClassName}>
         <View className="gap-[1.2rem]">
           <FormTextInput
             control={methods.control}

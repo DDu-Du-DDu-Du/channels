@@ -47,6 +47,7 @@ export { default as TimePicker } from "./time-picker/time-picker";
 export { default as TimeSet } from "./time-set/time-set";
 export { default as ToastProvider } from "./toast/toast-provider";
 export { default as WheelPicker } from "./wheel-picker/wheel-picker";
+export { default as WidePanelLayout } from "./wide-panel-layout/wide-panel-layout";
 export { default as YearMonthPicker } from "./year-month-picker/year-month-picker";
 export { default as YearMonthPickerSheet } from "./year-month-picker-sheet/year-month-picker-sheet";
 export { default as YearMonthPopover } from "./year-month-popover/year-month-popover";

@@ -4,3 +4,4 @@ export { default as DisplaySettingsScreen } from "./display-settings-screen/disp
 export { default as MenuActivationSettingsScreen } from "./menu-activation-settings-screen/menu-activation-settings-screen";
 export { SettingsLoginContainer } from "./settings-login-container";
 export { default as SettingsScreen } from "./settings-screen/settings-screen";
+export * from "./settings-wide-shell";

@@ -3,22 +3,33 @@ import { Pressable, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { type SharedValue, useSharedValue, withTiming } from "react-native-reanimated";
 
-import SpoqaText from "@/components/spoqa-text/spoqa-text";
-import { FEED_KEY } from "@/constants/query-key/query-key";
+import { SpoqaText, WidePanelLayout } from "@/components";
+import { FEED_KEY, GOAL_KEY } from "@/constants/query-key/query-key";
 import FeedCalendar from "@/features/feed/components/feed-calendar/feed-calendar";
+import FeedWideControlPanel, {
+  type FeedWideSummary,
+} from "@/features/feed/components/feed-wide-control-panel/feed-wide-control-panel";
 import MainFeedItems from "@/features/feed/components/main-feed-items/main-feed-items";
+import { useFeedWideState } from "@/features/feed/components/main-feed/hooks";
+import { GoalEditorForm, GoalEditorScreen } from "@/features/goal";
 import { useMe } from "@/features/user";
+import { useWideLayout } from "@/hooks";
+import { useThemeColorToken } from "@/hooks/use-theme-color";
+import { CloseIcon, SearchIcon } from "@/icons";
 import { getDailyList, getDailyTimeTable, getPeriodTodos } from "@/service/feed/feed";
+import { getGoalList } from "@/service/goal/goal";
 import { useAuthStore } from "@/stores";
 import type {
   MainDailyListType,
   MainDailyTimeTableType,
+  MainTimeTableType,
   MonthlyWeeklyTodoType,
 } from "@/types/response/feed/feed";
+import type { GoalType } from "@/types/response/goal/goal";
 import { formatDateToYYYYMMDD } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
 
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 
 export type MainFeedView = "list" | "timeline";
 
@@ -66,6 +77,68 @@ const sortByGoalStatus = (list: MainDailyListType[]) =>
 
     return 1;
   });
+
+const getDailyTodos = (daily: MainDailyListType) => daily.todos ?? daily.Todos ?? [];
+
+const filterDailyListByGoalIds = (list: MainDailyListType[], goalIds: Set<number>) =>
+  list
+    .filter((daily) => goalIds.has(daily.goal.id))
+    .map((daily) => {
+      const todos = getDailyTodos(daily);
+
+      return {
+        ...daily,
+        todos,
+        Todos: todos,
+      };
+    });
+
+const filterTimeTableSectionByGoalIds = (
+  section: MainTimeTableType,
+  goalIds: Set<number>,
+): MainTimeTableType => {
+  const todos = (section.todos ?? section.Todos ?? []).filter((todo) => goalIds.has(todo.goalId));
+
+  return {
+    ...section,
+    todos,
+    Todos: todos,
+  };
+};
+
+const filterDailyTimeTableByGoalIds = (
+  dailyTimeTable: MainDailyTimeTableType | undefined,
+  goalIds: Set<number>,
+): MainDailyTimeTableType | undefined => {
+  if (!dailyTimeTable) {
+    return dailyTimeTable;
+  }
+
+  return {
+    timetable: (dailyTimeTable.timetable ?? []).map((section) =>
+      filterTimeTableSectionByGoalIds(section, goalIds),
+    ),
+    unassignedTodos: filterDailyListByGoalIds(dailyTimeTable.unassignedTodos ?? [], goalIds),
+  };
+};
+
+const summarizeDailyList = (dailyList: MainDailyListType[]): FeedWideSummary => {
+  return dailyList.reduce<FeedWideSummary>(
+    (summary, daily) => {
+      const todos = getDailyTodos(daily);
+
+      return todos.reduce<FeedWideSummary>(
+        (nextSummary, todo) => ({
+          total: nextSummary.total + 1,
+          complete: nextSummary.complete + (todo.status === "COMPLETE" ? 1 : 0),
+          postponed: nextSummary.postponed + (todo.isPostponed ? 1 : 0),
+        }),
+        summary,
+      );
+    },
+    { total: 0, complete: 0, postponed: 0 },
+  );
+};
 
 interface CreateCalendarPanGestureParams {
   enabled: boolean;
@@ -129,8 +202,10 @@ const createCalendarPanGesture = ({
 };
 
 function MainFeed({ onSelectDate }: MainFeedProps) {
+  const router = useRouter();
   const params = useLocalSearchParams<{ view?: string | string[]; date?: string | string[] }>();
   const view = resolveFeedView(toSingleParam(params.view));
+  const { isWideLayout } = useWideLayout();
   const paramDate = toSingleParam(params.date);
   const hasTokens = useAuthStore((state) => Boolean(state.accessToken && state.refreshToken));
   const isGuestSession = useAuthStore((state) => state.sessionType === "guest");
@@ -145,9 +220,40 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
   const isSessionReady = isGuestSession || (!!hasTokens && !!user);
   const calendarOpenProgress = useSharedValue(1);
   const dragStartProgress = useSharedValue(1);
+  const {
+    selectedGoalIds,
+    detailMode,
+    handleToggleGoal,
+    handleClearGoalSelection,
+    handleOpenGoalCreate,
+    handleOpenGoalEdit,
+    handleOpenFeedDetail,
+  } = useFeedWideState();
   const handleSelectDate = (date: string) => {
     setSelectedDate(date);
     onSelectDate?.(date);
+  };
+
+  const handleSelectWideDate = (date: string) => {
+    handleSelectDate(date);
+    handleOpenFeedDetail();
+  };
+
+  const handlePressToday = () => {
+    handleSelectWideDate(today);
+  };
+
+  const handleChangeView = (nextView: MainFeedView) => {
+    if (nextView === view) {
+      return;
+    }
+
+    router.setParams({ view: nextView });
+    handleOpenFeedDetail();
+  };
+
+  const handlePressSearch = () => {
+    router.push("/todo" as any);
   };
 
   useEffect(() => {
@@ -186,6 +292,59 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
         }),
       enabled: isSessionReady && view === "timeline",
     });
+
+  const { data: goalList = [] } = useQuery<GoalType[]>({
+    queryKey: [GOAL_KEY.GOAL_LIST, user?.id],
+    queryFn: () => {
+      if (!isGuestSession && !user?.id) {
+        return Promise.resolve([]);
+      }
+
+      return getGoalList({ userId: user?.id ?? 0 });
+    },
+    enabled: isWideLayout && isSessionReady,
+  });
+
+  const inProgressGoalList = useMemo(
+    () =>
+      [...goalList]
+        .filter((goal) => goal.status === "IN_PROGRESS")
+        .sort((a, b) => {
+          if (a.priority !== b.priority) {
+            return a.priority - b.priority;
+          }
+
+          return a.id - b.id;
+        }),
+    [goalList],
+  );
+
+  const activeWideGoalIds = useMemo(() => {
+    if (selectedGoalIds.length > 0) {
+      return new Set(selectedGoalIds);
+    }
+
+    const sourceGoalIds =
+      inProgressGoalList.length > 0
+        ? inProgressGoalList.map((goal) => goal.id)
+        : (dailyList ?? [])
+            .filter((daily) => daily.goal.status === "IN_PROGRESS")
+            .map((daily) => daily.goal.id);
+
+    return new Set(sourceGoalIds);
+  }, [dailyList, inProgressGoalList, selectedGoalIds]);
+
+  const filteredDailyList = useMemo(
+    () => filterDailyListByGoalIds(dailyList ?? [], activeWideGoalIds),
+    [activeWideGoalIds, dailyList],
+  );
+
+  const filteredDailyTimeTable = useMemo(
+    () => filterDailyTimeTableByGoalIds(dailyTimeTable, activeWideGoalIds),
+    [activeWideGoalIds, dailyTimeTable],
+  );
+
+  const wideSummary = useMemo(() => summarizeDailyList(filteredDailyList), [filteredDailyList]);
 
   useEffect(() => {
     calendarOpenProgress.value = withTiming(isCalendarOpen ? 1 : 0, {
@@ -260,6 +419,89 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
     />
   );
 
+  const wideFeedItems = (
+    <View className="flex-1">
+      <View className="h-[5.6rem] flex-row items-center justify-between border-b border-role-border-subtle px-[2rem] dark:border-role-dark-border-subtle">
+        <SpoqaText
+          weight="semiBold"
+          className="text-size16 text-role-text-primary dark:text-role-dark-text-primary"
+        >
+          {selectedDate}
+        </SpoqaText>
+        <Pressable
+          onPress={handlePressSearch}
+          hitSlop={8}
+          className="h-[3.6rem] w-[3.6rem] items-center justify-center"
+        >
+          <SearchIcon size={22} />
+        </Pressable>
+      </View>
+
+      <MainFeedItems
+        view={view}
+        dailyList={filteredDailyList}
+        dailyTimeTable={filteredDailyTimeTable}
+        isDailyTimeTableLoading={isDailyTimeTableLoading}
+        selectedTodoDate={selectedDate}
+        isCalendarOpen={false}
+      />
+    </View>
+  );
+
+  const wideGoalEditorDetail =
+    detailMode.type === "goal-create" ? (
+      <View className="flex-1">
+        <FeedWideEditorHeader
+          title="목표 등록"
+          onPressClose={handleOpenFeedDetail}
+        />
+        <GoalEditorForm
+          submitLabel="목표 등록"
+          redirectOnSuccess={false}
+          onSuccess={handleOpenFeedDetail}
+        />
+      </View>
+    ) : detailMode.type === "goal-edit" ? (
+      <View className="flex-1">
+        <FeedWideEditorHeader
+          title="목표 수정"
+          onPressClose={handleOpenFeedDetail}
+        />
+        <GoalEditorScreen
+          goalId={detailMode.goalId}
+          redirectOnSuccess={false}
+          invalidateFeedOnSuccess
+          onMutationSuccess={handleOpenFeedDetail}
+        />
+      </View>
+    ) : null;
+
+  if (isWideLayout) {
+    return (
+      <WidePanelLayout
+        control={
+          <FeedWideControlPanel
+            date={selectedDate}
+            view={view}
+            monthlyTodos={periodTodos ?? []}
+            goalList={inProgressGoalList}
+            selectedGoalIds={selectedGoalIds}
+            summary={wideSummary}
+            onSelectDate={handleSelectWideDate}
+            onPressToday={handlePressToday}
+            onChangeView={handleChangeView}
+            onClearGoalSelection={handleClearGoalSelection}
+            onToggleGoal={handleToggleGoal}
+            onPressAddGoal={handleOpenGoalCreate}
+            onPressEditGoal={handleOpenGoalEdit}
+          />
+        }
+        detail={wideGoalEditorDetail ?? wideFeedItems}
+        controlWidth="34%"
+      />
+    );
+  }
+
   return (
     <View className="w-full flex-1">
       <GestureDetector gesture={calendarPanGesture}>{feedCalendar}</GestureDetector>
@@ -272,6 +514,36 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
         <SpoqaText className="text-size13 text-role-text-inverse dark:text-role-dark-text-inverse">
           오늘
         </SpoqaText>
+      </Pressable>
+    </View>
+  );
+}
+
+interface FeedWideEditorHeaderProps {
+  title: string;
+  onPressClose: () => void;
+}
+
+function FeedWideEditorHeader({ title, onPressClose }: FeedWideEditorHeaderProps) {
+  const iconTone = useThemeColorToken("ui.icon.default");
+
+  return (
+    <View className="h-[5.6rem] flex-row items-center justify-between border-b border-role-border-subtle px-[2rem] dark:border-role-dark-border-subtle">
+      <SpoqaText
+        weight="semiBold"
+        className="text-size16 text-role-text-primary dark:text-role-dark-text-primary"
+      >
+        {title}
+      </SpoqaText>
+      <Pressable
+        onPress={onPressClose}
+        hitSlop={8}
+        className="h-[3.6rem] w-[3.6rem] items-center justify-center"
+      >
+        <CloseIcon
+          size={22}
+          fill={iconTone}
+        />
       </Pressable>
     </View>
   );

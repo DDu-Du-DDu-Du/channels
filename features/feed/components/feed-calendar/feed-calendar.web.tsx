@@ -25,6 +25,8 @@ export interface FeedCalendarProps {
   date: string;
   monthlyTodos: MonthlyWeeklyTodoType[];
   onSelectDate: (date: string) => void;
+  forceFullWidth?: boolean;
+  showHeaderActions?: boolean;
   onCalendarToggled?: (isOpen: boolean) => void;
   onReadyToggleCalendar?: (handleToggleCalendar: () => void) => void;
   externalOpenProgress?: SharedValue<number>;
@@ -35,6 +37,8 @@ function FeedCalendar({
   date,
   monthlyTodos,
   onSelectDate,
+  forceFullWidth = false,
+  showHeaderActions = true,
   onCalendarToggled,
   onReadyToggleCalendar,
   externalOpenProgress,
@@ -43,7 +47,7 @@ function FeedCalendar({
   const firstDay = useCalendarFirstDay();
   const isDarkMode = useSettingsStore((state) => state.display.isDarkMode);
   const { width: screenWidth } = useWindowDimensions();
-  const isDesktopWidth = screenWidth >= 1024;
+  const isDesktopWidth = screenWidth >= 1024 && !forceFullWidth;
   const calendarContainerClassName = useMemo(
     () => `min-h-px min-w-px ${isDesktopWidth ? "w-1/2 self-start" : "w-full self-stretch"}`,
     [isDesktopWidth],
@@ -240,6 +244,7 @@ function FeedCalendar({
           <FeedCalendarHeader
             displayMonth={handleDisplayMonth}
             onPressMonthPicker={handleOpenYearMonthSheet}
+            showHeaderActions={showHeaderActions}
           />
 
           <Animated.View style={calendarAnimatedStyle}>

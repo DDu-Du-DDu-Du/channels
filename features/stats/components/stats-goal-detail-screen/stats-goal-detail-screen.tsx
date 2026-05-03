@@ -46,13 +46,21 @@ const formatDateTimeToKoreanDate = (value?: string) => {
 };
 
 export interface StatsGoalDetailScreenProps {
+  goalId?: number;
+  initialYearMonth?: string;
+  isEmbeddedWide?: boolean;
   onGoalNameChange?: (goalName: string) => void;
 }
 
-function StatsGoalDetailScreen({ onGoalNameChange }: StatsGoalDetailScreenProps) {
+function StatsGoalDetailScreen({
+  goalId: goalIdProp,
+  initialYearMonth: initialYearMonthProp,
+  isEmbeddedWide = false,
+  onGoalNameChange,
+}: StatsGoalDetailScreenProps) {
   const params = useLocalSearchParams<{ id?: string | string[]; yearMonth?: string | string[] }>();
-  const goalId = Number(toSingleParam(params.id) ?? "0");
-  const initialYearMonth = toSingleParam(params.yearMonth);
+  const goalId = goalIdProp ?? Number(toSingleParam(params.id) ?? "0");
+  const initialYearMonth = initialYearMonthProp ?? toSingleParam(params.yearMonth);
 
   const [isPickerOpen, setIsPickerOpen] = useState(false);
 
@@ -111,12 +119,24 @@ function StatsGoalDetailScreen({ onGoalNameChange }: StatsGoalDetailScreenProps)
     onGoalNameChange?.(goalName);
   }, [goalName, onGoalNameChange]);
 
+  if (goalId <= 0) {
+    return (
+      <View className="flex-1 items-center justify-center px-[2.4rem]">
+        <SpoqaText className="text-size14 text-role-text-secondary dark:text-role-dark-text-secondary">
+          목표를 선택해 주세요.
+        </SpoqaText>
+      </View>
+    );
+  }
+
   return (
-    <View className="flex-1 px-[2.4rem] pt-[1.2rem]">
+    <View
+      className={`flex-1 ${isEmbeddedWide ? "px-[2.4rem] pt-[0.8rem]" : "px-[2.4rem] pt-[1.2rem]"}`}
+    >
       <ScrollView
         className="mt-[0.6rem]"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 24 }}
+        contentContainerStyle={{ paddingBottom: isEmbeddedWide ? 112 : 24 }}
       >
         <GoalOverallStatsSection
           createdAt={formatDateTimeToKoreanDate(goalSummaryQuery.data?.createdAt)}

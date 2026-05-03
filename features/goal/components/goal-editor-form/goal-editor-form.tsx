@@ -9,6 +9,8 @@ export interface GoalEditorFormProps {
   submitLabel: string;
   goal?: GoalType;
   defaultTitle?: string;
+  redirectOnSuccess?: boolean;
+  onSuccess?: () => void;
   successRedirect?: {
     pathname: "/feed" | "/stats";
     params?: {
@@ -22,6 +24,8 @@ function GoalEditorForm({
   submitLabel,
   goal,
   defaultTitle = "",
+  redirectOnSuccess,
+  onSuccess,
   successRedirect,
 }: GoalEditorFormProps) {
   const initialTitle = goal?.name ?? defaultTitle;
@@ -70,6 +74,7 @@ function GoalEditorForm({
     handleResetRepeatTodos();
     handleResetColor();
     handleCloseColorSheet();
+    onSuccess?.();
   };
 
   return (
@@ -79,6 +84,7 @@ function GoalEditorForm({
         defaultTitle={initialTitle}
         pickedColor={pickedColor}
         repeatTodos={repeatTodos}
+        redirectOnSuccess={redirectOnSuccess}
         successRedirect={successRedirect}
         onSubmitSuccess={handleSubmitSuccess}
         onPressOpenColorSheet={handlePressOpenColorSheet}

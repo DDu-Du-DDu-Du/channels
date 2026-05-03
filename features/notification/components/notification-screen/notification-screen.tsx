@@ -6,9 +6,11 @@ import {
   TodoNotificationListEntry,
   useNotificationScreen,
 } from "@/features/notification/hooks";
+import { useWideLayout } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 
 function NotificationScreen() {
+  const { isWideLayout } = useWideLayout();
   const spinnerColor = useThemeColorToken("role.text.tertiary");
   const spinnerEmphasisColor = useThemeColorToken("role.text.secondary");
   const selectedChipBg = useThemeColorToken("role.surface.subtle");
@@ -28,6 +30,7 @@ function NotificationScreen() {
     handlePressTodoNotification,
     handlePressAnnouncement,
   } = useNotificationScreen();
+  const listClassName = isWideLayout ? "w-full max-w-[88rem] self-center" : "";
 
   const renderEmpty = () => {
     if (isLoading) {
@@ -86,6 +89,7 @@ function NotificationScreen() {
     return (
       <View className="flex-1 bg-role-surface-panel dark:bg-role-dark-surface-panel">
         <FlatList<TodoNotificationListEntry>
+          className={listClassName}
           data={TodoListEntries}
           keyExtractor={(item) => item.key}
           contentContainerStyle={{
@@ -145,6 +149,7 @@ function NotificationScreen() {
   return (
     <View className="flex-1 bg-role-surface-panel dark:bg-role-dark-surface-panel">
       <FlatList<AnnouncementViewItem>
+        className={listClassName}
         data={announcementViewItems}
         keyExtractor={(item) => item.key}
         contentContainerStyle={{
