@@ -24,7 +24,7 @@ function MonthSelectionSection({
           <Pressable
             accessibilityRole="button"
             onPress={handlePressTitle}
-            className="self-start rounded-radius10 bg-role-surface-panel dark:bg-role-dark-surface-panel px-[1.2rem] py-[0.9rem]"
+            className="min-h-[4rem] justify-center self-start rounded-radius15 border border-role-border-subtle bg-role-surface-panel px-[1.2rem] py-[0.8rem] dark:border-role-dark-border-subtle dark:bg-role-dark-surface-panel"
           >
             <SpoqaText
               weight="bold"

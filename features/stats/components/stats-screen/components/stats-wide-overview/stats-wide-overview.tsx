@@ -95,7 +95,7 @@ function StatsWideOverview({
     <ScrollView
       className="flex-1 px-[2.4rem] pt-[2rem]"
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 112 }}
+      contentContainerStyle={{ paddingBottom: 32 }}
     >
       <StatsReportSection
         report={report}

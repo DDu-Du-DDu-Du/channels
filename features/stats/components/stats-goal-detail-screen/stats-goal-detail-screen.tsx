@@ -136,7 +136,7 @@ function StatsGoalDetailScreen({
       <ScrollView
         className="mt-[0.6rem]"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: isEmbeddedWide ? 112 : 24 }}
+        contentContainerStyle={{ paddingBottom: isEmbeddedWide ? 32 : 24 }}
       >
         <GoalOverallStatsSection
           createdAt={formatDateTimeToKoreanDate(goalSummaryQuery.data?.createdAt)}
