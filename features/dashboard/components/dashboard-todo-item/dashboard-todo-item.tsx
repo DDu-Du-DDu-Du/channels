@@ -32,13 +32,13 @@ function DashboardTodoItem({ item, onCompleteToggle, onOpenMenu }: DashboardTodo
   };
 
   return (
-    <View className="mb-[1rem] min-h-[6.6rem] w-full flex-row items-center rounded-[2rem] bg-role-surface-canvas dark:bg-role-dark-surface-canvas">
-      <View className="items-center justify-center pl-[1.8rem] pr-[1.2rem]">
+    <View className="mb-[0.8rem] min-h-[5.6rem] w-full flex-row items-center rounded-[1.6rem] bg-role-surface-canvas dark:bg-role-dark-surface-canvas">
+      <View className="items-center justify-center pl-[1.4rem] pr-[1rem]">
         <ShakingCheckIcon
           isChecked={isComplete}
           color={checkboxCheckColor}
           uncheckedColor={checkboxUncheckColor}
-          size={26}
+          size={22}
           borderStrokeAlpha={0.72}
           onPress={handlePressComplete}
         />
@@ -47,12 +47,12 @@ function DashboardTodoItem({ item, onCompleteToggle, onOpenMenu }: DashboardTodo
       <Pressable
         accessibilityRole="button"
         onPress={handleOpenMenu}
-        className="min-w-0 flex-1 py-[1.2rem]"
+        className="min-w-0 flex-1 py-[1rem]"
       >
         <SpoqaText
           weight="regular"
           numberOfLines={1}
-          className={`text-size16 ${
+          className={`text-size14 ${
             isComplete
               ? "text-role-text-tertiary line-through dark:text-role-dark-text-tertiary"
               : "text-role-text-primary dark:text-role-dark-text-primary"
@@ -62,10 +62,10 @@ function DashboardTodoItem({ item, onCompleteToggle, onOpenMenu }: DashboardTodo
         </SpoqaText>
 
         {shouldShowMeta && (
-          <View className="mt-[0.25rem] min-w-0 flex-row flex-wrap items-center">
+          <View className="mt-[0.2rem] min-w-0 flex-row flex-wrap items-center">
             {timeLabel ? (
               <SpoqaText
-                className="text-size11 text-role-text-tertiary dark:text-role-dark-text-tertiary"
+                className="text-size10 text-role-text-tertiary dark:text-role-dark-text-tertiary"
                 numberOfLines={1}
               >
                 {timeLabel}
@@ -77,8 +77,8 @@ function DashboardTodoItem({ item, onCompleteToggle, onOpenMenu }: DashboardTodo
                   timeLabel ? "ml-[0.6rem] flex-row items-center" : "flex-row items-center"
                 }
               >
-                <View className="mr-[0.5rem] h-[0.8rem] w-[0.8rem] rounded-circle bg-[#F59E0B]" />
-                <SpoqaText className="text-size11 text-role-text-tertiary dark:text-role-dark-text-tertiary">
+                <View className="mr-[0.5rem] h-[0.7rem] w-[0.7rem] rounded-circle bg-[#F59E0B]" />
+                <SpoqaText className="text-size10 text-role-text-tertiary dark:text-role-dark-text-tertiary">
                   Postponed
                 </SpoqaText>
               </View>
@@ -91,7 +91,7 @@ function DashboardTodoItem({ item, onCompleteToggle, onOpenMenu }: DashboardTodo
         accessibilityRole="button"
         hitSlop={8}
         onPress={handleOpenMenu}
-        className="w-[4.8rem] items-center justify-center self-stretch"
+        className="w-[4.2rem] items-center justify-center self-stretch"
       >
         <View style={{ transform: [{ rotate: "90deg" }] }}>
           <OptionIcon fill="#747474" />

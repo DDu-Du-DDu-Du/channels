@@ -27,8 +27,8 @@ function TextInput({
   const defaultInputFocusBorder = useThemeColorToken("ui.input.focus.border");
 
   const baseCls = multiline
-    ? "w-full rounded-radius15 px-[1.2rem] text-size15"
-    : "w-full h-[5.6rem] rounded-radius15 px-[1.2rem] text-size15";
+    ? "w-full rounded-radius15 px-[1.2rem] text-size15 outline-none"
+    : "w-full h-[5.6rem] rounded-radius15 px-[1.2rem] text-size15 outline-none";
   const inputClassNames = `${baseCls} ${className ?? ""}`;
 
   const baseInputStyle = {

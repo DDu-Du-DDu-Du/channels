@@ -36,9 +36,52 @@ const getDateByIndex = (contents: TodoDashboardContentType[], index: number) => 
   return contents[index]?.date ?? todayString();
 };
 
+const resolveSectionIndexByDate = (sections: TodoDashboardContentType[], targetDate: string) => {
+  if (sections.length === 0) {
+    return -1;
+  }
+
+  const exactIndex = sections.findIndex((section) => section.date === targetDate);
+
+  if (exactIndex >= 0) {
+    return exactIndex;
+  }
+
+  const firstDate = sections[0]?.date;
+  const lastDate = sections[sections.length - 1]?.date;
+  const isDescending = Boolean(firstDate && lastDate && firstDate > lastDate);
+
+  if (isDescending) {
+    if (firstDate && targetDate > firstDate) {
+      return 0;
+    }
+
+    const previousIndex = sections.findIndex((section) => section.date < targetDate);
+
+    if (previousIndex >= 0) {
+      return previousIndex;
+    }
+
+    return sections.length - 1;
+  }
+
+  if (firstDate && targetDate < firstDate) {
+    return 0;
+  }
+
+  const followingIndex = sections.findIndex((section) => section.date > targetDate);
+
+  if (followingIndex >= 0) {
+    return followingIndex;
+  }
+
+  return sections.length - 1;
+};
+
 function useDashboardState() {
   const queryClient = useQueryClient();
   const [selectedStatus, setSelectedStatus] = useState<DashboardStatusFilterType>("ALL");
+  const [dashboardSearchText, setDashboardSearchText] = useState("");
   const [pendingCompleteTodoIds, setPendingCompleteTodoIds] = useState<Set<number>>(
     () => new Set(),
   );
@@ -127,29 +170,29 @@ function useDashboardState() {
     return nextSections.sort((left, right) => left.date.localeCompare(right.date));
   }, [dashboardQuery.data?.contents, selectedStatus, todayDate]);
 
+  const searchedVisibleSections = useMemo<TodoDashboardContentType[]>(() => {
+    const keyword = dashboardSearchText.trim().toLowerCase();
+
+    if (!keyword) {
+      return visibleSections;
+    }
+
+    return visibleSections
+      .map((section) => ({
+        ...section,
+        todos: section.todos.filter((todo) => todo.name.toLowerCase().includes(keyword)),
+      }))
+      .filter((section) => section.todos.length > 0);
+  }, [dashboardSearchText, visibleSections]);
+
   const initialScrollDate = useMemo(() => {
     return todayDate;
   }, [todayDate]);
 
-  const resolveVisibleSectionIndex = (targetDate: string) => {
-    if (visibleSections.length === 0) {
-      return -1;
-    }
-
-    const exactIndex = visibleSections.findIndex((section) => section.date === targetDate);
-
-    if (exactIndex >= 0) {
-      return exactIndex;
-    }
-
-    const followingIndex = visibleSections.findIndex((section) => section.date > targetDate);
-
-    if (followingIndex >= 0) {
-      return followingIndex;
-    }
-
-    return visibleSections.length - 1;
-  };
+  const resolveVisibleSectionIndex = (
+    targetDate: string,
+    sections: TodoDashboardContentType[] = visibleSections,
+  ) => resolveSectionIndexByDate(sections, targetDate);
 
   const handleRefetchDashboardLinkedQueries = async () => {
     await handleInvalidateTodoLinkedQueries(queryClient, {
@@ -304,6 +347,10 @@ function useDashboardState() {
 
   const handleSelectStatus = (status: DashboardStatusFilterType) => {
     setSelectedStatus(status);
+  };
+
+  const handleChangeDashboardSearchText = (text: string) => {
+    setDashboardSearchText(text);
   };
 
   const handleTodoSheetOpen = (id: number) => {
@@ -482,8 +529,10 @@ function useDashboardState() {
   return {
     dashboardQuery,
     visibleSections,
+    searchedVisibleSections,
     todayDate,
     selectedStatus,
+    dashboardSearchText,
     currentTodoId,
     selectedDate,
     currentDate,
@@ -504,6 +553,7 @@ function useDashboardState() {
     isChangeTimePending: todoChangeTimeMutation.isPending,
     isCompleteTogglePending: pendingCompleteTodoIds.has(currentTodoId),
     handleSelectStatus,
+    handleChangeDashboardSearchText,
     handleSelectedDate,
     handleTodoSheetOpen,
     handleTodoCompleteToggle,

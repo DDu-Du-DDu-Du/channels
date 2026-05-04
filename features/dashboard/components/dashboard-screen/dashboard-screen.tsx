@@ -5,12 +5,14 @@ import {
   AlarmSheet,
   BottomSingleCalendar,
   EmptyList,
+  TextInput,
   TodoSheet,
   TodoTimeSheet,
+  WidePanelLayout,
 } from "@/components";
 import { TodoEditorSheet, useTodoEditorSheet } from "@/features/todo";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
-import { PlusIcon } from "@/icons";
+import { PlusIcon, SearchIcon } from "@/icons";
 import type { TodoDashboardContentType } from "@/types/response/todo/todo";
 
 import { useDashboardState } from "../../hooks";
@@ -22,20 +24,23 @@ import { useRouter } from "expo-router";
 
 function DashboardScreen() {
   const router = useRouter();
-  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
+  const { width: windowWidth } = useWindowDimensions();
   const listRef = useRef<FlatList<TodoDashboardContentType>>(null);
   const hasScrolledToInitialRef = useRef(false);
   const isWideLayout = windowWidth > 768;
   const spinnerColor = useThemeColorToken("role.text.primary");
   const floatingButtonIconColor = useThemeColorToken("role.text.inverse");
+  const detailHeaderIconColor = useThemeColorToken("ui.icon.default");
   const { editorSheetState, handleOpenCreateEditor, handleOpenEditEditor, handleCloseEditor } =
     useTodoEditorSheet();
 
   const {
     dashboardQuery,
     visibleSections,
+    searchedVisibleSections,
     todayDate,
     selectedStatus,
+    dashboardSearchText,
     currentTodoId,
     selectedDate,
     currentDate,
@@ -56,6 +61,7 @@ function DashboardScreen() {
     isChangeTimePending,
     isCompleteTogglePending,
     handleSelectStatus,
+    handleChangeDashboardSearchText,
     handleSelectedDate,
     handleTodoSheetOpen,
     handleTodoCompleteToggle,
@@ -82,7 +88,8 @@ function DashboardScreen() {
 
   const handleScrollToDate = useCallback(
     (date: string, animated: boolean) => {
-      const nextIndex = resolveVisibleSectionIndex(date);
+      const sections = isWideLayout ? searchedVisibleSections : visibleSections;
+      const nextIndex = resolveVisibleSectionIndex(date, sections);
 
       if (nextIndex < 0) {
         return;
@@ -96,7 +103,7 @@ function DashboardScreen() {
         });
       });
     },
-    [resolveVisibleSectionIndex],
+    [isWideLayout, resolveVisibleSectionIndex, searchedVisibleSections, visibleSections],
   );
 
   useEffect(() => {
@@ -160,13 +167,6 @@ function DashboardScreen() {
     }, 120);
   };
 
-  const renderListFooter = () => (
-    <View
-      pointerEvents="none"
-      style={{ height: Math.max(windowHeight, 360) }}
-    />
-  );
-
   const renderEmptyState = () => {
     if (dashboardQuery.isLoading || dashboardQuery.isFetching) {
       return (
@@ -203,13 +203,14 @@ function DashboardScreen() {
     return <View className="w-full max-w-[76rem] self-center">{section}</View>;
   };
 
+  const dashboardSections = isWideLayout ? searchedVisibleSections : visibleSections;
+
   const dashboardList = (
     <FlatList<TodoDashboardContentType>
       ref={listRef}
-      data={visibleSections}
+      data={dashboardSections}
       keyExtractor={(item) => item.date}
       renderItem={renderDashboardSection}
-      ListFooterComponent={visibleSections.length > 0 ? renderListFooter : null}
       ListEmptyComponent={renderEmptyState}
       contentContainerStyle={{
         flexGrow: 1,
@@ -311,30 +312,48 @@ function DashboardScreen() {
   );
 
   if (isWideLayout) {
-    return (
-      <View className="flex-1 bg-role-surface-canvas dark:bg-role-dark-surface-canvas">
-        <View className="flex-1 items-center px-[2.4rem] pb-[2.4rem] pt-[2rem]">
-          <View className="min-h-0 w-full max-w-[144rem] flex-1 flex-row overflow-hidden rounded-[0.8rem] border border-role-border-subtle bg-role-surface-panel dark:border-role-dark-border-subtle dark:bg-role-dark-surface-panel">
-            <View
-              className="h-full border-r border-role-border-subtle dark:border-role-dark-border-subtle"
-              style={{ width: "34%", minWidth: 300, maxWidth: 430 }}
-            >
-              <DashboardWideControlPanel
-                selectedStatus={selectedStatus}
-                selectedDate={selectedDashboardDate}
-                visibleSections={visibleSections}
-                onSelectStatus={handleSelectStatus}
-                onSelectDate={handleSelectWideDate}
-                onPressSearch={handlePressSearch}
-              />
-            </View>
-            <View className="min-w-0 flex-1 bg-role-surface-canvas dark:bg-role-dark-surface-canvas">
-              {dashboardList}
-            </View>
+    const wideDashboardDetail = (
+      <View className="relative min-w-0 flex-1 bg-role-surface-canvas dark:bg-role-dark-surface-canvas">
+        <View className="h-[5.6rem] flex-row items-center border-b border-role-border-subtle px-[2rem] dark:border-role-dark-border-subtle">
+          <View className="h-[3.2rem] min-w-0 flex-1 flex-row items-center rounded-circle bg-role-surface-panel px-[1.2rem] dark:bg-role-dark-surface-panel">
+            <SearchIcon
+              size={18}
+              stroke={detailHeaderIconColor}
+            />
+            <TextInput
+              value={dashboardSearchText}
+              onChangeText={handleChangeDashboardSearchText}
+              placeholder="투두 검색"
+              returnKeyType="search"
+              className="h-[3.2rem] flex-1 border-0 bg-transparent px-[0.8rem] text-size13"
+              style={{
+                backgroundColor: "transparent",
+                borderWidth: 0,
+              }}
+            />
           </View>
         </View>
 
+        {dashboardList}
         {floatingCreateButton}
+      </View>
+    );
+
+    return (
+      <View className="flex-1">
+        <WidePanelLayout
+          control={
+            <DashboardWideControlPanel
+              selectedStatus={selectedStatus}
+              selectedDate={selectedDashboardDate}
+              visibleSections={visibleSections}
+              onSelectStatus={handleSelectStatus}
+              onSelectDate={handleSelectWideDate}
+            />
+          }
+          detail={wideDashboardDetail}
+          controlWidth="34%"
+        />
         {sheetStack}
       </View>
     );
