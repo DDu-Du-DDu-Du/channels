@@ -8,6 +8,7 @@ import {
   HeaderRightActions,
   PageHeader,
   SpoqaText,
+  WidePanelLayout,
 } from "@/components";
 import { useToast } from "@/components/toast/hooks";
 import { AnnouncementListViewItem, useAnnouncementScreen } from "@/features/announcement";
@@ -16,7 +17,6 @@ import { ChevronRightIcon } from "@/icons";
 
 import AppConnectionSettingsScreen from "../app-connection-settings-screen/app-connection-settings-screen";
 import { BugReportForm, BugReportFormHandle } from "../bug-report-sheet/components";
-import DesignSystemScreen from "../design-system-screen/design-system-screen";
 import DisplaySettingsScreen from "../display-settings-screen/display-settings-screen";
 import MenuActivationSettingsScreen from "../menu-activation-settings-screen/menu-activation-settings-screen";
 import { SettingsLoginContainer } from "../settings-login-container";
@@ -50,18 +50,6 @@ const SETTINGS_WIDE_CONTROL_ITEMS: SettingsWideControlItem[] = [
   { section: "bug-report", label: "버그 리포트" },
   { section: "announcement", label: "공지사항" },
 ];
-
-const SETTINGS_WIDE_PANEL_STYLE = {
-  maxWidth: 1440,
-};
-
-const SETTINGS_WIDE_CONTROL_STYLE = {
-  flexBasis: "32%",
-  flexGrow: 0,
-  flexShrink: 0,
-  minWidth: 260,
-  maxWidth: 420,
-} as const;
 
 function SettingsWideControlRow({
   label,
@@ -120,7 +108,7 @@ function SettingsWideControlRow({
 
 function SettingsWideDetailFrame({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <View className="min-h-0 flex-1 overflow-hidden rounded-radius10 border border-role-border-subtle bg-role-surface-canvas dark:border-role-dark-border-subtle dark:bg-role-dark-surface-canvas">
+    <View className="min-h-0 flex-1 overflow-hidden bg-role-surface-canvas dark:bg-role-dark-surface-canvas">
       <View className="border-b border-role-border-subtle px-[2rem] py-[1.5rem] dark:border-role-dark-border-subtle">
         <SpoqaText
           weight="bold"
@@ -269,7 +257,7 @@ function SettingsWideShell({
       case "app-connection":
         return <AppConnectionSettingsScreen />;
       case "design-system":
-        return isDesignTokenLabEnabled ? <DesignSystemScreen /> : <DisplaySettingsScreen />;
+        return <DisplaySettingsScreen />;
       case "bug-report":
         return <SettingsWideBugReportDetail />;
       case "announcement":
@@ -278,6 +266,40 @@ function SettingsWideShell({
         return <DisplaySettingsScreen />;
     }
   };
+  const controlPanel = (
+    <ScrollView
+      className="flex-1"
+      contentContainerStyle={{ padding: 12, paddingBottom: 16, rowGap: 4 }}
+      showsVerticalScrollIndicator={false}
+    >
+      {controlItems.map((item) => (
+        <SettingsWideControlRow
+          key={item.section}
+          label={item.label}
+          isSelected={selectedSection === item.section}
+          onPress={() => handleSelectSection(item.section)}
+        />
+      ))}
+
+      <View className="my-[0.8rem] h-px bg-role-border-subtle dark:bg-role-dark-border-subtle" />
+
+      <SettingsWideControlRow
+        label="앱 버전 정보"
+        value={`v${appVersion}`}
+      />
+      {sessionType === "member" ? (
+        <SettingsWideControlRow
+          label="로그아웃"
+          textColor={dangerTextColor}
+          onPress={handlePressLogout}
+        />
+      ) : sessionType === "guest" ? (
+        <View className="px-[1.2rem] pt-[0.8rem]">
+          <SettingsLoginContainer />
+        </View>
+      ) : null}
+    </ScrollView>
+  );
 
   return (
     <View className="flex-1 bg-role-surface-panel dark:bg-role-dark-surface-panel">
@@ -287,54 +309,16 @@ function SettingsWideShell({
         rightContent={<HeaderRightActions />}
       />
 
-      <View className="min-h-0 flex-1 px-[2.4rem] pb-[8.8rem]">
-        <View
-          className="mx-auto min-h-0 w-full flex-1 flex-row gap-[1.6rem]"
-          style={SETTINGS_WIDE_PANEL_STYLE}
-        >
-          <View
-            className="min-h-0 overflow-hidden rounded-radius10 border border-role-border-subtle bg-role-surface-canvas dark:border-role-dark-border-subtle dark:bg-role-dark-surface-canvas"
-            style={SETTINGS_WIDE_CONTROL_STYLE}
-          >
-            <ScrollView
-              className="flex-1"
-              contentContainerStyle={{ padding: 12, paddingBottom: 16, rowGap: 4 }}
-              showsVerticalScrollIndicator={false}
-            >
-              {controlItems.map((item) => (
-                <SettingsWideControlRow
-                  key={item.section}
-                  label={item.label}
-                  isSelected={selectedSection === item.section}
-                  onPress={() => handleSelectSection(item.section)}
-                />
-              ))}
-
-              <View className="my-[0.8rem] h-px bg-role-border-subtle dark:bg-role-dark-border-subtle" />
-
-              <SettingsWideControlRow
-                label="앱 버전 정보"
-                value={`v${appVersion}`}
-              />
-              {sessionType === "member" ? (
-                <SettingsWideControlRow
-                  label="로그아웃"
-                  textColor={dangerTextColor}
-                  onPress={handlePressLogout}
-                />
-              ) : sessionType === "guest" ? (
-                <View className="px-[1.2rem] pt-[0.8rem]">
-                  <SettingsLoginContainer />
-                </View>
-              ) : null}
-            </ScrollView>
-          </View>
-
+      <WidePanelLayout
+        control={controlPanel}
+        detail={
           <SettingsWideDetailFrame title={detailTitle}>
             {handleRenderDetail()}
           </SettingsWideDetailFrame>
-        </View>
-      </View>
+        }
+        controlWidth="32%"
+        className="pt-0"
+      />
 
       <ConfirmModal
         isToggle={isLogoutConfirmOpen}

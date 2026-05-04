@@ -18,7 +18,7 @@ const meta = {
     repeatDays: "월 수 금",
     startDate: "2024-05-10",
     endDate: "2024-05-13",
-    linkTo: "?clicked=true",
+    linkTo: "/feed?clicked=true",
   },
 } satisfies Meta<typeof GoalTodoListItemView>;
 

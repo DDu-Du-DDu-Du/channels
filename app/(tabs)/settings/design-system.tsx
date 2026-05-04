@@ -1,18 +1,13 @@
 import { useEffect } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { View } from "react-native";
 
 import { HeaderRightActions, PageHeader } from "@/components";
 import { handleIsDesignTokenLabEnabled } from "@/constants/app-variant";
-import {
-  DesignSystemScreen,
-  SettingsWideShell,
-  handleIsSettingsWideLayout,
-} from "@/features/settings";
+import { DesignSystemScreen } from "@/features/settings";
 
 import { Href, useRouter } from "expo-router";
 
 function DesignSystem() {
-  const { width } = useWindowDimensions();
   const isDesignTokenLabEnabled = handleIsDesignTokenLabEnabled();
   const router = useRouter();
 
@@ -27,10 +22,6 @@ function DesignSystem() {
 
   if (!isDesignTokenLabEnabled) {
     return null;
-  }
-
-  if (handleIsSettingsWideLayout(width)) {
-    return <SettingsWideShell initialSection="design-system" />;
   }
 
   return (

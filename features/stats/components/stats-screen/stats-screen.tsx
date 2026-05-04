@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ScrollView, View, useWindowDimensions } from "react-native";
 
+import { WidePanelLayout } from "@/components";
 import { GOAL_KEY } from "@/constants/query-key/query-key";
 import { useStatsMonth, useStatsQuery } from "@/features/stats/hooks";
 import { useMe } from "@/features/user";
@@ -123,49 +124,48 @@ function StatsScreen({ initialSelectedGoalId }: StatsScreenProps) {
   };
 
   if (isWideLayout) {
-    return (
-      <View className="flex-1 px-[2.4rem] pb-[2.4rem]">
-        <View
-          className="mx-auto w-full flex-1 flex-row"
-          style={{ maxWidth: 1240, columnGap: 18 }}
-        >
-          <View style={{ width: "32%", minWidth: 286, maxWidth: 392 }}>
-            <StatsWideControlPanel
-              yearMonthLabel={yearMonthLabel}
-              goals={sortedGoals}
-              selectedGoalId={selectedGoalId}
-              isGoalsLoading={goalListQuery.isLoading}
-              isGoalsError={goalListQuery.isError}
-              handlePrevMonth={handlePrevMonth}
-              handleNextMonth={handleNextMonth}
-              handlePressOverview={handlePressOverview}
-              handlePressGoal={handlePressGoal}
-              handlePressEditGoal={handlePressEditGoal}
-              handlePressAddGoal={handlePressAddGoal}
-            />
-          </View>
-
-          <View className="min-w-0 flex-1 rounded-radius15 border border-role-border-default bg-role-surface-panel dark:border-role-dark-border-default dark:bg-role-dark-surface-panel">
-            {selectedGoalId ? (
-              <StatsGoalDetailScreen
-                key={`${selectedGoalId}-${yearMonth}`}
-                goalId={selectedGoalId}
-                initialYearMonth={yearMonth}
-                isEmbeddedWide
-              />
-            ) : (
-              <StatsWideOverview
-                report={reportQuery.data}
-                summary={summaryQuery.data}
-                isReportLoading={reportQuery.isLoading}
-                isReportError={reportQuery.isError}
-                isSummaryLoading={summaryQuery.isLoading}
-                isSummaryError={summaryQuery.isError}
-              />
-            )}
-          </View>
-        </View>
+    const statsWideDetail = (
+      <View className="min-w-0 flex-1 bg-role-surface-canvas dark:bg-role-dark-surface-canvas">
+        {selectedGoalId ? (
+          <StatsGoalDetailScreen
+            key={`${selectedGoalId}-${yearMonth}`}
+            goalId={selectedGoalId}
+            initialYearMonth={yearMonth}
+            isEmbeddedWide
+          />
+        ) : (
+          <StatsWideOverview
+            report={reportQuery.data}
+            summary={summaryQuery.data}
+            isReportLoading={reportQuery.isLoading}
+            isReportError={reportQuery.isError}
+            isSummaryLoading={summaryQuery.isLoading}
+            isSummaryError={summaryQuery.isError}
+          />
+        )}
       </View>
+    );
+
+    return (
+      <WidePanelLayout
+        control={
+          <StatsWideControlPanel
+            yearMonthLabel={yearMonthLabel}
+            goals={sortedGoals}
+            selectedGoalId={selectedGoalId}
+            isGoalsLoading={goalListQuery.isLoading}
+            isGoalsError={goalListQuery.isError}
+            handlePrevMonth={handlePrevMonth}
+            handleNextMonth={handleNextMonth}
+            handlePressOverview={handlePressOverview}
+            handlePressGoal={handlePressGoal}
+            handlePressEditGoal={handlePressEditGoal}
+            handlePressAddGoal={handlePressAddGoal}
+          />
+        }
+        detail={statsWideDetail}
+        controlWidth="34%"
+      />
     );
   }
 

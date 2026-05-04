@@ -7,11 +7,12 @@ const meta = {
   component: FeedCalendarHeaderView,
   argTypes: {
     displayMonth: { control: "text" },
-    onPrev: { action: "onPrev" },
-    onNext: { action: "onNext" },
+    onPressMonthPicker: { action: "onPressMonthPicker" },
+    showHeaderActions: { control: "boolean" },
   },
   args: {
     displayMonth: `${new Date().getFullYear()}년 ${String(new Date().getMonth() + 1).padStart(2, "0")}월`,
+    showHeaderActions: true,
   },
 } satisfies Meta<typeof FeedCalendarHeaderView>;
 

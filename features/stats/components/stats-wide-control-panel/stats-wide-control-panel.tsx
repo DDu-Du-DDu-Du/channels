@@ -41,7 +41,7 @@ function StatsWideControlPanel({
   const isOverviewSelected = !selectedGoalId;
 
   return (
-    <View className="h-full rounded-radius15 border border-role-border-default bg-role-surface-panel p-[1.6rem] dark:border-role-dark-border-default dark:bg-role-dark-surface-panel">
+    <View className="h-full w-full bg-role-surface-panel p-[1.6rem] dark:bg-role-dark-surface-panel">
       <StatsHeader
         yearMonthLabel={yearMonthLabel}
         handlePrevMonth={handlePrevMonth}
@@ -60,10 +60,10 @@ function StatsWideControlPanel({
       <Pressable
         accessibilityRole="button"
         onPress={handlePressOverview}
-        className={`mb-[1rem] rounded-radius12 border px-[1.4rem] py-[1.2rem] ${
+        className={`mb-[1rem] rounded-radius10 border px-[1.4rem] py-[1.2rem] ${
           isOverviewSelected
-            ? "border-role-border-default bg-role-surface-canvas dark:border-role-dark-border-default dark:bg-role-dark-surface-canvas"
-            : "border-transparent bg-role-surface-subtle dark:bg-role-dark-surface-subtle"
+            ? "border-role-border-strong bg-role-surface-canvas dark:border-role-dark-border-strong dark:bg-role-dark-surface-canvas"
+            : "border-role-border-subtle bg-role-surface-subtle dark:border-role-dark-border-subtle dark:bg-role-dark-surface-subtle"
         }`}
       >
         <SpoqaText
@@ -116,7 +116,7 @@ function StatsWideControlPanel({
           contentContainerStyle={{ rowGap: 8, paddingBottom: 12 }}
         >
           {goals.length === 0 ? (
-            <View className="rounded-radius12 bg-role-surface-subtle px-[1.4rem] py-[1.6rem] dark:bg-role-dark-surface-subtle">
+            <View className="rounded-radius10 border border-role-border-subtle bg-role-surface-subtle px-[1.4rem] py-[1.6rem] dark:border-role-dark-border-subtle dark:bg-role-dark-surface-subtle">
               <SpoqaText className="text-size14 text-role-text-tertiary dark:text-role-dark-text-tertiary">
                 아직 목표가 없어요.
               </SpoqaText>
@@ -130,10 +130,10 @@ function StatsWideControlPanel({
             return (
               <View
                 key={goal.id}
-                className={`flex-row items-center rounded-radius12 border px-[1.2rem] py-[1rem] ${
+                className={`flex-row items-center rounded-radius10 border px-[1.2rem] py-[1rem] ${
                   isSelected
-                    ? "border-role-border-default bg-role-surface-canvas dark:border-role-dark-border-default dark:bg-role-dark-surface-canvas"
-                    : "border-transparent bg-role-surface-subtle dark:bg-role-dark-surface-subtle"
+                    ? "border-role-border-strong bg-role-surface-canvas dark:border-role-dark-border-strong dark:bg-role-dark-surface-canvas"
+                    : "border-role-border-subtle bg-role-surface-subtle dark:border-role-dark-border-subtle dark:bg-role-dark-surface-subtle"
                 }`}
               >
                 <Pressable

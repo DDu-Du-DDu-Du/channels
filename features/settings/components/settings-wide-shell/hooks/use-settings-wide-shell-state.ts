@@ -65,6 +65,11 @@ function useSettingsWideShellState({
       return;
     }
 
+    if (section === "design-system") {
+      router.push("/settings/design-system" as Href);
+      return;
+    }
+
     setSelectedSection(section);
   };
 

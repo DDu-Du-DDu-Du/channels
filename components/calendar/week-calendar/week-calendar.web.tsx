@@ -3,7 +3,7 @@
 import styleConstructor from "react-native-calendars/src/expandableCalendar/style";
 
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { FlatList, Text, View } from "react-native";
+import { FlatList, type ListRenderItemInfo, Text, View } from "react-native";
 import constants from "react-native-calendars/src/commons/constants";
 import { extractCalendarProps } from "react-native-calendars/src/componentUpdater";
 import {
@@ -118,7 +118,7 @@ function WeekCalendar(props: WeekCalendarProps) {
   }, [containerWidth, propsStyle]);
 
   const renderItem = useCallback(
-    ({ item }) => {
+    ({ item }: ListRenderItemInfo<string>) => {
       const currentContext = sameWeek(date, item, firstDay) ? context : undefined;
       const weekCurrent = currentContext ? date : item;
       const markings = getCurrentWeekMarkings(item, markedDates!);
@@ -148,7 +148,7 @@ function WeekCalendar(props: WeekCalendarProps) {
     ],
   );
 
-  const keyExtractor = useCallback((item: any, index: any) => `${item}-${index}`, []);
+  const keyExtractor = useCallback((item: string, index: number) => `${item}-${index}`, []);
 
   const renderWeekDaysNames = useMemo(() => {
     const headerTheme = (theme as Record<string, Record<string, object>> | undefined)?.[
@@ -158,7 +158,7 @@ function WeekCalendar(props: WeekCalendarProps) {
 
     return (
       <>
-        {dayNames.map((day, index) => {
+        {dayNames.map((day: string, index: number) => {
           const dayTextAtIndexKey = `dayTextAtIndex${index}`;
           const dayTextStyle = headerTheme?.[dayTextAtIndexKey];
 
