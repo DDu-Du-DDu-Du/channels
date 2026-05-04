@@ -10,6 +10,10 @@ interface GetCalendarThemeParams {
   firstDay: number;
 }
 
+type CalendarHeaderTheme = Theme & {
+  "stylesheet.calendar.header"?: Record<string, object>;
+};
+
 function getCalendarTheme({ themeName, mode, firstDay }: GetCalendarThemeParams): Theme {
   const context = { themeName, mode };
   const headerTextColor = getThemeColorToken("role.text.secondary", context);
@@ -21,7 +25,7 @@ function getCalendarTheme({ themeName, mode, firstDay }: GetCalendarThemeParams)
   const selectedDayTextColor = getThemeColorToken("ui.button.choice.selected.text", context);
   const calendarBackground = getThemeColorToken("role.surface.panel", context);
   const arrowColor = getThemeColorToken("ui.arrow.icon", context);
-  const weekendHeaderTheme = getWeekendHeaderTheme(firstDay);
+  const weekendHeaderTheme = getWeekendHeaderTheme(firstDay) as CalendarHeaderTheme;
 
   return {
     backgroundColor: calendarBackground,
@@ -43,7 +47,7 @@ function getCalendarTheme({ themeName, mode, firstDay }: GetCalendarThemeParams)
       },
       ...((weekendHeaderTheme["stylesheet.calendar.header"] as Record<string, unknown>) ?? {}),
     },
-  } as Theme;
+  } as CalendarHeaderTheme;
 }
 
 export default getCalendarTheme;

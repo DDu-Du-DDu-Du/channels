@@ -14,7 +14,7 @@ const meta = {
     color: { control: "text" },
     isLastItem: { control: "boolean" },
     onTodoCompleteToggle: { action: "onTodoCompleteToggle" },
-    handleTodosheetOpen: { action: "handleTodosheetOpen" },
+    onTodosheetOpen: { action: "onTodosheetOpen" },
   },
   args: {
     TodoId: 1,

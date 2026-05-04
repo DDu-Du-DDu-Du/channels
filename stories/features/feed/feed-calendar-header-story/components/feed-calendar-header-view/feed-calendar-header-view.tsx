@@ -4,21 +4,21 @@ import FeedCalendarHeader from "@/features/feed/components/feed-calendar/compone
 
 export interface FeedCalendarHeaderViewProps {
   displayMonth?: string;
-  onPrev?: () => void;
-  onNext?: () => void;
+  onPressMonthPicker?: () => void;
+  showHeaderActions?: boolean;
 }
 
 function FeedCalendarHeaderView({
   displayMonth = `${new Date().getFullYear()}년 ${String(new Date().getMonth() + 1).padStart(2, "0")}월`,
-  onPrev,
-  onNext,
+  onPressMonthPicker,
+  showHeaderActions,
 }: FeedCalendarHeaderViewProps) {
   return (
     <View className="flex-1 items-center justify-center w-full p-4">
       <FeedCalendarHeader
         displayMonth={displayMonth}
-        onPrev={onPrev}
-        onNext={onNext}
+        onPressMonthPicker={onPressMonthPicker}
+        showHeaderActions={showHeaderActions}
       />
     </View>
   );

@@ -1,5 +1,5 @@
 import { ImagePickerAsset } from "expo-image-picker";
-import { useRouter } from "expo-router";
+import { Href, useRouter } from "expo-router";
 
 interface UseClickAvatarProps {
   type: "view" | "edit";
@@ -18,7 +18,7 @@ export function useClickAvatar({
 
   const handleClickAvatar = () => {
     if (type === "view" && userId) {
-      router.push(`/user/${userId}`);
+      router.push(`/user/${userId}` as Href);
     }
 
     if (type === "edit" && onChangeAvatar) {

@@ -1,11 +1,11 @@
-import { View } from "react-native";
+import { type DimensionValue, View } from "react-native";
 
 import { SelectOption } from "@/components";
 
 export interface SelectOptionViewProps {
   children?: string;
   backgroundColor?: string;
-  width?: string;
+  width?: DimensionValue;
 }
 
 function SelectOptionView({

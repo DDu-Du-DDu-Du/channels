@@ -1,5 +1,9 @@
 import type { Theme } from "react-native-calendars/src/types";
 
+type CalendarHeaderTheme = Theme & {
+  "stylesheet.calendar.header"?: Record<string, object>;
+};
+
 function getWeekendHeaderTheme(firstDay: number): Theme {
   const normalizedFirstDay = ((firstDay % 7) + 7) % 7;
   const sundayIndex = (7 - normalizedFirstDay) % 7;
@@ -14,7 +18,7 @@ function getWeekendHeaderTheme(firstDay: number): Theme {
         color: "blue",
       },
     },
-  } as Theme;
+  } as CalendarHeaderTheme;
 }
 
 export default getWeekendHeaderTheme;
