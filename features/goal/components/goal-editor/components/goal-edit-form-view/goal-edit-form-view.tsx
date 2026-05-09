@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { FormProvider } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 
 import { Button, FormSection, FormTextInput, SpoqaText } from "@/components";
@@ -14,6 +15,7 @@ export interface GoalEditFormViewProps {
   defaultTitle: string;
   pickedColor: string;
   privacyType: GoalPrivacyType;
+  priority: number;
   repeatTodoCount: number;
   redirectOnSuccess?: boolean;
   invalidateFeedOnSuccess?: boolean;
@@ -29,6 +31,7 @@ function GoalEditFormView({
   defaultTitle,
   pickedColor,
   privacyType,
+  priority,
   repeatTodoCount,
   redirectOnSuccess,
   invalidateFeedOnSuccess,
@@ -38,6 +41,7 @@ function GoalEditFormView({
   onPressTerminateGoal,
   onPressDeleteGoal,
 }: GoalEditFormViewProps) {
+  const { t } = useTranslation();
   const { isWideLayout } = useWideLayout();
   const {
     methods,
@@ -51,6 +55,7 @@ function GoalEditFormView({
     defaultTitle,
     pickedColor,
     privacyType,
+    priority,
     redirectOnSuccess,
     invalidateFeedOnSuccess,
     onMutationSuccess,
@@ -97,23 +102,25 @@ function GoalEditFormView({
           <FormTextInput
             control={methods.control}
             name="title"
-            placeholder={"목표 제목을 입력하세요"}
-            required="제목을 입력해주세요."
+            placeholder={t("goal.titlePlaceholder")}
+            required={t("goal.titleRequired")}
             rules={{
-              validate: (value) => String(value ?? "").trim().length > 0 || "제목을 입력해주세요.",
+              validate: (value) => String(value ?? "").trim().length > 0 || t("goal.titleRequired"),
             }}
           />
 
           <FormSection
-            label={"색상"}
+            label={t("goal.color")}
             rightContent={colorInput}
           />
 
           <FormSection
-            label={"반복투두 관리"}
+            label={t("goal.manageRepeatTodo")}
             rightContent={
               <View className="flex-row items-center gap-[0.4rem]">
-                <SpoqaText className="text-size13 text-role-text-inverse dark:text-role-dark-text-inverse">{`${repeatTodoCount}개`}</SpoqaText>
+                <SpoqaText className="text-size13 text-role-text-inverse dark:text-role-dark-text-inverse">
+                  {t("settings.design.tokenCount", { count: repeatTodoCount })}
+                </SpoqaText>
                 <ArrowRightIcon
                   size={14}
                   stroke="#FFFFFF"
@@ -125,7 +132,7 @@ function GoalEditFormView({
 
           <View className="flex-row gap-[0.8rem]">
             <Button
-              label={"종료하기"}
+              label={t("goal.finish")}
               className="flex-1"
               bodyClassName="bg-role-surface-canvas dark:bg-role-dark-surface-canvas"
               onPress={onPressTerminateGoal}
@@ -133,7 +140,7 @@ function GoalEditFormView({
               disabled={isTerminatePending || isDeletePending || isEditPending}
             />
             <Button
-              label={"삭제하기"}
+              label={t("goal.delete")}
               className="flex-1"
               bodyClassName="bg-[#FFD9D9]"
               onPress={onPressDeleteGoal}
@@ -144,7 +151,7 @@ function GoalEditFormView({
         </View>
 
         <Button
-          label={"목표 수정"}
+          label={t("goal.edit")}
           className="mt-auto"
           onPress={methods.handleSubmit(handleSubmitGoalEdit)}
           isLoading={isEditPending}

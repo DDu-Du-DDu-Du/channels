@@ -1,4 +1,5 @@
 import { FormProvider } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 
 import AnimatedSwitch from "@/components/animated-switch/animated-switch";
@@ -20,6 +21,7 @@ export interface TodoEditorFormProps {
   mode: "create" | "edit";
   isGuestSession: boolean;
   isPending: boolean;
+  showGoalSelector: boolean;
   goalList: GoalType[];
   selectedDate: string;
   TodoDetail?: TodoDetailType;
@@ -37,6 +39,7 @@ function TodoEditorForm({
   mode,
   isGuestSession,
   isPending,
+  showGoalSelector,
   goalList,
   selectedDate,
   TodoDetail,
@@ -47,6 +50,7 @@ function TodoEditorForm({
   onRequestOpenGoalSheet,
   onSubmitPayload,
 }: TodoEditorFormProps) {
+  const { t } = useTranslation();
   const switchOffTrackColor = useThemeColorToken("role.border.default");
   const switchOnTrackColor = useThemeColorToken("role.status.success");
   const switchThumbColor = useThemeColorToken("role.surface.canvas");
@@ -149,10 +153,10 @@ function TodoEditorForm({
         <FormTextInput<TodoEditorFormValues>
           control={methods.control}
           name="title"
-          placeholder="투두 제목"
-          required="제목을 입력해주세요."
+          placeholder={t("todo.titlePlaceholder")}
+          required={t("goal.titleRequired")}
           rules={{
-            validate: (value) => String(value ?? "").trim().length > 0 || "제목을 입력해주세요.",
+            validate: (value) => String(value ?? "").trim().length > 0 || t("goal.titleRequired"),
           }}
           showErrorMessage={false}
         />
@@ -167,7 +171,7 @@ function TodoEditorForm({
           onPress={onRequestOpenCalendar}
         >
           <SpoqaText className="mb-[0.4rem] text-size12 text-role-text-secondary dark:text-role-dark-text-secondary">
-            날짜
+            {t("calendar.startDate")}
           </SpoqaText>
           <SpoqaText className="text-size14 text-role-text-primary dark:text-role-dark-text-primary">
             {scheduledOn}
@@ -184,7 +188,7 @@ function TodoEditorForm({
             <View className="rounded-radius15 bg-role-surface-canvas p-[1.2rem] dark:bg-role-dark-surface-canvas">
               <View className="mb-[0.8rem] flex-row items-center gap-[0.8rem]">
                 <SpoqaText className="text-size13 text-role-text-primary dark:text-role-dark-text-primary">
-                  시작시간
+                  {t("todo.timeSheet.startTime")}
                 </SpoqaText>
                 <AnimatedSwitch
                   value={isBeginTimeEnabled}
@@ -222,7 +226,7 @@ function TodoEditorForm({
             <View className="rounded-radius15 bg-role-surface-canvas p-[1.2rem] dark:bg-role-dark-surface-canvas">
               <View className="mb-[0.8rem] flex-row items-center gap-[0.8rem]">
                 <SpoqaText className="text-size13 text-role-text-primary dark:text-role-dark-text-primary">
-                  종료시간
+                  {t("todo.timeSheet.endTime")}
                 </SpoqaText>
                 <AnimatedSwitch
                   value={isEndTimeEnabled}
@@ -261,14 +265,14 @@ function TodoEditorForm({
 
             {isTimeRangeInvalid && isBeginTimeEnabled && isEndTimeEnabled ? (
               <SpoqaText className="text-size12 text-role-status-error dark:text-role-dark-status-error">
-                종료시간은 시작시간보다 빠를 수 없어요.
+                {t("todo.timeSheet.invalidRange")}
               </SpoqaText>
             ) : null}
 
             {isGuestSession ? (
               <View className="rounded-radius15 bg-role-surface-canvas px-[1.2rem] py-[1.2rem] dark:bg-role-dark-surface-canvas">
                 <SpoqaText className="mb-[0.8rem] text-size14 text-role-text-primary dark:text-role-dark-text-primary">
-                  미리알림
+                  {t("todo.reminder.title")}
                 </SpoqaText>
                 <MemberGuide className="w-full items-center py-[0.4rem]" />
               </View>
@@ -286,24 +290,24 @@ function TodoEditorForm({
 
             <View className="rounded-radius15 bg-role-surface-canvas p-[1.2rem] dark:bg-role-dark-surface-canvas">
               <SpoqaText className="mb-[0.8rem] text-size14 text-role-text-primary dark:text-role-dark-text-primary">
-                메모 입력
+                {t("todo.memoPlaceholder")}
               </SpoqaText>
               <FormTextInput<TodoEditorFormValues>
                 control={methods.control}
                 name="memo"
-                placeholder="메모를 입력해주세요"
+                placeholder={t("todo.memoPlaceholder")}
                 multiline
                 textAlignVertical="top"
                 className="h-[10rem] px-[1.2rem] py-[1rem] text-size14"
               />
             </View>
 
-            {renderGoalSelector()}
+            {showGoalSelector ? renderGoalSelector() : null}
           </View>
         )}
 
         <Button
-          label={mode === "create" ? "투두 생성" : "투두 수정"}
+          label={mode === "create" ? t("todo.create") : t("todo.edit")}
           onPress={handleSubmitEditor}
           className="mt-[0.4rem]"
           bodyClassName="bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg"

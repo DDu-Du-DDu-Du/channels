@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 import { useToast } from "@/components/toast/hooks";
 import { HEX_COLOR_WITH_OPTIONAL_HASH_REGEX, normalizeDayOfWeekToKr } from "@/constants";
@@ -44,6 +45,7 @@ function useGoalMutation({
   redirectOnSuccess = true,
   successRedirect,
 }: UseGoalMutationProps) {
+  const { t } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
   const { createToast } = useToast();
@@ -114,7 +116,7 @@ function useGoalMutation({
       router.replace("/goal");
     },
     onError: (error) => {
-      const message = error instanceof Error ? error.message : "목표 생성에 실패했습니다.";
+      const message = error instanceof Error ? error.message : t("goal.createFailed");
 
       createToast(message, { type: "danger" });
     },
@@ -129,7 +131,7 @@ function useGoalMutation({
 
   const handleSubmitGoal: SubmitHandler<GoalEditorFormValues> = (values) => {
     if (!HEX_COLOR_WITH_OPTIONAL_HASH_REGEX.test(values.color)) {
-      createToast("색상은 #을 제외한 6자리 HEX 값이어야 합니다.", { type: "danger" });
+      createToast(t("goal.invalidHex"), { type: "danger" });
       return;
     }
 

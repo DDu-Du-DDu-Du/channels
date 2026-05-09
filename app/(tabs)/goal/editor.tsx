@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 import { HeaderRightActions, PageHeader } from "@/components";
@@ -7,6 +8,7 @@ import { GoalEditorScreen } from "@/features/goal";
 import { useLocalSearchParams } from "expo-router";
 
 function Editor() {
+  const { t } = useTranslation();
   const params = useLocalSearchParams<{ goalId?: string }>();
   const goalId = Number(Array.isArray(params.goalId) ? params.goalId[0] : (params.goalId ?? 0));
   const [viewMode, setViewMode] = useState<"form" | "repeatList">("form");
@@ -15,7 +17,7 @@ function Editor() {
     <View className="flex-1 bg-role-surface-panel dark:bg-role-dark-surface-panel">
       {viewMode === "form" ? (
         <PageHeader
-          title="목표수정"
+          title={t("navigation.goalEdit")}
           titleClassName="text-role-text-inverse dark:text-role-dark-text-inverse"
           rightContent={<HeaderRightActions />}
         />

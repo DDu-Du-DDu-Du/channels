@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 import SheetButton from "@/components/sheet-button/sheet-button";
@@ -25,6 +26,7 @@ function TodoMainMenu({
   handleTodoTimeSetting,
   handleTodosheetToggleOff,
 }: TodoMainMenuProps) {
+  const { t } = useTranslation();
   const { beginAt, endAt, scheduledOn, status } = TodoDetail;
   const isTodoDateNow = formatDateToYYYYMMDD(new Date()) === scheduledOn;
 
@@ -46,20 +48,20 @@ function TodoMainMenu({
       {type === "Todo" && (
         <SheetButton
           Icon={<EditIcon size={24} />}
-          title="수정하기"
+          title={t("todo.actions.edit")}
           onPress={handleCurrentTodoEdit}
         />
       )}
       {(isTodoDateNow || status === "COMPLETE") && (
         <SheetButton
           Icon={<ClockIcon />}
-          title="투두시간"
+          title={t("todo.actions.todoTime")}
           onPress={handleTodoTimeChange}
         />
       )}
       <SheetButton
         Icon={<DeleteIcon size={24} />}
-        title="삭제하기"
+        title={t("todo.actions.delete")}
         onPress={handleCurrentTodoDelete}
       />
     </View>

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 import type { TodoDetailType } from "@/components/todo-sheet/todo-sheet.types";
 import { parseUtc } from "@/utils";
@@ -87,6 +88,7 @@ function useTodoEditorFormState({
   selectedDateFromSheet,
   selectedGoalIdFromSheet,
 }: UseTodoEditorFormStateProps) {
+  const { t } = useTranslation();
   const initialValues = useMemo(
     () => buildInitialValues({ selectedDate, TodoDetail, initialGoalId }),
     [TodoDetail, initialGoalId, selectedDate],
@@ -251,7 +253,7 @@ function useTodoEditorFormState({
     const values = methods.getValues();
 
     if (!values.title.trim()) {
-      setTitleWarning("제목을 입력해주세요.");
+      setTitleWarning(t("goal.titleRequired"));
       return null;
     }
 

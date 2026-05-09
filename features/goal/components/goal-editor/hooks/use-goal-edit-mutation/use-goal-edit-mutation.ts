@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 import { useToast } from "@/components/toast/hooks";
 import { HEX_COLOR_WITH_OPTIONAL_HASH_REGEX } from "@/constants";
@@ -22,6 +23,7 @@ interface UseGoalEditMutationProps {
   defaultTitle: string;
   pickedColor: string;
   privacyType: GoalPrivacyType;
+  priority: number;
   redirectOnSuccess?: boolean;
   invalidateFeedOnSuccess?: boolean;
   onMutationSuccess?: () => void;
@@ -34,10 +36,12 @@ function useGoalEditMutation({
   defaultTitle,
   pickedColor,
   privacyType,
+  priority,
   redirectOnSuccess = true,
   invalidateFeedOnSuccess = false,
   onMutationSuccess,
 }: UseGoalEditMutationProps) {
+  const { t } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
   const { createToast } = useToast();
@@ -84,7 +88,7 @@ function useGoalEditMutation({
     mutationKey: [GOAL_KEY.GOAL_EDIT, goalId],
     mutationFn: editGoal,
     onSuccess: handleMutationSuccess,
-    onError: (error) => onErrorMutation(error, "목표 수정에 실패했습니다."),
+    onError: (error) => onErrorMutation(error, t("goal.editFailed")),
   });
 
   const terminateGoalMutation = useMutation({
@@ -94,16 +98,16 @@ function useGoalEditMutation({
       await queryClient.invalidateQueries({ queryKey: [GOAL_KEY.GOAL_LIST] });
       await queryClient.invalidateQueries({ queryKey: [GOAL_KEY.GOAL_DETAIL, goalId] });
       await invalidateFeedQueries();
-      createToast("목표를 종료했습니다.", { type: "safe" });
+      createToast(t("goal.finishSuccess"), { type: "safe" });
     },
-    onError: (error) => onErrorMutation(error, "목표 종료에 실패했습니다."),
+    onError: (error) => onErrorMutation(error, t("goal.finishFailed")),
   });
 
   const deleteGoalMutation = useMutation({
     mutationKey: [GOAL_KEY.GOAL_DELETE, goalId],
     mutationFn: deleteGoal,
     onSuccess: handleMutationSuccess,
-    onError: (error) => onErrorMutation(error, "목표 삭제에 실패했습니다."),
+    onError: (error) => onErrorMutation(error, t("goal.deleteFailed")),
   });
 
   const handleUpdateColor = useCallback(
@@ -115,7 +119,7 @@ function useGoalEditMutation({
 
   const handleSubmitGoalEdit: SubmitHandler<GoalEditFormValues> = (values) => {
     if (!HEX_COLOR_WITH_OPTIONAL_HASH_REGEX.test(values.color)) {
-      createToast("색상은 #을 제외한 6자리 HEX 값이어야 합니다.", { type: "danger" });
+      createToast(t("goal.invalidHex"), { type: "danger" });
       return;
     }
 
@@ -123,6 +127,7 @@ function useGoalEditMutation({
       name: values.title,
       color: normalizeColorToHex6(values.color),
       privacyType: values.privacyType ?? "PUBLIC",
+      priority,
     };
 
     editGoalMutation.mutate({ goalId, requestGoal });

@@ -13,6 +13,7 @@ export interface GoalDetailType {
   name: string;
   status: "IN_PROGRESS" | "DONE";
   color: string;
+  priority: number;
   privacyType: GoalPrivacyType;
   repeatTodos: RepeatTodosType[];
 }

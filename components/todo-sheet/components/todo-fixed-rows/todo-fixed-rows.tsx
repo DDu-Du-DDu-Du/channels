@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 import SheetButton from "@/components/sheet-button/sheet-button";
@@ -23,6 +24,7 @@ function TodoFixedRows({
   isDeletePending = false,
   isEditDisabled = false,
 }: TodoFixedRowsProps) {
+  const { t } = useTranslation();
   const handleCurrentTodoEdit = () => {
     if (type === "Todo") {
       handleEditTodo(TodoId);
@@ -38,7 +40,7 @@ function TodoFixedRows({
     <View className="flex flex-col w-full max-w-[50rem] gap-[0.2rem] pb-[1rem]">
       <SheetButton
         Icon={<EditIcon size={24} />}
-        title="수정하기"
+        title={t("todo.actions.edit")}
         buttonType="sub"
         style={{ paddingHorizontal: remToPx(1) }}
         onPress={handleCurrentTodoEdit}
@@ -46,7 +48,7 @@ function TodoFixedRows({
       />
       <SheetButton
         Icon={<DeleteIcon size={24} />}
-        title="삭제하기"
+        title={t("todo.actions.delete")}
         buttonType="sub"
         style={{ paddingHorizontal: remToPx(1) }}
         onPress={handleCurrentTodoDelete}

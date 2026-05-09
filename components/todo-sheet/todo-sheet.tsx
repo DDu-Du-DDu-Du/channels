@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 import BottomSheet from "@/components/bottom-sheet/bottom-sheet";
@@ -53,6 +54,7 @@ function Todosheet({
   isChangeTimePending = false,
   isCompleteTogglePending = false,
 }: TodosheetProps) {
+  const { t } = useTranslation();
   const { ref, openSheet, closeSheet } = useBottomSheetAction();
 
   useEffect(() => {
@@ -117,30 +119,42 @@ function Todosheet({
         return [
           {
             key: "change-another-day",
-            title: "다른 날로 미루기",
+            title: t("todo.actions.postponeDifferentDate"),
             onPress: handleChangeToDifferentDate,
           },
           {
             key: "repeat-another-day",
-            title: "다른 날 다시하기",
+            title: t("todo.actions.repeatDifferentDate"),
             onPress: handleRepeatToDifferentDate,
           },
-          { key: "time-setting", title: "시간설정", onPress: handleOpenTimeSetting },
+          {
+            key: "time-setting",
+            title: t("todo.actions.timeSetting"),
+            onPress: handleOpenTimeSetting,
+          },
         ];
       }
 
       return [
-        { key: "change-today", title: "오늘로 미루기", onPress: onChangeCurrentDate },
+        {
+          key: "change-today",
+          title: t("todo.actions.postponeToday"),
+          onPress: onChangeCurrentDate,
+        },
         {
           key: "change-another-day",
-          title: "다른 날로 미루기",
+          title: t("todo.actions.postponeDifferentDate"),
           onPress: handleChangeToDifferentDate,
         },
-        { key: "time-setting", title: "시간설정", onPress: handleOpenTimeSetting },
-        { key: "repeat-today", title: "오늘 다시하기", onPress: onRepeatCurrentDate },
+        {
+          key: "time-setting",
+          title: t("todo.actions.timeSetting"),
+          onPress: handleOpenTimeSetting,
+        },
+        { key: "repeat-today", title: t("todo.actions.repeatToday"), onPress: onRepeatCurrentDate },
         {
           key: "repeat-another-day",
-          title: "다른 날 다시하기",
+          title: t("todo.actions.repeatDifferentDate"),
           onPress: handleRepeatToDifferentDate,
         },
       ];
@@ -151,32 +165,52 @@ function Todosheet({
         return [
           {
             key: "repeat-another-day",
-            title: "다른 날 다시하기",
+            title: t("todo.actions.repeatDifferentDate"),
             onPress: handleRepeatToDifferentDate,
           },
-          { key: "time-setting", title: "시간설정", onPress: handleOpenTimeSetting },
+          {
+            key: "time-setting",
+            title: t("todo.actions.timeSetting"),
+            onPress: handleOpenTimeSetting,
+          },
         ];
       }
 
       return [
-        { key: "repeat-today", title: "오늘 다시하기", onPress: onRepeatCurrentDate },
+        { key: "repeat-today", title: t("todo.actions.repeatToday"), onPress: onRepeatCurrentDate },
         {
           key: "repeat-another-day",
-          title: "다른 날 다시하기",
+          title: t("todo.actions.repeatDifferentDate"),
           onPress: handleRepeatToDifferentDate,
         },
-        { key: "time-setting", title: "시간설정", onPress: handleOpenTimeSetting },
+        {
+          key: "time-setting",
+          title: t("todo.actions.timeSetting"),
+          onPress: handleOpenTimeSetting,
+        },
       ];
     }
 
     if (isFuture && status === "UNCOMPLETED") {
       return [
-        { key: "change-date", title: "날짜 바꾸기", onPress: handleChangeToDifferentDate },
-        { key: "copy-date", title: "복사하기", onPress: handleRepeatToDifferentDate },
-        { key: "time-setting", title: "시간설정", onPress: handleOpenTimeSetting },
+        {
+          key: "change-date",
+          title: t("todo.actions.changeDate"),
+          onPress: handleChangeToDifferentDate,
+        },
+        {
+          key: "copy-date",
+          title: t("todo.actions.copyDate"),
+          onPress: handleRepeatToDifferentDate,
+        },
+        {
+          key: "time-setting",
+          title: t("todo.actions.timeSetting"),
+          onPress: handleOpenTimeSetting,
+        },
         {
           key: "alarm-setting",
-          title: "미리알림",
+          title: t("todo.actions.reminder"),
           onPress: handleAlarmSetting,
         },
       ];
@@ -184,16 +218,32 @@ function Todosheet({
 
     if (isFuture && status === "COMPLETE") {
       return [
-        { key: "change-date", title: "날짜 바꾸기", onPress: handleChangeToDifferentDate },
-        { key: "copy-date", title: "복사하기", onPress: handleRepeatToDifferentDate },
-        { key: "time-setting", title: "시간설정", onPress: handleOpenTimeSetting },
+        {
+          key: "change-date",
+          title: t("todo.actions.changeDate"),
+          onPress: handleChangeToDifferentDate,
+        },
+        {
+          key: "copy-date",
+          title: t("todo.actions.copyDate"),
+          onPress: handleRepeatToDifferentDate,
+        },
+        {
+          key: "time-setting",
+          title: t("todo.actions.timeSetting"),
+          onPress: handleOpenTimeSetting,
+        },
       ];
     }
 
     return [
-      { key: "change-date", title: "날짜 바꾸기", onPress: handleChangeToDifferentDate },
-      { key: "copy-date", title: "복사하기", onPress: handleRepeatToDifferentDate },
-      { key: "time-setting", title: "시간설정", onPress: handleOpenTimeSetting },
+      {
+        key: "change-date",
+        title: t("todo.actions.changeDate"),
+        onPress: handleChangeToDifferentDate,
+      },
+      { key: "copy-date", title: t("todo.actions.copyDate"), onPress: handleRepeatToDifferentDate },
+      { key: "time-setting", title: t("todo.actions.timeSetting"), onPress: handleOpenTimeSetting },
     ];
   };
 
