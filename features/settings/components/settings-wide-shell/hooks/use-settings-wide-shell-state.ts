@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { useToast } from "@/components/toast/hooks";
 import { handleIsDesignTokenLabEnabled } from "@/constants";
@@ -33,6 +34,7 @@ interface UseSettingsWideShellStateParams {
 function useSettingsWideShellState({
   initialSection = SETTINGS_WIDE_DEFAULT_SECTION,
 }: UseSettingsWideShellStateParams) {
+  const { t } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
   const { createToast } = useToast();
@@ -99,7 +101,7 @@ function useSettingsWideShellState({
   };
 
   const handleValidationError = () => {
-    createToast("최소 하나의 메뉴는 활성화되어야 합니다.", { type: "warning" });
+    createToast(t("settings.minimumMenuWarning"), { type: "warning" });
   };
 
   return {

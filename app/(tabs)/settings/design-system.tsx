@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 import { HeaderRightActions, PageHeader } from "@/components";
@@ -8,6 +9,7 @@ import { DesignSystemScreen } from "@/features/settings";
 import { Href, useRouter } from "expo-router";
 
 function DesignSystem() {
+  const { t } = useTranslation();
   const isDesignTokenLabEnabled = handleIsDesignTokenLabEnabled();
   const router = useRouter();
 
@@ -27,7 +29,7 @@ function DesignSystem() {
   return (
     <View className="flex-1 bg-role-surface-panel dark:bg-role-dark-surface-panel">
       <PageHeader
-        title="디자인 시스템"
+        title={t("settings.designSystem")}
         rightContent={<HeaderRightActions />}
       />
       <DesignSystemScreen />

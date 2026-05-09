@@ -1,3 +1,4 @@
+import { DEFAULT_LANGUAGE, Language, handleNormalizeLanguage } from "@/i18n";
 import { SessionStorage } from "@/utils/storage";
 
 import { create } from "zustand";
@@ -17,6 +18,7 @@ export interface SettingsPayload {
   display: {
     weekStartDay: WeekStartDay;
     isDarkMode: boolean;
+    language: Language;
   };
   menuActivation: {
     calendar: MenuActivationItem;
@@ -44,6 +46,7 @@ interface SettingsAction {
   handleApplyGuestDefaults: () => void;
   handleSetWeekStartDay: (day: WeekStartDay) => void;
   handleSetDarkMode: (next: boolean) => void;
+  handleSetLanguage: (language: Language) => void;
   handleSetMenuActivation: (key: MenuActivationKey, next: boolean) => void;
   handleReorderMenuActivation: (nextOrder: MenuActivationKey[]) => void;
   handleSetRealtimeSync: (key: RealtimeSyncKey, next: boolean) => void;
@@ -60,6 +63,7 @@ const DEFAULT_SETTINGS_PAYLOAD: SettingsPayload = {
   display: {
     weekStartDay: "sun",
     isDarkMode: false,
+    language: DEFAULT_LANGUAGE,
   },
   menuActivation: {
     calendar: {
@@ -129,6 +133,15 @@ const useSettingsStore = create<SettingsState>()(
           display: {
             ...state.display,
             isDarkMode: next,
+          },
+          dirty: true,
+        })),
+
+      handleSetLanguage: (language) =>
+        set((state) => ({
+          display: {
+            ...state.display,
+            language,
           },
           dirty: true,
         })),
@@ -220,19 +233,36 @@ const useSettingsStore = create<SettingsState>()(
           return persistedState as SettingsState;
         }
 
-        if (version >= 2) {
-          return persistedState as SettingsState;
-        }
-
         const previousState = persistedState as Partial<SettingsState> & {
           menuActivation?: Partial<Record<MenuActivationKey, boolean>>;
         };
+
+        if (version >= 2) {
+          return {
+            ...previousState,
+            display: {
+              weekStartDay:
+                previousState.display?.weekStartDay ??
+                DEFAULT_SETTINGS_PAYLOAD.display.weekStartDay,
+              isDarkMode:
+                previousState.display?.isDarkMode ?? DEFAULT_SETTINGS_PAYLOAD.display.isDarkMode,
+              language: handleNormalizeLanguage(previousState.display?.language),
+            },
+          } as SettingsState;
+        }
 
         const fallback = DEFAULT_SETTINGS_PAYLOAD.menuActivation;
         const previousMenuActivation = previousState.menuActivation;
 
         return {
           ...previousState,
+          display: {
+            weekStartDay:
+              previousState.display?.weekStartDay ?? DEFAULT_SETTINGS_PAYLOAD.display.weekStartDay,
+            isDarkMode:
+              previousState.display?.isDarkMode ?? DEFAULT_SETTINGS_PAYLOAD.display.isDarkMode,
+            language: handleNormalizeLanguage(previousState.display?.language),
+          },
           menuActivation: {
             calendar: {
               isActivated:

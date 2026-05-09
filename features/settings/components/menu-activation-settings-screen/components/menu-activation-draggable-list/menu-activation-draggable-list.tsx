@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 import { AnimatedSwitch, DraggableFlatList } from "@/components";
@@ -27,6 +28,7 @@ function MenuActivationDraggableList({
   isValidationEnabled = true,
   onValidationError,
 }: MenuActivationDraggableListProps) {
+  const { t } = useTranslation();
   const offBackgroundColor = useThemeColorToken("role.surface.subtle");
   const onBackgroundColor = useThemeColorToken("ui.button.primary.bg");
   const thumbColor = useThemeColorToken("role.surface.canvas");
@@ -41,27 +43,27 @@ function MenuActivationDraggableList({
       [
         {
           id: "calendar" as MenuActivationKey,
-          label: "캘린더",
+          label: t("settings.menuActivationItems.calendar"),
           isToggle: calendar.isToggle,
           priority: priorities.calendar,
           handleValueChange: calendar.handleValueChange,
         },
         {
           id: "dashboard" as MenuActivationKey,
-          label: "대시보드",
+          label: t("settings.menuActivationItems.dashboard"),
           isToggle: dashboard.isToggle,
           priority: priorities.dashboard,
           handleValueChange: dashboard.handleValueChange,
         },
         {
           id: "stats" as MenuActivationKey,
-          label: "통계",
+          label: t("settings.menuActivationItems.stats"),
           isToggle: stats.isToggle,
           priority: priorities.stats,
           handleValueChange: stats.handleValueChange,
         },
       ].sort((a, b) => a.priority - b.priority),
-    [calendar, dashboard, priorities.calendar, priorities.dashboard, priorities.stats, stats],
+    [calendar, dashboard, priorities.calendar, priorities.dashboard, priorities.stats, stats, t],
   );
 
   const rowHeight = remToPx(5.2);

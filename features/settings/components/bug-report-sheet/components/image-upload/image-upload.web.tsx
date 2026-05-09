@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Image, Pressable, ScrollView, View } from "react-native";
 
 import { SpoqaText } from "@/components";
@@ -30,6 +31,7 @@ function ImageUpload({
   maxCount = 10,
   disabled = false,
 }: ImageUploadProps) {
+  const { t } = useTranslation();
   const objectUrlSetRef = useRef<Set<string>>(new Set());
 
   const handleCreateImageItems = (files: File[]) => {
@@ -139,7 +141,7 @@ function ImageUpload({
         }}
       >
         <SpoqaText className="text-size13 text-role-text-secondary dark:text-role-dark-text-secondary">
-          이미지를 드래그해서 놓거나 업로드 버튼을 눌러 주세요.
+          {t("settings.bugReportSheet.dropImage")}
         </SpoqaText>
         <Pressable
           onPress={handlePressUpload}
@@ -147,7 +149,7 @@ function ImageUpload({
           className="mt-[1rem] h-[3.6rem] items-center justify-center rounded-radius10 bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg px-[1.2rem]"
         >
           <SpoqaText className="text-size13 text-role-text-inverse dark:text-role-dark-text-inverse">
-            업로드
+            {t("settings.bugReportSheet.upload")}
           </SpoqaText>
         </Pressable>
       </View>

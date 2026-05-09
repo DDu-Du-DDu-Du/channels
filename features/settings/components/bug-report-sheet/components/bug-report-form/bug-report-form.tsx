@@ -1,5 +1,6 @@
 import { forwardRef, useImperativeHandle } from "react";
 import { Controller, FormProvider, useForm, useWatch } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 
 import { FormTextInput, SpoqaText } from "@/components";
@@ -30,6 +31,7 @@ const BugReportForm = forwardRef<BugReportFormHandle, BugReportFormProps>(functi
   { onSubmit },
   ref,
 ) {
+  const { t } = useTranslation();
   const methods = useForm<BugReportFormValues>({
     defaultValues,
   });
@@ -69,7 +71,7 @@ const BugReportForm = forwardRef<BugReportFormHandle, BugReportFormProps>(functi
         <View>
           <View className="mb-[0.8rem] flex-row justify-between">
             <SpoqaText className="text-size14 text-role-text-primary dark:text-role-dark-text-primary">
-              제목
+              {t("common.title")}
             </SpoqaText>
             <SpoqaText className="text-size12 text-role-text-secondary dark:text-role-dark-text-secondary">
               {title.length}/{TITLE_MAX_LENGTH}
@@ -78,14 +80,14 @@ const BugReportForm = forwardRef<BugReportFormHandle, BugReportFormProps>(functi
           <FormTextInput
             name="title"
             maxLength={TITLE_MAX_LENGTH}
-            placeholder="제목을 입력해 주세요."
+            placeholder={t("settings.bugReportSheet.titlePlaceholder")}
           />
         </View>
 
         <View>
           <View className="mb-[0.8rem] flex-row justify-between">
             <SpoqaText className="text-size14 text-role-text-primary dark:text-role-dark-text-primary">
-              내용
+              {t("common.content")}
             </SpoqaText>
             <SpoqaText className="text-size12 text-role-text-secondary dark:text-role-dark-text-secondary">
               {content.length}/{CONTENT_MAX_LENGTH}
@@ -96,14 +98,14 @@ const BugReportForm = forwardRef<BugReportFormHandle, BugReportFormProps>(functi
             maxLength={CONTENT_MAX_LENGTH}
             multiline
             textAlignVertical="top"
-            placeholder="발생한 문제를 상세하게 적어 주세요."
+            placeholder={t("settings.bugReportSheet.contentPlaceholder")}
             className="min-h-[16rem] py-[1.2rem]"
           />
         </View>
 
         <View>
           <SpoqaText className="mb-[0.8rem] text-size14 text-role-text-primary dark:text-role-dark-text-primary">
-            이미지
+            {t("common.image")}
           </SpoqaText>
           <Controller
             control={methods.control}

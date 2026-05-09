@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { View, useWindowDimensions } from "react-native";
 
 import { HeaderRightActions, PageHeader } from "@/components";
@@ -8,6 +9,7 @@ import {
 } from "@/features/settings";
 
 function Display() {
+  const { t } = useTranslation();
   const { width } = useWindowDimensions();
 
   if (handleIsSettingsWideLayout(width)) {
@@ -17,7 +19,7 @@ function Display() {
   return (
     <View className="flex-1 bg-role-surface-panel dark:bg-role-dark-surface-panel">
       <PageHeader
-        title="화면표시"
+        title={t("settings.display.title")}
         rightContent={<HeaderRightActions />}
       />
       <DisplaySettingsScreen />

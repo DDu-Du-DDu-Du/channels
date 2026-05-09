@@ -39,6 +39,7 @@ const defineConfig = ({ config }: ConfigContext): ExpoConfig => {
       "@react-native-community/datetimepicker",
       "expo-font",
       "expo-image",
+      "expo-localization",
       [
         "expo-router",
         {

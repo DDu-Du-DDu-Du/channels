@@ -1,10 +1,11 @@
 import "../global.css";
 
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
-import { LocaleConfig } from "react-native-calendars";
 
 import { ToastProvider } from "@/components";
+import "@/i18n";
 import { OutsidePressProvider, SettingsProvider, TanstackProvider } from "@/providers";
 import AuthProvider from "@/providers/auth-provider/auth-provider";
 import { useAuthStore, useSettingsStore } from "@/stores";
@@ -23,42 +24,9 @@ export const unstable_settings = {
 
 SplashScreen.preventAutoHideAsync();
 
-LocaleConfig.locales.ko = {
-  monthNames: [
-    "1월",
-    "2월",
-    "3월",
-    "4월",
-    "5월",
-    "6월",
-    "7월",
-    "8월",
-    "9월",
-    "10월",
-    "11월",
-    "12월",
-  ],
-  monthNamesShort: [
-    "1월",
-    "2월",
-    "3월",
-    "4월",
-    "5월",
-    "6월",
-    "7월",
-    "8월",
-    "9월",
-    "10월",
-    "11월",
-    "12월",
-  ],
-  dayNames: ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"],
-  dayNamesShort: ["일", "월", "화", "수", "목", "금", "토"],
-};
-LocaleConfig.defaultLocale = "ko";
-
 export default function RootLayout() {
   const pathname = usePathname();
+  const { t, i18n } = useTranslation();
   const [loaded, error] = useFonts({
     "SpoqaHanSansNeo-Bold": require("@/assets/fonts/SpoqaHanSans/SpoqaHanSansNeo-Bold.otf"),
     "SpoqaHanSansNeo-SemiBold": require("@/assets/fonts/SpoqaHanSans/SpoqaHanSansNeo-Medium.otf"),
@@ -93,8 +61,8 @@ export default function RootLayout() {
       return;
     }
 
-    document.title = "모두플랜";
-  }, [pathname]);
+    document.title = t("app.name");
+  }, [i18n.language, pathname, t]);
 
   if (!hasHydrated || (!loaded && !error)) {
     return null;

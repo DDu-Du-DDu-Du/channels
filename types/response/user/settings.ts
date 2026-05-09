@@ -1,8 +1,10 @@
+export type ServerLanguageType = "EN" | "KO";
 export type ServerWeekStartDayType = "MON" | "SUN";
 
 export interface DisplaySettingsType {
   weekStartDay: ServerWeekStartDayType;
   isDarkMode: boolean;
+  language?: ServerLanguageType;
 }
 
 export interface MenuActivationItemType {

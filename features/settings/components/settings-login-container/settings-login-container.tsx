@@ -1,22 +1,24 @@
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 import { LoginButton, useOauth2Login } from "@/features/auth";
 
 interface SettingsLoginProvider {
   key: string;
-  label: string;
+  labelKey: string;
   provider: "kakao";
 }
 
 const LOGIN_PROVIDERS: SettingsLoginProvider[] = [
   {
     key: "kakao",
-    label: "카카오 로그인",
+    labelKey: "auth.kakaoLogin",
     provider: "kakao",
   },
 ];
 
 function SettingsLoginContainer() {
+  const { t } = useTranslation();
   const { handleKakaoLogin } = useOauth2Login({});
 
   return (
@@ -26,7 +28,7 @@ function SettingsLoginContainer() {
           <LoginButton
             key={provider.key}
             provider={provider.provider}
-            label={provider.label}
+            label={t(provider.labelKey)}
             onPress={handleKakaoLogin}
             fit={true}
           />

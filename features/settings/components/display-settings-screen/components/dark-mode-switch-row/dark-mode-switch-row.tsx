@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import { AnimatedSwitch } from "@/components";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { MoonIcon, SunIcon } from "@/icons";
@@ -10,6 +12,7 @@ interface DarkModeSwitchRowProps {
 }
 
 function DarkModeSwitchRow({ isDarkMode, handleToggleDarkMode }: DarkModeSwitchRowProps) {
+  const { t } = useTranslation();
   const offIconColor = useThemeColorToken("role.icon.default");
   const onIconColor = useThemeColorToken("role.icon.inverse");
   const offBackgroundColor = useThemeColorToken("role.surface.subtle");
@@ -19,7 +22,7 @@ function DarkModeSwitchRow({ isDarkMode, handleToggleDarkMode }: DarkModeSwitchR
 
   return (
     <SettingsRow
-      label="다크모드"
+      label={t("settings.display.darkMode")}
       rightContent={
         <AnimatedSwitch
           size="large"

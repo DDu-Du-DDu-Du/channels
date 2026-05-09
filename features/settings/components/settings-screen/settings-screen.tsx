@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 
 import { ConfirmModal } from "@/components";
@@ -19,6 +20,7 @@ import Constants from "expo-constants";
 import { Href, useRouter } from "expo-router";
 
 function SettingsScreen() {
+  const { t } = useTranslation();
   const isDesignTokenLabEnabled = handleIsDesignTokenLabEnabled();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -90,38 +92,38 @@ function SettingsScreen() {
         showsVerticalScrollIndicator={false}
       >
         <SettingsRow
-          label="화면 표시"
+          label={t("settings.display.title")}
           onPress={handlePressDisplay}
         />
         <SettingsRow
-          label="메뉴 활성화"
+          label={t("settings.menuActivation")}
           onPress={handlePressMenuActivation}
         />
         <SettingsRow
-          label="앱 연결"
+          label={t("settings.appConnection")}
           onPress={handlePressAppConnection}
         />
         {isDesignTokenLabEnabled ? (
           <SettingsRow
-            label="디자인 시스템"
+            label={t("settings.designSystem")}
             onPress={handlePressDesignSystem}
           />
         ) : null}
         <SettingsRow
-          label="버그 리포트"
+          label={t("settings.bugReport")}
           onPress={handlePressBugReport}
         />
         <SettingsRow
-          label="공지사항"
+          label={t("settings.announcement")}
           onPress={handlePressAnnouncement}
         />
         <SettingsRow
-          label="앱 버전 정보"
+          label={t("settings.appVersion")}
           value={`v${appVersion}`}
         />
         {sessionType === "member" ? (
           <SettingsRow
-            label="로그아웃"
+            label={t("settings.logout")}
             onPress={handlePressLogout}
             textColor={dangerTextColor}
           />
@@ -134,10 +136,10 @@ function SettingsScreen() {
 
       <ConfirmModal
         isToggle={isLogoutConfirmOpen}
-        title="로그아웃하시겠어요?"
-        message="현재 계정에서 로그아웃됩니다."
-        completeText="로그아웃"
-        incompleteText="취소"
+        title={t("settings.logoutConfirmTitle")}
+        message={t("settings.logoutConfirmMessage")}
+        completeText={t("settings.logout")}
+        incompleteText={t("common.cancel")}
         handleToggleOff={handleCloseLogoutConfirm}
         onCompleteCheck={handleLogoutConfirmResult}
       />

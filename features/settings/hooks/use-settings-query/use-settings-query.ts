@@ -1,4 +1,5 @@
 import { USER_KEY } from "@/constants/query-key/query-key";
+import { handleNormalizeLanguage } from "@/i18n";
 import { getUserSettings } from "@/service/user/user";
 import { SettingsPayload } from "@/stores/use-settings-store/use-settings-store";
 import { UserSettingsResponseType } from "@/types/response/user/settings";
@@ -10,6 +11,7 @@ export const mapSettingsResponseToPayload = (
   display: {
     weekStartDay: settings.display.weekStartDay === "MON" ? "mon" : "sun",
     isDarkMode: settings.display.isDarkMode,
+    language: handleNormalizeLanguage(settings.display.language),
   },
   menuActivation: {
     calendar: {
