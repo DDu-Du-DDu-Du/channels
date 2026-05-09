@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
 import Avatar from "@/components/avatar/avatar";
@@ -19,6 +20,7 @@ function FollowRequestItem({
   followRequestAt,
   onFollowRequestCheck,
 }: FollowRequestItemProps) {
+  const { t } = useTranslation();
   const timeAge = useMemo(() => getRelativeTime(followRequestAt), [followRequestAt]);
   const denyBackgroundColor = useThemeColorToken("role.surface.card");
   const acceptBackgroundColor = useThemeColorToken("role.surface.muted");
@@ -37,7 +39,7 @@ function FollowRequestItem({
         <Avatar user={user} />
         <View className="flex-1 ml-[1rem]">
           <SpoqaText className="text-size13 leading-[1.3rem]">
-            <SpoqaText weight="semiBold">{user.userName}</SpoqaText>님이 팔로우를 요청했습니다.
+            {t("follow.requestMessage", { userName: user.userName })}
           </SpoqaText>
           <SpoqaText className="text-size11 leading-[1.1rem]">{timeAge}</SpoqaText>
         </View>
@@ -49,7 +51,7 @@ function FollowRequestItem({
           whileTap={{ scale: 0.95 }}
           onPress={handleDenyPress}
         >
-          <SpoqaText className="text-size11">거절</SpoqaText>
+          <SpoqaText className="text-size11">{t("follow.reject")}</SpoqaText>
         </MotionPressable>
         <MotionPressable
           accessibilityRole="button"
@@ -58,7 +60,7 @@ function FollowRequestItem({
           onPress={handleAcceptPress}
         >
           <SpoqaText className="text-size11 text-role-text-inverse dark:text-role-dark-text-inverse">
-            수락
+            {t("follow.accept")}
           </SpoqaText>
         </MotionPressable>
       </View>

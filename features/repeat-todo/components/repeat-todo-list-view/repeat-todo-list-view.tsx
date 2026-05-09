@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { FlatList, Pressable, View } from "react-native";
 
 import { ConfirmModal, EmptyList, FormHeader } from "@/components";
@@ -28,6 +29,7 @@ function RepeatTodoListView({
   onCompleteDeleteRepeatTodo,
   onCloseDeleteModal,
 }: RepeatTodoListViewProps) {
+  const { t } = useTranslation();
   const iconFill = useThemeColorToken("ui.icon.default");
 
   const rightContent = (
@@ -48,7 +50,7 @@ function RepeatTodoListView({
       <View className="px-[2.4rem] pb-[1.6rem] pt-[2.4rem]">
         <View className="relative">
           <FormHeader
-            title={"반복투두"}
+            title={t("repeatTodo.title")}
             onPressBack={onPressBack}
             className="p-0"
           />
@@ -72,15 +74,15 @@ function RepeatTodoListView({
             onPressDelete={() => onPressDeleteRepeatTodo(item.id)}
           />
         )}
-        ListEmptyComponent={() => <EmptyList text={"반복투두를 생성해보세요."} />}
+        ListEmptyComponent={() => <EmptyList text={t("repeatTodo.empty")} />}
       />
 
       <ConfirmModal
         isToggle={isDeleteConfirmOpen}
-        title={"반복투두를 삭제할까요?"}
-        message={"삭제 후에는 되돌릴 수 없습니다."}
-        completeText={"삭제"}
-        incompleteText={"취소"}
+        title={t("repeatTodo.deleteConfirmTitle")}
+        message={t("common.cannotUndo")}
+        completeText={t("common.delete")}
+        incompleteText={t("common.cancel")}
         handleToggleOff={onCloseDeleteModal}
         onCompleteCheck={onCompleteDeleteRepeatTodo}
       />

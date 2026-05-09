@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 import { EmptyList, SpoqaText } from "@/components";
@@ -5,6 +6,8 @@ import type { TodoDashboardContentType } from "@/types/response/todo/todo";
 import { formatDateToYYYYMMDD } from "@/utils";
 
 import DashboardTodoItem from "../dashboard-todo-item/dashboard-todo-item";
+
+import { TFunction } from "i18next";
 
 interface DashboardTodoSectionProps {
   section: TodoDashboardContentType;
@@ -37,7 +40,7 @@ const addDays = (date: Date, days: number) => {
   return next;
 };
 
-const formatSectionTitle = (date: string) => {
+const formatSectionTitle = (date: string, t: TFunction) => {
   const parsedDate = parseDate(date);
   const today = new Date();
   const todayString = formatDateToYYYYMMDD(today);
@@ -48,11 +51,11 @@ const formatSectionTitle = (date: string) => {
   const dateLabel = `${month} ${day} (${dayOfWeek})`;
 
   if (date === todayString) {
-    return `TODAY, ${dateLabel}`;
+    return t("dashboard.todayLabel", { date: dateLabel });
   }
 
   if (date === tomorrowString) {
-    return `TOMORROW, ${dateLabel}`;
+    return t("dashboard.tomorrowLabel", { date: dateLabel });
   }
 
   return dateLabel;
@@ -64,6 +67,7 @@ function DashboardTodoSection({
   onCompleteToggle,
   onOpenMenu,
 }: DashboardTodoSectionProps) {
+  const { t } = useTranslation();
   const shouldShowTodayEmpty = isToday && section.todos.length === 0;
 
   return (
@@ -72,9 +76,9 @@ function DashboardTodoSection({
         weight="bold"
         className="mb-[1.6rem] text-size14 text-role-text-tertiary dark:text-role-dark-text-tertiary"
       >
-        {formatSectionTitle(section.date)}
+        {formatSectionTitle(section.date, t)}
       </SpoqaText>
-      {shouldShowTodayEmpty && <EmptyList text="오늘 할 일이 없어요" />}
+      {shouldShowTodayEmpty && <EmptyList text={t("dashboard.todayEmpty")} />}
       {section.todos.map((todo) => (
         <DashboardTodoItem
           key={todo.id}

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { ActivityIndicator, FlatList, Pressable, View, useWindowDimensions } from "react-native";
 
 import {
@@ -23,6 +24,7 @@ import DashboardWideControlPanel from "../dashboard-wide-control-panel/dashboard
 import { useRouter } from "expo-router";
 
 function DashboardScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { width: windowWidth } = useWindowDimensions();
   const listRef = useRef<FlatList<TodoDashboardContentType>>(null);
@@ -180,10 +182,10 @@ function DashboardScreen() {
     }
 
     if (dashboardQuery.isError) {
-      return <EmptyList text="대시보드를 불러오지 못했어요." />;
+      return <EmptyList text={t("dashboard.loadFailed")} />;
     }
 
-    return <EmptyList text="표시할 투두가 없어요." />;
+    return <EmptyList text={t("dashboard.empty")} />;
   };
 
   const renderDashboardSection = ({ item }: { item: TodoDashboardContentType }) => {
@@ -295,7 +297,7 @@ function DashboardScreen() {
           onChangeTodoDate={handleMoveToDate}
           handleCalendarSheetToggleOff={handleMoveToCalendarToggleOff}
           shouldConfirmSameDate
-          confirmButtonLabel="이동"
+          confirmButtonLabel={t("common.move")}
         />
       )}
 
@@ -323,7 +325,7 @@ function DashboardScreen() {
             <TextInput
               value={dashboardSearchText}
               onChangeText={handleChangeDashboardSearchText}
-              placeholder="투두 검색"
+              placeholder={t("todo.searchPlaceholder")}
               returnKeyType="search"
               className="h-[3.2rem] flex-1 border-0 bg-transparent px-[0.8rem] text-size13"
               style={{

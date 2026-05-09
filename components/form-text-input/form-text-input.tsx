@@ -6,6 +6,7 @@ import {
   RegisterOptions,
   useFormContext,
 } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 import SpoqaText from "../spoqa-text/spoqa-text";
@@ -32,13 +33,14 @@ function FormTextInput<TFieldValues extends FieldValues = FieldValues>({
   errorClassName,
   ...inputProps
 }: FormTextInputProps<TFieldValues>) {
+  const { t } = useTranslation();
   const formContext = useFormContext<TFieldValues>();
   const resolvedControl = control ?? formContext?.control;
   const requiredRule =
     required === undefined || required === false
       ? undefined
       : required === true
-        ? "필수 입력 항목입니다."
+        ? t("errors.required")
         : required;
   const mergedRules = {
     ...rules,

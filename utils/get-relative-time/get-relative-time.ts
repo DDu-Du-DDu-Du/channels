@@ -1,3 +1,5 @@
+import i18n from "@/i18n";
+
 import parseUtc from "../parse-utc/parse-utc";
 
 const SECOND = 1000;
@@ -12,27 +14,27 @@ function getRelativeTime(utcDateString: string): string {
   const diffMs = now.getTime() - past.getTime();
 
   if (diffMs < 0) {
-    throw new Error("과거 날짜만 입력해주세요.");
+    throw new Error(i18n.t("errors.pastDateOnly"));
   }
 
   if (Number.isNaN(past.getTime())) {
-    throw new Error("유효하지 않은 날짜 형식이에요.");
+    throw new Error(i18n.t("errors.invalidDate"));
   }
 
   if (diffMs < MINUTE) {
-    return `${Math.floor(diffMs / SECOND)}초 전`;
+    return i18n.t("dateTime.relative.secondsAgo", { count: Math.floor(diffMs / SECOND) });
   }
 
   if (diffMs < HOUR) {
-    return `${Math.floor(diffMs / MINUTE)}분 전`;
+    return i18n.t("dateTime.relative.minutesAgo", { count: Math.floor(diffMs / MINUTE) });
   }
 
   if (diffMs < DAY) {
-    return `${Math.floor(diffMs / HOUR)}시간 전`;
+    return i18n.t("dateTime.relative.hoursAgo", { count: Math.floor(diffMs / HOUR) });
   }
 
   if (diffMs < THIRTY_DAYS) {
-    return `${Math.floor(diffMs / DAY)}일 전`;
+    return i18n.t("dateTime.relative.daysAgo", { count: Math.floor(diffMs / DAY) });
   }
 
   const y1 = past.getUTCFullYear();
@@ -49,7 +51,7 @@ function getRelativeTime(utcDateString: string): string {
   }
 
   if (months < 12) {
-    return `${months}개월 전`;
+    return i18n.t("dateTime.relative.monthsAgo", { count: months });
   }
 
   let years = y2 - y1;
@@ -58,7 +60,7 @@ function getRelativeTime(utcDateString: string): string {
     years -= 1;
   }
 
-  return `${years}년 전`;
+  return i18n.t("dateTime.relative.yearsAgo", { count: years });
 }
 
 export default getRelativeTime;

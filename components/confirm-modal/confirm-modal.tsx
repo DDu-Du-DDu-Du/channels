@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 
 import Modal from "@/components/modal/modal";
@@ -21,11 +22,12 @@ function ConfirmModal({
   title,
   message,
   imageUrl,
-  completeText = "확인",
-  incompleteText = "취소",
+  completeText,
+  incompleteText,
   handleToggleOff,
   onCompleteCheck,
 }: ConfirmModalProps) {
+  const { t } = useTranslation();
   const handleClickComplete = () => {
     onCompleteCheck(true);
     handleToggleOff();
@@ -54,7 +56,7 @@ function ConfirmModal({
           <Image
             className="mx-auto mb-[3.2rem]"
             source={imageUrl}
-            alt="경고(알림) 이미지입니다."
+            alt={t("accessibility.alertImage")}
             style={{ width: 300, height: 310 }}
             priority="high"
           />
@@ -69,7 +71,7 @@ function ConfirmModal({
             weight="semiBold"
             className="text-size15"
           >
-            {completeText}
+            {completeText ?? t("common.confirm")}
           </SpoqaText>
         </Pressable>
         <Pressable
@@ -80,7 +82,7 @@ function ConfirmModal({
             weight="semiBold"
             className="text-size15"
           >
-            {incompleteText}
+            {incompleteText ?? t("common.cancel")}
           </SpoqaText>
         </Pressable>
       </View>

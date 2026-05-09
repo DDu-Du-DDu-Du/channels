@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { useToast } from "@/components/toast/hooks";
 import { NOTIFICATION_KEY } from "@/constants/query-key/query-key";
@@ -14,6 +15,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useNotificationInboxQuery } from "../../queries";
 
 import { Href, useRouter } from "expo-router";
+import { TFunction } from "i18next";
 
 export type NotificationContextTab = "TODO" | "ANNOUNCEMENT";
 
@@ -53,7 +55,7 @@ const normalizeContext = (context: NotificationContextType): NotificationContext
   return null;
 };
 
-const resolveGroupLabel = (createdAt: string) => {
+const resolveGroupLabel = (createdAt: string, t: TFunction) => {
   const date = parseUtc(createdAt);
   const today = new Date();
   const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
@@ -61,10 +63,10 @@ const resolveGroupLabel = (createdAt: string) => {
   const diffDays = Math.floor((todayStart.getTime() - dateStart.getTime()) / DAY_MS);
 
   if (diffDays <= 0) {
-    return "오늘";
+    return t("dateTime.today");
   }
 
-  return `${diffDays}일 전`;
+  return t("dateTime.relative.daysAgo", { count: diffDays });
 };
 
 const resolveAnnouncementDateText = (createdAt: string) => {
@@ -80,6 +82,7 @@ const resolveAnnouncementDateText = (createdAt: string) => {
 };
 
 function useNotificationScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
   const { createToast } = useToast();
@@ -107,7 +110,7 @@ function useNotificationScreen() {
     let prevLabel = "";
 
     TodoItems.forEach((item) => {
-      const label = resolveGroupLabel(item.createdAt);
+      const label = resolveGroupLabel(item.createdAt, t);
 
       if (prevLabel !== label) {
         entries.push({
@@ -126,7 +129,7 @@ function useNotificationScreen() {
     });
 
     return entries;
-  }, [TodoItems]);
+  }, [TodoItems, t]);
 
   const announcementViewItems = useMemo<AnnouncementViewItem[]>(
     () =>
@@ -165,7 +168,7 @@ function useNotificationScreen() {
 
       router.push(`/feed?date=${detail.scheduledOn}` as Href);
     } catch {
-      createToast("투두 알림 이동에 실패했어요.", { type: "danger" });
+      createToast(t("notification.todoMoveFailed"), { type: "danger" });
     } finally {
       setLoadingNotificationId(null);
     }
@@ -195,7 +198,7 @@ function useNotificationScreen() {
           return next;
         });
       }
-      createToast("공지사항 읽음 처리에 실패했어요.", { type: "danger" });
+      createToast(t("notification.announcementReadFailed"), { type: "danger" });
     } finally {
       queryClient.invalidateQueries({ queryKey: [NOTIFICATION_KEY.INBOX_STATUS] });
       setLoadingNotificationId(null);

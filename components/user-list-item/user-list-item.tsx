@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 
 import Avatar from "@/components/avatar/avatar";
@@ -17,6 +18,7 @@ export interface UserListItemProps {
 }
 
 function UserListItem({ type, user, isFollowing, isPrivate, isRequestFollow }: UserListItemProps) {
+  const { t } = useTranslation();
   const {
     isToggle: isShowModal,
     handleToggleOff: closeModal,
@@ -32,11 +34,11 @@ function UserListItem({ type, user, isFollowing, isPrivate, isRequestFollow }: U
 
   const buttonLabel = isFollowRequesting
     ? isFollow
-      ? "요청중"
-      : "팔로우"
+      ? t("follow.requested")
+      : t("follow.follow")
     : isFollow
-      ? "팔로잉"
-      : "팔로우";
+      ? t("follow.following")
+      : t("follow.follow");
 
   return (
     <View className="flex-row items-center justify-between w-full py-[0.8rem]">

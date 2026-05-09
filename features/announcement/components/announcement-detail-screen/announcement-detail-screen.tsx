@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { ActivityIndicator, ScrollView, View } from "react-native";
 
 import { EmptyList, SpoqaText } from "@/components";
@@ -6,6 +7,7 @@ import { useWideLayout } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 
 function AnnouncementDetailScreen() {
+  const { t } = useTranslation();
   const { isWideLayout } = useWideLayout();
   const spinnerColor = useThemeColorToken("role.text.tertiary");
   const { detail, isLoading, isError } = useAnnouncementDetailScreen();
@@ -23,9 +25,9 @@ function AnnouncementDetailScreen() {
           />
         </View>
       ) : isError ? (
-        <EmptyList text="공지사항 상세를 불러오지 못했어요." />
+        <EmptyList text={t("announcement.detailLoadFailed")} />
       ) : !detail ? (
-        <EmptyList text="공지사항 상세가 없어요." />
+        <EmptyList text={t("announcement.detailEmpty")} />
       ) : (
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -42,7 +44,7 @@ function AnnouncementDetailScreen() {
           </SpoqaText>
           {detail.author ? (
             <SpoqaText className="mt-[0.4rem] text-size13 text-role-text-secondary dark:text-role-dark-text-secondary">
-              작성자: {detail.author}
+              {t("announcement.author", { author: detail.author })}
             </SpoqaText>
           ) : null}
 

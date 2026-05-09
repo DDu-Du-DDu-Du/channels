@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 import { DateData } from "react-native-calendars";
 
@@ -41,6 +42,7 @@ function BottomSingleCalendar({
   confirmButtonLabel,
   shouldConfirmSameDate = false,
 }: BottomSingleCalendarProps) {
+  const { t } = useTranslation();
   const { ref, openSheet, closeSheet } = useBottomSheetAction();
   const backIconStroke = useThemeColorToken("ui.icon.default");
 
@@ -117,7 +119,7 @@ function BottomSingleCalendar({
             weight="semiBold"
             className="text-role-text-inverse dark:text-role-dark-text-inverse"
           >
-            {confirmButtonLabel ?? "확인"}
+            {confirmButtonLabel ?? t("common.confirm")}
           </SpoqaText>
         </Pressable>
       </View>

@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import KakaoLoginButton from "../kakao-login-button/kakao-login-button";
 
 type LoginButtonSize = "medium" | "large";
@@ -21,10 +23,12 @@ function LoginButton({
   size = "medium",
   fit = false,
 }: SocialLoginButtonProps) {
+  const { t } = useTranslation();
+
   if (provider === "kakao") {
     return (
       <KakaoLoginButton
-        label={label ?? "카카오 로그인"}
+        label={label ?? t("auth.kakaoLogin")}
         onPress={onPress}
         size={size}
         fit={fit}
