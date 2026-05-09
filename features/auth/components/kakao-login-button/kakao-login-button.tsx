@@ -1,15 +1,13 @@
+import { useTranslation } from "react-i18next";
 import { Pressable, Text, View } from "react-native";
 
 import { KakaoLoginIcon } from "@/icons";
 
 import { LoginButtonProps } from "../login-button/login-button";
 
-function KakaoLoginButton({
-  label = "카카오 로그인",
-  onPress,
-  size = "medium",
-  fit,
-}: LoginButtonProps) {
+function KakaoLoginButton({ label, onPress, size = "medium", fit }: LoginButtonProps) {
+  const { t } = useTranslation();
+
   return (
     <Pressable
       onPress={onPress}
@@ -24,7 +22,7 @@ function KakaoLoginButton({
         <Text
           className={`font-semibold text-[#000000D9] ${size === "medium" ? "text-[15px]" : "text-[30px]"}`}
         >
-          {label}
+          {label ?? t("auth.kakaoLogin")}
         </Text>
       </View>
     </Pressable>

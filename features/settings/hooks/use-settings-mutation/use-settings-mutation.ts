@@ -12,6 +12,7 @@ const mapPayloadToSettingsRequest = (payload: SettingsPayload): UserSettingsResp
   display: {
     weekStartDay: payload.display.weekStartDay === "mon" ? "MON" : "SUN",
     isDarkMode: payload.display.isDarkMode,
+    language: payload.display.language === "en" ? "EN" : "KO",
   },
   menuActivation: {
     calendar: {

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface UseToggleFollowProps {
   isFollowing: boolean;
@@ -13,17 +14,22 @@ function useToggleFollow({
   isRequestFollow,
   openModal,
 }: UseToggleFollowProps) {
+  const { t } = useTranslation();
   const [isFollow, setIsFollow] = useState(isFollowing);
   const [isFollowRequesting, setIsFollowRequesting] = useState(isRequestFollow);
-  const [title, setTitle] = useState("팔로잉 요청 중이에요.");
-  const [message, setMessage] = useState("팔로잉 요청을 취소할까요?");
+  const [title, setTitle] = useState(t("follow.requestingTitle"));
+  const [message, setMessage] = useState(t("follow.requestingMessage"));
 
   useEffect(() => {
     if (isFollow === true) {
-      setTitle("팔로잉 중입니다.");
-      setMessage("팔로잉을 취소하시겠어요?");
+      setTitle(t("follow.followingTitle"));
+      setMessage(t("follow.followingMessage"));
+      return;
     }
-  }, [isFollow]);
+
+    setTitle(t("follow.requestingTitle"));
+    setMessage(t("follow.requestingMessage"));
+  }, [isFollow, t]);
 
   const handleFollowCheck = (isComplete: boolean) => {
     if (!isComplete) {

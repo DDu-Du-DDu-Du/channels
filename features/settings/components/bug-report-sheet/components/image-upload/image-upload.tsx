@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Image, Pressable, ScrollView, View } from "react-native";
 
 import { SpoqaText } from "@/components";
@@ -23,6 +24,7 @@ function ImageUpload({
   maxCount = 10,
   disabled = false,
 }: ImageUploadProps) {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
 
   const handlePressUpload = async () => {
@@ -64,7 +66,9 @@ function ImageUpload({
         className="h-[4.2rem] items-center justify-center rounded-radius12 border border-role-border-default dark:border-role-dark-border-default bg-role-surface-canvas dark:bg-role-dark-surface-canvas"
       >
         <SpoqaText className="text-size13 text-role-text-primary dark:text-role-dark-text-primary">
-          {isLoading ? "업로드 중..." : "이미지 업로드"}
+          {isLoading
+            ? t("settings.bugReportSheet.uploading")
+            : t("settings.bugReportSheet.uploadImage")}
         </SpoqaText>
       </Pressable>
 

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface UseFeedCalendarNavigationProps {
   date: string;
@@ -11,6 +12,7 @@ function useFeedCalendarNavigation({
   onSelectDate,
   onVisibleMonthChange,
 }: UseFeedCalendarNavigationProps) {
+  const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [visibleDate, setVisibleDate] = useState(date);
 
@@ -35,12 +37,24 @@ function useFeedCalendarNavigation({
     [onSelectDate, onVisibleMonthChange],
   );
 
+  const handleChangeVisibleDate = useCallback(
+    (nextVisibleDate: string) => {
+      setVisibleDate(nextVisibleDate);
+      onVisibleMonthChange(nextVisibleDate);
+    },
+    [onVisibleMonthChange],
+  );
+
   const handleDisplayMonth = useMemo(() => {
     const [year, month] = visibleDate.split("-");
     const resolvedMonth = Number(month);
 
-    return `${year}년 ${resolvedMonth}월`;
-  }, [visibleDate]);
+    return t("calendar.yearMonth", {
+      year,
+      month:
+        i18n.language === "en" ? t(`calendar.months.long.${resolvedMonth - 1}`) : resolvedMonth,
+    });
+  }, [i18n.language, t, visibleDate]);
 
   return {
     isOpen,
@@ -49,6 +63,7 @@ function useFeedCalendarNavigation({
     handleCalendarToggled,
     handleDisplayMonth,
     handleSelectCalendarDate,
+    handleChangeVisibleDate,
   };
 }
 

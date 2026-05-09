@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { ActivityIndicator, FlatList, Pressable, View } from "react-native";
 
 import { EmptyList, HeaderRightActions, PageHeader, SpoqaText } from "@/components";
@@ -6,6 +7,7 @@ import { useWideLayout } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 
 function Announcement() {
+  const { t } = useTranslation();
   const { isWideLayout } = useWideLayout();
   const spinnerColor = useThemeColorToken("role.text.tertiary");
   const {
@@ -19,21 +21,21 @@ function Announcement() {
 
   const renderEmpty = () => {
     if (isLoading) {
-      return <EmptyList text="불러오는 중..." />;
+      return <EmptyList text={t("common.loading")} />;
     }
 
     if (isError) {
-      return <EmptyList text="공지사항을 불러오지 못했어요." />;
+      return <EmptyList text={t("announcement.loadFailed")} />;
     }
 
-    return <EmptyList text="공지사항이 없어요." />;
+    return <EmptyList text={t("announcement.empty")} />;
   };
   const listClassName = isWideLayout ? "w-full max-w-[86rem] self-center" : "";
 
   return (
     <View className="flex-1 bg-role-surface-panel dark:bg-role-dark-surface-panel">
       <PageHeader
-        title="공지사항"
+        title={t("announcement.title")}
         rightContent={<HeaderRightActions />}
       />
       <FlatList<AnnouncementListViewItem>

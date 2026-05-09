@@ -1,4 +1,4 @@
-import { ScrollView, View, useWindowDimensions } from "react-native";
+import { ActivityIndicator, ScrollView, View, useWindowDimensions } from "react-native";
 
 import { SpoqaText } from "@/components";
 import StatsGoalChartCard, {
@@ -115,9 +115,9 @@ function StatsWideOverview({
         </SpoqaText>
 
         {isSummaryLoading ? (
-          <SpoqaText className="mt-[1.4rem] text-size14 text-role-text-secondary dark:text-role-dark-text-secondary">
-            불러오는 중...
-          </SpoqaText>
+          <View className="mt-[1.4rem] items-center py-[2rem]">
+            <ActivityIndicator size="small" />
+          </View>
         ) : null}
 
         {isSummaryError && !isSummaryLoading ? (

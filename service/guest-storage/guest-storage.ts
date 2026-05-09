@@ -1,3 +1,5 @@
+import { Platform } from "react-native";
+
 import { normalizeDayOfWeekToEn } from "@/constants";
 import type { RequestTodo } from "@/types/request/feed/feed";
 import type {
@@ -104,6 +106,12 @@ const handleParseLocalDate = (value: string) => new Date(`${value}T00:00:00`);
 
 const handleNormalizeColor = (color: string) => color.replace(/^#/, "").toUpperCase();
 
+const handleIsGuestDatabaseMissingError = (error: unknown) => {
+  const message = error instanceof Error ? error.message : String(error);
+
+  return message.includes("Database not found") || message.includes("nativeDatabaseId");
+};
+
 const handleParseJsonArray = <T>(value: string | null): T[] | undefined => {
   if (!value) {
     return undefined;
@@ -161,6 +169,32 @@ const handleNormalizeRepeatDaysToJsDaySet = (days?: RepeatDayOfWeek[]) => {
 const handleGetTodayDate = () => handleFormatLocalDate(new Date());
 
 const handleGetMaxDate = (left: string, right: string) => (left > right ? left : right);
+
+const assertGuestDatabaseWebSupport = () => {
+  if (Platform.OS !== "web") {
+    return;
+  }
+
+  const browserGlobal = globalThis as typeof globalThis & {
+    crossOriginIsolated?: boolean;
+    SharedArrayBuffer?: typeof SharedArrayBuffer;
+    navigator?: Navigator & {
+      storage?: StorageManager & {
+        getDirectory?: () => Promise<FileSystemDirectoryHandle>;
+      };
+    };
+  };
+
+  if (
+    !browserGlobal.crossOriginIsolated ||
+    typeof browserGlobal.SharedArrayBuffer === "undefined" ||
+    typeof browserGlobal.navigator?.storage?.getDirectory !== "function"
+  ) {
+    throw new Error(
+      "Guest SQLite storage is unavailable on this web runtime. Expo SQLite web requires OPFS, SharedArrayBuffer, and COOP/COEP headers.",
+    );
+  }
+};
 
 const handleResolveRepeatDates = (
   repeatTodo: Pick<
@@ -306,6 +340,8 @@ const handleMapTodoStatus = (status: "UNCOMPLETED" | "COMPLETE") => status;
 const handleGetGuestDatabase = async () => {
   if (!guestDatabasePromise) {
     guestDatabasePromise = (async () => {
+      assertGuestDatabaseWebSupport();
+
       const database = await SQLite.openDatabaseAsync(GUEST_DATABASE_NAME);
       await database.execAsync("PRAGMA foreign_keys = ON;");
       await database.execAsync("PRAGMA journal_mode = WAL;");
@@ -314,7 +350,10 @@ const handleGetGuestDatabase = async () => {
       await handleSeedGuestDatabase(database);
 
       return database;
-    })();
+    })().catch((error) => {
+      guestDatabasePromise = null;
+      throw error;
+    });
   }
 
   return guestDatabasePromise;
@@ -586,23 +625,34 @@ const handleResolvePeriodRange = (date: string, type: "WEEK" | "MONTH") => {
 };
 
 export const clearGuestLocalData = async () => {
+  let didCloseDatabase = !guestDatabasePromise;
+
   if (guestDatabasePromise) {
     try {
       const database = await guestDatabasePromise;
       await database.closeAsync();
-    } catch {
-      // noop
-      console.error("[guest] failed to close local db");
+      didCloseDatabase = true;
+    } catch (error) {
+      if (handleIsGuestDatabaseMissingError(error)) {
+        didCloseDatabase = true;
+      } else {
+        console.error("[guest] failed to close local db before delete");
+      }
     }
   }
 
   guestDatabasePromise = null;
 
+  if (!didCloseDatabase) {
+    return;
+  }
+
   try {
     await SQLite.deleteDatabaseAsync(GUEST_DATABASE_NAME);
-  } catch {
-    // noop
-    console.error("[guest] failed to close local db");
+  } catch (error) {
+    if (!handleIsGuestDatabaseMissingError(error)) {
+      console.error("[guest] failed to delete local db");
+    }
   }
 };
 
@@ -750,6 +800,7 @@ export const getGuestGoalDetail = async ({
     name: goalRow.name,
     status: goalRow.status,
     color: goalRow.color,
+    priority: goalRow.priority,
     privacyType: goalRow.privacyType,
     repeatTodos: repeatTodoRows.map(handleMapRepeatTodoRowToResponse),
   };
@@ -770,12 +821,14 @@ export const editGuestGoal = async ({
       SET
         name = ?,
         color = ?,
-        privacy_type = ?
+        privacy_type = ?,
+        priority = COALESCE(?, priority)
       WHERE id = ? AND user_id = ?
     `,
     requestGoal.name,
     handleNormalizeColor(requestGoal.color),
     requestGoal.privacyType,
+    requestGoal.priority ?? null,
     goalId,
     GUEST_USER_ID,
   );

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 import { HeaderRightActions, PageHeader } from "@/components";
@@ -22,6 +23,7 @@ type GoalCreateSuccessRedirect = {
 };
 
 function Create() {
+  const { t } = useTranslation();
   const router = useRouter();
   const params = useLocalSearchParams<{
     returnTo?: string | string[];
@@ -53,13 +55,13 @@ function Create() {
   return (
     <View className="flex-1 bg-role-surface-panel dark:bg-role-dark-surface-panel">
       <PageHeader
-        title="목표등록"
+        title={t("navigation.goalCreate")}
         onPressBack={successRedirect ? handlePressBack : undefined}
         titleClassName="text-role-text-inverse dark:text-role-dark-text-inverse"
         rightContent={<HeaderRightActions />}
       />
       <GoalEditorForm
-        submitLabel="목표 등록"
+        submitLabel={t("goal.create")}
         successRedirect={successRedirect}
       />
     </View>

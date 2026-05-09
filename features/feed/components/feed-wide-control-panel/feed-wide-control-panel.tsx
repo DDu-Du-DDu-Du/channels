@@ -1,4 +1,5 @@
-import { Pressable, ScrollView, View } from "react-native";
+import { useTranslation } from "react-i18next";
+import { ActivityIndicator, Pressable, ScrollView, View } from "react-native";
 
 import { SpoqaText } from "@/components";
 import FeedCalendar from "@/features/feed/components/feed-calendar/feed-calendar";
@@ -20,6 +21,8 @@ export interface FeedWideControlPanelProps {
   view: MainFeedView;
   monthlyTodos: MonthlyWeeklyTodoType[];
   goalList: GoalType[];
+  isGoalListLoading?: boolean;
+  isGoalListError?: boolean;
   selectedGoalIds: number[];
   summary: FeedWideSummary;
   onSelectDate: (date: string) => void;
@@ -31,9 +34,9 @@ export interface FeedWideControlPanelProps {
   onPressEditGoal: (goalId: number) => void;
 }
 
-const viewOptions: { value: MainFeedView; label: string }[] = [
-  { value: "list", label: "리스트" },
-  { value: "timeline", label: "타임라인" },
+const viewOptions: { value: MainFeedView; labelKey: string }[] = [
+  { value: "list", labelKey: "feed.list" },
+  { value: "timeline", labelKey: "feed.timeline" },
 ];
 
 const normalizeGoalColor = (color: string) => (color.startsWith("#") ? color : `#${color}`);
@@ -43,6 +46,8 @@ function FeedWideControlPanel({
   view,
   monthlyTodos,
   goalList,
+  isGoalListLoading = false,
+  isGoalListError = false,
   selectedGoalIds,
   summary,
   onSelectDate,
@@ -53,6 +58,7 @@ function FeedWideControlPanel({
   onPressAddGoal,
   onPressEditGoal,
 }: FeedWideControlPanelProps) {
+  const { t } = useTranslation();
   const iconTone = useThemeColorToken("ui.icon.default");
   const mutedIconTone = useThemeColorToken("ui.icon.muted");
   const hasExplicitGoalSelection = selectedGoalIds.length > 0;
@@ -78,7 +84,7 @@ function FeedWideControlPanel({
             className="h-[3.6rem] rounded-full border border-role-border-subtle px-[1.4rem] items-center justify-center dark:border-role-dark-border-subtle"
           >
             <SpoqaText className="text-size13 text-role-text-primary dark:text-role-dark-text-primary">
-              오늘
+              {t("calendar.today")}
             </SpoqaText>
           </Pressable>
 
@@ -114,7 +120,7 @@ function FeedWideControlPanel({
                         : "text-role-text-tertiary dark:text-role-dark-text-tertiary"
                     }`}
                   >
-                    {option.label}
+                    {t(option.labelKey)}
                   </SpoqaText>
                 </Pressable>
               );
@@ -128,13 +134,13 @@ function FeedWideControlPanel({
               weight="semiBold"
               className="text-size14 text-role-text-primary dark:text-role-dark-text-primary"
             >
-              목표
+              {t("feed.goal")}
             </SpoqaText>
             <Pressable
               onPress={onPressAddGoal}
               hitSlop={8}
               accessibilityRole="button"
-              accessibilityLabel="목표 추가"
+              accessibilityLabel={t("feed.addGoal")}
               className="h-[3rem] w-[3rem] items-center justify-center rounded-full"
             >
               <PlusIcon
@@ -157,7 +163,7 @@ function FeedWideControlPanel({
                 weight={!hasExplicitGoalSelection ? "semiBold" : "regular"}
                 className="text-size13 text-role-text-primary dark:text-role-dark-text-primary"
               >
-                전체 목표
+                {t("feed.allGoals")}
               </SpoqaText>
               {!hasExplicitGoalSelection ? (
                 <CheckIcon
@@ -167,10 +173,20 @@ function FeedWideControlPanel({
               ) : null}
             </Pressable>
 
-            {goalList.length === 0 ? (
+            {isGoalListLoading ? (
+              <View className="min-h-[6rem] items-center justify-center rounded-radius10 border border-role-border-subtle dark:border-role-dark-border-subtle">
+                <ActivityIndicator size="small" />
+              </View>
+            ) : isGoalListError ? (
+              <View className="min-h-[6rem] items-center justify-center rounded-radius10 border border-role-border-subtle dark:border-role-dark-border-subtle">
+                <SpoqaText className="text-size13 text-role-status-error dark:text-role-dark-status-error">
+                  {t("feed.goalLoadFailed")}
+                </SpoqaText>
+              </View>
+            ) : goalList.length === 0 ? (
               <View className="min-h-[6rem] items-center justify-center rounded-radius10 border border-role-border-subtle dark:border-role-dark-border-subtle">
                 <SpoqaText className="text-size13 text-role-text-tertiary dark:text-role-dark-text-tertiary">
-                  목표가 없어요.
+                  {t("feed.noGoals")}
                 </SpoqaText>
               </View>
             ) : (
@@ -242,7 +258,7 @@ function FeedWideControlPanel({
           <View className="flex-row gap-[0.8rem]">
             <View className="flex-1 rounded-radius10 bg-role-surface-canvas px-[1rem] py-[0.9rem] dark:bg-role-dark-surface-canvas">
               <SpoqaText className="text-size11 text-role-text-tertiary dark:text-role-dark-text-tertiary">
-                전체
+                {t("common.all")}
               </SpoqaText>
               <SpoqaText
                 weight="semiBold"
@@ -253,7 +269,7 @@ function FeedWideControlPanel({
             </View>
             <View className="flex-1 rounded-radius10 bg-role-surface-canvas px-[1rem] py-[0.9rem] dark:bg-role-dark-surface-canvas">
               <SpoqaText className="text-size11 text-role-text-tertiary dark:text-role-dark-text-tertiary">
-                완료
+                {t("common.complete")}
               </SpoqaText>
               <SpoqaText
                 weight="semiBold"
@@ -264,7 +280,7 @@ function FeedWideControlPanel({
             </View>
             <View className="flex-1 rounded-radius10 bg-role-surface-canvas px-[1rem] py-[0.9rem] dark:bg-role-dark-surface-canvas">
               <SpoqaText className="text-size11 text-role-text-tertiary dark:text-role-dark-text-tertiary">
-                미루기
+                {t("todo.actions.postpone")}
               </SpoqaText>
               <SpoqaText
                 weight="semiBold"

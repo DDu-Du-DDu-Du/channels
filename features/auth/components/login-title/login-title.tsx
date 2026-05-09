@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import Animated, {
   Easing,
@@ -11,6 +12,7 @@ import Animated, {
 import SpoqaText from "@/components/spoqa-text/spoqa-text";
 
 function LoginTitle() {
+  const { t } = useTranslation();
   const translateY = useSharedValue(0);
 
   useEffect(() => {
@@ -35,9 +37,9 @@ function LoginTitle() {
           weight="semiBold"
           className="text-[3rem] leading-[3rem]"
         >
-          {"{타이틀}"}
+          {t("auth.loginTitle")}
         </SpoqaText>
-        <SpoqaText className="text-[1.6rem]">뭐라고 쓸지 고민중..</SpoqaText>
+        <SpoqaText className="text-[1.6rem]">{t("auth.loginSubtitle")}</SpoqaText>
       </View>
     </Animated.View>
   );

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 import SheetButton from "@/components/sheet-button/sheet-button";
@@ -20,6 +21,7 @@ function TodosubMenu({
   handleAlarmSetting,
   onRepeatCurrentDate,
 }: TodosubMenuProps) {
+  const { t } = useTranslation();
   const { scheduledOn, status } = TodoDetail;
   const isTodoDateNow = formatDateToYYYYMMDD(new Date()) === scheduledOn;
 
@@ -41,19 +43,19 @@ function TodosubMenu({
         <>
           <SheetButton
             Icon={<DailyIcon />}
-            title="오늘 다시 하기"
+            title={t("todo.actions.repeatToday")}
             buttonType="sub"
             onPress={handleRepeatTodoCurrentDate}
           />
           <SheetButton
             Icon={<AnotherDayIcon fill="#FDB541" />}
-            title="다른 날 반복하기"
+            title={t("todo.actions.repeatDifferentDate")}
             buttonType="sub"
             onPress={handleRepeatTodoDate}
           />
           <SheetButton
             Icon={<AnotherDayIcon />}
-            title="날짜 바꾸기"
+            title={t("todo.actions.changeDate")}
             buttonType="sub"
             onPress={handleChangeTodoDate}
           />
@@ -63,18 +65,18 @@ function TodosubMenu({
         <>
           <SheetButton
             Icon={<AlarmIcon />}
-            title="알림 설정하기"
+            title={t("todo.actions.setReminder")}
             buttonType="sub"
             rightPlace={
               <SpoqaText className="text-size13 text-role-text-tertiary dark:text-role-dark-text-tertiary">
-                없음
+                {t("common.none")}
               </SpoqaText>
             }
             onPress={handleAlarmSetting}
           />
           <SheetButton
             Icon={<AnotherDayIcon fill="#FDB541" />}
-            title="미루기"
+            title={t("todo.actions.postpone")}
             buttonType="sub"
             onPress={handleChangeTodoDate}
           />
@@ -83,7 +85,7 @@ function TodosubMenu({
       {status === "UNCOMPLETED" && !isTodoDateNow && (
         <SheetButton
           Icon={<DailyIcon />}
-          title="오늘 다시 하기"
+          title={t("todo.actions.repeatToday")}
           buttonType="sub"
           onPress={handleRepeatTodoCurrentDate}
         />
@@ -91,7 +93,7 @@ function TodosubMenu({
       {status === "UNCOMPLETED" && (
         <SheetButton
           Icon={<AnotherDayIcon />}
-          title="다른 날 반복하기"
+          title={t("todo.actions.repeatDifferentDate")}
           buttonType="sub"
           onPress={handleRepeatTodoDate}
         />

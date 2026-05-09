@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { View } from "react-native";
+import { useTranslation } from "react-i18next";
+import { ActivityIndicator, View } from "react-native";
 
 import { ColorSheet, ConfirmModal, SpoqaText } from "@/components";
 import { useColorSheet } from "@/features/goal/components/goal-editor-form/hooks";
@@ -32,6 +33,7 @@ function GoalEditorScreen({
   onMutationSuccess,
   onEditorViewModeChange,
 }: GoalEditorScreenProps) {
+  const { t } = useTranslation();
   const [viewMode, setViewMode] = useState<EditorViewMode>("form");
   const [isCreateRepeatMode, setIsCreateRepeatMode] = useState(true);
   const [isGoalDeleteConfirmOpen, setIsGoalDeleteConfirmOpen] = useState(false);
@@ -59,6 +61,7 @@ function GoalEditorScreen({
     defaultTitle: goalDetail?.name ?? "",
     pickedColor: goalDetail?.color ?? "#FFFFFF",
     privacyType: goalDetail?.privacyType ?? "PUBLIC",
+    priority: goalDetail?.priority ?? 0,
   });
 
   const {
@@ -127,9 +130,7 @@ function GoalEditorScreen({
   if (isPending) {
     return (
       <View className="flex-1 items-center justify-center">
-        <SpoqaText className="text-size14 text-role-text-inverse dark:text-role-dark-text-inverse">
-          {"목표 정보를 불러오는 중..."}
-        </SpoqaText>
+        <ActivityIndicator size="small" />
       </View>
     );
   }
@@ -152,6 +153,7 @@ function GoalEditorScreen({
           defaultTitle={goalDetail.name}
           pickedColor={pickedColor}
           privacyType={goalDetail.privacyType}
+          priority={goalDetail.priority}
           repeatTodoCount={repeatTodos.length}
           redirectOnSuccess={redirectOnSuccess}
           invalidateFeedOnSuccess={invalidateFeedOnSuccess}
@@ -186,17 +188,17 @@ function GoalEditorScreen({
         onClose={handleCloseRepeatSheet}
         onDismiss={handleClearSelectedRepeatTodo}
         repeatTodo={selectedRepeatTodo}
-        sheetTitle={isCreateRepeatMode ? "반복 생성" : "반복 수정"}
-        submitLabel={isCreateRepeatMode ? "반복 생성" : "반복 수정"}
+        sheetTitle={isCreateRepeatMode ? t("repeatTodo.create") : t("repeatTodo.edit")}
+        submitLabel={isCreateRepeatMode ? t("repeatTodo.create") : t("repeatTodo.edit")}
         onSubmit={handleSubmitRepeatTodo}
       />
 
       <ConfirmModal
         isToggle={isGoalDeleteConfirmOpen}
-        title={"목표를 삭제할까요?"}
-        message={"삭제 후에는 되돌릴 수 없습니다."}
-        completeText={"삭제"}
-        incompleteText={"취소"}
+        title={t("goal.deleteConfirmTitle")}
+        message={t("common.cannotUndo")}
+        completeText={t("common.delete")}
+        incompleteText={t("common.cancel")}
         handleToggleOff={() => setIsGoalDeleteConfirmOpen(false)}
         onCompleteCheck={handleCompleteDeleteGoal}
       />

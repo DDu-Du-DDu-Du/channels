@@ -16,6 +16,7 @@ type AuthState = {
   refreshToken: string | null;
   isRefreshing: boolean;
   hasRegisteredDeviceToken: boolean;
+  shouldClearGuestLocalData: boolean;
 
   // actions
   authenticate: (accessToken: string, refreshToken: string) => void;
@@ -25,11 +26,12 @@ type AuthState = {
   setRefreshing: (isRefreshing: boolean) => void;
   markDeviceTokenRegistered: () => void;
   resetDeviceTokenRegistration: () => void;
+  markGuestLocalDataCleared: () => void;
 };
 
 const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       hasHydrated: false,
       onRehydrate: () => set({ hasHydrated: true }),
       handleHydrateGuestSession: () => {
@@ -43,12 +45,14 @@ const useAuthStore = create<AuthState>()(
       refreshToken: null,
       isRefreshing: false,
       hasRegisteredDeviceToken: false,
+      shouldClearGuestLocalData: false,
 
       authenticate: (accessToken, refreshToken) =>
         set({
           sessionType: "member",
           accessToken,
           refreshToken,
+          shouldClearGuestLocalData: get().sessionType === "guest",
         }),
 
       clearSession: () =>
@@ -58,6 +62,7 @@ const useAuthStore = create<AuthState>()(
           isLoggedIn: false,
           sessionType: "none",
           hasRegisteredDeviceToken: false,
+          shouldClearGuestLocalData: false,
         }),
 
       login: () => set({ isLoggedIn: true, sessionType: "member" }),
@@ -69,11 +74,13 @@ const useAuthStore = create<AuthState>()(
           accessToken: null,
           refreshToken: null,
           hasRegisteredDeviceToken: false,
+          shouldClearGuestLocalData: false,
         });
       },
       setRefreshing: (isRefreshing) => set({ isRefreshing }),
       markDeviceTokenRegistered: () => set({ hasRegisteredDeviceToken: true }),
       resetDeviceTokenRegistration: () => set({ hasRegisteredDeviceToken: false }),
+      markGuestLocalDataCleared: () => set({ shouldClearGuestLocalData: false }),
     }),
     {
       name: "auth",

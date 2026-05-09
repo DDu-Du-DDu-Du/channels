@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 import { MainTabBar } from "@/components";
 import { handleIsDesignTokenLabEnabled } from "@/constants";
@@ -8,6 +9,7 @@ import Constants from "expo-constants";
 import { Tabs, usePathname, useRouter } from "expo-router";
 
 export default function TabsLayout() {
+  const { t } = useTranslation();
   const isDesignTokenLabEnabled = handleIsDesignTokenLabEnabled();
   console.log("app variant?", Constants.expoConfig?.extra?.appVariant, isDesignTokenLabEnabled);
   const router = useRouter();
@@ -72,7 +74,7 @@ export default function TabsLayout() {
               <Tabs.Screen
                 name="feed/index"
                 initialParams={{ view: "list" }}
-                options={{ title: "Feed" }}
+                options={{ title: t("navigation.feed") }}
               />
             </Tabs.Protected>
           );
@@ -86,7 +88,7 @@ export default function TabsLayout() {
             >
               <Tabs.Screen
                 name="dashboard/index"
-                options={{ title: "Dashboard" }}
+                options={{ title: t("navigation.dashboard") }}
               />
             </Tabs.Protected>
           );
@@ -99,7 +101,7 @@ export default function TabsLayout() {
           >
             <Tabs.Screen
               name="stats"
-              options={{ title: "Stats" }}
+              options={{ title: t("navigation.stats") }}
             />
           </Tabs.Protected>
         );

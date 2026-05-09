@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { ScrollView, View } from "react-native";
+import { ActivityIndicator, ScrollView, View } from "react-native";
 
 import { EmptyList } from "@/components";
 import { TimeItem, TimeStamp } from "@/components/timeline/components";
@@ -90,7 +90,9 @@ function MainFeedTimelineItems({
         overScrollMode="always"
       >
         {isDailyTimeTableLoading ? (
-          <EmptyList text="불러오는 중..." />
+          <View className="items-center py-[4rem]">
+            <ActivityIndicator size="small" />
+          </View>
         ) : (
           !hasTimelineItems && <EmptyList text="목표를 먼저 생성해보세요." />
         )}

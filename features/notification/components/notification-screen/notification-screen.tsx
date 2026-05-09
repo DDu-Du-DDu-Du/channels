@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { ActivityIndicator, FlatList, Pressable, View } from "react-native";
 
 import { ReminderNotification, SelectChip, SpoqaText } from "@/components";
@@ -10,6 +11,7 @@ import { useWideLayout } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 
 function NotificationScreen() {
+  const { t } = useTranslation();
   const { isWideLayout } = useWideLayout();
   const spinnerColor = useThemeColorToken("role.text.tertiary");
   const spinnerEmphasisColor = useThemeColorToken("role.text.secondary");
@@ -47,7 +49,9 @@ function NotificationScreen() {
     return (
       <View className="py-[3.2rem]">
         <SpoqaText className="text-center text-size13 text-role-text-secondary dark:text-role-dark-text-secondary">
-          {selectedContext === "ANNOUNCEMENT" ? "공지사항이 없어요." : "알림이 없어요."}
+          {selectedContext === "ANNOUNCEMENT"
+            ? t("notification.announcementEmpty")
+            : t("notification.empty")}
         </SpoqaText>
       </View>
     );
@@ -57,7 +61,7 @@ function NotificationScreen() {
     <View>
       <View className="mb-[1.6rem] flex-row gap-[1.2rem]">
         <SelectChip
-          label="투두"
+          label={t("notification.todo")}
           selected={selectedContext === "TODO"}
           onPress={() => setSelectedContext("TODO")}
           selectedBackgroundColor={selectedChipBg}
@@ -68,7 +72,7 @@ function NotificationScreen() {
         />
         <View className="relative">
           <SelectChip
-            label="공지사항"
+            label={t("notification.announcement")}
             selected={selectedContext === "ANNOUNCEMENT"}
             onPress={() => setSelectedContext("ANNOUNCEMENT")}
             selectedBackgroundColor={selectedChipBg}

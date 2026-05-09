@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 
 import { ShakingCheckIcon, SpoqaText } from "@/components";
@@ -28,13 +29,14 @@ function MainTodoItem({
   onTextPress,
   handleToggleOn,
 }: MainTodoItemProps) {
+  const { t } = useTranslation();
   const isComplete = status === "COMPLETE";
   const resolvedBeginAt = beginAt?.slice(0, 5);
   const resolvedEndAt = endAt?.slice(0, 5);
   const timeLabel = resolvedBeginAt
     ? `${resolvedBeginAt}${resolvedEndAt ? ` ~ ${resolvedEndAt}` : ""}`
     : "";
-  const textMetaItems = [timeLabel, isPostponed ? "미룸" : ""].filter(Boolean);
+  const textMetaItems = [timeLabel, isPostponed ? t("todo.postponed") : ""].filter(Boolean);
   const shouldShowMeta = textMetaItems.length > 0;
 
   const handleEditMode = () => {

@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { ActivityIndicator, Pressable, View } from "react-native";
 
 import SpoqaText from "@/components/spoqa-text/spoqa-text";
@@ -6,6 +7,7 @@ import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { parseUtc } from "@/utils";
 
 import { Href, useRouter } from "expo-router";
+import { TFunction } from "i18next";
 
 export interface ReminderNotificationProps {
   id: string | number;
@@ -21,7 +23,7 @@ export interface ReminderNotificationProps {
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-const resolveRightMetaText = (createdAt: string) => {
+const resolveRightMetaText = (createdAt: string, t: TFunction) => {
   try {
     const now = new Date();
     const targetDate = parseUtc(createdAt);
@@ -34,10 +36,10 @@ const resolveRightMetaText = (createdAt: string) => {
     const diffDays = Math.floor((todayStart.getTime() - targetStart.getTime()) / DAY_MS);
 
     if (diffDays <= 0) {
-      return "오늘 알림";
+      return t("dateTime.reminder.today");
     }
 
-    return `${diffDays}일 전 알림`;
+    return t("dateTime.reminder.daysBefore", { count: diffDays });
   } catch {
     return "";
   }
@@ -54,11 +56,12 @@ function ReminderNotification({
   disabled = false,
   onPress,
 }: ReminderNotificationProps) {
+  const { t } = useTranslation();
   const router = useRouter();
   const defaultBgColor = useThemeColorToken("role.surface.panel");
   const resolvedBgColor = bgColor ?? defaultBgColor;
   const spinnerColor = useThemeColorToken("role.text.tertiary");
-  const rightMetaText = resolveRightMetaText(createdAt);
+  const rightMetaText = resolveRightMetaText(createdAt, t);
 
   const handlePress = () => {
     if (disabled) {

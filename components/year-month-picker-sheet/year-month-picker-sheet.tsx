@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 
 import BottomSheet from "@/components/bottom-sheet/bottom-sheet";
@@ -35,6 +36,7 @@ function YearMonthPickerSheet({
   onConfirm,
   onClose,
 }: YearMonthPickerSheetProps) {
+  const { t } = useTranslation();
   const { ref, openSheet, closeSheet } = useBottomSheetAction();
   const iconStroke = useThemeColorToken("role.icon.default");
   const [toValidationMessage, setToValidationMessage] = useState<string | null>(null);
@@ -74,7 +76,7 @@ function YearMonthPickerSheet({
     }
 
     if (toYearMonthKey(next) < toYearMonthKey(fromValue)) {
-      setToValidationMessage("종료 월은 시작 월보다 빠를 수 없어요.");
+      setToValidationMessage(t("calendar.invalidMonthRange"));
       return;
     }
 
@@ -90,7 +92,7 @@ function YearMonthPickerSheet({
     >
       <View className="w-full px-[2.4rem] pb-[2.4rem] pt-[1.2rem]">
         <FormHeader
-          title="월 선택"
+          title={t("calendar.selectMonth")}
           onPressBack={handlePressBack}
           iconStroke={iconStroke}
           titleClassName="text-size16 text-role-text-primary dark:text-role-dark-text-primary"
@@ -119,7 +121,7 @@ function YearMonthPickerSheet({
             weight="semiBold"
             className="text-size15 text-role-text-inverse dark:text-role-dark-text-inverse"
           >
-            확인
+            {t("common.confirm")}
           </SpoqaText>
         </Pressable>
       </View>

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 
 import ProfileImage from "@/components/profile-image/profile-image";
@@ -17,6 +18,7 @@ export type AvatarProps = {
 } & ({ user?: UserType; users?: UserType[] } | { users: UserType[]; user?: UserType });
 
 function Avatar({ type = "view", size = "small", user, users, onChangeAvatar }: AvatarProps) {
+  const { t } = useTranslation();
   const { userId = "", userName = "", userImage = null } = user ?? users?.[0] ?? {};
   const { preview, handleChangeImage } = useChangeImage({ userImage, onChangeAvatar });
   const { handleClickAvatar } = useClickAvatar({ type, userId, handleChangeImage, onChangeAvatar });
@@ -41,7 +43,7 @@ function Avatar({ type = "view", size = "small", user, users, onChangeAvatar }: 
           <ProfileImage
             className="rounded-circle w-full h-full"
             source={preview}
-            alt={`${userName}님의 프로필 이미지`}
+            alt={t("accessibility.profileImage", { userName })}
             priority="high"
           />
         </View>

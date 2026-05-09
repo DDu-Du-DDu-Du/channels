@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ActivityIndicator, FlatList, View } from "react-native";
 import { useSharedValue, withTiming } from "react-native-reanimated";
 
@@ -20,6 +21,7 @@ import TodoSearchBar from "../todo-search-bar/todo-search-bar";
 import TodoSearchItem from "../todo-search-item/todo-search-item";
 
 function TodoSearchScreen() {
+  const { t } = useTranslation();
   const { isWideLayout } = useWideLayout();
   const spinnerColor = useThemeColorToken("role.text.inverse");
   const [searchText, setSearchText] = useState("");
@@ -106,14 +108,14 @@ function TodoSearchScreen() {
 
   const renderSearchEmpty = () => {
     if (debouncedSearchText.length === 0) {
-      return <EmptyList text="검색어를 입력하세요" />;
+      return <EmptyList text={t("todo.enterSearch")} />;
     }
 
     if (isLoading || isFetching) {
-      return <EmptyList text="불러오는 중..." />;
+      return <EmptyList text={t("common.loading")} />;
     }
 
-    return <EmptyList text="검색 결과가 없습니다" />;
+    return <EmptyList text={t("todo.noSearchResults")} />;
   };
 
   return (

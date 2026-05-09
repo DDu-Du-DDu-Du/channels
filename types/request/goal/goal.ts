@@ -11,6 +11,7 @@ export interface GoalRequestType {
   name: string;
   color: string;
   privacyType: GoalPrivacyType;
+  priority?: number;
   repeatTodos?: GoalRepeatTodoRequestType[];
 }
 

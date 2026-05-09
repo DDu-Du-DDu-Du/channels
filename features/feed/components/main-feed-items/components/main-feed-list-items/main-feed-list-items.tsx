@@ -1,4 +1,4 @@
-import { Pressable, View } from "react-native";
+import { ActivityIndicator, Pressable, View } from "react-native";
 import Animated, { FadeInDown, LinearTransition } from "react-native-reanimated";
 
 import { EmptyList, SpoqaText } from "@/components";
@@ -10,6 +10,7 @@ import MainTodoItem from "../main-todo-item/main-todo-item";
 
 export interface MainFeedListItemsProps {
   dailyList: MainDailyListType[];
+  isDailyListLoading: boolean;
   isCalendarOpen: boolean;
   onTodoCompleteToggle: (id: number) => void;
   onTodosheetOpen: (id: number) => void;
@@ -18,6 +19,7 @@ export interface MainFeedListItemsProps {
 
 function MainFeedListItems({
   dailyList,
+  isDailyListLoading,
   isCalendarOpen,
   onTodoCompleteToggle,
   onTodosheetOpen,
@@ -36,7 +38,15 @@ function MainFeedListItems({
         bounces={!isCalendarOpen}
         alwaysBounceVertical={!isCalendarOpen}
         overScrollMode="always"
-        ListEmptyComponent={() => <EmptyList text="목표를 먼저 생성해보세요." />}
+        ListEmptyComponent={() =>
+          isDailyListLoading ? (
+            <View className="items-center py-[4rem]">
+              <ActivityIndicator size="small" />
+            </View>
+          ) : (
+            <EmptyList text="목표를 먼저 생성해보세요." />
+          )
+        }
         renderItem={({ item }) => {
           const todos = item.todos ?? item.Todos ?? [];
           const goalColor = item.goal.color;

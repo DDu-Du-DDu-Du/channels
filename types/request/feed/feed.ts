@@ -11,6 +11,7 @@ export interface RequestTodo {
   scheduledOn: string;
   beginAt?: string;
   endAt?: string;
+  timeZone?: string;
   reminders?: {
     id?: number;
     remindsAt: string;
@@ -19,4 +20,5 @@ export interface RequestTodo {
 
 export interface RequestTodoChangeDate {
   newDate: string;
+  timeZone?: string;
 }

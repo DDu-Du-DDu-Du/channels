@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 
 import { SpoqaText } from "@/components";
@@ -8,6 +9,8 @@ export interface TodosearchHeaderProps {
 }
 
 function TodosearchHeader({ onBackPress }: TodosearchHeaderProps) {
+  const { t } = useTranslation();
+
   return (
     <View className="h-[5.2rem] w-full flex-row items-center justify-center px-2">
       <Pressable
@@ -24,7 +27,7 @@ function TodosearchHeader({ onBackPress }: TodosearchHeaderProps) {
         weight="bold"
         className="text-size17 text-role-text-inverse dark:text-role-dark-text-inverse"
       >
-        투두 검색
+        {t("navigation.todoSearch")}
       </SpoqaText>
     </View>
   );

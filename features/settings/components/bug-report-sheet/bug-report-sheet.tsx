@@ -1,4 +1,5 @@
 import { forwardRef, useImperativeHandle, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 
 import { BottomSheet, Button, ConfirmModal, SpoqaText } from "@/components";
@@ -15,6 +16,7 @@ export interface BugReportSheetHandle {
 }
 
 const BugReportSheet = forwardRef<BugReportSheetHandle>(function BugReportSheet(_, ref) {
+  const { t } = useTranslation();
   const iconStroke = useThemeColorToken("ui.icon.default");
   const { ref: bottomSheetRef, openSheet, closeSheet } = useBottomSheetAction();
   const { createToast } = useToast();
@@ -53,7 +55,7 @@ const BugReportSheet = forwardRef<BugReportSheetHandle>(function BugReportSheet(
 
   const handleSubmitForm = () => {
     handleSubmitAction();
-    createToast("제보되었어요. 더 나은 앱을 만드는 데 도움 주셔서 감사해요.", { type: "safe" });
+    createToast(t("settings.bugReportSheet.success"), { type: "safe" });
     bugReportFormRef.current?.handleReset();
     closeSheet();
   };
@@ -93,7 +95,7 @@ const BugReportSheet = forwardRef<BugReportSheetHandle>(function BugReportSheet(
               weight="bold"
               className="text-size17 text-role-text-primary dark:text-role-dark-text-primary"
             >
-              버그리포트 제보
+              {t("settings.bugReportSheet.title")}
             </SpoqaText>
           </View>
 
@@ -103,7 +105,7 @@ const BugReportSheet = forwardRef<BugReportSheetHandle>(function BugReportSheet(
           />
 
           <Button
-            label="제보하기"
+            label={t("settings.bugReportSheet.submit")}
             onPress={handleSubmitReport}
             className="mt-[1.2rem]"
             bodyClassName="bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg"
@@ -114,10 +116,10 @@ const BugReportSheet = forwardRef<BugReportSheetHandle>(function BugReportSheet(
 
       <ConfirmModal
         isToggle={isDismissConfirmOpen}
-        title="작성 중인 제보 작성을 취소할까요?"
-        message="작성한 제목/내용/이미지가 사라집니다."
-        completeText="작성 취소"
-        incompleteText="계속 작성"
+        title={t("settings.bugReportSheet.cancelTitle")}
+        message={t("settings.bugReportSheet.cancelMessage")}
+        completeText={t("settings.bugReportSheet.cancelWriting")}
+        incompleteText={t("settings.bugReportSheet.keepWriting")}
         handleToggleOff={handleCloseDismissConfirm}
         onCompleteCheck={handleDismissConfirmResult}
       />

@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import { useToast } from "@/components/toast/hooks";
 import { FEED_KEY } from "@/constants/query-key/query-key";
 import { fetchCreateTodo, fetchEditTodo } from "@/service/feed/feed";
@@ -20,6 +22,7 @@ const useTodoEditorMutation = ({
   selectedTodoDate,
   onSuccess,
 }: UseTodoEditorMutationProps) => {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { createToast } = useToast();
 
@@ -62,7 +65,7 @@ const useTodoEditorMutation = ({
     try {
       if (mode === "create") {
         if (!payload.goalId) {
-          createToast("목표 정보가 없어 투두를 생성할 수 없어요.", { type: "danger" });
+          createToast(t("todo.missingGoalCreate"), { type: "danger" });
           return false;
         }
 
@@ -71,18 +74,18 @@ const useTodoEditorMutation = ({
         })) as CreateTodoResponseType;
 
         if (!response?.id) {
-          createToast("투두 생성은 완료됐지만 상세 저장은 건너뛰었어요.", { type: "warning" });
+          createToast(t("todo.detailSkipped"), { type: "warning" });
         }
       }
 
       if (mode === "edit") {
         if (!TodoId) {
-          createToast("투두 정보가 없어 수정할 수 없어요.", { type: "danger" });
+          createToast(t("todo.missingTodoEdit"), { type: "danger" });
           return false;
         }
 
         if (!payload.goalId) {
-          createToast("목표 정보가 없어 투두를 수정할 수 없어요.", { type: "danger" });
+          createToast(t("todo.missingGoalEdit"), { type: "danger" });
           return false;
         }
 
@@ -96,7 +99,7 @@ const useTodoEditorMutation = ({
       onSuccess();
       return true;
     } catch {
-      createToast(mode === "create" ? "투두 생성에 실패했어요." : "투두 수정에 실패했어요.", {
+      createToast(mode === "create" ? t("todo.createFailed") : t("todo.editFailed"), {
         type: "danger",
       });
       return false;

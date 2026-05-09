@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Pressable, View } from "react-native";
+import { ActivityIndicator, Pressable, View } from "react-native";
 
 import { SpoqaText } from "@/components";
 import { GoalSelectSheet } from "@/features/goal";
@@ -168,9 +168,9 @@ function StatsGoalSection({
         </View>
 
         {isLoading && (
-          <SpoqaText className="text-size14 text-role-text-secondary dark:text-role-dark-text-secondary">
-            불러오는 중...
-          </SpoqaText>
+          <View className="items-center py-[2rem]">
+            <ActivityIndicator size="small" />
+          </View>
         )}
         {isError && !isLoading && (
           <SpoqaText className="text-size14 text-role-status-error dark:text-role-dark-status-error">

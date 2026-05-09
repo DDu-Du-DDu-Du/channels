@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Platform } from "react-native";
 
 import { NOTIFICATION_KEY } from "@/constants/query-key/query-key";
 import { useMe } from "@/features/user";
 import { registerDeviceToken } from "@/service/device-token/device-token";
-import { clearGuestLocalData, hasGuestTodo } from "@/service/guest-storage/guest-storage";
+import { clearGuestLocalData } from "@/service/guest-storage/guest-storage";
 import { getNotificationInboxStatus } from "@/service/notification/notification";
 import { getTokenAsync } from "@/service/push/get-token/get-token";
 import { useAuthStore } from "@/stores";
@@ -21,22 +21,26 @@ function AuthProvider({ children }: AuthProviderProps) {
   const hasRegisteredDeviceToken = useAuthStore((state) => state.hasRegisteredDeviceToken);
   const markDeviceTokenRegistered = useAuthStore((state) => state.markDeviceTokenRegistered);
   const resetDeviceTokenRegistration = useAuthStore((state) => state.resetDeviceTokenRegistration);
+  const shouldClearGuestLocalData = useAuthStore((state) => state.shouldClearGuestLocalData);
+  const markGuestLocalDataCleared = useAuthStore((state) => state.markGuestLocalDataCleared);
   const { isSuccess, isError } = useMe({});
   const queryClient = useQueryClient();
+  const loginSuccessFlowPromiseRef = useRef<Promise<void> | null>(null);
 
   useEffect(() => {
     if (!hasTokens || !isSuccess) {
       return;
     }
 
+    if (loginSuccessFlowPromiseRef.current) {
+      return;
+    }
+
     const handleLoginSuccess = async () => {
-      const hasGuestTodos = await hasGuestTodo();
-
-      if (hasGuestTodos) {
+      if (shouldClearGuestLocalData) {
         await clearGuestLocalData();
+        markGuestLocalDataCleared();
       }
-
-      queryClient.clear();
 
       login();
       await queryClient.prefetchQuery({
@@ -63,16 +67,22 @@ function AuthProvider({ children }: AuthProviderProps) {
       markDeviceTokenRegistered();
     };
 
-    handleLoginSuccess().catch((error) => {
-      console.error("[auth] failed to process login success flow:", error);
-    });
+    loginSuccessFlowPromiseRef.current = handleLoginSuccess()
+      .catch((error) => {
+        console.error("[auth] failed to process login success flow:", error);
+      })
+      .finally(() => {
+        loginSuccessFlowPromiseRef.current = null;
+      });
   }, [
     hasRegisteredDeviceToken,
     hasTokens,
     isSuccess,
     login,
+    markGuestLocalDataCleared,
     markDeviceTokenRegistered,
     queryClient,
+    shouldClearGuestLocalData,
   ]);
 
   useEffect(() => {

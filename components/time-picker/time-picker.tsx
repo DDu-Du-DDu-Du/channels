@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Platform, View } from "react-native";
 
 import SpoqaText from "@/components/spoqa-text/spoqa-text";
@@ -24,13 +25,20 @@ function TimePicker({
   label,
   days = 99,
 }: TimePickerProps) {
+  const { t } = useTranslation();
   const data: number[] = (() => {
     const length = type === "hour" ? 24 : type === "min" ? 60 : days;
 
     return Array.from({ length }, (_, i) => i);
   })();
 
-  const unitLabel = label ?? (type === "day" ? "일" : type === "hour" ? "시" : "분");
+  const unitLabel =
+    label ??
+    (type === "day"
+      ? t("dateTime.dayUnit")
+      : type === "hour"
+        ? t("dateTime.hourUnit")
+        : t("dateTime.minuteUnit"));
 
   const handleChange = (index: number) => {
     onChange(index);

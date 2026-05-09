@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 import { SelectChip } from "@/components";
@@ -44,6 +45,8 @@ function RepeatTypeSelect({
   isLastDaySelected,
   onToggleLastDay,
 }: RepeatTypeSelectProps) {
+  const { t } = useTranslation();
+
   return (
     <View className="gap-[1.2rem]">
       <RepeatTypePicker
@@ -83,7 +86,7 @@ function RepeatTypeSelect({
               ))}
               {rowIndex === 4 && (
                 <SelectChip
-                  label={"마지막날"}
+                  label={t("repeatTodo.lastDay")}
                   selected={isLastDaySelected}
                   onPress={onToggleLastDay}
                   className="h-[3.8rem] w-[8.2rem]"

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 import { useOauth2Login } from "@/features/auth";
@@ -16,16 +17,8 @@ export interface MemberGuideProps {
   showGuideText?: boolean;
 }
 
-const DEFAULT_TEXT = "회원 전용입니다. 로그인 후 더 많은 서비스를 경험하세요!";
-const SYNC_CONFIRM_MESSAGE =
-  "게스트로 작성했던 정보들을 모두 동기화 시킬까요? \n아니요를 누르면 게스트로 작성했던 정보가 모두 초기화 돼요.";
-
-function MemberGuide({
-  text = DEFAULT_TEXT,
-  className,
-  ctaLabel = "로그인",
-  showGuideText = true,
-}: MemberGuideProps) {
+function MemberGuide({ text, className, ctaLabel, showGuideText = true }: MemberGuideProps) {
+  const { t } = useTranslation();
   const { handleKakaoLogin } = useOauth2Login({});
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSyncConfirmOpen, setIsSyncConfirmOpen] = useState(false);
@@ -61,12 +54,12 @@ function MemberGuide({
       <View className={className ?? "flex-1 items-center justify-center px-[2.4rem]"}>
         {showGuideText ? (
           <EmptyList
-            text={text}
+            text={text ?? t("auth.memberOnly")}
             className="w-full items-center py-0"
           />
         ) : null}
         <Button
-          label={ctaLabel}
+          label={ctaLabel ?? t("auth.login")}
           onPress={handleOpenLoginModal}
           className={`${showGuideText ? "mt-[1.2rem]" : ""} w-full max-w-[16rem]`}
           bodyClassName="bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg"
@@ -81,12 +74,12 @@ function MemberGuide({
         <View className="px-[2rem] pb-[2rem] pt-[2.4rem]">
           <LoginButton
             provider="kakao"
-            label="카카오 로그인"
+            label={t("auth.kakaoLogin")}
             onPress={handleOpenSyncConfirm}
             fit={true}
           />
           <Button
-            label="닫기"
+            label={t("common.close")}
             onPress={handleCloseLoginModal}
             className="mt-[0.8rem]"
           />
@@ -95,10 +88,10 @@ function MemberGuide({
 
       <ConfirmModal
         isToggle={isSyncConfirmOpen}
-        title="일정 동기화"
-        message={SYNC_CONFIRM_MESSAGE}
-        completeText="예"
-        incompleteText="아니오"
+        title={t("auth.syncScheduleTitle")}
+        message={t("auth.syncGuestMessage")}
+        completeText={t("common.yes")}
+        incompleteText={t("common.no")}
         handleToggleOff={handleCloseSyncConfirm}
         onCompleteCheck={handleConfirmSync}
       />

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 
 import SpoqaText from "../spoqa-text/spoqa-text";
@@ -14,11 +15,13 @@ export interface DateInputSetProps {
 function DateInputSet({
   startDate,
   endDate,
-  startLabel = "시작일",
-  endLabel = "종료일",
+  startLabel,
+  endLabel,
   onPressStart,
   onPressEnd,
 }: DateInputSetProps) {
+  const { t } = useTranslation();
+
   return (
     <View className="flex-row gap-[0.8rem]">
       <Pressable
@@ -26,7 +29,7 @@ function DateInputSet({
         onPress={onPressStart}
       >
         <SpoqaText className="mb-[0.4rem] text-size11 text-role-text-secondary dark:text-role-dark-text-secondary">
-          {startLabel}
+          {startLabel ?? t("calendar.startDate")}
         </SpoqaText>
         <SpoqaText className="text-size14 text-role-text-primary dark:text-role-dark-text-primary">
           {startDate}
@@ -37,7 +40,7 @@ function DateInputSet({
         onPress={onPressEnd}
       >
         <SpoqaText className="mb-[0.4rem] text-size11 text-role-text-secondary dark:text-role-dark-text-secondary">
-          {endLabel}
+          {endLabel ?? t("calendar.endDate")}
         </SpoqaText>
         <SpoqaText className="text-size14 text-role-text-primary dark:text-role-dark-text-primary">
           {endDate}

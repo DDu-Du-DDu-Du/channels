@@ -1,13 +1,9 @@
 import { Pressable, View } from "react-native";
 
 import { SpoqaText } from "@/components";
-import {
-  FeedViewToggleMenu,
-  GoalMenu,
-  TodosearchMenu,
-} from "@/features/feed/components/main-header/components";
+import { FeedViewToggleMenu, GoalMenu } from "@/features/feed/components/main-header/components";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
-import { ChevronRightIcon } from "@/icons";
+import { ChevronDownIcon } from "@/icons";
 
 interface FeedCalendarHeaderProps {
   displayMonth: string;
@@ -48,7 +44,7 @@ function FeedCalendarHeader({
           >
             {displayMonth}
           </SpoqaText>
-          <ChevronRightIcon
+          <ChevronDownIcon
             size={14}
             fill={iconFill}
           />
@@ -56,7 +52,6 @@ function FeedCalendarHeader({
         {showHeaderActions ? (
           <View className="flex-row items-center gap-[0.8rem]">
             <FeedViewToggleMenu />
-            <TodosearchMenu />
             <GoalMenu />
           </View>
         ) : null}

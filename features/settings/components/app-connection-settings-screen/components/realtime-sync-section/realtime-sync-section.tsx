@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 import { AnimatedSwitch, SpoqaText } from "@/components";
@@ -18,6 +19,7 @@ interface RealtimeSyncSectionProps {
 }
 
 function RealtimeSyncSection({ notion, googleCalendar, microsoftTodo }: RealtimeSyncSectionProps) {
+  const { t } = useTranslation();
   const offBackgroundColor = useThemeColorToken("role.surface.subtle");
   const onBackgroundColor = useThemeColorToken("ui.button.primary.bg");
   const thumbColor = useThemeColorToken("role.surface.canvas");
@@ -28,7 +30,7 @@ function RealtimeSyncSection({ notion, googleCalendar, microsoftTodo }: Realtime
         weight="semiBold"
         className="mb-[0.8rem] text-size14 text-role-text-primary dark:text-role-dark-text-primary"
       >
-        실시간 연동
+        {t("settings.realtimeSync")}
       </SpoqaText>
 
       <View className="overflow-hidden rounded-radius10 border border-role-border-subtle dark:border-role-dark-border-subtle bg-role-surface-canvas dark:bg-role-dark-surface-canvas px-[1.4rem]">

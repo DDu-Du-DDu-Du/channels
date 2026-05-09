@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 
 import AnimatedSwitch from "@/components/animated-switch/animated-switch";
@@ -13,7 +14,6 @@ import { parseUtc } from "@/utils";
 
 import TimePicker from "../time-picker/time-picker";
 import { useTimeUpdate } from "./hooks";
-import { Todo_TIME_SHEET } from "./todo-time-sheet.constant";
 
 export interface TodoTimeSheetProps {
   currentTodoTime: TodoTimeType;
@@ -43,10 +43,10 @@ function TodoTimeSheet({
   currentTodoTime,
   onChangeTodoTime,
   onClose,
-  title = "투두시간 설정",
+  title,
   showBackArrow = false,
   onPressBack,
-  confirmLabel = "확인",
+  confirmLabel,
   defaultBeginTimeEnabled,
   defaultEndTimeEnabled,
   onChangeBeginTimeEnabled,
@@ -55,6 +55,7 @@ function TodoTimeSheet({
   scheduledOn,
   onRequestConfirm,
 }: TodoTimeSheetProps) {
+  const { t } = useTranslation();
   const iconStrokeColor = useThemeColorToken("role.icon.default");
   const switchOffTrackColor = useThemeColorToken("role.border.default");
   const switchOnTrackColor = useThemeColorToken("role.status.success");
@@ -199,7 +200,7 @@ function TodoTimeSheet({
         setConfirmInProgress(true);
         const canProceed = await requestDeleteConfirm(
           nextTime,
-          "시작시간이 없으면 미리알림이 모두 삭제돼요. 계속 진행할까요?",
+          t("todo.timeSheet.missingStartRemindersDeleted"),
           candidateInfo.candidateReminderIds,
         );
         setConfirmInProgress(false);
@@ -259,7 +260,7 @@ function TodoTimeSheet({
       setConfirmInProgress(true);
       const canProceed = await requestDeleteConfirm(
         nextTime,
-        "변경된 시간보다 늦은 미리알림은 삭제돼요. 계속 진행할까요?",
+        t("todo.timeSheet.lateRemindersDeleted"),
         candidateInfo.candidateReminderIds,
       );
       setConfirmInProgress(false);
@@ -333,7 +334,7 @@ function TodoTimeSheet({
               weight="medium"
               className="text-size15 text-role-text-primary dark:text-role-dark-text-primary"
             >
-              {title}
+              {title ?? t("todo.timeSheet.title")}
             </SpoqaText>
           </View>
 
@@ -341,7 +342,7 @@ function TodoTimeSheet({
             <View className="mr-[1rem]">
               <View className="mb-[1rem] flex-row items-center gap-[0.8rem]">
                 <SpoqaText className="text-size13 text-role-text-primary dark:text-role-dark-text-primary">
-                  시작시간
+                  {t("todo.timeSheet.startTime")}
                 </SpoqaText>
                 <AnimatedSwitch
                   value={isBeginTimeEnabled}
@@ -378,7 +379,7 @@ function TodoTimeSheet({
             <View>
               <View className="mb-[1rem] flex-row items-center gap-[0.8rem]">
                 <SpoqaText className="text-size13 text-role-text-primary dark:text-role-dark-text-primary">
-                  종료시간
+                  {t("todo.timeSheet.endTime")}
                 </SpoqaText>
                 <AnimatedSwitch
                   value={isEndTimeEnabled}
@@ -417,7 +418,7 @@ function TodoTimeSheet({
 
           {isErrorMessage && isBeginTimeEnabled && isEndTimeEnabled ? (
             <SpoqaText className="mt-[0.8rem] text-role-status-error dark:text-role-dark-status-error">
-              {Todo_TIME_SHEET.TIME_RANGE_ERROR_MESSAGE}
+              {t("todo.timeSheet.invalidRange")}
             </SpoqaText>
           ) : null}
         </View>
@@ -431,16 +432,16 @@ function TodoTimeSheet({
             weight="semiBold"
             className="text-role-text-inverse dark:text-role-dark-text-inverse"
           >
-            {confirmLabel}
+            {confirmLabel ?? t("common.confirm")}
           </SpoqaText>
         </Pressable>
       </View>
       <ConfirmModal
         isToggle={isConfirmModalOpen}
-        title="확인"
+        title={t("common.confirm")}
         message={confirmMessage}
-        completeText="계속"
-        incompleteText="취소"
+        completeText={t("common.continue")}
+        incompleteText={t("common.cancel")}
         handleToggleOff={() => {
           setIsConfirmModalOpen(false);
           confirmResolverRef.current?.(false);

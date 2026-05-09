@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { FormProvider } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 
 import { Button, FormSection, FormTextInput } from "@/components";
@@ -42,6 +43,7 @@ function GoalEditorFormBody({
   onPressRepeatTodoCard,
   onPressDeleteRepeatTodoCard,
 }: GoalEditorFormBodyProps) {
+  const { t } = useTranslation();
   const { isWideLayout } = useWideLayout();
   const { methods, handleUpdateColor, handleSubmitGoal, isPending } = useGoalMutation({
     defaultTitle,
@@ -100,20 +102,20 @@ function GoalEditorFormBody({
           <FormTextInput
             control={methods.control}
             name="title"
-            placeholder={"목표 제목을 입력하세요"}
-            required="제목을 입력해주세요."
+            placeholder={t("goal.titlePlaceholder")}
+            required={t("goal.titleRequired")}
             rules={{
-              validate: (value) => String(value ?? "").trim().length > 0 || "제목을 입력해주세요.",
+              validate: (value) => String(value ?? "").trim().length > 0 || t("goal.titleRequired"),
             }}
           />
 
           <FormSection
-            label={"색상"}
+            label={t("goal.color")}
             rightContent={colorInput}
           />
 
           <FormSection
-            label={"반복 투두 만들기"}
+            label={t("goal.createRepeatTodo")}
             rightContent={repeatArrow}
             onPress={onPressOpenRepeatSheet}
           />

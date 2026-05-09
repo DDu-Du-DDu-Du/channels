@@ -1,4 +1,5 @@
 import { ComponentProps, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
 import { MarkedDates, MarkingTypes } from "react-native-calendars/src/types";
@@ -29,6 +30,7 @@ export interface CustomCalendarProps {
   dayComponent?: CalendarDayComponent;
   minYear?: number;
   maxYear?: number;
+  availableYearMonths?: string[];
   monthLabel?: string;
 }
 
@@ -81,6 +83,10 @@ const addMonths = (dateString: string, delta: number) => {
   return toFirstOfMonth(base.getUTCFullYear(), base.getUTCMonth() + 1);
 };
 
+const toYearMonth = (dateString: string) => dateString.slice(0, 7);
+
+const toDateString = (yearMonth: string) => `${yearMonth}-01`;
+
 function CustomCalendar({
   current,
   initialDate,
@@ -96,8 +102,10 @@ function CustomCalendar({
   dayComponent,
   minYear,
   maxYear,
+  availableYearMonths,
   monthLabel,
 }: CustomCalendarProps) {
+  const { t, i18n } = useTranslation();
   const firstDay = useCalendarFirstDay();
   const isDarkMode = useSettingsStore((state) => state.display.isDarkMode);
   const arrowBg = useThemeColorToken("ui.arrow.bg");
@@ -116,6 +124,15 @@ function CustomCalendar({
   }, [current]);
 
   const parsedVisible = parseYYYYMMDD(visibleDate) ?? { year: 1970, month: 1, day: 1 };
+  const availableYearMonthSet = useMemo(
+    () => new Set(availableYearMonths ?? []),
+    [availableYearMonths],
+  );
+  const hasAvailableYearMonths = availableYearMonthSet.size > 0;
+  const sortedAvailableYearMonths = useMemo(
+    () => [...availableYearMonthSet].sort(),
+    [availableYearMonthSet],
+  );
 
   const effectiveMinYear = useMemo(() => {
     const base = minYear ?? DEFAULT_MIN_YEAR;
@@ -130,7 +147,14 @@ function CustomCalendar({
   }, [maxDate, maxYear]);
 
   const headerLabel =
-    monthLabel ?? `${parsedVisible.year}년 ${String(parsedVisible.month).padStart(2, "0")}월`;
+    monthLabel ??
+    t("calendar.yearMonth", {
+      year: parsedVisible.year,
+      month:
+        i18n.language === "en"
+          ? t(`calendar.months.long.${parsedVisible.month - 1}`)
+          : String(parsedVisible.month).padStart(2, "0"),
+    });
 
   const calendarTheme = useMemo(
     () =>
@@ -155,6 +179,10 @@ function CustomCalendar({
     }
   };
   const handleChangeVisibleDate = (nextDate: string) => {
+    if (hasAvailableYearMonths && !availableYearMonthSet.has(toYearMonth(nextDate))) {
+      return;
+    }
+
     if (nextDate !== visibleDate) {
       setVisibleDate(nextDate);
     }
@@ -191,6 +219,18 @@ function CustomCalendar({
     handleChangeVisibleDate(date.dateString);
   };
 
+  const currentYearMonth = toYearMonth(visibleDate);
+  const currentAvailableIndex = sortedAvailableYearMonths.indexOf(currentYearMonth);
+  const isPrevDisabled = hasAvailableYearMonths && currentAvailableIndex <= 0;
+  const isNextDisabled =
+    hasAvailableYearMonths && currentAvailableIndex >= sortedAvailableYearMonths.length - 1;
+  const minAvailableDate = sortedAvailableYearMonths[0]
+    ? toDateString(sortedAvailableYearMonths[0])
+    : minDate;
+  const maxAvailableDate = sortedAvailableYearMonths[sortedAvailableYearMonths.length - 1]
+    ? toDateString(sortedAvailableYearMonths[sortedAvailableYearMonths.length - 1])
+    : maxDate;
+
   return (
     <View className="w-full">
       <View className="flex-row items-center justify-between px-[1rem] py-[0.8rem]">
@@ -208,8 +248,9 @@ function CustomCalendar({
             <Pressable
               accessibilityRole="button"
               onPress={handlePrevMonth}
+              disabled={isPrevDisabled}
               className="h-[2.8rem] w-[2.8rem] items-center justify-center rounded-full"
-              style={{ backgroundColor: arrowBg }}
+              style={{ backgroundColor: arrowBg, opacity: isPrevDisabled ? 0.35 : 1 }}
             >
               <ChevronLeftIcon
                 size={14}
@@ -219,8 +260,9 @@ function CustomCalendar({
             <Pressable
               accessibilityRole="button"
               onPress={handleNextMonth}
+              disabled={isNextDisabled}
               className="h-[2.8rem] w-[2.8rem] items-center justify-center rounded-full"
-              style={{ backgroundColor: arrowBg }}
+              style={{ backgroundColor: arrowBg, opacity: isNextDisabled ? 0.35 : 1 }}
             >
               <ChevronRightIcon
                 size={14}
@@ -235,8 +277,8 @@ function CustomCalendar({
         <Calendar
           key={calendarKey}
           current={visibleDate}
-          minDate={minDate}
-          maxDate={maxDate}
+          minDate={minAvailableDate}
+          maxDate={maxAvailableDate}
           markedDates={markedDates}
           markingType={markingType}
           onDayPress={onDayPress}
@@ -260,6 +302,7 @@ function CustomCalendar({
                 value={{ year: parsedVisible.year, month: parsedVisible.month }}
                 minYear={effectiveMinYear}
                 maxYear={effectiveMaxYear}
+                availableYearMonths={availableYearMonths}
                 onConfirm={handleConfirmYearMonth}
               />
             </View>

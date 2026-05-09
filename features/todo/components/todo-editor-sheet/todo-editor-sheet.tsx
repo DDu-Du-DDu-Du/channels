@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 import BottomSheet from "@/components/bottom-sheet/bottom-sheet";
@@ -13,7 +14,7 @@ import { useBottomSheetAction, useToggle } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { getTodoDetail } from "@/service/feed/feed";
 import { getGoalList } from "@/service/goal/goal";
-import { useAuthStore } from "@/stores";
+import { useAuthStore, useSettingsStore } from "@/stores";
 import type { GoalType } from "@/types/response/goal/goal";
 import { formatDateToYYYYMMDD } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
@@ -38,11 +39,15 @@ function TodoEditorSheet({
   onClose,
   onSuccess,
 }: TodoEditorSheetProps) {
+  const { t } = useTranslation();
   const closeReasonRef = useRef<"final-close" | "navigate-to-child-sheet">("final-close");
   const iconStroke = useThemeColorToken("ui.icon.default");
   const { ref, openSheet, closeSheet } = useBottomSheetAction();
   const hasTokens = useAuthStore((state) => Boolean(state.accessToken && state.refreshToken));
   const isGuestSession = useAuthStore((state) => state.sessionType === "guest");
+  const isCalendarMenuActivated = useSettingsStore(
+    (state) => state.menuActivation.calendar.isActivated,
+  );
 
   const [selectedDateFromSheet, setSelectedDateFromSheet] = useState<string>();
   const [selectedGoalIdFromSheet, setSelectedGoalIdFromSheet] = useState<number>();
@@ -159,7 +164,7 @@ function TodoEditorSheet({
       >
         <View className="w-full bg-role-surface-panel dark:bg-role-dark-surface-panel">
           <FormHeader
-            title={mode === "create" ? "투두 생성" : "투두 수정"}
+            title={mode === "create" ? t("todo.create") : t("todo.edit")}
             onPressBack={handleClose}
             titleClassName="text-size15 text-role-text-primary dark:text-role-dark-text-primary"
             iconStroke={iconStroke}
@@ -169,7 +174,7 @@ function TodoEditorSheet({
           {isLoading ? (
             <View className="px-[2.4rem] pb-[2.4rem]">
               <SpoqaText className="text-size14 text-role-text-secondary dark:text-role-dark-text-secondary">
-                불러오는 중...
+                {t("common.loading")}
               </SpoqaText>
             </View>
           ) : (
@@ -177,6 +182,7 @@ function TodoEditorSheet({
               mode={mode}
               isGuestSession={isGuestSession}
               isPending={isPending}
+              showGoalSelector={isCalendarMenuActivated}
               goalList={goalList}
               selectedDate={selectedDate}
               TodoDetail={TodoDetail}

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 import { Button, SpoqaText } from "@/components";
@@ -8,6 +9,7 @@ import { useAuthStore } from "@/stores";
 import { Redirect, useGlobalSearchParams } from "expo-router";
 
 function Index() {
+  const { t } = useTranslation();
   const { code: rawCode } = useGlobalSearchParams<{ code?: string | string[] }>();
   const sessionType = useAuthStore((state) => state.sessionType);
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
@@ -38,7 +40,7 @@ function Index() {
           weight="bold"
           className="text-size17"
         >
-          사용자 인증 중입니다...
+          {t("app.authenticating")}
         </SpoqaText>
       </View>
     );
@@ -51,11 +53,11 @@ function Index() {
         <LoginButton
           provider="kakao"
           onPress={handleKakaoLogin}
-          label="카카오로 계속하기"
+          label={t("auth.continueWithKakao")}
           fit={true}
         />
         <Button
-          label="게스트 로그인"
+          label={t("auth.guestLogin")}
           onPress={handleGuestLogin}
           bodyClassName="border border-role-border-subtle bg-role-surface-canvas dark:border-role-dark-border-subtle dark:bg-role-dark-surface-canvas"
           labelClassName="text-role-text-primary dark:text-role-dark-text-primary"

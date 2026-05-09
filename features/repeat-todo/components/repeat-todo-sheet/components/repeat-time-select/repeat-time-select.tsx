@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable } from "react-native";
 
 import { FormSection, TimeSet, TodoTimeSheet } from "@/components";
@@ -19,6 +20,7 @@ function RepeatTimeSelect({
   onChangeBeginAt,
   onChangeEndAt,
 }: RepeatTimeSelectProps) {
+  const { t } = useTranslation();
   const [isBeginTimeEnabled, setIsBeginTimeEnabled] = useState(Boolean(beginAt));
   const [isEndTimeEnabled, setIsEndTimeEnabled] = useState(Boolean(endAt));
 
@@ -45,7 +47,7 @@ function RepeatTimeSelect({
   return (
     <>
       <FormSection
-        label={"시간 설정"}
+        label={t("repeatTodo.timeSetting")}
         labelClassName="text-size14 text-role-text-primary dark:text-role-dark-text-primary"
         rightContent={
           <Pressable onPress={handleOpenTimeSheet}>
@@ -60,13 +62,13 @@ function RepeatTimeSelect({
       <TimeSet
         beginAt={beginAt ? beginAt.slice(0, 5) : undefined}
         endAt={endAt ? endAt.slice(0, 5) : undefined}
-        beginLabel={"시작시간"}
-        endLabel={"종료시간"}
+        beginLabel={t("todo.timeSheet.startTime")}
+        endLabel={t("todo.timeSheet.endTime")}
       />
 
       {isTimeSheetOpen && (
         <TodoTimeSheet
-          title={"시간 설정"}
+          title={t("repeatTodo.timeSetting")}
           currentTodoTime={currentTodoTime}
           onChangeTodoTime={(selectedTime) =>
             handleChangeTodoTime(selectedTime, isBeginTimeEnabled, isEndTimeEnabled)

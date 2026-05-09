@@ -1,4 +1,5 @@
 import { type ReactNode, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { ActivityIndicator, FlatList, Pressable, ScrollView, View } from "react-native";
 
 import {
@@ -31,7 +32,7 @@ interface SettingsWideShellProps {
 
 interface SettingsWideControlItem {
   section: SettingsWideSection;
-  label: string;
+  labelKey: string;
 }
 
 interface SettingsWideControlRowProps {
@@ -43,12 +44,12 @@ interface SettingsWideControlRowProps {
 }
 
 const SETTINGS_WIDE_CONTROL_ITEMS: SettingsWideControlItem[] = [
-  { section: "display", label: "화면 표시" },
-  { section: "menu-activation", label: "메뉴 활성화" },
-  { section: "app-connection", label: "앱 연결" },
-  { section: "design-system", label: "디자인 시스템" },
-  { section: "bug-report", label: "버그 리포트" },
-  { section: "announcement", label: "공지사항" },
+  { section: "display", labelKey: "settings.display.title" },
+  { section: "menu-activation", labelKey: "settings.menuActivation" },
+  { section: "app-connection", labelKey: "settings.appConnection" },
+  { section: "design-system", labelKey: "settings.designSystem" },
+  { section: "bug-report", labelKey: "settings.bugReport" },
+  { section: "announcement", labelKey: "settings.announcement" },
 ];
 
 function SettingsWideControlRow({
@@ -123,6 +124,7 @@ function SettingsWideDetailFrame({ title, children }: { title: string; children:
 }
 
 function SettingsWideBugReportDetail() {
+  const { t } = useTranslation();
   const { createToast } = useToast();
   const bugReportFormRef = useRef<BugReportFormHandle | null>(null);
 
@@ -131,7 +133,7 @@ function SettingsWideBugReportDetail() {
   };
 
   const handleSubmitForm = () => {
-    createToast("제보되었어요. 더 나은 앱을 만드는 데 도움 주셔서 감사해요.", {
+    createToast(t("settings.bugReportSheet.success"), {
       type: "safe",
     });
     bugReportFormRef.current?.handleReset();
@@ -145,7 +147,7 @@ function SettingsWideBugReportDetail() {
       />
 
       <Button
-        label="제보하기"
+        label={t("settings.bugReportSheet.submit")}
         onPress={handleSubmitReport}
         className="mt-[1.2rem]"
         bodyClassName="bg-ui-button-primary-bg dark:bg-ui-dark-button-primary-bg"
@@ -156,6 +158,7 @@ function SettingsWideBugReportDetail() {
 }
 
 function SettingsWideAnnouncementDetail() {
+  const { t } = useTranslation();
   const spinnerColor = useThemeColorToken("role.text.tertiary");
   const {
     announcementViewItems,
@@ -168,14 +171,14 @@ function SettingsWideAnnouncementDetail() {
 
   const handleRenderEmpty = () => {
     if (isLoading) {
-      return <EmptyList text="불러오는 중..." />;
+      return <EmptyList text={t("common.loading")} />;
     }
 
     if (isError) {
-      return <EmptyList text="공지사항을 불러오지 못했어요." />;
+      return <EmptyList text={t("announcement.loadFailed")} />;
     }
 
-    return <EmptyList text="공지사항이 없어요." />;
+    return <EmptyList text={t("announcement.empty")} />;
   };
 
   return (
@@ -224,6 +227,7 @@ function SettingsWideAnnouncementDetail() {
 function SettingsWideShell({
   initialSection = SETTINGS_WIDE_DEFAULT_SECTION,
 }: SettingsWideShellProps) {
+  const { t } = useTranslation();
   const dangerTextColor = useThemeColorToken("role.status.error");
   const {
     appVersion,
@@ -241,7 +245,9 @@ function SettingsWideShell({
     (item) => item.section !== "design-system" || isDesignTokenLabEnabled,
   );
   const selectedControlItem = controlItems.find((item) => item.section === selectedSection);
-  const detailTitle = selectedControlItem?.label ?? controlItems[0]?.label ?? "설정";
+  const detailTitle = t(
+    selectedControlItem?.labelKey ?? controlItems[0]?.labelKey ?? "settings.title",
+  );
 
   const handleRenderDetail = () => {
     switch (selectedSection) {
@@ -275,7 +281,7 @@ function SettingsWideShell({
       {controlItems.map((item) => (
         <SettingsWideControlRow
           key={item.section}
-          label={item.label}
+          label={t(item.labelKey)}
           isSelected={selectedSection === item.section}
           onPress={() => handleSelectSection(item.section)}
         />
@@ -284,12 +290,12 @@ function SettingsWideShell({
       <View className="my-[0.8rem] h-px bg-role-border-subtle dark:bg-role-dark-border-subtle" />
 
       <SettingsWideControlRow
-        label="앱 버전 정보"
+        label={t("settings.appVersion")}
         value={`v${appVersion}`}
       />
       {sessionType === "member" ? (
         <SettingsWideControlRow
-          label="로그아웃"
+          label={t("settings.logout")}
           textColor={dangerTextColor}
           onPress={handlePressLogout}
         />
@@ -304,7 +310,7 @@ function SettingsWideShell({
   return (
     <View className="flex-1 bg-role-surface-panel dark:bg-role-dark-surface-panel">
       <PageHeader
-        title="설정"
+        title={t("settings.title")}
         showBackButton={false}
         rightContent={<HeaderRightActions />}
       />
@@ -322,10 +328,10 @@ function SettingsWideShell({
 
       <ConfirmModal
         isToggle={isLogoutConfirmOpen}
-        title="로그아웃하시겠어요?"
-        message="현재 계정에서 로그아웃됩니다."
-        completeText="로그아웃"
-        incompleteText="취소"
+        title={t("settings.logoutConfirmTitle")}
+        message={t("settings.logoutConfirmMessage")}
+        completeText={t("settings.logout")}
+        incompleteText={t("common.cancel")}
         handleToggleOff={handleCloseLogoutConfirm}
         onCompleteCheck={handleLogoutConfirmResult}
       />
