@@ -1,5 +1,6 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Pressable, View } from "react-native";
+import { DateData } from "react-native-calendars";
 
 import { BottomMultipleCalendar, SpoqaText } from "@/components";
 import { StatsDetailCalendarStatsType } from "@/types/response/stats/stats";
@@ -18,22 +19,54 @@ function CalendarStatsSection({
   postponedCalendarStats,
 }: CalendarStatsSectionProps) {
   const router = useRouter();
-  const isCalendarUnavailable =
-    achievedCalendarStats?.isAvailable === false && postponedCalendarStats?.isAvailable === false;
+
+  const availableYearMonths = useMemo(() => {
+    return Array.from(
+      new Set([
+        ...(achievedCalendarStats ?? []).map((item) => item.yearMonth),
+        ...(postponedCalendarStats ?? []).map((item) => item.yearMonth),
+      ]),
+    ).sort();
+  }, [achievedCalendarStats, postponedCalendarStats]);
+
+  const [currentYearMonth, setCurrentYearMonth] = useState(() =>
+    availableYearMonths.includes(fromMonth) ? fromMonth : (availableYearMonths[0] ?? fromMonth),
+  );
+
+  useEffect(() => {
+    if (!availableYearMonths.length) {
+      return;
+    }
+
+    setCurrentYearMonth(
+      availableYearMonths.includes(fromMonth) ? fromMonth : availableYearMonths[0],
+    );
+  }, [availableYearMonths, fromMonth]);
+
+  const achievedMonthStats = useMemo(
+    () => achievedCalendarStats?.find((item) => item.yearMonth === currentYearMonth)?.stats ?? [],
+    [achievedCalendarStats, currentYearMonth],
+  );
+  const postponedMonthStats = useMemo(
+    () => postponedCalendarStats?.find((item) => item.yearMonth === currentYearMonth)?.stats ?? [],
+    [currentYearMonth, postponedCalendarStats],
+  );
 
   const markedDates = useMemo(() => {
     const map: Record<string, any> = {};
 
-    achievedCalendarStats?.stats?.forEach((item) => {
+    achievedMonthStats.forEach((item) => {
       const dots = map[item.date]?.dots ?? [];
+      const hasAchieved = dots.some((dot: { key: string }) => dot.key === "achieved");
+
       map[item.date] = {
         ...(map[item.date] ?? {}),
         marked: true,
-        dots: [...dots, { key: "achieved", color: "#00C73C" }],
+        dots: hasAchieved ? dots : [...dots, { key: "achieved", color: "#00C73C" }],
       };
     });
 
-    postponedCalendarStats?.stats?.forEach((item) => {
+    postponedMonthStats.forEach((item) => {
       const dots = map[item.date]?.dots ?? [];
       const hasPostponed = dots.some((dot: { key: string }) => dot.key === "postponed");
 
@@ -45,22 +78,32 @@ function CalendarStatsSection({
     });
 
     return map;
-  }, [achievedCalendarStats?.stats, postponedCalendarStats?.stats]);
+  }, [achievedMonthStats, postponedMonthStats]);
 
-  if (isCalendarUnavailable) {
+  if (!availableYearMonths.length) {
     return null;
   }
 
-  const monthLabel = `${fromMonth.substring(0, 4)}년 ${Number(fromMonth.substring(5, 7))}월 투두`;
+  const monthLabel = `${currentYearMonth.substring(0, 4)}년 ${Number(currentYearMonth.substring(5, 7))}월 투두`;
+
+  const handleMonthChange = (date: DateData) => {
+    const nextYearMonth = date.dateString.slice(0, 7);
+
+    if (availableYearMonths.includes(nextYearMonth)) {
+      setCurrentYearMonth(nextYearMonth);
+    }
+  };
 
   return (
     <View className="mt-[1.2rem] rounded-radius15 bg-role-surface-panel dark:bg-role-dark-surface-panel px-[1.4rem] py-[1.4rem]">
       <BottomMultipleCalendar
+        current={`${currentYearMonth}-01`}
         markedDates={markedDates}
         disableDayPress
         markingType="multi-dot"
         monthLabel={monthLabel}
-        hideArrow
+        availableYearMonths={availableYearMonths}
+        onMonthChange={handleMonthChange}
       />
 
       <View className="mt-[0.8rem] flex-row items-center justify-between">

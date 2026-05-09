@@ -43,8 +43,10 @@ function WeekCalendar(props: WeekCalendarProps) {
   const changedItems = useRef(constants.isRTL);
   const list = useRef<FlatList<string> | null>(null);
   const currentIndex = useRef(NUMBER_OF_PAGES);
+  const isUserScroll = useRef(false);
   const shouldFixRTL = useMemo(() => !constants.isRN73() && constants.isAndroidRTL, []);
   const scrollEndTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const scrollCorrectionTimeouts = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   useDidUpdate(() => {
     items.current = getDatesArray(date, firstDay, numberOfDays);
@@ -197,13 +199,48 @@ function WeekCalendar(props: WeekCalendarProps) {
     [containerWidth],
   );
 
+  const handleScrollToCurrentIndex = useCallback(() => {
+    if (!containerWidth) {
+      return;
+    }
+
+    const nextOffset = containerWidth * currentIndex.current;
+    list.current?.scrollToIndex({
+      index: currentIndex.current,
+      animated: false,
+    });
+    list.current?.scrollToOffset({
+      offset: nextOffset,
+      animated: false,
+    });
+  }, [containerWidth]);
+
+  const handleScheduleScrollToCurrentIndex = useCallback(() => {
+    requestAnimationFrame(handleScrollToCurrentIndex);
+
+    scrollCorrectionTimeouts.current.forEach((timeout) => {
+      clearTimeout(timeout);
+    });
+    scrollCorrectionTimeouts.current = [0, 80, 180].map((delay) =>
+      setTimeout(handleScrollToCurrentIndex, delay),
+    );
+  }, [handleScrollToCurrentIndex]);
+
   const onEndReached = useCallback(() => {
     changedItems.current = true;
     items.current = getDatesArray(visibleWeek.current, firstDay, numberOfDays);
     setListData(items.current);
     currentIndex.current = NUMBER_OF_PAGES;
-    list?.current?.scrollToIndex({ index: NUMBER_OF_PAGES, animated: false });
-  }, [firstDay, numberOfDays]);
+    handleScheduleScrollToCurrentIndex();
+  }, [firstDay, handleScheduleScrollToCurrentIndex, numberOfDays]);
+
+  useEffect(() => {
+    if (!containerWidth || listData.length === 0) {
+      return;
+    }
+
+    handleScheduleScrollToCurrentIndex();
+  }, [containerWidth, handleScheduleScrollToCurrentIndex, listData.length]);
 
   const applyScrollUpdate = useCallback(
     (offsetX: number) => {
@@ -211,6 +248,11 @@ function WeekCalendar(props: WeekCalendarProps) {
         changedItems.current = false;
         return;
       }
+
+      if (!isUserScroll.current) {
+        return;
+      }
+
       const rawIndex = Math.round(offsetX / containerWidth);
       const pageIndex = shouldFixRTL ? NUM_OF_ITEMS - 1 - rawIndex : rawIndex;
       const newDate = items.current[pageIndex];
@@ -226,6 +268,10 @@ function WeekCalendar(props: WeekCalendarProps) {
     },
     [containerWidth, onEndReached, setDate, shouldFixRTL],
   );
+
+  const handleScrollBeginDrag = useCallback(() => {
+    isUserScroll.current = true;
+  }, []);
 
   const handleScroll = useCallback(
     (event: { nativeEvent: { contentOffset: { x: number } } }) => {
@@ -247,6 +293,7 @@ function WeekCalendar(props: WeekCalendarProps) {
         clearTimeout(scrollEndTimeout.current);
       }
       applyScrollUpdate(offsetX);
+      isUserScroll.current = false;
     },
     [applyScrollUpdate],
   );
@@ -256,6 +303,9 @@ function WeekCalendar(props: WeekCalendarProps) {
       if (scrollEndTimeout.current) {
         clearTimeout(scrollEndTimeout.current);
       }
+      scrollCorrectionTimeouts.current.forEach((timeout) => {
+        clearTimeout(timeout);
+      });
     };
   }, []);
 
@@ -278,9 +328,17 @@ function WeekCalendar(props: WeekCalendarProps) {
           renderItem={renderItem}
           keyExtractor={keyExtractor}
           initialScrollIndex={NUMBER_OF_PAGES}
+          initialNumToRender={NUM_OF_ITEMS}
+          maxToRenderPerBatch={NUM_OF_ITEMS}
+          windowSize={NUM_OF_ITEMS}
+          contentOffset={{ x: containerWidth * NUMBER_OF_PAGES, y: 0 }}
           getItemLayout={getItemLayout}
+          onLayout={handleScheduleScrollToCurrentIndex}
+          onContentSizeChange={handleScheduleScrollToCurrentIndex}
+          onScrollToIndexFailed={handleScheduleScrollToCurrentIndex}
           onEndReached={onEndReached}
           onEndReachedThreshold={1 / NUM_OF_ITEMS}
+          onScrollBeginDrag={handleScrollBeginDrag}
           onScroll={handleScroll}
           scrollEventThrottle={16}
           onMomentumScrollEnd={handleScrollEnd}

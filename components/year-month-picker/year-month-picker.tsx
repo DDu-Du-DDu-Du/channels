@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Platform, View } from "react-native";
 
 import SpoqaText from "@/components/spoqa-text/spoqa-text";
@@ -19,12 +20,25 @@ interface YearMonthPickerProps {
   onChangeTo: (next: YearMonthValue) => void;
   minYear?: number;
   maxYear?: number;
+  availableYearMonths?: string[];
 }
 
 const toYearIndex = (year: number, minYear: number) => year - minYear;
 const toMonthIndex = (month: number) => month - 1;
 
 const getPickerWidth = () => (Platform.OS === "web" ? 76 : 58);
+
+const parseYearMonth = (yearMonth: string): YearMonthValue | null => {
+  const [yearString, monthString] = yearMonth.split("-");
+  const year = Number(yearString);
+  const month = Number(monthString);
+
+  if (!year || !month || month < 1 || month > 12) {
+    return null;
+  }
+
+  return { year, month };
+};
 
 function YearMonthPicker({
   isRangeEnabled,
@@ -37,28 +51,73 @@ function YearMonthPicker({
   onChangeTo,
   minYear = 1980,
   maxYear = 2099,
+  availableYearMonths,
 }: YearMonthPickerProps) {
-  const years = Array.from({ length: maxYear - minYear + 1 }, (_, index) => minYear + index);
-  const months = Array.from({ length: 12 }, (_, index) => index + 1);
+  const { t } = useTranslation();
+  const availableValues = (availableYearMonths ?? [])
+    .map(parseYearMonth)
+    .filter((value): value is YearMonthValue => Boolean(value));
+  const hasAvailableYearMonths = availableValues.length > 0;
+
+  const years = hasAvailableYearMonths
+    ? Array.from(new Set(availableValues.map((value) => value.year))).sort((a, b) => a - b)
+    : Array.from({ length: maxYear - minYear + 1 }, (_, index) => minYear + index);
+
+  const getMonths = (year: number) => {
+    if (!hasAvailableYearMonths) {
+      return Array.from({ length: 12 }, (_, index) => index + 1);
+    }
+
+    return availableValues
+      .filter((value) => value.year === year)
+      .map((value) => value.month)
+      .sort((a, b) => a - b);
+  };
+
+  const getNextValueForYear = (value: YearMonthValue, year: number) => {
+    const months = getMonths(year);
+
+    return {
+      year,
+      month: months.includes(value.month) ? value.month : (months[0] ?? 1),
+    };
+  };
+
+  const getYearIndex = (year: number) => {
+    if (!hasAvailableYearMonths) {
+      return toYearIndex(year, minYear);
+    }
+
+    return Math.max(0, years.indexOf(year));
+  };
+
+  const getMonthIndex = (year: number, month: number) => {
+    const months = getMonths(year);
+    const index = months.indexOf(month);
+
+    return index >= 0 ? index : 0;
+  };
 
   const handleChangeYear = (type: "single" | "from" | "to", index: number) => {
     const year = years[index] ?? minYear;
 
     if (type === "single") {
-      onChangeSingle({ ...singleValue, year });
+      onChangeSingle(getNextValueForYear(singleValue, year));
       return;
     }
 
     if (type === "from") {
-      onChangeFrom({ ...fromValue, year });
+      onChangeFrom(getNextValueForYear(fromValue, year));
       return;
     }
 
-    onChangeTo({ ...toValue, year });
+    onChangeTo(getNextValueForYear(toValue, year));
   };
 
   const handleChangeMonth = (type: "single" | "from" | "to", index: number) => {
-    const month = months[index] ?? 1;
+    const value = type === "single" ? singleValue : type === "from" ? fromValue : toValue;
+    const months = getMonths(value.year);
+    const month = months[index] ?? months[0] ?? 1;
 
     if (type === "single") {
       onChangeSingle({ ...singleValue, month });
@@ -75,6 +134,7 @@ function YearMonthPicker({
 
   const renderPickerLine = (label: string | null, type: "single" | "from" | "to") => {
     const value = type === "single" ? singleValue : type === "from" ? fromValue : toValue;
+    const months = getMonths(value.year);
 
     return (
       <View className="w-full">
@@ -90,26 +150,30 @@ function YearMonthPicker({
           <View className="items-center rounded-radius10 bg-role-surface-panel dark:bg-role-dark-surface-panel px-[0.6rem] py-[0.4rem]">
             <WheelPicker
               data={years}
-              value={toYearIndex(value.year, minYear)}
+              value={getYearIndex(value.year)}
               onChange={(index) => handleChangeYear(type, index)}
               itemHeight={40}
               width={getPickerWidth()}
             />
           </View>
           <SpoqaText className="text-size14 text-role-text-primary dark:text-role-dark-text-primary">
-            년
+            {t("calendar.year")}
           </SpoqaText>
           <View className="items-center rounded-radius10 bg-role-surface-panel dark:bg-role-dark-surface-panel px-[0.6rem] py-[0.4rem]">
             <WheelPicker
               data={months}
-              value={toMonthIndex(value.month)}
+              value={
+                hasAvailableYearMonths
+                  ? getMonthIndex(value.year, value.month)
+                  : toMonthIndex(value.month)
+              }
               onChange={(index) => handleChangeMonth(type, index)}
               itemHeight={40}
               width={getPickerWidth()}
             />
           </View>
           <SpoqaText className="text-size14 text-role-text-primary dark:text-role-dark-text-primary">
-            월
+            {t("calendar.month")}
           </SpoqaText>
         </View>
         {type === "to" && toWarningText ? (

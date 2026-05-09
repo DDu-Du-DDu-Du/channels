@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, View } from "react-native";
+import { ActivityIndicator, Pressable, ScrollView, View } from "react-native";
 
 import { SpoqaText } from "@/components";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
@@ -98,9 +98,9 @@ function StatsWideControlPanel({
       </View>
 
       {isGoalsLoading ? (
-        <SpoqaText className="mt-[0.8rem] text-size14 text-role-text-secondary dark:text-role-dark-text-secondary">
-          목표를 불러오는 중...
-        </SpoqaText>
+        <View className="mt-[0.8rem] items-center py-[1.6rem]">
+          <ActivityIndicator size="small" />
+        </View>
       ) : null}
 
       {isGoalsError && !isGoalsLoading ? (

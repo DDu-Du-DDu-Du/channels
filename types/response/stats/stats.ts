@@ -85,10 +85,12 @@ export interface StatsDetailCalendarItemType {
   uncompletedCount: number;
 }
 
-export interface StatsDetailCalendarStatsType {
-  isAvailable: boolean;
+export interface StatsDetailCalendarMonthStatsType {
+  yearMonth: string;
   stats: StatsDetailCalendarItemType[];
 }
+
+export type StatsDetailCalendarStatsType = StatsDetailCalendarMonthStatsType[];
 
 export interface StatsDetailRepeatTodoItemType {
   repeatTodoId: number;
@@ -109,7 +111,7 @@ export interface StatsGoalAchievedDetailResponseType {
   goalColor: string;
   overview: StatsGoalAchievedOverviewType;
   dayOfWeekStats: StatsDetailDayOfWeekStatsType;
-  repeatTodostats: StatsDetailRepeatTodoItemType[];
+  repeatTodoStats: StatsDetailRepeatTodoItemType[];
   calendarStats: StatsDetailCalendarStatsType;
 }
 

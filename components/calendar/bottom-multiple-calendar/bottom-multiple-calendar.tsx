@@ -13,10 +13,13 @@ export interface BottomMultipleCalendarProps {
   setSelected?: (dates: Date[] | undefined) => void;
   markedDates?: Record<string, any>;
   disableDayPress?: boolean;
+  current?: string;
   monthLabel?: string;
   markingType?: MarkingTypes;
   showArrow?: boolean;
   hideArrow?: boolean;
+  availableYearMonths?: string[];
+  onMonthChange?: (date: DateData) => void;
   onPressBack?: () => void;
 }
 
@@ -25,10 +28,13 @@ function BottomMultipleCalendar({
   setSelected,
   markedDates,
   disableDayPress = false,
+  current,
   monthLabel,
   markingType,
   showArrow = true,
   hideArrow = false,
+  availableYearMonths,
+  onMonthChange,
   onPressBack,
 }: BottomMultipleCalendarProps) {
   const arrowIconFill = useThemeColorToken("ui.arrow.icon");
@@ -90,11 +96,14 @@ function BottomMultipleCalendar({
         />
       ) : null}
       <CustomCalendar
+        current={current}
         markedDates={resolvedMarkedDates}
         markingType={markingType}
         onDayPress={handleDayPress}
+        onMonthChange={onMonthChange}
         hideExtraDays={false}
         hideArrows={hideArrows}
+        availableYearMonths={availableYearMonths}
         monthLabel={monthLabel}
       />
     </View>

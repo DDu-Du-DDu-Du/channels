@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 
 import { SpoqaText } from "@/components";
 import StatsReportCard from "@/features/stats/components/stats-report-card/stats-report-card";
@@ -88,10 +88,8 @@ function StatsReportSection({ report, isLoading, isError }: StatsReportSectionPr
         저번 달 대비 이번 달의 성과예요
       </SpoqaText>
       {isLoading && (
-        <View className="mt-[1.4rem]">
-          <SpoqaText className="text-size14 text-role-text-secondary dark:text-role-dark-text-secondary">
-            불러오는 중...
-          </SpoqaText>
+        <View className="mt-[1.4rem] items-center py-[2rem]">
+          <ActivityIndicator size="small" />
         </View>
       )}
       {isError && !isLoading && (

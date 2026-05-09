@@ -10,6 +10,7 @@ export interface YearMonthPopoverProps {
   onConfirm: (next: YearMonthValue) => void;
   minYear?: number;
   maxYear?: number;
+  availableYearMonths?: string[];
   confirmLabel?: string;
   backgroundColor?: string;
 }
@@ -22,27 +23,67 @@ const clampYear = (year: number, minYear: number, maxYear: number) =>
 
 const clampMonth = (month: number) => Math.max(1, Math.min(12, month));
 
+const parseYearMonth = (yearMonth: string): YearMonthValue | null => {
+  const [yearString, monthString] = yearMonth.split("-");
+  const year = Number(yearString);
+  const month = Number(monthString);
+
+  if (!year || !month || month < 1 || month > 12) {
+    return null;
+  }
+
+  return { year, month };
+};
+
+const normalizeValue = (
+  value: YearMonthValue,
+  minYear: number,
+  maxYear: number,
+  availableYearMonths?: string[],
+) => {
+  const availableValues = (availableYearMonths ?? [])
+    .map(parseYearMonth)
+    .filter((item): item is YearMonthValue => Boolean(item));
+
+  if (!availableValues.length) {
+    return {
+      year: clampYear(value.year, minYear, maxYear),
+      month: clampMonth(value.month),
+    };
+  }
+
+  const exact = availableValues.find(
+    (item) => item.year === value.year && item.month === value.month,
+  );
+
+  if (exact) {
+    return exact;
+  }
+
+  return [...availableValues].sort((a, b) => a.year * 100 + a.month - (b.year * 100 + b.month))[0];
+};
+
 function YearMonthPopover({
   value,
   onConfirm,
   minYear = DEFAULT_MIN_YEAR,
   maxYear = DEFAULT_MAX_YEAR,
+  availableYearMonths,
   confirmLabel = "확인",
   backgroundColor,
 }: YearMonthPopoverProps) {
   const defaultBackgroundColor = useThemeColorToken("role.surface.panel");
+  const { year: valueYear, month: valueMonth } = value;
 
-  const [pending, setPending] = useState<YearMonthValue>(() => ({
-    year: clampYear(value.year, minYear, maxYear),
-    month: clampMonth(value.month),
-  }));
+  const [pending, setPending] = useState<YearMonthValue>(() =>
+    normalizeValue(value, minYear, maxYear, availableYearMonths),
+  );
 
   useEffect(() => {
-    setPending({
-      year: clampYear(value.year, minYear, maxYear),
-      month: clampMonth(value.month),
-    });
-  }, [value.year, value.month, minYear, maxYear]);
+    setPending(
+      normalizeValue({ year: valueYear, month: valueMonth }, minYear, maxYear, availableYearMonths),
+    );
+  }, [valueYear, valueMonth, minYear, maxYear, availableYearMonths]);
 
   const handleConfirm = () => {
     onConfirm(pending);
@@ -64,6 +105,7 @@ function YearMonthPopover({
           onChangeTo={setPending}
           minYear={minYear}
           maxYear={maxYear}
+          availableYearMonths={availableYearMonths}
         />
       </View>
 

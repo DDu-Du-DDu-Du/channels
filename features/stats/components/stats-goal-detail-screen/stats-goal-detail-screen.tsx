@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ScrollView, View } from "react-native";
+import { ActivityIndicator, ScrollView, View } from "react-native";
 
 import { SpoqaText, YearMonthPickerSheet } from "@/components";
 import { GOAL_KEY, STATS_KEY } from "@/constants/query-key/query-key";
@@ -153,9 +153,9 @@ function StatsGoalDetailScreen({
         />
 
         {isLoading ? (
-          <SpoqaText className="mt-[1.6rem] text-size14 text-role-text-secondary dark:text-role-dark-text-secondary">
-            불러오는 중...
-          </SpoqaText>
+          <View className="mt-[1.6rem] items-center py-[2rem]">
+            <ActivityIndicator size="small" />
+          </View>
         ) : null}
 
         {isError ? (
@@ -180,7 +180,7 @@ function StatsGoalDetailScreen({
 
             <RepeatTodostatsSection
               goalId={goalId}
-              repeatTodostats={achievedQuery.data?.repeatTodostats}
+              repeatTodostats={achievedQuery.data?.repeatTodoStats}
               repeatTodoItems={repeatTodoItems}
               goalColor={goalColor}
             />
