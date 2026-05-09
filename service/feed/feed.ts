@@ -20,6 +20,7 @@ import {
   RequestTodo,
   RequestTodoChangeDate,
 } from "@/types/request/feed/feed";
+import { getClientTimeZone } from "@/utils";
 
 interface GetDailyListProps {
   userId: number;
@@ -31,10 +32,14 @@ export const getDailyList = async ({ userId, date }: GetDailyListProps) => {
     return getGuestDailyList({ date });
   }
 
-  const selectedDate = `&date=${date}`;
+  const params = new URLSearchParams({
+    userId: String(userId),
+    date,
+    timeZone: getClientTimeZone(),
+  });
 
   const response = await fetchApi(
-    `${FEED.DAILY_LIST}?userId=${userId}${selectedDate}`,
+    `${FEED.DAILY_LIST}?${params.toString()}`,
     {
       method: "GET",
       headers: {
@@ -57,7 +62,11 @@ export const getDailyTimeTable = async ({ userId, date }: GetDailyListProps) => 
   }
 
   const response = await fetchApi(
-    `${FEED.DAILY_TIMETABLE}?userId=${userId}&date=${date}`,
+    `${FEED.DAILY_TIMETABLE}?${new URLSearchParams({
+      userId: String(userId),
+      date,
+      timeZone: getClientTimeZone(),
+    }).toString()}`,
     {
       method: "GET",
       headers: {
@@ -160,11 +169,15 @@ export const getPeriodTodos = async ({ userId, date, type }: GetPeriodTodosProps
     return getGuestPeriodTodos({ date, type });
   }
 
-  const selectedDate = `&date=${date}`;
   const endpoint = type === "WEEK" ? FEED.WEEKLY_TODOS : FEED.MONTHLY_TODOS;
+  const params = new URLSearchParams({
+    userId: String(userId),
+    date,
+    timeZone: getClientTimeZone(),
+  });
 
   const response = await fetchApi(
-    `${endpoint}?userId=${userId}${selectedDate}`,
+    `${endpoint}?${params.toString()}`,
     {
       method: "GET",
       headers: {
@@ -186,7 +199,11 @@ export const getTodoDetail = async ({ id }: FetchUpdateTodoProps) => {
     return getGuestTodoDetail({ id });
   }
 
-  const response = await fetchApi(`${FEED.TODO}/${id}`, { method: "GET" }, true);
+  const response = await fetchApi(
+    `${FEED.TODO}/${id}?${new URLSearchParams({ timeZone: getClientTimeZone() }).toString()}`,
+    { method: "GET" },
+    true,
+  );
 
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
@@ -208,7 +225,10 @@ export const fetchCreateTodo = async ({ requestTodo }: FetchCreateTodoProps) => 
     `${FEED.TODO}`,
     {
       method: "POST",
-      body: JSON.stringify(requestTodo),
+      body: JSON.stringify({
+        ...requestTodo,
+        timeZone: getClientTimeZone(),
+      }),
     },
     true,
   );
@@ -234,7 +254,10 @@ export const fetchEditTodo = async ({ id, requestTodo }: FetchEditTodoProps) => 
     `${FEED.TODO}/${id}`,
     {
       method: "PUT",
-      body: JSON.stringify(requestTodo),
+      body: JSON.stringify({
+        ...requestTodo,
+        timeZone: getClientTimeZone(),
+      }),
     },
     true,
   );
@@ -289,7 +312,10 @@ export const fetchTodoChangeDate = async ({ id, date }: fetchTodoDateProps) => {
     return changeGuestTodoDate({ id, date });
   }
 
-  const changedDate: RequestTodoChangeDate = { newDate: date };
+  const changedDate: RequestTodoChangeDate = {
+    newDate: date,
+    timeZone: getClientTimeZone(),
+  };
 
   const response = await fetchApi(
     `${FEED.TODO}/${id}/date`,
@@ -316,7 +342,10 @@ export const fetchTodoRepeatDate = async ({ id, date }: fetchTodoDateProps) => {
     `${FEED.TODO}/${id}/repeat`,
     {
       method: "POST",
-      body: JSON.stringify({ repeatOn: date }),
+      body: JSON.stringify({
+        repeatOn: date,
+        timeZone: getClientTimeZone(),
+      }),
     },
     true,
   );
@@ -342,7 +371,10 @@ export const fetchTodoChangeTime = async ({ time, id }: FetchTodoChangeTimeProps
     `${FEED.TODO}/${id}/period`,
     {
       method: "PUT",
-      body: JSON.stringify(time),
+      body: JSON.stringify({
+        ...time,
+        timeZone: getClientTimeZone(),
+      }),
     },
     true,
   );

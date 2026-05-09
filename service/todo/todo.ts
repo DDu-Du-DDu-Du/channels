@@ -3,6 +3,7 @@ import { TODO } from "@/constants/end-points";
 import { isGuestSession } from "@/service/guest-storage/guest-session";
 import { getGuestTodoDashboard, searchGuestTodos } from "@/service/guest-storage/guest-storage";
 import type { TodoDashboardResponseType, TodosearchResponseType } from "@/types/response/todo/todo";
+import { getClientTimeZone } from "@/utils";
 
 interface GetTodosearchProps {
   query: string;
@@ -19,14 +20,18 @@ export const getTodosearch = async ({
     return searchGuestTodos({ query, size, cursor });
   }
 
-  const queryParams = [`query=${encodeURIComponent(query)}`, `size=${size}`];
+  const queryParams = new URLSearchParams({
+    query,
+    size: String(size),
+    timeZone: getClientTimeZone(),
+  });
 
   if (cursor) {
-    queryParams.push(`cursor=${encodeURIComponent(cursor)}`);
+    queryParams.set("cursor", cursor);
   }
 
   const response = await fetchApi(
-    `${TODO.SEARCH}?${queryParams.join("&")}`,
+    `${TODO.SEARCH}?${queryParams.toString()}`,
     {
       method: "GET",
       headers: {
@@ -51,7 +56,7 @@ export const getTodoDashboard = async (): Promise<TodoDashboardResponseType> => 
   }
 
   const response = await fetchApi(
-    TODO.DASHBOARD,
+    `${TODO.DASHBOARD}?${new URLSearchParams({ timeZone: getClientTimeZone() }).toString()}`,
     {
       method: "GET",
       headers: {

@@ -16,3 +16,4 @@ export {
 } from "./design-system";
 export { default as parseUtc } from "./parse-utc/parse-utc";
 export { default as remToPx } from "./rem-to-px/rem-to-px";
+export { getClientTimeZone } from "./time-zone";
