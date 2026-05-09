@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { type SharedValue, useSharedValue, withTiming } from "react-native-reanimated";
@@ -15,10 +16,10 @@ import { GoalEditorForm, GoalEditorScreen } from "@/features/goal";
 import { useMe } from "@/features/user";
 import { useWideLayout } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
-import { CloseIcon, SearchIcon } from "@/icons";
+import { CloseIcon } from "@/icons";
 import { getDailyList, getDailyTimeTable, getPeriodTodos } from "@/service/feed/feed";
 import { getGoalList } from "@/service/goal/goal";
-import { useAuthStore } from "@/stores";
+import { useAuthStore, useSettingsStore } from "@/stores";
 import type {
   MainDailyListType,
   MainDailyTimeTableType,
@@ -202,6 +203,7 @@ const createCalendarPanGesture = ({
 };
 
 function MainFeed({ onSelectDate }: MainFeedProps) {
+  const { t } = useTranslation();
   const router = useRouter();
   const params = useLocalSearchParams<{ view?: string | string[]; date?: string | string[] }>();
   const view = resolveFeedView(toSingleParam(params.view));
@@ -209,6 +211,7 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
   const paramDate = toSingleParam(params.date);
   const hasTokens = useAuthStore((state) => Boolean(state.accessToken && state.refreshToken));
   const isGuestSession = useAuthStore((state) => state.sessionType === "guest");
+  const isDarkMode = useSettingsStore((state) => state.display.isDarkMode);
   const { data: user } = useMe({ readOnly: true });
   const today = useMemo(() => formatDateToYYYYMMDD(new Date()), []);
   const resolvedParamDate = useMemo(() => resolveFeedDate(paramDate, today), [paramDate, today]);
@@ -230,6 +233,10 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
     handleOpenFeedDetail,
   } = useFeedWideState();
   const handleSelectDate = (date: string) => {
+    if (date !== selectedDate) {
+      router.setParams({ date });
+    }
+
     setSelectedDate(date);
     onSelectDate?.(date);
   };
@@ -252,10 +259,6 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
     handleOpenFeedDetail();
   };
 
-  const handlePressSearch = () => {
-    router.push("/todo" as any);
-  };
-
   useEffect(() => {
     setSelectedDate(resolvedParamDate);
   }, [resolvedParamDate]);
@@ -271,7 +274,11 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
     enabled: isSessionReady,
   });
 
-  const { data: dailyList } = useQuery<MainDailyListType[]>({
+  const {
+    data: dailyList,
+    isLoading: isDailyListLoading,
+    isFetching: isDailyListFetching,
+  } = useQuery<MainDailyListType[]>({
     queryKey: [FEED_KEY.DAILY_LIST, selectedDate],
     queryFn: () =>
       getDailyList({
@@ -293,7 +300,11 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
       enabled: isSessionReady && view === "timeline",
     });
 
-  const { data: goalList = [] } = useQuery<GoalType[]>({
+  const {
+    data: goalList = [],
+    isLoading: isGoalListLoading,
+    isError: isGoalListError,
+  } = useQuery<GoalType[]>({
     queryKey: [GOAL_KEY.GOAL_LIST, user?.id],
     queryFn: () => {
       if (!isGuestSession && !user?.id) {
@@ -412,6 +423,7 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
     <MainFeedItems
       view={view}
       dailyList={dailyList ?? []}
+      isDailyListLoading={isDailyListLoading || isDailyListFetching}
       dailyTimeTable={dailyTimeTable}
       isDailyTimeTableLoading={isDailyTimeTableLoading}
       selectedTodoDate={selectedDate}
@@ -428,18 +440,12 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
         >
           {selectedDate}
         </SpoqaText>
-        <Pressable
-          onPress={handlePressSearch}
-          hitSlop={8}
-          className="h-[3.6rem] w-[3.6rem] items-center justify-center"
-        >
-          <SearchIcon size={22} />
-        </Pressable>
       </View>
 
       <MainFeedItems
         view={view}
         dailyList={filteredDailyList}
+        isDailyListLoading={isDailyListLoading || isDailyListFetching}
         dailyTimeTable={filteredDailyTimeTable}
         isDailyTimeTableLoading={isDailyTimeTableLoading}
         selectedTodoDate={selectedDate}
@@ -452,11 +458,11 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
     detailMode.type === "goal-create" ? (
       <View className="flex-1">
         <FeedWideEditorHeader
-          title="목표 등록"
+          title={t("feed.goalCreate")}
           onPressClose={handleOpenFeedDetail}
         />
         <GoalEditorForm
-          submitLabel="목표 등록"
+          submitLabel={t("feed.goalCreate")}
           redirectOnSuccess={false}
           onSuccess={handleOpenFeedDetail}
         />
@@ -464,7 +470,7 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
     ) : detailMode.type === "goal-edit" ? (
       <View className="flex-1">
         <FeedWideEditorHeader
-          title="목표 수정"
+          title={t("feed.goalEdit")}
           onPressClose={handleOpenFeedDetail}
         />
         <GoalEditorScreen
@@ -485,6 +491,8 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
             view={view}
             monthlyTodos={periodTodos ?? []}
             goalList={inProgressGoalList}
+            isGoalListLoading={isGoalListLoading}
+            isGoalListError={isGoalListError}
             selectedGoalIds={selectedGoalIds}
             summary={wideSummary}
             onSelectDate={handleSelectWideDate}
@@ -509,10 +517,14 @@ function MainFeed({ onSelectDate }: MainFeedProps) {
 
       <Pressable
         onPress={() => handleSelectDate(today)}
-        className="absolute bottom-[7.2rem] left-[1.6rem] h-[4.4rem] rounded-full bg-ui-button-primary-bg px-[1.4rem] items-center justify-center dark:bg-ui-dark-button-primary-bg"
+        className="absolute bottom-[2rem] left-[1.6rem] h-[4.4rem] items-center justify-center rounded-full bg-[#F1F2F4] px-[1.4rem] dark:bg-[#2F3136]"
+        style={{
+          boxShadow: isDarkMode ? "0px 4px 14px rgba(0,0,0,0.28)" : "0px 4px 14px rgba(0,0,0,0.12)",
+          elevation: 4,
+        }}
       >
-        <SpoqaText className="text-size13 text-role-text-inverse dark:text-role-dark-text-inverse">
-          오늘
+        <SpoqaText className="text-size13 text-role-text-primary dark:text-role-dark-text-primary">
+          {t("calendar.today")}
         </SpoqaText>
       </Pressable>
     </View>

@@ -3,6 +3,7 @@ export { default as PublicIcon } from "./public-icon/public-icon";
 export { default as FollowerIcon } from "./follower-icon/follower-icon";
 export { default as ChevronLeftIcon } from "./chevron-left-icon/chevron-left-icon";
 export { default as ChevronRightIcon } from "./chevron-right-icon/chevron-right-icon";
+export { default as ChevronDownIcon } from "./chevron-down-icon/chevron-down-icon";
 export { default as AlarmIcon } from "./alarm-icon/alarm-icon";
 export { default as AnotherDayIcon } from "./another-day-icon/another-day-icon";
 export { default as ArrowLeftIcon } from "./arrow-left-icon/arrow-left-icon";

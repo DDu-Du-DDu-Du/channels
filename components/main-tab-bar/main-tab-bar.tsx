@@ -1,7 +1,9 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 
 import SpoqaText from "@/components/spoqa-text/spoqa-text";
+import { useWideLayout } from "@/hooks";
 import { useThemeColorToken } from "@/hooks/use-theme-color";
 import { AddListIcon, MenuIcon, TabCalendarIcon, TabDashboardIcon, TabStatsIcon } from "@/icons";
 import { useSettingsStore } from "@/stores";
@@ -23,25 +25,26 @@ type TabItem = {
 type ActionItem = {
   type: "action";
   key: "menu-view" | "more";
-  label: "메뉴 보기" | "더보기";
+  label: string;
 };
 
-const MENU_META: Record<MenuActivationKey, Omit<TabItem, "type" | "key">> = {
+const MENU_META: Record<MenuActivationKey, { href: TabItem["href"]; labelKey: string }> = {
   calendar: {
-    label: "피드",
+    labelKey: "navigation.feed",
     href: "/feed",
   },
   dashboard: {
-    label: "대시보드",
+    labelKey: "navigation.dashboard",
     href: "/dashboard",
   },
   stats: {
-    label: "통계",
+    labelKey: "navigation.stats",
     href: "/stats",
   },
 };
 
 function MainTabBar({ sortedActiveMenuKeys }: MainTabBarProps) {
+  const { t } = useTranslation();
   const router = useRouter();
   const pathname = usePathname();
   const [isMoreExpanded, setIsMoreExpanded] = useState(false);
@@ -49,6 +52,7 @@ function MainTabBar({ sortedActiveMenuKeys }: MainTabBarProps) {
   const isDarkMode = useSettingsStore((state) => state.display.isDarkMode);
   const activeColor = isDarkMode ? activeDarkColor : "rgb(0, 0, 0)";
   const inactiveColor = useThemeColorToken("ui.icon.muted");
+  const { isWideLayout } = useWideLayout();
   const isMenuActivationFocused = pathname.startsWith("/settings/menu-activation");
   const tabBarClassName =
     "border-t border-role-border-subtle bg-role-surface-panel px-[1rem] pb-[0.9rem] pt-[0.6rem] dark:border-role-dark-border-subtle dark:bg-role-dark-surface-panel";
@@ -56,14 +60,14 @@ function MainTabBar({ sortedActiveMenuKeys }: MainTabBarProps) {
   const tabItems: TabItem[] = sortedActiveMenuKeys.map((key) => ({
     type: "tab",
     key,
-    label: MENU_META[key].label,
+    label: t(MENU_META[key].labelKey),
     href: MENU_META[key].href,
   }));
 
   const isOverFour = tabItems.length >= 5;
   const actionItem: ActionItem = isOverFour
-    ? { type: "action", key: "more", label: "더보기" }
-    : { type: "action", key: "menu-view", label: "메뉴 보기" };
+    ? { type: "action", key: "more", label: t("common.more") }
+    : { type: "action", key: "menu-view", label: t("settings.menuActivation") };
 
   const slotItems: (TabItem | ActionItem)[] = isOverFour
     ? [...tabItems.slice(0, 4), actionItem]
@@ -120,7 +124,10 @@ function MainTabBar({ sortedActiveMenuKeys }: MainTabBarProps) {
   };
 
   return (
-    <View className={tabBarClassName}>
+    <View
+      className={tabBarClassName}
+      style={isWideLayout ? { width: "100%", maxWidth: 700, alignSelf: "center" } : undefined}
+    >
       <View className="flex-row items-center justify-center">
         {slotItems.map((item) => {
           if (item.type === "action") {
@@ -232,7 +239,7 @@ function MainTabBar({ sortedActiveMenuKeys }: MainTabBarProps) {
               }`}
               style={isMenuActivationFocused ? { color: activeColor } : undefined}
             >
-              메뉴 보기
+              {t("settings.menuActivation")}
             </SpoqaText>
           </Pressable>
         </View>

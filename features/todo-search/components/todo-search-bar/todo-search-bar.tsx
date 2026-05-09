@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, TextInput, View } from "react-native";
 import Animated, { type SharedValue, interpolate, useAnimatedStyle } from "react-native-reanimated";
 
@@ -13,6 +14,7 @@ export interface TodosearchBarProps {
 }
 
 function TodosearchBar({ value, onChangeText, progress }: TodosearchBarProps) {
+  const { t } = useTranslation();
   const [containerWidth, setContainerWidth] = useState(0);
   const iconColor = useThemeColorToken("role.icon.inverse");
   const placeholderColor = useThemeColorToken("ui.input.default.placeholder");
@@ -59,7 +61,7 @@ function TodosearchBar({ value, onChangeText, progress }: TodosearchBarProps) {
             <TextInput
               value={value}
               onChangeText={onChangeText}
-              placeholder="투두를 검색하세요"
+              placeholder={t("todo.searchPlaceholder")}
               placeholderTextColor={placeholderColor}
               className="h-full text-size15"
               style={{ color: inputColor }}

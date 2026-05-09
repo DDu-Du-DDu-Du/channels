@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 import {
@@ -25,6 +26,7 @@ import {
 export interface MainFeedItemsProps {
   view: MainFeedView;
   dailyList: MainDailyListType[];
+  isDailyListLoading?: boolean;
   dailyTimeTable?: MainDailyTimeTableType;
   isDailyTimeTableLoading?: boolean;
   selectedTodoDate: string;
@@ -34,11 +36,13 @@ export interface MainFeedItemsProps {
 function MainFeedItems({
   view,
   dailyList,
+  isDailyListLoading = false,
   dailyTimeTable,
   isDailyTimeTableLoading = false,
   selectedTodoDate,
   isCalendarOpen = true,
 }: MainFeedItemsProps) {
+  const { t } = useTranslation();
   const [currentTodoId, setCurrentTodoId] = useState(-1);
 
   const { editorSheetState, handleOpenCreateEditor, handleOpenEditEditor, handleCloseEditor } =
@@ -153,6 +157,7 @@ function MainFeedItems({
       ) : (
         <MainFeedListItems
           dailyList={dailyList}
+          isDailyListLoading={isDailyListLoading}
           isCalendarOpen={isCalendarOpen}
           onTodoCompleteToggle={onTodoCompleteToggle}
           onTodosheetOpen={handleTodosheetOpen}
@@ -164,8 +169,8 @@ function MainFeedItems({
         <AlertModal
           isToggle={isAlertModalToggle}
           handleToggleOff={handleAlertModalToggleOff}
-          title="알림"
-          message="종료된 목표에는 투두를 추가할 수 없어요."
+          title={t("navigation.notification")}
+          message={t("feed.endedGoalCannotAddTodo")}
         />
       )}
 

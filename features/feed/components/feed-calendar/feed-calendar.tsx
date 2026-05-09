@@ -66,6 +66,7 @@ function FeedCalendar({
     handleCalendarToggled,
     handleDisplayMonth,
     handleSelectCalendarDate,
+    handleChangeVisibleDate,
   } = useFeedCalendarNavigation({
     date,
     onSelectDate,
@@ -186,7 +187,7 @@ function FeedCalendar({
         <CalendarProvider
           date={visibleDate}
           onDateChanged={(nextDate) => {
-            handleSelectCalendarDate(nextDate);
+            handleChangeVisibleDate(nextDate);
           }}
         >
           <ExpandableCalendar
@@ -212,7 +213,7 @@ function FeedCalendar({
                 return;
               }
 
-              handleSelectCalendarDate(currentVisibleMonth);
+              handleChangeVisibleDate(currentVisibleMonth);
             }}
             markedDates={markedDates}
             dayComponent={dayComponent}

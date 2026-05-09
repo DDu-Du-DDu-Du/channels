@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
@@ -17,12 +18,13 @@ export interface FeedTypeSwitchProps {
 }
 
 function FeedTypeSwitch({
-  firstLabel = "투두",
-  secondLabel = "스케줄",
+  firstLabel,
+  secondLabel,
   selectedOption = "Todo",
   alternativeOption = "schedule",
   className,
 }: FeedTypeSwitchProps) {
+  const { t } = useTranslation();
   const pillBackgroundColor = useThemeColorToken("ui.button.primary.bg");
   const pillBorderColor = useThemeColorToken("role.surface.canvas");
   const { toggle, handleToggleToFirst, handleToggleToSecond } = useFeedTypeSwitchToggle({
@@ -85,7 +87,7 @@ function FeedTypeSwitch({
         <SpoqaText
           className={`text-size13 ${isFirstSelected ? "text-role-text-inverse dark:text-role-dark-text-inverse font-medium" : ""}`}
         >
-          {firstLabel}
+          {firstLabel ?? t("feed.todo")}
         </SpoqaText>
       </Pressable>
       <Pressable
@@ -95,7 +97,7 @@ function FeedTypeSwitch({
         <SpoqaText
           className={`text-size13 ${!isFirstSelected ? "text-role-text-inverse dark:text-role-dark-text-inverse font-medium" : ""}`}
         >
-          {secondLabel}
+          {secondLabel ?? t("feed.schedule")}
         </SpoqaText>
       </Pressable>
     </View>

@@ -66,6 +66,7 @@ function FeedCalendar({
     handleToggleCalendar,
     handleDisplayMonth,
     handleSelectCalendarDate,
+    handleChangeVisibleDate,
   } = useFeedCalendarNavigation({
     date,
     onSelectDate,
@@ -275,7 +276,7 @@ function FeedCalendar({
                 markedDates={markedDates}
                 renderHeader={() => <View />}
                 onMonthChange={(newDate) => {
-                  handleSelectCalendarDate(newDate.dateString);
+                  handleChangeVisibleDate(newDate.dateString);
                 }}
                 dayComponent={dayComponent}
                 theme={calendarTheme}
@@ -303,11 +304,12 @@ function FeedCalendar({
               <CalendarProvider
                 date={visibleDate}
                 onDateChanged={(nextDate) => {
-                  handleSelectCalendarDate(nextDate);
+                  handleChangeVisibleDate(nextDate);
                 }}
               >
                 <WeekCalendar
                   key={weekCalendarKey}
+                  current={visibleDate}
                   firstDay={firstDay}
                   calendarWidth={calendarWidth || undefined}
                   markedDates={markedDates}
